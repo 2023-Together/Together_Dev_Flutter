@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main/widgets/main_button.dart';
+import 'package:swag_cross_app/features/main/widgets/main_navbar.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
@@ -15,6 +16,10 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("메인"),
+      ),
+      bottomNavigationBar: const MainNavbar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(
@@ -51,7 +56,7 @@ class MainPage extends StatelessWidget {
                       child: const MainButton(text: "공지사항"),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),
