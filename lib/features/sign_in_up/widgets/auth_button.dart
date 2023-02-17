@@ -14,10 +14,10 @@ enum SignType {
   none, // logout
 }
 
-// 로그인 / 로그아웃 타입 지정
+// 로그인 / 회원가입 타입 지정
 enum AuthType {
   signIn, // 로그인
-  signUp, // 로그아웃
+  signUp, // 회원가입
 }
 
 class SignInButton extends StatelessWidget {

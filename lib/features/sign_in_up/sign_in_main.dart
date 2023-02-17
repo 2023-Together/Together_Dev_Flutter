@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/sign_in_out/sign_up_main.dart';
-import 'package:swag_cross_app/features/sign_in_out/widgets/auth_button.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
+import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 
 class SignInMain extends StatelessWidget {
   const SignInMain({super.key});
