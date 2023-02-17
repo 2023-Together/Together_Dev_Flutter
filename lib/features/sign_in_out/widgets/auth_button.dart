@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/route_manager.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main/main_page.dart';
 
@@ -64,58 +65,62 @@ class SignInButton extends StatelessWidget {
 
   // 네이버 로그인
   void _signInForNaver(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainPage(),
-      ),
-      (route) {
-        // true : 이전의 페이지들을 유지
-        // false : 이전의 페이지들을 제거
-        return true;
-      },
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(
+    //     builder: (context) => const MainPage(),
+    //   ),
+    //   (route) {
+    //     // true : 이전의 페이지들을 유지
+    //     // false : 이전의 페이지들을 제거
+    //     return true;
+    //   },
+    // );
+    Get.off(() => const MainPage());
   }
 
   // 네이버 회원가입
   void _signUpForNaver(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainPage(),
-      ),
-      (route) {
-        // true : 이전의 페이지들을 유지
-        // false : 이전의 페이지들을 제거
-        return true;
-      },
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(
+    //     builder: (context) => const MainPage(),
+    //   ),
+    //   (route) {
+    //     // true : 이전의 페이지들을 유지
+    //     // false : 이전의 페이지들을 제거
+    //     return true;
+    //   },
+    // );
+    Get.off(() => const MainPage());
   }
 
   // 카카오 로그인
   void _signInForKakao(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainPage(),
-      ),
-      (route) {
-        // true : 이전의 페이지들을 유지
-        // false : 이전의 페이지들을 제거
-        return true;
-      },
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(
+    //     builder: (context) => const MainPage(),
+    //   ),
+    //   (route) {
+    //     // true : 이전의 페이지들을 유지
+    //     // false : 이전의 페이지들을 제거
+    //     return true;
+    //   },
+    // );
+    Get.off(() => const MainPage());
   }
 
   // 카카오 회원가입
   void _signUpForKakao(BuildContext context) {
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainPage(),
-      ),
-      (route) {
-        // true : 이전의 페이지들을 유지
-        // false : 이전의 페이지들을 제거
-        return true;
-      },
-    );
+    // Navigator.of(context).pushAndRemoveUntil(
+    //   MaterialPageRoute(
+    //     builder: (context) => const MainPage(),
+    //   ),
+    //   (route) {
+    //     // true : 이전의 페이지들을 유지
+    //     // false : 이전의 페이지들을 제거
+    //     return true;
+    //   },
+    // );
+    Get.off(() => const MainPage());
   }
 
   @override
