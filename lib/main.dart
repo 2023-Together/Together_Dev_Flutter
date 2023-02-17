@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/sign_in_out/sign_in_main.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 
 void main() {
   runApp(const SWAGCrossApp());
