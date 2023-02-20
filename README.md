@@ -23,6 +23,8 @@ constants : 자주 쓰는 위젯들을 변수화 시킨것
 
 assets : 이미지나 비디오 파일을 넣는곳
 
+mypage: 사용자 프로필
+
 ## 라이브러리
 
 - font_awesome_flutter: 10.3.0 (무료 이미지 라이브러리)
