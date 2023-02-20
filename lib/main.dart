@@ -33,6 +33,7 @@ class SWAGCrossApp extends StatelessWidget {
         ),
         primaryColor: const Color(0xFFE9435A),
       ),
+      debugShowCheckedModeBanner: false,
       home: const SignInMain(),
     );
   }

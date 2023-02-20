@@ -1,6 +1,10 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main/searchPage/search_vol_list.dart';
 import 'package:swag_cross_app/features/main/widgets/main_button.dart';
 import 'package:swag_cross_app/features/main/widgets/main_navbar.dart';
 
@@ -8,7 +12,10 @@ class MainPage extends StatelessWidget {
   const MainPage({super.key});
 
   // 봉사 찾기 누르면 작동
-  void _onVolSearchTap() {}
+  void _onVolSearchTap() {
+    // Get.off(() => const SearchVolList());
+    Get.off(() => const SearchVolList());
+  }
 
   // 공지사항 누르면 작동
   void _onCommunityTap() {}
@@ -17,6 +24,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 176, 214, 232),
         title: const Text("메인"),
       ),
       bottomNavigationBar: const MainNavbar(),
