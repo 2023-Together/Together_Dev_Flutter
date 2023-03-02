@@ -24,7 +24,7 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 176, 214, 232),
+        backgroundColor: const Color.fromARGB(255, 176, 214, 232),
         title: const Text("메인"),
       ),
       bottomNavigationBar: const MainNavbar(),
