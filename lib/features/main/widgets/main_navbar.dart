@@ -47,12 +47,15 @@ class _MainNavbarState extends State<MainNavbar> {
         BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
         BottomNavigationBarItem(icon: Icon(Icons.chat_rounded), label: '단톡방'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined), label: '내 일정'),
+          icon: Icon(Icons.calendar_today_outlined),
+          label: '내 일정',
+        ),
         BottomNavigationBarItem(
             icon: Icon(Icons.account_tree_outlined), label: '팀원모집'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined), label: '내정보',),
-        
+          icon: Icon(Icons.account_circle_outlined),
+          label: '내정보',
+        ),
       ],
     );
   }
