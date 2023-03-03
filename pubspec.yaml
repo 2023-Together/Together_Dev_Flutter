@@ -39,8 +39,14 @@ dependencies:
 
   # 시중에 있는 무료 아이콘 라이브러리
   font_awesome_flutter: 10.3.0
+
   get: ^4.6.5
+
+  # 통신 라이브러리
   http: ^0.13.5
+
+  # 네이버 아이디 로그인 라이브러리
+  flutter_naver_login: ^1.7.0
 
 dev_dependencies:
   flutter_test:
