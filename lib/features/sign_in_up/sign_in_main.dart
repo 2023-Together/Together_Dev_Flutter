@@ -4,9 +4,22 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
+import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
-class SignInMain extends StatelessWidget {
+class SignInMain extends StatefulWidget {
   const SignInMain({super.key});
+
+  @override
+  State<SignInMain> createState() => _SignInMainState();
+}
+
+class _SignInMainState extends State<SignInMain> {
+  @override
+  void initState() {
+    super.initState();
+
+    SecureStorageLogin.loginCheckIsSNS(context);
+  }
 
   void _onSignUpTap(BuildContext context) {
     Navigator.of(context).push(
@@ -18,6 +31,7 @@ class SignInMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(SecureStorageLogin.getLoginType());
     return Scaffold(
       appBar: AppBar(
         title: const Text("로그인"),

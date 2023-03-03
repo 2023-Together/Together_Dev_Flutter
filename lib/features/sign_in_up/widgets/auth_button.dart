@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:get/route_manager.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main/main_page.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
+import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
 class SignInButton extends StatefulWidget {
   const SignInButton({
@@ -24,7 +24,12 @@ class SignInButton extends StatefulWidget {
 }
 
 class _SignInButtonState extends State<SignInButton> {
-  SNSType _loginPlatform = SNSType.none;
+  @override
+  void initState() {
+    super.initState();
+
+    SecureStorageLogin.loginCheckIsSNS(context);
+  }
 
   void _onAuthButton(BuildContext context) {
     switch (widget.authType) {
@@ -56,6 +61,8 @@ class _SignInButtonState extends State<SignInButton> {
 
   // 네이버 로그인
   void _signInForNaver(BuildContext context) async {
+    /*
+    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
     if (result.status == NaverLoginStatus.loggedIn) {
@@ -63,43 +70,49 @@ class _SignInButtonState extends State<SignInButton> {
 
       print(result.account);
 
-      setState(() {
-        _loginPlatform = SNSType.naver;
-      });
+      await SecureStorageLogin.saveLoginType("naver");
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const MainPage(),
+        ),
+        (route) => false,
+      );
+    } else {
+      await SecureStorageLogin.saveLoginType("none");
+      print("error = ${result.errorMessage}");
     }
+    */
+    await SecureStorageLogin.saveLoginType("naver");
+
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MainPage(),
+      ),
+      (route) => false,
+    );
   }
 
   // 네이버 회원가입
   void _signUpForNaver(BuildContext context) async {
-    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+    // _loginType = await SecureStorageLogin.getLoginType();
+    // print(_loginType);
 
-    final response = await FlutterNaverLogin.currentAccount();
-
-    if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
-
-      print("result : ${result.account}");
-      print("response : $response");
-
-      setState(() {
-        _loginPlatform = SNSType.naver;
-      });
-    }
+    // setState(() {});
   }
 
   // 카카오 로그인
-  void _signInForKakao(BuildContext context) {
-    // Navigator.of(context).pushAndRemoveUntil(
-    //   MaterialPageRoute(
-    //     builder: (context) => const MainPage(),
-    //   ),
-    //   (route) {
-    //     // true : 이전의 페이지들을 유지
-    //     // false : 이전의 페이지들을 제거
-    //     return true;
-    //   },
-    // );
-    Get.off(() => const MainPage());
+  void _signInForKakao(BuildContext context) async {
+    await SecureStorageLogin.saveLoginType("kakao");
+
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(
+        builder: (context) => const MainPage(),
+      ),
+      (route) => false,
+    );
   }
 
   // 카카오 회원가입
@@ -117,27 +130,29 @@ class _SignInButtonState extends State<SignInButton> {
     Get.off(() => const MainPage());
   }
 
-  void signOut() async {
-    switch (_loginPlatform) {
-      case SNSType.facebook:
-        break;
-      case SNSType.google:
-        break;
+  /*
+  String forString(SNSType type) {
+    switch (type) {
       case SNSType.kakao:
-        break;
+        return "kakao";
       case SNSType.naver:
-        await FlutterNaverLogin.logOut();
-        break;
-      case SNSType.apple:
-        break;
-      case SNSType.none:
-        break;
+        return "naver";
+      default:
+        return "none";
     }
-
-    setState(() {
-      _loginPlatform = SNSType.none;
-    });
   }
+
+  SNSType forSNSType(String loginType) {
+    switch (loginType) {
+      case "kakao":
+        return SNSType.kakao;
+      case "naver":
+        return SNSType.naver;
+      default:
+        return SNSType.none;
+    }
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -182,16 +197,6 @@ class _SignInButtonState extends State<SignInButton> {
                 ],
               ),
             ),
-            if (_loginPlatform != SNSType.none)
-              ElevatedButton(
-                onPressed: signOut,
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
-                    const Color(0xff0165E1),
-                  ),
-                ),
-                child: const Text('로그아웃'),
-              ),
           ],
         ),
       ),

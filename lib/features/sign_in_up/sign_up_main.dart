@@ -29,7 +29,7 @@ class SignUpMain extends StatelessWidget {
               path: "kakao",
               text: "카카오 회원가입",
               signType: SNSType.kakao,
-              authType: SignType.signIn,
+              authType: SignType.signUp,
             ),
           ],
         ),
