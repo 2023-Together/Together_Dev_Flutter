@@ -1,10 +1,7 @@
 // SNS 타입 지정
 enum SNSType {
-  facebook,
-  google,
   kakao,
   naver,
-  apple,
   none, // logout
 }
 
