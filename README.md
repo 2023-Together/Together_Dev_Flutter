@@ -30,8 +30,8 @@ mypage: 사용자 프로필
 - font_awesome_flutter: 10.3.0 (무료 이미지 라이브러리)
 - http: 0.13.5 (통신)
 - get: 4.6.5 (라우트, 상태관리 등 기능)
-
-## Good
-
-- good
-- good2
+- cupertino_icons: 1.0.2 (안드로이드 스타일 아이콘 라이브러리)
+- flutter_naver_login: 1.7.0 (네이버 아이디 로그인 라이브러리)
+- flutter_secure_storage: 8.0.0 (로컬 스토리지를 만드는 라이브러리)
+- table_calendar: 3.0.9 (달력 라이브러리)
+- intl: 0.18.0 (메시지 번역, 복수형 및 성별, 날짜/숫자 형식 지정 및 구문 분석, 양방향 텍스트를 포함한 국제화 및 현지화 기능을 제공)
