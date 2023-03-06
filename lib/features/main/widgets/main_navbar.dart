@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:swag_cross_app/features/mypage/mypage_screen.dart';
 
 class MainNavbar extends StatefulWidget {
   const MainNavbar({super.key});
