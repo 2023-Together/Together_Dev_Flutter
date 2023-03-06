@@ -14,13 +14,6 @@ class SignInMain extends StatefulWidget {
 }
 
 class _SignInMainState extends State<SignInMain> {
-  @override
-  void initState() {
-    super.initState();
-
-    SecureStorageLogin.loginCheckIsSNS(context);
-  }
-
   void _onSignUpTap(BuildContext context) {
     Navigator.of(context).push(
       MaterialPageRoute(

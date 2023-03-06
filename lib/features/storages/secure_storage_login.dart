@@ -23,6 +23,7 @@ class SecureStorageLogin {
   // 로그인이 되어있지 않은데 메인에 있을때 실행하는 메소드
   static Future loginCheckIsNone(BuildContext context, bool mounted) async {
     var loginType = await storage.read(key: _keyValue);
+    // 메소드에서 context를 사용할때 무조건 선언!
     if (!mounted) return;
     if (loginType == "none") {
       showPlatformDialog(
@@ -44,8 +45,10 @@ class SecureStorageLogin {
   }
 
   // 로그인이 되어있는데 로그인 창에 있을때 실행하는 메소드
-  static Future loginCheckIsSNS(BuildContext context) async {
+  static Future loginCheckIsSNS(BuildContext context, bool mounted) async {
     var loginType = await storage.read(key: _keyValue);
+    // 메소드에서 context를 사용할때 무조건 선언!
+    if (!mounted) return;
     if (loginType != "none") {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
