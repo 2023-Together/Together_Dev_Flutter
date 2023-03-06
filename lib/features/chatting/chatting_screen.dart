@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class MyPageScreen extends StatelessWidget {
-  const MyPageScreen({super.key});
+class ChattingScreen extends StatelessWidget {
+  const ChattingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("프로필"),
+        title: const Text("단톡방"),
       ),
     );
   }
