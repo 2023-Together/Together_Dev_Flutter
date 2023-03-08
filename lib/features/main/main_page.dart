@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main/widgets/main_alert.dart';
 import 'package:swag_cross_app/features/mainNavigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/main/widgets/main_button.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
@@ -117,6 +118,16 @@ class _MainPageState extends State<MainPage>
     );
   }
 
+  void onbottombar() {
+    showBottomSheet(
+      context: context,
+      builder: (context) => const SizedBox(
+        height: 400,
+        child: Text("알림창"),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -137,7 +148,7 @@ class _MainPageState extends State<MainPage>
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               GestureDetector(
-                                onTap: _toggleAnimations,
+                                onTap: onbottombar,
                                 child: const FaIcon(
                                   FontAwesomeIcons.bell,
                                   size: 40,
@@ -236,63 +247,7 @@ class _MainPageState extends State<MainPage>
             ),
           SlideTransition(
             position: _alertAnimation,
-            child: SafeArea(
-              child: Container(
-                height: 500,
-                padding: const EdgeInsets.symmetric(
-                  vertical: Sizes.size18,
-                  horizontal: Sizes.size10,
-                ),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(Sizes.size8),
-                    bottomRight: Radius.circular(Sizes.size8),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "알림창",
-                          style: TextStyle(
-                            fontSize: Sizes.size20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      ],
-                    ),
-                    Gaps.v18,
-                    const Divider(thickness: 1, height: 1, color: Colors.black),
-                    Gaps.v10,
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(Sizes.size14),
-                      ),
-                      child: const ListTile(
-                        title: Text("알림1"),
-                        subtitle: Text("내용"),
-                      ),
-                    ),
-                    Gaps.v5,
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black),
-                        borderRadius: BorderRadius.circular(Sizes.size14),
-                      ),
-                      child: const ListTile(
-                        title: Text("알림1"),
-                        subtitle: Text("내용"),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            child: const MainAlert(),
           ),
         ],
       ),
