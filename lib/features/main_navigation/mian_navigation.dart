@@ -5,7 +5,7 @@ import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/user_calendar/user_calendar_screen.dart';
 import 'package:swag_cross_app/features/team/team_screen.dart';
-import 'package:swag_cross_app/features/userProfile/user_profile_screen.dart';
+import 'package:swag_cross_app/features/user_profile/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({
