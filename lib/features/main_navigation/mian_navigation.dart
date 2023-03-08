@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
-import 'package:swag_cross_app/features/searchPage/search_vol_screen.dart';
-import 'package:swag_cross_app/features/mainNavigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/myCalendar/my_calendar_screen.dart';
+import 'package:swag_cross_app/features/my_calendar/my_calendar_screen.dart';
+import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
+import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/team/team_screen.dart';
-import 'package:swag_cross_app/features/userProfile/user_profile_screen.dart';
+import 'package:swag_cross_app/features/user_profile/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({
