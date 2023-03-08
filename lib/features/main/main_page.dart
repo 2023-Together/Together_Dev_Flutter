@@ -43,7 +43,7 @@ class _MainPageState extends State<MainPage>
     super.initState();
 
     var loginType = SecureStorageLogin.getLoginType();
-    if (loginType != "none" || loginType != null) {
+    if (loginType != "none") {
       _isLogined = true;
     }
   }
@@ -127,10 +127,10 @@ class _MainPageState extends State<MainPage>
       ),
     );
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     return Scaffold(
       body: Stack(
         children: [

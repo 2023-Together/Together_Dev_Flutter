@@ -102,6 +102,17 @@ class _MainAlertState extends State<MainAlert> {
               style: TextStyle(
                 color: Colors.grey.shade500,
               ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                Text(
+                  "알림창",
+                  style: TextStyle(
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                )
+              ],
             ),
             Gaps.v18,
             const Divider(thickness: 1, height: 1, color: Colors.black),
@@ -198,18 +209,25 @@ class _MainAlertState extends State<MainAlert> {
                       ],
                     ),
                 ],
-                // itemBuilder: (context, index) => Container(
-                //   decoration: BoxDecoration(
-                //     border: Border.all(color: Colors.black),
-                //     borderRadius: BorderRadius.circular(Sizes.size14),
-                //   ),
-                //   child: ListTile(
-                //     title: Text("알림$index"),
-                //     subtitle: Text("내용$index"),
-                //   ),
-                // ),
-                // separatorBuilder: (context, index) => Gaps.v10,
-                // itemCount: _alertData.length,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(Sizes.size14),
+              ),
+              child: const ListTile(
+                title: Text("알림1"),
+                subtitle: Text("내용"),
+              ),
+            ),
+            Gaps.v5,
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black),
+                borderRadius: BorderRadius.circular(Sizes.size14),
+              ),
+              child: const ListTile(
+                title: Text("알림1"),
+                subtitle: Text("내용"),
               ),
             ),
           ],
