@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main/widgets/main_alert.dart';
+import 'package:swag_cross_app/features/main_page/widgets/main_alert.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/main/widgets/main_button.dart';
+import 'package:swag_cross_app/features/main_page/widgets/main_button.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
