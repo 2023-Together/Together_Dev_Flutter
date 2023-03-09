@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main/widgets/main_alert.dart';
-import 'package:swag_cross_app/features/mainNavigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/main/widgets/main_button.dart';
+import 'package:swag_cross_app/features/main_page/widgets/main_alert.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/main_page/widgets/main_button.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
@@ -48,7 +48,7 @@ class _MainPageState extends State<MainPage>
     }
   }
 
-  void _toggleAnimations() async {
+  void _toggleAlertAnimations() async {
     // 이미 애니메이션이 실행되었다면
     if (_animationController.isCompleted) {
       // 애니메이션을 원래상태로 되돌림
@@ -73,7 +73,7 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  // 공지사항 누르면 작동
+  // 커뮤니티 누르면 작동
   void _onCommunityTap() async {
     Navigator.push(
       context,
@@ -118,16 +118,6 @@ class _MainPageState extends State<MainPage>
     );
   }
 
-  void onbottombar() {
-    showBottomSheet(
-      context: context,
-      builder: (context) => const SizedBox(
-        height: 400,
-        child: Text("알림창"),
-      ),
-    );
-  }
-  
   @override
   Widget build(BuildContext context) {
     // final size = MediaQuery.of(context).size;
@@ -148,7 +138,7 @@ class _MainPageState extends State<MainPage>
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               GestureDetector(
-                                onTap: onbottombar,
+                                onTap: _toggleAlertAnimations,
                                 child: const FaIcon(
                                   FontAwesomeIcons.bell,
                                   size: 40,
@@ -243,7 +233,7 @@ class _MainPageState extends State<MainPage>
               // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
               dismissible: true,
               // 자신을 클릭하면 실행되는 함수
-              onDismiss: _toggleAnimations,
+              onDismiss: _toggleAlertAnimations,
             ),
           SlideTransition(
             position: _alertAnimation,

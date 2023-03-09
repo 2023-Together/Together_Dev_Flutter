@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
-import 'package:swag_cross_app/features/searchPage/search_vol_screen.dart';
-import 'package:swag_cross_app/features/mainNavigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/myCalendar/my_calendar_screen.dart';
+import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
+import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
+import 'package:swag_cross_app/features/user_calendar/user_calendar_screen.dart';
 import 'package:swag_cross_app/features/team/team_screen.dart';
-import 'package:swag_cross_app/features/userProfile/user_profile_screen.dart';
+import 'package:swag_cross_app/features/user_profile/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({
@@ -50,11 +50,11 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 1,
-            child: const MyCalendarScreen(),
+            child: const ChattingScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 2,
-            child: const ChattingScreen(),
+            child: const UserCalendarScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 3,
@@ -78,23 +78,23 @@ class _MainNavigationState extends State<MainNavigation> {
               selectedIndex: _selectedIndex,
             ),
             NavTab(
-              text: "내일정",
+              text: "채팅방",
               isSelected: _selectedIndex == 1,
-              icon: FontAwesomeIcons.calendar,
-              selectedIcon: FontAwesomeIcons.solidCalendar,
+              icon: FontAwesomeIcons.comment,
+              selectedIcon: FontAwesomeIcons.solidComment,
               onTap: () => _onTap(1),
               selectedIndex: _selectedIndex,
             ),
             NavTab(
-              text: "톡방",
+              text: "내일정",
               isSelected: _selectedIndex == 2,
-              icon: FontAwesomeIcons.comment,
-              selectedIcon: FontAwesomeIcons.solidComment,
+              icon: FontAwesomeIcons.calendar,
+              selectedIcon: FontAwesomeIcons.solidCalendar,
               onTap: () => _onTap(2),
               selectedIndex: _selectedIndex,
             ),
             NavTab(
-              text: "팀원모집",
+              text: "팀참여",
               isSelected: _selectedIndex == 3,
               icon: Icons.people_outlined,
               selectedIcon: Icons.people_rounded,
