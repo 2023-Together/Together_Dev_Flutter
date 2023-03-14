@@ -23,12 +23,12 @@ class MainButton extends StatelessWidget {
               color: Colors.black,
               width: 2,
             ),
-            boxShadow: const [
+            boxShadow: [
               BoxShadow(
-                color: Colors.grey,
-                blurRadius: 10,
-                spreadRadius: 2,
-                offset: Offset(5, 5),
+                color: Colors.grey.shade400,
+                blurRadius: 5,
+                spreadRadius: 1,
+                offset: const Offset(5, 5),
               ),
             ],
           ),

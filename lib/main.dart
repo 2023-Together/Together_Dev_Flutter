@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_page/main_page_screen.dart';
+import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
 
 void main() async {
   await initializeDateFormatting(); // 달력 언어 한국어 쓰기 위함 local 설정
@@ -36,7 +36,7 @@ class SWAGCrossApp extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A),
       ),
       debugShowCheckedModeBanner: false,
-      home: const MainPage(),
+      home: const MainPageSliver(),
     );
   }
 }
