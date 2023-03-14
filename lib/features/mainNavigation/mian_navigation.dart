@@ -5,7 +5,7 @@ import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
 import 'package:swag_cross_app/features/searchPage/search_vol_screen.dart';
 import 'package:swag_cross_app/features/mainNavigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/myCalendar/my_calendar_screen.dart';
-import 'package:swag_cross_app/features/team/team_screen.dart';
+import 'package:swag_cross_app/features/team/club_screen.dart';
 import 'package:swag_cross_app/features/userProfile/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -57,7 +57,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 3,
-            child: const TeamScreen(),
+            child: const ClubScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 4,
@@ -95,7 +95,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIndex: _selectedIndex,
               ),
               NavTab(
-                text: "팀원모집",
+                text: "동아리",
                 isSelected: _selectedIndex == 3,
                 icon: Icons.people_outlined,
                 selectedIcon: Icons.people_rounded,
