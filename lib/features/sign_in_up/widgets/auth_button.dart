@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_page/main_page_screen.dart';
+import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
@@ -88,7 +88,7 @@ class _SignInButtonState extends State<SignInButton> {
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (context) => const MainPage(),
+        builder: (context) => const MainPageSliver(),
       ),
       (route) => false,
     );
@@ -109,7 +109,7 @@ class _SignInButtonState extends State<SignInButton> {
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (context) => const MainPage(),
+        builder: (context) => const MainPageSliver(),
       ),
       (route) => false,
     );
@@ -127,7 +127,7 @@ class _SignInButtonState extends State<SignInButton> {
     //     return true;
     //   },
     // );
-    Get.off(() => const MainPage());
+    Get.off(() => const MainPageSliver());
   }
 
   /*

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:swag_cross_app/features/main_page/main_page_screen.dart';
+import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/methods/show_platform_dialog.dart';
 
@@ -52,7 +52,7 @@ class SecureStorageLogin {
     if (loginType != "none") {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => const MainPage(),
+          builder: (context) => const MainPageSliver(),
         ),
         (route) => false,
       );
