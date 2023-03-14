@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:swag_cross_app/club/club_screen.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
 import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/user_calendar/user_calendar_screen.dart';
-import 'package:swag_cross_app/features/team/team_screen.dart';
 import 'package:swag_cross_app/features/user_profile/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -58,7 +58,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 3,
-            child: const TeamScreen(),
+            child: const ClubScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 4,
@@ -94,7 +94,7 @@ class _MainNavigationState extends State<MainNavigation> {
               selectedIndex: _selectedIndex,
             ),
             NavTab(
-              text: "팀참여",
+              text: "동아리",
               isSelected: _selectedIndex == 3,
               icon: Icons.people_outlined,
               selectedIcon: Icons.people_rounded,
