@@ -29,72 +29,109 @@ class _TableCalendarPageState extends State<TableCalendarPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: TableCalendar(
-          locale: 'ko-KR',
-          focusedDay: _focusedDay,
-          firstDay: DateTime(2023, 1, 1), // 달력 범위 처음
-          lastDay: DateTime(2023, 12, 31), // 달력 범위 마지막
-          onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
-              isWeekend(dateTime: selectedDay);
-            });
-            // print(focusedDay);
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          // currentDay: DateTime(2023, 3, 28),
-          daysOfWeekHeight: 20,
-          // ignore: prefer_const_constructors
-          headerStyle: HeaderStyle(
-            titleCentered: true,
-            formatButtonVisible: false,
-            leftChevronVisible: false,
-            rightChevronVisible: false,
-            titleTextFormatter: (date, locale) {
-              return '${date.year}.${date.month}';
-            },
-          ),
-          calendarStyle: CalendarStyle(
-            defaultTextStyle: const TextStyle(),
-            weekendTextStyle: const TextStyle(color: Colors.red),
-            selectedTextStyle: TextStyle(
-                color: _selectedDayIsWeekend ? Colors.red : Colors.black),
-            todayTextStyle: const TextStyle(
-              color: Colors.white,
-            ),
-            todayDecoration: const BoxDecoration(
-              color: Color(0xFF6120FF),
-              shape: BoxShape.circle,
-            ),
-            selectedDecoration: const BoxDecoration(
-              color: Color(0xFFDBDBDB),
-              shape: BoxShape.circle,
-            ),
-            markerSize: 4,
-            markerMargin: const EdgeInsets.only(top: 5),
-            markerDecoration: const BoxDecoration(
-              color: Colors.grey,
-              shape: BoxShape.circle,
-            ),
-          ),
-          eventLoader: (day) {
-            // 임의로 짝수 일만 점 찍히도록 해놓음.
-            if (day.day % 2 == 0) return [''];
-            return [];
-          },
+  Widget _calendar() {
+    return TableCalendar(
+      locale: 'ko-KR',
+      focusedDay: _focusedDay,
+      firstDay: DateTime(2023, 1, 1), // 달력 범위 처음
+      lastDay: DateTime(2023, 12, 31), // 달력 범위 마지막
+      onDaySelected: (DateTime selectedDay, DateTime focusedDay) {
+        setState(() {
+          _selectedDay = selectedDay;
+          _focusedDay = focusedDay;
+          isWeekend(dateTime: selectedDay);
+        });
+        // print(focusedDay);
+      },
+      onPageChanged: (focusedDay) {
+        _focusedDay = focusedDay;
+      },
+      selectedDayPredicate: (day) {
+        return isSameDay(_selectedDay, day);
+      },
+      // currentDay: DateTime(2023, 3, 28),
+      daysOfWeekHeight: 20,
+      // ignore: prefer_const_constructors
+      headerStyle: HeaderStyle(
+        titleCentered: true,
+        formatButtonVisible: false,
+        leftChevronVisible: false,
+        rightChevronVisible: false,
+        titleTextFormatter: (date, locale) {
+          return '${date.year}.${date.month}';
+        },
+      ),
+      calendarStyle: CalendarStyle(
+        defaultTextStyle: const TextStyle(),
+        weekendTextStyle: const TextStyle(color: Colors.red),
+        selectedTextStyle:
+            TextStyle(color: _selectedDayIsWeekend ? Colors.red : Colors.black),
+        todayTextStyle: const TextStyle(
+          color: Colors.white,
+        ),
+        todayDecoration: const BoxDecoration(
+          color: Color(0xFF6120FF),
+          shape: BoxShape.circle,
+        ),
+        selectedDecoration: const BoxDecoration(
+          color: Color(0xFFDBDBDB),
+          shape: BoxShape.circle,
+        ),
+        markerSize: 4,
+        markerMargin: const EdgeInsets.only(top: 5),
+        markerDecoration: const BoxDecoration(
+          color: Colors.grey,
+          shape: BoxShape.circle,
         ),
       ),
+      eventLoader: (day) {
+        // 임의로 짝수 일만 점 찍히도록 해놓음.
+        if (day.day % 2 == 0) return [''];
+        return [];
+      },
+    );
+  }
+
+  Widget _scheduleList() {
+    return Expanded(
+      child: Container(
+        margin: const EdgeInsets.only(top: 50),
+        width: double.infinity,
+        clipBehavior: Clip.hardEdge,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+          color: Color(0xFFDBDBDB),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "${_focusedDay.month}월 ${_focusedDay.day}일",
+                style: const TextStyle(
+                  color: Color(0xFF767676),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _calendar(),
+        _scheduleList(),
+      ],
     );
   }
 }
