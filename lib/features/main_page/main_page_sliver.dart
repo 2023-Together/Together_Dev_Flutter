@@ -25,23 +25,11 @@ class _MainPageSliverState extends State<MainPageSliver>
     duration: const Duration(milliseconds: 300),
   );
 
-  late final Animation<Offset> _alertAnimation = Tween(
-    begin: const Offset(0, -1),
-    end: Offset.zero,
-  ).animate(_animationController);
-
-  late final Animation<Color?> _barrierAnimation = ColorTween(
-    begin: Colors.transparent,
-    end: Colors.black38,
-  ).animate(_animationController);
-
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
   bool _isLogined = false;
-  bool _showAlert = false;
   bool _showJumpUpButton = false;
-  final bool _checkGood = false;
 
   double width = 0;
   double height = 0;
@@ -74,21 +62,6 @@ class _MainPageSliverState extends State<MainPageSliver>
     if (loginType != "none") {
       _isLogined = true;
     }
-  }
-
-  void _toggleAlertAnimations() async {
-    // 이미 애니메이션이 실행되었다면
-    if (_animationController.isCompleted) {
-      // 애니메이션을 원래상태로 되돌림
-      // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
-      await _animationController.reverse();
-      _showAlert = false;
-    } else {
-      // 애니메이션을 실행
-      _animationController.forward();
-      _showAlert = true;
-    }
-    setState(() {});
   }
 
   void _alertIconTap() {
@@ -281,9 +254,9 @@ class _MainPageSliverState extends State<MainPageSliver>
                               width: 1.5,
                             ),
                           ),
-                          child: Column(
+                          child: const Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
+                            children: [
                               MainNoticeBox(title: "공지사항1"),
                               MainNoticeBox(title: "공지사항2"),
                               MainNoticeBox(title: "공지사항3"),
