@@ -17,14 +17,7 @@ class MainPageSliver extends StatefulWidget {
   State<MainPageSliver> createState() => _MainPageSliverState();
 }
 
-class _MainPageSliverState extends State<MainPageSliver>
-    with SingleTickerProviderStateMixin {
-  // 변수를 만들때 바로 초기화 해주어도 되지만 무조건 late를 붙여야 작동된다.
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 300),
-  );
-
+class _MainPageSliverState extends State<MainPageSliver> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
@@ -254,9 +247,9 @@ class _MainPageSliverState extends State<MainPageSliver>
                               width: 1.5,
                             ),
                           ),
-                          child: const Column(
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
+                            children: const [
                               MainNoticeBox(title: "공지사항1"),
                               MainNoticeBox(title: "공지사항2"),
                               MainNoticeBox(title: "공지사항3"),
