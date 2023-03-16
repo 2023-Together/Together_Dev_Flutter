@@ -137,7 +137,7 @@ class _MainPageSliverState extends State<MainPageSliver>
   }
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
-  void onLoginTap() {
+  void _onLoginTap() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const SignInMain(),
@@ -146,7 +146,7 @@ class _MainPageSliverState extends State<MainPageSliver>
   }
 
   // 로그인 상태일때 아이콘 클릭 하면 실행
-  void onProfileTap() {
+  void _onProfileTap() {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const MainNavigation(initSelectedIndex: 4),
@@ -235,7 +235,7 @@ class _MainPageSliverState extends State<MainPageSliver>
                             ),
                             Gaps.h10,
                             GestureDetector(
-                              onTap: onProfileTap,
+                              onTap: _onProfileTap,
                               child: const CircleAvatar(
                                 radius: Sizes.size20,
                                 foregroundImage: NetworkImage(
@@ -247,7 +247,7 @@ class _MainPageSliverState extends State<MainPageSliver>
                           ]
                         : [
                             GestureDetector(
-                              onTap: onLoginTap,
+                              onTap: _onLoginTap,
                               child: const FaIcon(
                                 FontAwesomeIcons.circleUser,
                                 size: 40,
@@ -315,10 +315,9 @@ class _MainPageSliverState extends State<MainPageSliver>
                 (context, index) => MainComunityBox(
                   key: Key(comunityList[index]["title"]),
                   title: comunityList[index]["title"],
-                  img: AssetImage(
-                    comunityList[index]["imgUrl"],
-                  ),
+                  img: comunityList[index]["imgUrl"],
                   initCheckGood: comunityList[index]["checkGood"],
+                  content: comunityList[index]["content"],
                 ),
               ),
             ),
@@ -334,52 +333,62 @@ List<Map<String, dynamic>> comunityList = [
     "title": "제목1",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목2",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목3",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목4",
     "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목5",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목6",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목7",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
   {
     "title": "제목8",
     "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
   },
   {
     "id": 9,
     "title": "제목9",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
   },
   {
     "id": 10,
     "title": "제목10",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
   },
 ];
