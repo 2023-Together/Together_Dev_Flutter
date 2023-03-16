@@ -11,7 +11,7 @@ class TableCalendarPage extends StatefulWidget {
 class _TableCalendarPageState extends State<TableCalendarPage> {
   late DateTime _selectedDay;
   late DateTime _focusedDay;
-  final int _scheduleCount = 4; // 선택 날짜 일정 갯수
+  final int _scheduleCount = 0; // 선택 날짜 일정 갯수
   bool _selectedDayIsWeekend = false;
 
   @override
@@ -19,7 +19,6 @@ class _TableCalendarPageState extends State<TableCalendarPage> {
     super.initState();
     _focusedDay = DateTime.now();
     _selectedDay = DateTime.now();
-    print(_focusedDay);
   }
 
   // 선택한 날짜가 주말이면 폰트 글씨가 빨간색을 유지하도록 함. 주말이 아니면 검은색.
@@ -43,7 +42,7 @@ class _TableCalendarPageState extends State<TableCalendarPage> {
           _focusedDay = focusedDay;
           isWeekend(dateTime: selectedDay);
         });
-        print(selectedDay);
+        // print(selectedDay);
       },
       onPageChanged: (focusedDay) {
         _focusedDay = focusedDay;
