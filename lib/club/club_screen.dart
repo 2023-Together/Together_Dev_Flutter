@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:swag_cross_app/club/locationListBottomSheet.dart';
+import 'package:swag_cross_app/club/post_write_page.dart';
 
 class ClubScreen extends StatefulWidget {
   const ClubScreen({super.key});
@@ -9,73 +11,10 @@ class ClubScreen extends StatefulWidget {
 }
 
 class _ClubScreenState extends State<ClubScreen> {
-  final List<String> _locations = [
-    "전국",
-    "경기",
-    "인천",
-    "부산",
-    "대구",
-    "광주",
-    "대전",
-    "울산",
-    "세종",
-    "강원",
-    "경남",
-    "경북",
-    "전남",
-    "전북",
-    "충남",
-    "충북",
-    "제주",
-    "기타"
-  ];
-
   AppBar _appBarWidget() {
     return AppBar(
       title: const Text("커뮤니티"),
-      actions: [
-        GestureDetector(
-          child: Row(
-            children: const [
-              Text("전국", style: TextStyle(fontSize: 20)),
-              Icon(Icons.arrow_drop_down),
-            ],
-          ),
-          onTap: () {
-            showModalBottomSheet(
-              context: context,
-              builder: (BuildContext context) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: const Text("활동 지역 선택"),
-                    centerTitle: false,
-                    automaticallyImplyLeading: false,
-                  ),
-                  body: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    child: ListView(
-                      children: [
-                        for (var location in _locations)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 15),
-                            height: 50,
-                            child: Text(
-                              location,
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        )
-      ],
+      actions: [LocationListBottomSheet()],
     );
   }
 
@@ -196,7 +135,14 @@ class _ClubScreenState extends State<ClubScreen> {
         backgroundColor: const Color(0xFF6524FF),
         child: const Icon(FontAwesomeIcons.pen),
         onPressed: () {
-          print("게시글 작성 페이지로 이동");
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) {
+                return const PostWritePage();
+              },
+            ),
+          );
         },
       ),
       appBar: _appBarWidget(),
