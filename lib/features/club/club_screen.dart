@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:swag_cross_app/club/locationListBottomSheet.dart';
-import 'package:swag_cross_app/club/post_write_page.dart';
+import 'package:swag_cross_app/features/club/locationListBottomSheet.dart';
+import 'package:swag_cross_app/features/club/post_write_page.dart';
 
 class ClubScreen extends StatefulWidget {
   const ClubScreen({super.key});
@@ -14,7 +14,7 @@ class _ClubScreenState extends State<ClubScreen> {
   AppBar _appBarWidget() {
     return AppBar(
       title: const Text("커뮤니티"),
-      actions: [LocationListBottomSheet()],
+      actions: const [LocationListBottomSheet()],
     );
   }
 
