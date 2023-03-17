@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/features/club/club_screen.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
-import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/schedule/user_calendar_screen.dart';
-import 'package:swag_cross_app/features/user_profile/user_profile_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   const MainNavigation({
