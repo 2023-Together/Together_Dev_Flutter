@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main_page/widgets/main_comment.dart';
 
 class MainComunityBox extends StatefulWidget {
   const MainComunityBox({
@@ -8,10 +9,12 @@ class MainComunityBox extends StatefulWidget {
     required this.title,
     required this.img,
     required this.initCheckGood,
+    required this.content,
   });
 
   final String title;
-  final ImageProvider img;
+  final String content;
+  final String img;
   final bool initCheckGood;
 
   @override
@@ -37,8 +40,19 @@ class _MainComunityBoxState extends State<MainComunityBox> {
     setState(() {});
   }
 
+  // 댓글 상세페이지
+  void _comunityComment() {
+    showModalBottomSheet(
+      context: context,
+      // bottom sheet의 사이즈를 바꿀수 있게 해준다.
+      isScrollControlled: true,
+      builder: (context) => const MainComment(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: Sizes.size20,
@@ -57,20 +71,26 @@ class _MainComunityBoxState extends State<MainComunityBox> {
           ),
           child: Column(
             children: [
-              Container(
-                height: 150,
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(Sizes.size16),
-                    topRight: Radius.circular(Sizes.size16),
-                  ),
-                  image: DecorationImage(
-                    image: widget.img,
-                    fit: BoxFit.fill,
-                  ),
-                ),
-              ),
+              widget.img.isEmpty
+                  ? Container(
+                      height: 150,
+                      padding: const EdgeInsets.all(Sizes.size10),
+                      child: Text(widget.content),
+                    )
+                  : Container(
+                      height: 150,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(Sizes.size16),
+                          topRight: Radius.circular(Sizes.size16),
+                        ),
+                        image: DecorationImage(
+                          image: AssetImage(widget.img),
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
               ListTile(
                 title: Text(
                   widget.title,
@@ -101,7 +121,7 @@ class _MainComunityBoxState extends State<MainComunityBox> {
                       ),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: _comunityComment,
                       icon: const FaIcon(
                         FontAwesomeIcons.comment,
                         color: Colors.black,
