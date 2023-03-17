@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:swag_cross_app/club/club_screen.dart';
+import 'package:swag_cross_app/features/club/club_screen.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
 import 'package:swag_cross_app/features/search_page/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
