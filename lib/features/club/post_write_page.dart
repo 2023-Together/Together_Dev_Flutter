@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:swag_cross_app/club/locationListBottomSheet.dart';
+import 'package:swag_cross_app/features/club/locationListBottomSheet.dart';
 
 class PostWritePage extends StatelessWidget {
   const PostWritePage({super.key});
