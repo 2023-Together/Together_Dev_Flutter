@@ -129,7 +129,7 @@ class _ClubScreenState extends State<ClubScreen> {
   Widget _bodyWidget() {
     return Container(
       color: const Color(0xFFDBDBDB),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: ListView.separated(
         itemCount: 5, //게시글 개수
         itemBuilder: (context, index) {
