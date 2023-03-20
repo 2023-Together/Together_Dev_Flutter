@@ -17,26 +17,24 @@ samples, guidance on mobile development, and a full API reference.
 
 ## 폴더 구조
 
-assets : 이미지나 비디오 파일을 넣는곳
+# assets : 이미지나 비디오 파일을 넣는곳
   - images : 이미지
   - videos : 비디오
 
-lib : 코드 개발
+# features : 기능(프로젝트 코드들을 기능별로 나누었다)
+  - alert : 알림
+  - chatting : 채팅방
+  - club : 동아리
+  - main_navigation : 하단 메뉴바
+  - main_page : 메인
+  - notice : 공지사항
+  - schedule(스케줄) : 내일정 캘린더
+  - search_page : 검색
+  - sign_in_up : 로그인, 회원가입
+  - storages : 로컬스토리지
+  - user_profile : 봉사자 정보관리
 
-  features : 기능(프로젝트 코드들을 기능별로 나누었다)
-    - alert : 알림
-    - chatting : 채팅방
-    - club : 동아리
-    - main_navigation : 하단 메뉴바
-    - main_page : 메인
-    - notice : 공지사항
-    - schedule(스케줄) : 내일정 캘린더
-    - search_page : 검색
-    - sign_in_up : 로그인, 회원가입
-    - storages : 로컬스토리지
-    - user_profile : 봉사자 정보관리
-
-  constants : 자주 쓰는 위젯들을 변수화 시킨것
+# constants : 자주 쓰는 위젯들을 변수화 시킨것
 
 ## 라이브러리
 
