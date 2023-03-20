@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/methods/show_platform_dialog.dart';
 
 class SecureStorageLogin {
@@ -20,12 +19,17 @@ class SecureStorageLogin {
     return loginType;
   }
 
+  // 로그아웃 하는 메소드
+  static Future setLogout() async {
+    await storage.write(key: _keyValue, value: "none");
+  }
+
   // 로그인이 되어있지 않은데 메인에 있을때 실행하는 메소드
   static Future loginCheckIsNone(BuildContext context, bool mounted) async {
     var loginType = await storage.read(key: _keyValue);
     // 메소드에서 context를 사용할때 무조건 선언!
     if (!mounted) return;
-    if (loginType == "none") {
+    if (loginType != "naver" || loginType != "kakao") {
       showPlatformDialog(
         context: context,
         title: "계정 오류",
@@ -34,7 +38,7 @@ class SecureStorageLogin {
           TextButton(
             onPressed: () => Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const SignInMain(),
+                  builder: (context) => const MainPageSliver(),
                 ),
                 (route) => false),
             child: const Text("확인"),
@@ -49,7 +53,7 @@ class SecureStorageLogin {
     var loginType = await storage.read(key: _keyValue);
     // 메소드에서 context를 사용할때 무조건 선언!
     if (!mounted) return;
-    if (loginType != "none") {
+    if (loginType == "naver" || loginType == "kakao") {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => const MainPageSliver(),

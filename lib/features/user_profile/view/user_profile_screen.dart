@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/notice_page.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
@@ -18,6 +19,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     String name = "강소연";
     String level = "GOLD 등급";
     int volTime = 20;
+
+    void onLogoutTap(BuildContext context) {
+      SecureStorageLogin.setLogout();
+      SecureStorageLogin.loginCheckIsNone(context, mounted);
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -84,19 +90,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Expanded(
-                              // 내 프로필 이미지
-                              flex: 1,
-                              child: GestureDetector(
-                                child: const CircleAvatar(
-                                  radius: 48.0,
-                                  foregroundImage: NetworkImage(
-                                    "https://avatars.githubusercontent.com/u/77985708?v=4",
-                                  ),
-                                  child: Text("재현"),
+                          Expanded(
+                            // 내 프로필 이미지
+                            flex: 1,
+                            child: GestureDetector(
+                              child: const CircleAvatar(
+                                radius: 48.0,
+                                foregroundImage: NetworkImage(
+                                  "https://avatars.githubusercontent.com/u/77985708?v=4",
                                 ),
+                                child: Text("재현"),
                               ),
                             ),
                           ),
@@ -192,36 +195,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   )
                 ],
               ),
-              child: Expanded(
-                flex: 1,
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        // onTap: ,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [Text("봉사 신청"), Text("2건")],
-                      ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      // onTap: ,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [Text("봉사 신청"), Text("2건")],
                     ),
-                    Container(height: 50, width: 2, color: Colors.grey),
-                    Expanded(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [Text("봉사 완료"), Text("6건")],
-                      ),
+                  ),
+                  Container(height: 50, width: 2, color: Colors.grey),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [Text("봉사 완료"), Text("6건")],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Gaps.v20,
             Column(
-              children: const [
-                Text("인증서 발급"),
+              children: [
+                const Text("인증서 발급"),
                 Gaps.v20,
-                Text("고객 센터"),
+                const Text("고객 센터"),
                 Gaps.v20,
-                Text("로그아웃"),
+                GestureDetector(
+                  onTap: () => onLogoutTap(context),
+                  child: const Text("로그아웃"),
+                ),
                 Gaps.v20,
               ],
             ),
