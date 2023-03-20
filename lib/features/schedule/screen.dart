@@ -66,11 +66,12 @@ class _TableCalendarPageState extends State<TableCalendarPage> {
         defaultTextStyle: const TextStyle(),
         weekendTextStyle: const TextStyle(color: Colors.red),
         selectedTextStyle: TextStyle(
-          color: _selectedDayIsWeekend
-              ? Colors.red
-              : isSameDay(_selectedDay, DateTime.now())
-                  ? Colors.white
-                  : Colors.black,
+          color:
+              _selectedDayIsWeekend && !isSameDay(_selectedDay, DateTime.now())
+                  ? Colors.red
+                  : isSameDay(_selectedDay, DateTime.now())
+                      ? Colors.white
+                      : Colors.black,
         ),
         todayTextStyle: const TextStyle(
           color: Colors.white,
