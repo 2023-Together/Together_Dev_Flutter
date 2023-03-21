@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_screen.dart';
 import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
@@ -31,9 +32,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   void _onTap(int index) {
     setState(() {
-      print(_selectedIndex);
       _selectedIndex = index;
-      print(_selectedIndex);
     });
   }
 
@@ -66,50 +65,54 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          children: [
-            NavTab(
-              text: "봉사검색",
-              isSelected: _selectedIndex == 0,
-              icon: FontAwesomeIcons.magnifyingGlass,
-              selectedIcon: FontAwesomeIcons.magnifyingGlass,
-              onTap: () => _onTap(0),
-              selectedIndex: _selectedIndex,
-            ),
-            NavTab(
-              text: "채팅방",
-              isSelected: _selectedIndex == 1,
-              icon: FontAwesomeIcons.comment,
-              selectedIcon: FontAwesomeIcons.solidComment,
-              onTap: () => _onTap(1),
-              selectedIndex: _selectedIndex,
-            ),
-            NavTab(
-              text: "내일정",
-              isSelected: _selectedIndex == 2,
-              icon: FontAwesomeIcons.calendar,
-              selectedIcon: FontAwesomeIcons.solidCalendar,
-              onTap: () => _onTap(2),
-              selectedIndex: _selectedIndex,
-            ),
-            NavTab(
-              text: "동아리",
-              isSelected: _selectedIndex == 3,
-              icon: Icons.people_outlined,
-              selectedIcon: Icons.people_rounded,
-              onTap: () => _onTap(3),
-              selectedIndex: _selectedIndex,
-            ),
-            NavTab(
-              text: "프로필",
-              isSelected: _selectedIndex == 4,
-              icon: FontAwesomeIcons.circleUser,
-              selectedIcon: FontAwesomeIcons.solidCircleUser,
-              onTap: () => _onTap(4),
-              selectedIndex: _selectedIndex,
-            ),
-          ],
+      bottomNavigationBar: Container(
+        child: Padding(
+          padding: const EdgeInsets.all(Sizes.size1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              NavTab(
+                text: "봉사검색",
+                isSelected: _selectedIndex == 0,
+                icon: FontAwesomeIcons.magnifyingGlass,
+                selectedIcon: FontAwesomeIcons.magnifyingGlass,
+                onTap: () => _onTap(0),
+                selectedIndex: _selectedIndex,
+              ),
+              NavTab(
+                text: "채팅방",
+                isSelected: _selectedIndex == 1,
+                icon: FontAwesomeIcons.comment,
+                selectedIcon: FontAwesomeIcons.solidComment,
+                onTap: () => _onTap(1),
+                selectedIndex: _selectedIndex,
+              ),
+              NavTab(
+                text: "내일정",
+                isSelected: _selectedIndex == 2,
+                icon: FontAwesomeIcons.calendar,
+                selectedIcon: FontAwesomeIcons.solidCalendar,
+                onTap: () => _onTap(2),
+                selectedIndex: _selectedIndex,
+              ),
+              NavTab(
+                text: "동아리",
+                isSelected: _selectedIndex == 3,
+                icon: Icons.people_outlined,
+                selectedIcon: Icons.people_rounded,
+                onTap: () => _onTap(3),
+                selectedIndex: _selectedIndex,
+              ),
+              NavTab(
+                text: "프로필",
+                isSelected: _selectedIndex == 4,
+                icon: FontAwesomeIcons.circleUser,
+                selectedIcon: FontAwesomeIcons.solidCircleUser,
+                onTap: () => _onTap(4),
+                selectedIndex: _selectedIndex,
+              ),
+            ],
+          ),
         ),
       ),
     );

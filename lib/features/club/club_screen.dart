@@ -37,94 +37,117 @@ class _ClubScreenState extends State<ClubScreen> {
     );
   }
 
-  Widget _bodyWidget() {
-    return ListView.separated(
-      itemCount: 10, //게시글 개수
-      itemBuilder: (context, index) {
-        return SizedBox(
-          height: 200,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "[진주나뭇잎] 팀원을 모집합니다.",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _postWidget({
+    required String title,
+    required String content,
+    required String writer,
+    required DateTime writeTime,
+    required int viewCount,
+    required int likeCount,
+    required int commentCount,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            content,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 16,
+            ),
+          ),
+          const SizedBox(height: 24),
+          Row(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Colors.grey,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.white,
                 ),
-                const SizedBox(height: 10),
-                const Text(
-                  "[진주나뭇잎]팀원을 모집합니다. 진주나 가까운 지역에\n서 주로 봉사를 하는데 열심히 하실 분들 많이 오...",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 16,
-                  ),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                "$writer · 46분전",
+                style: const TextStyle(
+                  color: Color(0xFF7D7D7D),
                 ),
-                const SizedBox(height: 24),
-                Row(
+              ),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      "페이커 · 46분전",
-                      style: TextStyle(
+                    Text(
+                      "조회수 $viewCount",
+                      style: const TextStyle(
                         color: Color(0xFF7D7D7D),
                       ),
                     ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
-                          Text(
-                            "조회수 3",
-                            style: TextStyle(
-                              color: Color(0xFF7D7D7D),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        color: Colors.grey,
-                        height: 1,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 5),
-                Row(
-                  children: [
-                    _social(FontAwesomeIcons.heart, 0),
-                    const SizedBox(width: 10),
-                    _social(FontAwesomeIcons.comment, 0),
-                  ],
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        );
-      },
-      separatorBuilder: (context, index) {
-        return Container(
-          color: Colors.grey.withOpacity(0.1),
-          height: 8,
-        );
-      },
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  color: Colors.grey,
+                  height: 1,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 5),
+          Row(
+            children: [
+              _social(FontAwesomeIcons.heart, likeCount),
+              const SizedBox(width: 10),
+              _social(FontAwesomeIcons.comment, commentCount),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _bodyWidget() {
+    return Container(
+      color: const Color(0xFFDBDBDB),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+      child: ListView.separated(
+        itemCount: 5, //게시글 개수
+        itemBuilder: (context, index) {
+          return _postWidget(
+            title: "[진주나뭇잎] 팀원을 모집합니다.",
+            content:
+                "[진주나뭇잎]팀원을 모집합니다. 진주나 가까운 지역에\n서 주로 봉사를 하는데 열심히 하실 분들 많이 오...",
+            writer: "투게더",
+            writeTime: DateTime.now(),
+            viewCount: 5,
+            likeCount: 12,
+            commentCount: 5,
+          );
+        },
+        separatorBuilder: (context, index) {
+          return const SizedBox(height: 12);
+        },
+      ),
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
@@ -9,6 +10,7 @@ import 'package:swag_cross_app/features/main_page/widgets/main_comunity_box.dart
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/main_page/widgets/main_notice_box.dart';
+import 'package:swag_cross_app/utils/ad_helper.dart';
 
 class MainPageSliver extends StatefulWidget {
   const MainPageSliver({super.key});
@@ -17,7 +19,88 @@ class MainPageSliver extends StatefulWidget {
   State<MainPageSliver> createState() => _MainPageSliverState();
 }
 
+List<Map<String, dynamic>> comunityList = [
+  {
+    "type": "default",
+    "title": "제목1",
+    "checkGood": true,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목2",
+    "checkGood": false,
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목3",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목4",
+    "checkGood": true,
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목5",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목6",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목7",
+    "checkGood": true,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "title": "제목8",
+    "checkGood": true,
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "id": 9,
+    "title": "제목9",
+    "checkGood": false,
+    "imgUrl": "",
+    "content": "이것은 내용입니다.",
+  },
+  {
+    "type": "default",
+    "id": 10,
+    "title": "제목10",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용입니다.",
+  },
+];
+
 class _MainPageSliverState extends State<MainPageSliver> {
+  // 광고 테스트 아이디 생성
+  final String iOSTestUnitId = "ca-app-pub-8792702490232026/5244633336";
+  final String androidTestUnitId = "ca-app-pub-8792702490232026/3602332882";
+
+  List<Widget> itemList = [];
+
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
@@ -26,6 +109,18 @@ class _MainPageSliverState extends State<MainPageSliver> {
 
   double width = 0;
   double height = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    scrollController.addListener(_onScroll);
+
+    var loginType = SecureStorageLogin.getLoginType();
+    if (loginType != "none") {
+      _isLogined = true;
+    }
+  }
 
   void _onScroll() {
     if (scrollController.offset > 310) {
@@ -42,18 +137,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
       setState(() {
         _showJumpUpButton = false;
       });
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    scrollController.addListener(_onScroll);
-
-    var loginType = SecureStorageLogin.getLoginType();
-    if (loginType != "none") {
-      _isLogined = true;
     }
   }
 
@@ -83,23 +166,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
         builder: (context) => const MainNavigation(initSelectedIndex: 2),
       ),
     );
-  }
-
-  // 로그인 테스트1
-  void _onTest1Tap() async {
-    print(await SecureStorageLogin.getLoginType());
-    _isLogined = true;
-    setState(() {});
-  }
-
-  // 로그인 테스트2
-  void _onTest2Tap() async {
-    print(await SecureStorageLogin.getLoginType());
-    SecureStorageLogin.saveLoginType("none");
-    print(await SecureStorageLogin.getLoginType());
-    _isLogined = false;
-    setState(() {});
-    // SecureStorageLogin.loginCheckIsNone(context, mounted);
   }
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
@@ -136,10 +202,26 @@ class _MainPageSliverState extends State<MainPageSliver> {
     });
   }
 
+  // 광고 로딩 실패일때 실행
+  void failedAdsLoading(Ad ad, LoadAdError error) {
+    ad.dispose();
+    print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
+  }
+
+  @override
+  void didChangeDependencies() {
+    // 리스트 사이에 광고 넣기
+    for (int i = comunityList.length; i >= 1; i -= 5) {
+      comunityList.insert(i, {"type": "ad"});
+    }
+    super.didChangeDependencies();
+  }
+
   @override
   void dispose() {
-    super.dispose();
     scrollController.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -168,18 +250,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
             // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
             SliverAppBar(
               automaticallyImplyLeading: false,
-              // 줄일수 있는 최소 높이
-              // collapsedHeight: 55,
-              // 최대 높이
-              // expandedHeight: 55,
-              // 늘리고 줄였을때의 애니매이션을 적용하려면 floating, stretch을 true로 설정해야함
-              // floating : 맨위가 아니라 중간에서 위로 스크롤해도 appBar가 나타남
-              // floating: true,
-              // snap : 아주 조금만 스크롤을 내려도 appBar 내려옴(floating과 같이 사용해야함)
-              // snap: true,
-              // stretch : stretchModes를 사용할 수 있는지 허가 여부 설정
-              // stretch: true,
-              // pinned : 최소 높이로 작아지면 고정됨(중요)
               pinned: true,
               actions: [
                 Padding(
@@ -278,13 +348,36 @@ class _MainPageSliverState extends State<MainPageSliver> {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 childCount: comunityList.length,
-                (context, index) => MainComunityBox(
-                  key: Key(comunityList[index]["title"]),
-                  title: comunityList[index]["title"],
-                  img: comunityList[index]["imgUrl"],
-                  initCheckGood: comunityList[index]["checkGood"],
-                  content: comunityList[index]["content"],
-                ),
+                (context, index) {
+                  final item = comunityList[index];
+                  if (item["type"] != "ad") {
+                    return MainComunityBox(
+                      key: Key(item["title"]),
+                      title: item["title"],
+                      img: item["imgUrl"],
+                      initCheckGood: item["checkGood"],
+                      content: item["content"],
+                    );
+                  } else {
+                    return StatefulBuilder(
+                      builder: (context, setState) => Container(
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: AdWidget(
+                          ad: BannerAd(
+                            listener: BannerAdListener(
+                              onAdFailedToLoad: failedAdsLoading,
+                              onAdLoaded: (_) {},
+                            ),
+                            size: AdSize.banner,
+                            adUnitId: AdHelper.bannerAdUnitId,
+                            request: const AdRequest(),
+                          )..load(),
+                        ),
+                      ),
+                    );
+                  }
+                },
               ),
             ),
           ],
@@ -293,68 +386,3 @@ class _MainPageSliverState extends State<MainPageSliver> {
     );
   }
 }
-
-List<Map<String, dynamic>> comunityList = [
-  {
-    "title": "제목1",
-    "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목2",
-    "checkGood": false,
-    "imgUrl": "",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목3",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목4",
-    "checkGood": true,
-    "imgUrl": "",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목5",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목6",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목7",
-    "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "title": "제목8",
-    "checkGood": true,
-    "imgUrl": "",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "id": 9,
-    "title": "제목9",
-    "checkGood": false,
-    "imgUrl": "",
-    "content": "이것은 내용입니다.",
-  },
-  {
-    "id": 10,
-    "title": "제목10",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
-  },
-];
