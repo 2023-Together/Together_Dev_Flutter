@@ -116,9 +116,32 @@ class _MainPageSliverState extends State<MainPageSliver> {
 
     scrollController.addListener(_onScroll);
 
-    var loginType = SecureStorageLogin.getLoginType();
-    if (loginType != "none") {
+    // 로그인 타입을 가져와서 로그인 상태를 적용한다.
+    checkLoginType();
+
+    // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
+    checkAds(comunityList);
+  }
+
+  // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
+  void checkLoginType() async {
+    var loginType = await SecureStorageLogin.getLoginType();
+    print(loginType);
+    if (loginType == "naver" || loginType == "kakao") {
       _isLogined = true;
+    } else {
+      _isLogined = false;
+    }
+    setState(() {});
+  }
+
+  // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않는 함수
+  void checkAds(List<Map<String, dynamic>> list) {
+    if (list.any((item) => item["type"] == "ad")) {
+      // 리스트 사이에 광고 넣기
+      for (int i = comunityList.length; i >= 1; i -= 5) {
+        comunityList.insert(i, {"type": "ad"});
+      }
     }
   }
 
@@ -148,22 +171,12 @@ class _MainPageSliverState extends State<MainPageSliver> {
     );
   }
 
-  // 봉사 찾기 누르면 작동
-  void _onVolSearchTap() {
+  // 네비게이션 페이지로 이동하는 함수
+  void _onNavigationPageMoveTap(int index) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const MainNavigation(initSelectedIndex: 0),
-      ),
-    );
-  }
-
-  // 커뮤니티 누르면 작동
-  void _onCommunityTap() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MainNavigation(initSelectedIndex: 2),
+        builder: (context) => MainNavigation(initSelectedIndex: index),
       ),
     );
   }
@@ -173,15 +186,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
     Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => const SignInMain(),
-      ),
-    );
-  }
-
-  // 로그인 상태일때 아이콘 클릭 하면 실행
-  void _onProfileTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const MainNavigation(initSelectedIndex: 4),
       ),
     );
   }
@@ -206,15 +210,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
   void failedAdsLoading(Ad ad, LoadAdError error) {
     ad.dispose();
     print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
-  }
-
-  @override
-  void didChangeDependencies() {
-    // 리스트 사이에 광고 넣기
-    for (int i = comunityList.length; i >= 1; i -= 5) {
-      comunityList.insert(i, {"type": "ad"});
-    }
-    super.didChangeDependencies();
   }
 
   @override
@@ -271,7 +266,7 @@ class _MainPageSliverState extends State<MainPageSliver> {
                             ),
                             Gaps.h10,
                             GestureDetector(
-                              onTap: _onProfileTap,
+                              onTap: () => _onNavigationPageMoveTap(4),
                               child: const CircleAvatar(
                                 radius: Sizes.size20,
                                 foregroundImage: NetworkImage(
@@ -330,11 +325,11 @@ class _MainPageSliverState extends State<MainPageSliver> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           GestureDetector(
-                            onTap: _onVolSearchTap,
+                            onTap: () => _onNavigationPageMoveTap(0),
                             child: const MainButton(text: "봉사 찾기"),
                           ),
                           GestureDetector(
-                            onTap: _onCommunityTap,
+                            onTap: () => _onNavigationPageMoveTap(2),
                             child: const MainButton(text: "커뮤니티"),
                           ),
                         ],

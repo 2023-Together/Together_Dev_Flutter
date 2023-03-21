@@ -28,7 +28,7 @@ class _SignInButtonState extends State<SignInButton> {
   void initState() {
     super.initState();
 
-    SecureStorageLogin.loginCheckIsSNS(context, mounted);
+    // SecureStorageLogin.loginCheckIsSNS(context, mounted);
   }
 
   void _onAuthButton(BuildContext context) {

@@ -16,7 +16,7 @@ class SecureStorageLogin {
   // 로그인타입을 리턴하는 메소드
   static Future getLoginType() async {
     var loginType = await storage.read(key: _keyValue);
-    return loginType;
+    return loginType.toString();
   }
 
   // 로그아웃 하는 메소드
@@ -30,6 +30,7 @@ class SecureStorageLogin {
     // 메소드에서 context를 사용할때 무조건 선언!
     if (!mounted) return;
     if (loginType != "naver" || loginType != "kakao") {
+      await storage.write(key: _keyValue, value: "none");
       showPlatformDialog(
         context: context,
         title: "계정 오류",
