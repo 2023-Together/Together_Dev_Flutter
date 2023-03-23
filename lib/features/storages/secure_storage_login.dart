@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/methods/show_platform_dialog.dart';
 
 class SecureStorageLogin {
@@ -33,13 +34,21 @@ class SecureStorageLogin {
       await storage.write(key: _keyValue, value: "none");
       showPlatformDialog(
         context: context,
-        title: "계정 오류",
-        message: "현재 로그인 상태가 아닙니다!",
+        title: "로그인 오류",
+        message: "현재 로그인 상태가 아닙니다! 로그인창으로 이동하시겠습니까?",
         actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(
+                // MaterialPageRoute(
+                //   builder: (context) => const SignInMain(),
+                // ),
+                (route) => true),
+            child: const Text("아니오"),
+          ),
           TextButton(
             onPressed: () => Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => const MainPageSliver(),
+                  builder: (context) => const SignInMain(),
                 ),
                 (route) => false),
             child: const Text("확인"),
@@ -57,7 +66,7 @@ class SecureStorageLogin {
     if (loginType == "naver" || loginType == "kakao") {
       Navigator.of(context).pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) => const MainPageSliver(),
+          builder: (context) => const MainNavigation(initSelectedIndex: 2),
         ),
         (route) => false,
       );

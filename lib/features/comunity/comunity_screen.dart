@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_button.dart';
 import 'package:swag_cross_app/features/main_page/widgets/main_comunity_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_notice_box.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
-class MainPageSliver extends StatefulWidget {
-  const MainPageSliver({super.key});
+import '../main_page/widgets/main_notice_box.dart';
+
+class ComunityScreen extends StatefulWidget {
+  const ComunityScreen({super.key});
 
   @override
-  State<MainPageSliver> createState() => _MainPageSliverState();
+  State<ComunityScreen> createState() => _ComunityScreenState();
 }
 
-class _MainPageSliverState extends State<MainPageSliver> {
+class _ComunityScreenState extends State<ComunityScreen> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
@@ -104,16 +102,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
     );
   }
 
-  // 네비게이션 페이지로 이동하는 함수
-  void _onNavigationPageMoveTap(int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MainNavigation(initSelectedIndex: index),
-      ),
-    );
-  }
-
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
     Navigator.of(context).push(
@@ -159,6 +147,7 @@ class _MainPageSliverState extends State<MainPageSliver> {
         opacity: _showJumpUpButton ? 1 : 0,
         duration: const Duration(milliseconds: 200),
         child: FloatingActionButton(
+          heroTag: "comunity",
           onPressed: _scrollToTop,
           backgroundColor: Colors.purpleAccent.shade100,
           child: const FaIcon(
@@ -197,17 +186,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
                                 color: Colors.black54,
                               ),
                             ),
-                            Gaps.h10,
-                            GestureDetector(
-                              onTap: () => _onNavigationPageMoveTap(4),
-                              child: const CircleAvatar(
-                                radius: Sizes.size20,
-                                foregroundImage: NetworkImage(
-                                  "https://avatars.githubusercontent.com/u/77985708?v=4",
-                                ),
-                                child: Text("재현"),
-                              ),
-                            ),
                           ]
                         : [
                             GestureDetector(
@@ -233,39 +211,26 @@ class _MainPageSliverState extends State<MainPageSliver> {
                   child: Column(
                     children: [
                       Container(
-                          height: 100,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size5,
-                            vertical: Sizes.size5,
+                        height: 100,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Sizes.size5,
+                          vertical: Sizes.size5,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 1.5,
                           ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 1.5,
-                            ),
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              MainNoticeBox(title: "공지사항1"),
-                              MainNoticeBox(title: "공지사항2"),
-                              MainNoticeBox(title: "공지사항3"),
-                            ],
-                          )),
-                      Gaps.v20,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () => _onNavigationPageMoveTap(0),
-                            child: const MainButton(text: "봉사 찾기"),
-                          ),
-                          GestureDetector(
-                            onTap: () => _onNavigationPageMoveTap(2),
-                            child: const MainButton(text: "커뮤니티"),
-                          ),
-                        ],
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            MainNoticeBox(title: "공지사항1"),
+                            MainNoticeBox(title: "공지사항2"),
+                            MainNoticeBox(title: "공지사항3"),
+                          ],
+                        ),
                       ),
                     ],
                   ),
