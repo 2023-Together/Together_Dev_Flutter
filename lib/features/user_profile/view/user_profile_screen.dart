@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
-import 'package:swag_cross_app/features/user_profile/view/notice_page.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 // 마이페이지-메인
@@ -19,6 +21,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.initState();
 
     // SecureStorageLogin.loginCheckIsNone(context, mounted);
+  }
+
+  void _alertIconTap() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const AlertScreen(),
+      ),
+    );
   }
 
   void onLogoutTap(BuildContext context) {
@@ -43,19 +53,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("마이페이지"),
-        actions: <Widget>[
+        actions: [
           // IconButton(
           //     icon: const Icon(Icons.search),
           //     onPressed: () {
           //       print("검색");
           //     }),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => const NoticePage()),
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: Sizes.size10,
+              horizontal: Sizes.size10,
+            ),
+            child: GestureDetector(
+              onTap: _alertIconTap,
+              child: const FaIcon(
+                FontAwesomeIcons.bell,
+                size: 34,
+                color: Colors.black54,
+              ),
+            ),
           ),
         ],
       ),

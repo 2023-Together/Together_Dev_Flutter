@@ -25,14 +25,8 @@ class _MainNavigationState extends State<MainNavigation>
     with SingleTickerProviderStateMixin {
   late final AnimationController _animationController = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 150),
+    duration: const Duration(milliseconds: 100),
   );
-
-  // 실제 행동할 애니메이션 생성 후 컨트롤러와 연결
-  // late final Animation<Offset> _positionedAnimation = Tween(
-  //   begin: const Offset(0, 0.9),
-  //   end: Offset.zero,
-  // ).animate(_animationController);
 
   late final Animation<double> _scaleAnimation = Tween(
     begin: 1.0,
