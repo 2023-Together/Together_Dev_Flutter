@@ -39,18 +39,20 @@ class SecureStorageLogin {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(
-                // MaterialPageRoute(
-                //   builder: (context) => const SignInMain(),
-                // ),
-                (route) => true),
+              // MaterialPageRoute(
+              //   builder: (context) => const SignInMain(),
+              // ),
+              (route) => true,
+            ),
             child: const Text("아니오"),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder: (context) => const SignInMain(),
-                ),
-                (route) => false),
+              MaterialPageRoute(
+                builder: (context) => const SignInMain(),
+              ),
+              (route) => false,
+            ),
             child: const Text("확인"),
           ),
         ],
