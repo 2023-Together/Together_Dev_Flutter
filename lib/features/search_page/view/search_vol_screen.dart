@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 
 class SearchVolScreen extends StatefulWidget {
@@ -111,9 +114,9 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
         builder: (context) {
           return AlertDialog(
             title: const Text('봉사 신청'),
-            content: SingleChildScrollView(
+            content: const SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
+                children: <Widget>[
                   Text('해당 봉사를 신청하시겠습니까?'),
                 ],
               ),
@@ -157,7 +160,74 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("봉사 검색"),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // GestureDetector(
+            //   onTap: _moveBack,
+            //   child: const FaIcon(FontAwesomeIcons.chevronLeft),
+            // ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: Sizes.size18),
+                height: Sizes.size44,
+                child: TextField(
+                  controller: _textEditingController,
+                  onChanged: _onSearchChanged,
+                  onSubmitted: _onSearchSubmitted,
+                  cursorColor: Theme.of(context).primaryColor,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(Sizes.size5),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade200,
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
+                    prefixIcon: Container(
+                      width: Sizes.size20,
+                      alignment: Alignment.center,
+                      child: const FaIcon(
+                        FontAwesomeIcons.magnifyingGlass,
+                        color: Colors.black,
+                        size: Sizes.size18,
+                      ),
+                    ),
+                    suffixIcon: Container(
+                      width: Sizes.size20,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(
+                        left: Sizes.size10,
+                        right: Sizes.size8,
+                      ),
+                      child: AnimatedOpacity(
+                        opacity: _isThereSearchValue ? 1 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: GestureDetector(
+                          onTap: _onCloseIcon,
+                          child: FaIcon(
+                            FontAwesomeIcons.solidCircleXmark,
+                            color: Colors.grey.shade600,
+                            size: Sizes.size18,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: _alertIconTap,
+              child: const FaIcon(
+                FontAwesomeIcons.bell,
+                size: 35,
+                color: Colors.black54,
+              ),
+            ),
+          ],
+        ),
         centerTitle: true,
         elevation: 0.5,
         actions: <Widget>[

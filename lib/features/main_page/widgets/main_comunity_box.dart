@@ -73,9 +73,16 @@ class _MainComunityBoxState extends State<MainComunityBox> {
             children: [
               widget.img.isEmpty
                   ? Container(
-                      height: 150,
                       padding: const EdgeInsets.all(Sizes.size10),
-                      child: Text(widget.content),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.content,
+                        style: const TextStyle(
+                          fontSize: Sizes.size16,
+                        ),
+                        maxLines: 4,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     )
                   : Container(
                       height: 150,
@@ -91,6 +98,11 @@ class _MainComunityBoxState extends State<MainComunityBox> {
                         ),
                       ),
                     ),
+              const Divider(
+                height: Sizes.size1,
+                color: Colors.black,
+                thickness: Sizes.size1,
+              ),
               ListTile(
                 title: Text(
                   widget.title,
