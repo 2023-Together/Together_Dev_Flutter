@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
-import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 
 class SearchVolScreen extends StatefulWidget {
@@ -160,74 +157,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // GestureDetector(
-            //   onTap: _moveBack,
-            //   child: const FaIcon(FontAwesomeIcons.chevronLeft),
-            // ),
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: Sizes.size18),
-                height: Sizes.size44,
-                child: TextField(
-                  controller: _textEditingController,
-                  onChanged: _onSearchChanged,
-                  onSubmitted: _onSearchSubmitted,
-                  cursorColor: Theme.of(context).primaryColor,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(Sizes.size5),
-                      borderSide: BorderSide.none,
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
-                    prefixIcon: Container(
-                      width: Sizes.size20,
-                      alignment: Alignment.center,
-                      child: const FaIcon(
-                        FontAwesomeIcons.magnifyingGlass,
-                        color: Colors.black,
-                        size: Sizes.size18,
-                      ),
-                    ),
-                    suffixIcon: Container(
-                      width: Sizes.size20,
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(
-                        left: Sizes.size10,
-                        right: Sizes.size8,
-                      ),
-                      child: AnimatedOpacity(
-                        opacity: _isThereSearchValue ? 1 : 0,
-                        duration: const Duration(milliseconds: 200),
-                        child: GestureDetector(
-                          onTap: _onCloseIcon,
-                          child: FaIcon(
-                            FontAwesomeIcons.solidCircleXmark,
-                            color: Colors.grey.shade600,
-                            size: Sizes.size18,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: _alertIconTap,
-              child: const FaIcon(
-                FontAwesomeIcons.bell,
-                size: 35,
-                color: Colors.black54,
-              ),
-            ),
-          ],
-        ),
+        title: const Text("봉사 검색"),
         centerTitle: true,
         elevation: 0.5,
         actions: <Widget>[
@@ -241,7 +171,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 builder: (BuildContext context) {
-                  return Container(
+                  return SizedBox(
                     height: 450.0,
                     child: Column(
                       children: <Widget>[
@@ -250,7 +180,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                           children: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.close_rounded,
                                 color: Colors.lightBlue,
                               ),
@@ -258,11 +188,12 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 16.0),
                           child: Row(
                             children: [
                               DropdownButton(
-                                hint: Text("봉사 유형"),
+                                hint: const Text("봉사 유형"),
                                 value: _selectedValue,
                                 items: _typeList.map(
                                   (value) {
@@ -279,7 +210,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                                 },
                               ),
                               DropdownButton(
-                                hint: Text("지역"),
+                                hint: const Text("지역"),
                                 value: _selectedValueArea,
                                 items: _areaList.map(
                                   (value) {
@@ -296,7 +227,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                                 },
                               ),
                               DropdownButton(
-                                hint: Text("인증구분"),
+                                hint: const Text("인증구분"),
                                 value: _selectedValueCertification,
                                 items: _certificationList.map(
                                   (value) {
