@@ -252,6 +252,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               children: [
                 const Text("인증서 발급"),
                 Gaps.v20,
+                const Text("FAQ"),
+                Gaps.v20,
                 const Text("고객 센터"),
                 Gaps.v20,
                 GestureDetector(
