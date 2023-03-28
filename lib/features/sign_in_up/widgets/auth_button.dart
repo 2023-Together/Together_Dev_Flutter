@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_page/main_page_sliver.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 
@@ -28,7 +28,7 @@ class _SignInButtonState extends State<SignInButton> {
   void initState() {
     super.initState();
 
-    SecureStorageLogin.loginCheckIsSNS(context, mounted);
+    // SecureStorageLogin.loginCheckIsSNS(context, mounted);
   }
 
   void _onAuthButton(BuildContext context) {
@@ -88,7 +88,7 @@ class _SignInButtonState extends State<SignInButton> {
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (context) => const MainPageSliver(),
+        builder: (context) => const MainNavigation(initSelectedIndex: 2),
       ),
       (route) => false,
     );
@@ -109,7 +109,7 @@ class _SignInButtonState extends State<SignInButton> {
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(
-        builder: (context) => const MainPageSliver(),
+        builder: (context) => const MainNavigation(initSelectedIndex: 2),
       ),
       (route) => false,
     );
@@ -127,7 +127,7 @@ class _SignInButtonState extends State<SignInButton> {
     //     return true;
     //   },
     // );
-    Get.off(() => const MainPageSliver());
+    Get.off(() => const MainNavigation(initSelectedIndex: 2));
   }
 
   /*

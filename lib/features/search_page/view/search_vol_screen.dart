@@ -111,9 +111,9 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
         builder: (context) {
           return AlertDialog(
             title: const Text('봉사 신청'),
-            content: SingleChildScrollView(
+            content: const SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
+                children: <Widget>[
                   Text('해당 봉사를 신청하시겠습니까?'),
                 ],
               ),
@@ -171,7 +171,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                   borderRadius: BorderRadius.circular(20.0),
                 ),
                 builder: (BuildContext context) {
-                  return Container(
+                  return SizedBox(
                     height: 450.0,
                     child: Column(
                       children: <Widget>[
@@ -180,7 +180,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                           children: [
                             IconButton(
                               onPressed: () => Navigator.pop(context),
-                              icon: Icon(
+                              icon: const Icon(
                                 Icons.close_rounded,
                                 color: Colors.lightBlue,
                               ),
@@ -188,11 +188,12 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 16.0),
                           child: Row(
                             children: [
                               DropdownButton(
-                                hint: Text("봉사 유형"),
+                                hint: const Text("봉사 유형"),
                                 value: _selectedValue,
                                 items: _typeList.map(
                                   (value) {
@@ -209,7 +210,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                                 },
                               ),
                               DropdownButton(
-                                hint: Text("지역"),
+                                hint: const Text("지역"),
                                 value: _selectedValueArea,
                                 items: _areaList.map(
                                   (value) {
@@ -226,7 +227,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                                 },
                               ),
                               DropdownButton(
-                                hint: Text("인증구분"),
+                                hint: const Text("인증구분"),
                                 value: _selectedValueCertification,
                                 items: _certificationList.map(
                                   (value) {
