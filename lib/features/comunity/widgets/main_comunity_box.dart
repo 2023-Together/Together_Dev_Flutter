@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_comment.dart';
+import 'package:swag_cross_app/features/comunity/widgets/main_comment.dart';
 
 class MainComunityBox extends StatefulWidget {
   const MainComunityBox({

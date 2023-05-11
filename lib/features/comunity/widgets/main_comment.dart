@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
@@ -16,7 +17,7 @@ class _MainCommentState extends State<MainComment> {
   bool _isWriting = false;
 
   void _onClosePressed() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _stopWriting() {

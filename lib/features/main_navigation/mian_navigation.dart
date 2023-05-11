@@ -9,7 +9,15 @@ import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
+class MainNavigationArgs {
+  final int initSelectedIndex;
+
+  MainNavigationArgs({required this.initSelectedIndex});
+}
+
 class MainNavigation extends StatefulWidget {
+  static const routeName = "main";
+  static const routeURL = "/";
   const MainNavigation({
     super.key,
     required this.initSelectedIndex,

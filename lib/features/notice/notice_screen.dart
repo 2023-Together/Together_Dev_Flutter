@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class NoticeScreen extends StatefulWidget {
+  static const routeName = "notice";
+  static const routeURL = "/notice";
   const NoticeScreen({super.key});
 
   @override

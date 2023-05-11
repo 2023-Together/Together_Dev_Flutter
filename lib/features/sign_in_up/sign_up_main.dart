@@ -5,6 +5,8 @@ import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 
 class SignUpMain extends StatelessWidget {
+  static const routeName = "signup";
+  static const routeURL = "/signup";
   const SignUpMain({super.key});
 
   @override
@@ -13,10 +15,10 @@ class SignUpMain extends StatelessWidget {
       appBar: AppBar(
         title: const Text("회원가입"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: const [
+          children: [
             Gaps.v36,
             SignInButton(
               path: "naver",

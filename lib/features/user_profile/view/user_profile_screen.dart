@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
@@ -24,23 +25,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _alertIconTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AlertScreen(),
-      ),
-    );
+    context.pushNamed(AlertScreen.routeName);
   }
 
   void onLogoutTap(BuildContext context) {
     SecureStorageLogin.setLogout();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainNavigation(
-          initSelectedIndex: 2,
-        ),
-      ),
-      (route) => false,
-    );
+    context.pushReplacementNamed(MainNavigation.routeName);
   }
 
   @override

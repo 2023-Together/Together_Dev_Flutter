@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
 // SizedBox를 간단하기 나타내기 위한 클래스
-
 class Gaps {
   // Vertical Gaps
   static const v1 = SizedBox(height: Sizes.size1);

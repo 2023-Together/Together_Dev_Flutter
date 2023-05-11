@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:provider/provider.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/router.dart';
 
 void main() async {
   await initializeDateFormatting(); // 달력 언어 한국어 쓰기 위함 local 설정
@@ -12,7 +13,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
 
-  runApp(const SWAGCrossApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: const SWAGCrossApp(),
+    ),
+  );
 }
 
 class SWAGCrossApp extends StatelessWidget {
@@ -21,7 +29,8 @@ class SWAGCrossApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'Swag Cross App',
       theme: ThemeData(
         // 모든 하위 Scaffold에 배경색을 지정해 준다.
@@ -42,7 +51,7 @@ class SWAGCrossApp extends StatelessWidget {
         primaryColor: const Color(0xFFE9435A),
       ),
       debugShowCheckedModeBanner: false,
-      home: const MainNavigation(initSelectedIndex: 2),
+      // home: const MainNavigation(initSelectedIndex: 2),
     );
   }
 }
