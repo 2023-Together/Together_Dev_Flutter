@@ -12,11 +12,12 @@ class NoticeScreen extends StatefulWidget {
 class _NoticeScreenState extends State<NoticeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("공지사항"),
+    return const Scaffold(
+      // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
+      resizeToAvoidBottomInset: false,
+      body: Center(
+        child: Text("공지사항"),
       ),
-      body: Container(),
     );
   }
 }
