@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
@@ -86,12 +86,7 @@ class _SignInButtonState extends State<SignInButton> {
     await SecureStorageLogin.saveLoginType("naver");
 
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainNavigation(initSelectedIndex: 2),
-      ),
-      (route) => false,
-    );
+    context.goNamed(MainNavigation.routeName);
   }
 
   // 네이버 회원가입
@@ -107,12 +102,7 @@ class _SignInButtonState extends State<SignInButton> {
     await SecureStorageLogin.saveLoginType("kakao");
 
     if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(
-        builder: (context) => const MainNavigation(initSelectedIndex: 2),
-      ),
-      (route) => false,
-    );
+    context.goNamed(MainNavigation.routeName);
   }
 
   // 카카오 회원가입
@@ -127,7 +117,7 @@ class _SignInButtonState extends State<SignInButton> {
     //     return true;
     //   },
     // );
-    Get.off(() => const MainNavigation(initSelectedIndex: 2));
+    context.goNamed(MainNavigation.routeName);
   }
 
   /*

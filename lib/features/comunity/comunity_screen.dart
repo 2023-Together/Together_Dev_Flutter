@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_comunity_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/main_comunity_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/main_notice_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
-
-import '../main_page/widgets/main_notice_box.dart';
 
 class ComunityScreen extends StatefulWidget {
   const ComunityScreen({super.key});
@@ -95,20 +95,12 @@ class _ComunityScreenState extends State<ComunityScreen> {
   }
 
   void _alertIconTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AlertScreen(),
-      ),
-    );
+    context.pushNamed(AlertScreen.routeName);
   }
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SignInMain(),
-      ),
-    );
+    context.pushNamed(SignInMain.routeName);
   }
 
   // 스크롤 위치를 맨위로 이동시킵니다.

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 
@@ -122,7 +123,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
               TextButton(
                 // 취소 버튼
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 child: const Text('아니오'),
               ),
@@ -179,7 +180,7 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             IconButton(
-                              onPressed: () => Navigator.pop(context),
+                              onPressed: () => context.pop(),
                               icon: const Icon(
                                 Icons.close_rounded,
                                 color: Colors.lightBlue,

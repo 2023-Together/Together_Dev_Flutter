@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 
@@ -11,11 +12,7 @@ class MainNoticeBox extends StatelessWidget {
   final String title;
 
   void onNoticeBoxTap(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const NoticeScreen(),
-      ),
-    );
+    context.pushNamed(NoticeScreen.routeName);
   }
 
   @override
