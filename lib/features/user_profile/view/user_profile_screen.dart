@@ -5,7 +5,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 // 마이페이지-메인

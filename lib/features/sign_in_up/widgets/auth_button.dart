@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class SignInButton extends StatefulWidget {
   const SignInButton({

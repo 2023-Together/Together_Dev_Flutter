@@ -7,7 +7,7 @@ import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/comunity/widgets/main_comunity_box.dart';
 import 'package:swag_cross_app/features/comunity/widgets/main_notice_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
 class ComunityScreen extends StatefulWidget {

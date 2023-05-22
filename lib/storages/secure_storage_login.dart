@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/storages/methods/show_platform_dialog.dart';
+import 'package:swag_cross_app/storages/methods/show_platform_dialog.dart';
 
 class SecureStorageLogin {
   static const FlutterSecureStorage storage = FlutterSecureStorage();

@@ -5,7 +5,7 @@ import 'package:swag_cross_app/features/club/club_screen.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 class MainNavigationArgs {
