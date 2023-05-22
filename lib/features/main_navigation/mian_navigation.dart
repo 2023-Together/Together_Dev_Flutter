@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_screen.dart';
-import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
@@ -114,7 +113,7 @@ class _MainNavigationState extends State<MainNavigation>
           ),
           Offstage(
             offstage: _selectedIndex != 1,
-            child: const ChattingScreen(),
+            child: const SearchVolScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 2,
@@ -152,10 +151,10 @@ class _MainNavigationState extends State<MainNavigation>
                 logined: _isLogined,
               ),
               NavTab(
-                text: "채팅방",
+                text: "기관검색",
                 isSelected: _selectedIndex == 1,
-                icon: FontAwesomeIcons.comment,
-                selectedIcon: FontAwesomeIcons.solidComment,
+                icon: Icons.content_paste_search,
+                selectedIcon: Icons.content_paste_search_outlined,
                 onTap: () => _onTap(1),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
