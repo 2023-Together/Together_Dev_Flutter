@@ -32,12 +32,12 @@ class NavTab extends StatelessWidget {
         onTap: () => onTap(),
         child: Container(
           padding: const EdgeInsets.symmetric(
-            vertical: Sizes.size10,
+            vertical: Sizes.size7,
             horizontal: Sizes.size16,
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(Sizes.size56),
-            color: Colors.grey.shade100,
+            color: Colors.grey.shade50,
             // color: Colors.blue,
           ),
           // color: Colors.blue,
@@ -52,6 +52,7 @@ class NavTab extends StatelessWidget {
                 imgURI.isEmpty
                     ? FaIcon(
                         isSelected ? selectedIcon : icon,
+                        size: Sizes.size24 + Sizes.size2,
                       )
                     : logined
                         ? CircleAvatar(
@@ -68,8 +69,8 @@ class NavTab extends StatelessWidget {
                 Gaps.v5,
                 Text(
                   text,
-                  style: TextStyle(
-                    fontSize: text.length > 3 ? Sizes.size10 : null,
+                  style: const TextStyle(
+                    fontSize: Sizes.size10,
                   ),
                 ),
               ],

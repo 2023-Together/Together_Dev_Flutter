@@ -28,28 +28,7 @@ class MainNavigation extends StatefulWidget {
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
-class _MainNavigationState extends State<MainNavigation>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 100),
-  );
-
-  late final Animation<double> _scaleAnimation = Tween(
-    begin: 1.0,
-    end: 1.2,
-  ).animate(_animationController);
-
-  late final Animation<double> _opacityAnimation = Tween(
-    begin: 0.6,
-    end: 1.0,
-  ).animate(_animationController);
-
-  late final Animation<Offset> _upDownAnimation = Tween(
-    begin: Offset.zero,
-    end: const Offset(0, -0.3),
-  ).animate(_animationController);
-
+class _MainNavigationState extends State<MainNavigation> {
   late int _selectedIndex;
   bool _isLogined = false;
 
@@ -59,23 +38,17 @@ class _MainNavigationState extends State<MainNavigation>
 
     _selectedIndex = widget.initSelectedIndex;
 
-    if (_selectedIndex == 2) {
-      _animationController.forward();
-    }
-
     checkLoginType();
   }
 
   void _onTap(int index) {
     if (index == 2) {
-      _animationController.forward();
       setState(() {
         _selectedIndex = index;
       });
     } else if (index == 4 && !_isLogined) {
       SecureStorageLogin.loginCheckIsNone(context, mounted);
     } else {
-      _animationController.reverse();
       setState(() {
         _selectedIndex = index;
       });
@@ -92,12 +65,6 @@ class _MainNavigationState extends State<MainNavigation>
       _isLogined = false;
     }
     setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -130,11 +97,7 @@ class _MainNavigationState extends State<MainNavigation>
         ],
       ),
       bottomNavigationBar: Container(
-        color: Colors.grey.shade100,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Sizes.size5,
-          vertical: Sizes.size6,
-        ),
+        color: Colors.grey.shade50,
         child: Padding(
           padding: const EdgeInsets.all(Sizes.size1),
           child: Row(
@@ -143,8 +106,8 @@ class _MainNavigationState extends State<MainNavigation>
               NavTab(
                 text: "봉사검색",
                 isSelected: _selectedIndex == 0,
-                icon: FontAwesomeIcons.magnifyingGlass,
-                selectedIcon: FontAwesomeIcons.magnifyingGlass,
+                icon: Icons.search_outlined,
+                selectedIcon: Icons.search,
                 onTap: () => _onTap(0),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
@@ -160,40 +123,38 @@ class _MainNavigationState extends State<MainNavigation>
                 imgURI: "",
                 logined: _isLogined,
               ),
-              // 홈버튼
-              GestureDetector(
+              // GestureDetector(
+              //   onTap: () => _onTap(2),
+              //   child: AnimatedOpacity(
+              //     opacity: _selectedIndex == 2 ? 1 : 0.6,
+              //     duration: const Duration(milliseconds: 300),
+              //     child: Container(
+              //       height: 60,
+              //       padding: const EdgeInsets.symmetric(
+              //         horizontal: Sizes.size6,
+              //       ),
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(Sizes.size80),
+              //         color: Colors.grey.shade100,
+              //       ),
+              //       child: Center(
+              //         child: Icon(
+              //           _selectedIndex == 2 ? Icons.home : Icons.home_outlined,
+              //           size: 50,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              NavTab(
+                text: "홈",
+                isSelected: _selectedIndex == 2,
+                icon: Icons.home_outlined,
+                selectedIcon: Icons.home,
                 onTap: () => _onTap(2),
-                child: AnimatedOpacity(
-                  opacity: _selectedIndex == 2 ? 1 : 0.6,
-                  duration: const Duration(milliseconds: 150),
-                  child: ScaleTransition(
-                    scale: _scaleAnimation,
-                    child: FadeTransition(
-                      opacity: _opacityAnimation,
-                      child: SlideTransition(
-                        position: _upDownAnimation,
-                        child: Container(
-                          height: 60,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size10,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(Sizes.size80),
-                            color: Colors.grey.shade100,
-                          ),
-                          child: Center(
-                            child: Icon(
-                              _selectedIndex == 2
-                                  ? Icons.home
-                                  : Icons.home_outlined,
-                              size: 50,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                selectedIndex: _selectedIndex,
+                imgURI: "",
+                logined: _isLogined,
               ),
               NavTab(
                 text: "동아리",

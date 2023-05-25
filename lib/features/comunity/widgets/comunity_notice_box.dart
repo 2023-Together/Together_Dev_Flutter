@@ -39,7 +39,7 @@ class NoticeBox extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                title * 5,
+                title,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
@@ -49,7 +49,7 @@ class NoticeBox extends StatelessWidget {
               ),
               Gaps.v8,
               Text(
-                content * 5,
+                content,
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(

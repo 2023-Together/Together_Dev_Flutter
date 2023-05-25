@@ -61,55 +61,24 @@ class _ComunityItemBox extends State<ComunityItemBox> {
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
         width: constraints.maxWidth,
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 1,
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 0.5,
+              color: Colors.black12,
+            ),
           ),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            widget.img.isEmpty
-                ? Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: Sizes.size12,
-                      vertical: Sizes.size16,
-                    ),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.content,
-                      style: const TextStyle(
-                        fontSize: Sizes.size16,
-                      ),
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  )
-                : Container(
-                    height: 300,
-                    decoration: BoxDecoration(
-                      // borderRadius: const BorderRadius.only(
-                      //   topLeft: Radius.circular(Sizes.size16),
-                      //   topRight: Radius.circular(Sizes.size16),
-                      // ),
-                      image: DecorationImage(
-                        image: AssetImage(widget.img),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-            // const Divider(
-            //   height: Sizes.size1,
-            //   color: Colors.black,
-            //   thickness: Sizes.size1,
-            // ),
             ListTile(
               leading: CircleAvatar(
                 radius: 20,
                 child: Text(widget.user),
               ),
               title: Text(
-                widget.title,
+                widget.user,
                 style: const TextStyle(
                   fontSize: Sizes.size16,
                   fontWeight: FontWeight.bold,
@@ -117,8 +86,8 @@ class _ComunityItemBox extends State<ComunityItemBox> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              subtitle: Text(
-                widget.date,
+              subtitle: const Text(
+                "2개월전",
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -144,6 +113,52 @@ class _ComunityItemBox extends State<ComunityItemBox> {
                 ],
               ),
             ),
+            Container(
+              width: size.width,
+              padding: const EdgeInsets.only(
+                left: Sizes.size12,
+                right: Sizes.size12,
+                bottom: Sizes.size20,
+              ),
+              alignment: Alignment.topLeft,
+              child: Text(
+                widget.content,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: Sizes.size16,
+                  height: 1.5,
+                ),
+              ),
+            ),
+            if (widget.img.isNotEmpty)
+              widget.img.contains("https") || widget.img.contains("http")
+                  ? Image.network(
+                      widget.img,
+                      width: size.width,
+                      fit: BoxFit.cover,
+                    )
+                  : Image.asset(
+                      widget.img,
+                      width: size.width,
+                      fit: BoxFit.cover,
+                    ),
+            // Container(
+            //   decoration: BoxDecoration(
+            //     image: DecorationImage(
+            //       image: widget.img.contains("https") ||
+            //               widget.img.contains("http")
+            //           ? NetworkImage(widget.img)
+            //           : AssetImage(widget.img) as ImageProvider,
+            //       fit: BoxFit.fitWidth,
+            //     ),
+            //   ),
+            // ),
+            // const Divider(
+            //   height: Sizes.size1,
+            //   color: Colors.black,
+            //   thickness: Sizes.size1,
+            // ),
           ],
         ),
       ),
