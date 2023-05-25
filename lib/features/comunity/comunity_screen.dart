@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/comunity/widgets/main_comunity_box.dart';
-import 'package:swag_cross_app/features/comunity/widgets/main_notice_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
@@ -134,6 +135,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: AnimatedOpacity(
         opacity: _showJumpUpButton ? 1 : 0,
@@ -197,31 +199,47 @@ class _ComunityScreenState extends State<ComunityScreen> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: Sizes.size10,
-                  horizontal: Sizes.size32,
+                  horizontal: Sizes.size20,
                 ),
                 child: Center(
                   child: Column(
                     children: [
-                      Container(
-                        height: 100,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Sizes.size5,
-                          vertical: Sizes.size5,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 1.5,
-                          ),
-                        ),
-                        child: const Column(
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Sizes.size10),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            MainNoticeBox(title: "공지사항1"),
-                            MainNoticeBox(title: "공지사항2"),
-                            MainNoticeBox(title: "공지사항3"),
+                            Text(
+                              "공지사항",
+                              style: TextStyle(
+                                fontSize: Sizes.size20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "목록 보기",
+                              style: TextStyle(
+                                fontSize: Sizes.size16,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.blue,
+                              ),
+                            ),
                           ],
+                        ),
+                      ),
+                      Gaps.v8,
+                      SizedBox(
+                        width: size.width,
+                        height: 110,
+                        child: ListView.separated(
+                          // 가로로 스크롤
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) => const NoticeBox(
+                            title: "공지사항",
+                            content: "공지사항의 내용입니다.",
+                          ),
+                          separatorBuilder: (context, index) => Gaps.h10,
                         ),
                       ),
                     ],
@@ -236,12 +254,14 @@ class _ComunityScreenState extends State<ComunityScreen> {
                 (context, index) {
                   final item = comunityList[index];
                   if (item["type"] != "ad") {
-                    return MainComunityBox(
+                    return ComunityItemBox(
                       key: Key(item["title"]),
                       title: item["title"],
                       img: item["imgUrl"],
                       initCheckGood: item["checkGood"],
                       content: item["content"],
+                      date: item["date"],
+                      user: item["user"],
                     );
                   } else {
                     return StatefulBuilder(
@@ -281,6 +301,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-1",
+    "user": "유저1",
   },
   {
     "type": "default",
@@ -288,6 +310,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-2",
+    "user": "유저2",
   },
   {
     "type": "default",
@@ -295,6 +319,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-3",
+    "user": "유저3",
   },
   {
     "type": "default",
@@ -302,6 +328,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-4",
+    "user": "유저4",
   },
   {
     "type": "default",
@@ -309,6 +337,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-5",
+    "user": "유저5",
   },
   {
     "type": "default",
@@ -316,6 +346,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-6",
+    "user": "유저6",
   },
   {
     "type": "default",
@@ -323,6 +355,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-7",
+    "user": "유저7",
   },
   {
     "type": "default",
@@ -330,6 +364,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-8",
+    "user": "유저8",
   },
   {
     "type": "default",
@@ -338,6 +374,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-9",
+    "user": "유저9",
   },
   {
     "type": "default",
@@ -346,5 +384,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-10",
+    "user": "유저10",
   },
 ];

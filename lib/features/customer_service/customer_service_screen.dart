@@ -72,11 +72,9 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      initialIndex: 0,
+      initialIndex: widget.initSelectedIndex,
       length: tabs.length,
       child: Scaffold(
-        // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           // 자동 뒤로가기 생성 여부
           automaticallyImplyLeading: false,
@@ -96,7 +94,7 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
                 GestureDetector(
                   onTap: _moveBack,
                   child: Container(
-                    child: const FaIcon(FontAwesomeIcons.chevronLeft),
+                    child: const Icon(Icons.arrow_back_ios_rounded),
                   ),
                 ),
                 // 검색 바

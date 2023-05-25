@@ -30,7 +30,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void _customerServiceTap() {
-    context.pushNamed(CustomerServiceScreen.routeName);
+    context.pushNamed(
+      CustomerServiceScreen.routeName,
+      queryParams: {"initIndex": "0"},
+    );
   }
 
   void onLogoutTap(BuildContext context) {

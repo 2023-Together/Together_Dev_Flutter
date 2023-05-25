@@ -21,7 +21,13 @@ final router = GoRouter(
     GoRoute(
       name: MainNavigation.routeName,
       path: MainNavigation.routeURL,
-      builder: (context, state) => const MainNavigation(initSelectedIndex: 2),
+      builder: (context, state) {
+        int initIndex = 2;
+        if (state.queryParams["initIndex"] != null) {
+          initIndex = int.parse(state.queryParams["initIndex"]!);
+        }
+        return MainNavigation(initSelectedIndex: initIndex);
+      },
     ),
     GoRoute(
       name: AlertScreen.routeName,
@@ -36,8 +42,13 @@ final router = GoRouter(
     GoRoute(
       name: CustomerServiceScreen.routeName,
       path: CustomerServiceScreen.routeURL,
-      builder: (context, state) =>
-          const CustomerServiceScreen(initSelectedIndex: 0),
+      builder: (context, state) {
+        int initIndex = 0;
+        if (state.queryParams["initIndex"] != null) {
+          initIndex = int.parse(state.queryParams["initIndex"]!);
+        }
+        return CustomerServiceScreen(initSelectedIndex: initIndex);
+      },
     ),
   ],
 );
