@@ -31,7 +31,7 @@ class NoticeBox extends StatelessWidget {
           horizontal: Sizes.size6,
         ),
         decoration: BoxDecoration(
-          color: Colors.purple.shade100,
+          color: Colors.grey.shade100,
           borderRadius: BorderRadius.circular(Sizes.size16),
         ),
         child: Padding(
