@@ -12,6 +12,8 @@ class NavTab extends StatelessWidget {
     required this.selectedIcon,
     required this.onTap,
     required this.selectedIndex,
+    required this.imgURI,
+    required this.logined,
   });
 
   final String text;
@@ -20,6 +22,8 @@ class NavTab extends StatelessWidget {
   final IconData selectedIcon;
   final Function onTap;
   final int selectedIndex;
+  final String imgURI;
+  final bool logined;
 
   @override
   Widget build(BuildContext context) {
@@ -28,10 +32,15 @@ class NavTab extends StatelessWidget {
         onTap: () => onTap(),
         child: Container(
           padding: const EdgeInsets.symmetric(
-            vertical: Sizes.size10,
-            horizontal: Sizes.size5,
+            vertical: Sizes.size7,
+            horizontal: Sizes.size16,
           ),
-          color: Colors.white,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(Sizes.size56),
+            color: Colors.grey.shade50,
+            // color: Colors.blue,
+          ),
+          // color: Colors.blue,
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 300),
             opacity: isSelected ? 1 : 0.6,
@@ -40,12 +49,29 @@ class NavTab extends StatelessWidget {
               // 사이즈 조절
               mainAxisSize: MainAxisSize.min,
               children: [
-                FaIcon(
-                  isSelected ? selectedIcon : icon,
-                ),
+                imgURI.isEmpty
+                    ? FaIcon(
+                        isSelected ? selectedIcon : icon,
+                        size: Sizes.size24 + Sizes.size2,
+                      )
+                    : logined
+                        ? CircleAvatar(
+                            radius: Sizes.size12,
+                            foregroundImage: NetworkImage(
+                              imgURI,
+                            ),
+                            child: const Text("재현"),
+                          )
+                        : const FaIcon(
+                            FontAwesomeIcons.circleUser,
+                            size: 24,
+                          ),
                 Gaps.v5,
                 Text(
                   text,
+                  style: const TextStyle(
+                    fontSize: Sizes.size10,
+                  ),
                 ),
               ],
             ),

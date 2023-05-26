@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
-class MainComment extends StatefulWidget {
-  const MainComment({super.key});
+class ComunityComment extends StatefulWidget {
+  const ComunityComment({super.key});
 
   @override
-  State<MainComment> createState() => _MainCommentState();
+  State<ComunityComment> createState() => _ComunityCommentState();
 }
 
-class _MainCommentState extends State<MainComment> {
+class _ComunityCommentState extends State<ComunityComment> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
 
   void _onClosePressed() {
-    Navigator.of(context).pop();
+    context.pop();
   }
 
   void _stopWriting() {

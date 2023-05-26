@@ -4,6 +4,8 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
 class AlertScreen extends StatefulWidget {
+  static const routeName = "alert";
+  static const routeURL = "/alert";
   const AlertScreen({super.key});
 
   @override

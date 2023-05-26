@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_screen.dart';
-import 'package:swag_cross_app/features/chatting/chatting_screen.dart';
+import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/schedule/user_calendar_screen.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
+class MainNavigationArgs {
+  final int initSelectedIndex;
+
+  MainNavigationArgs({required this.initSelectedIndex});
+}
+
 class MainNavigation extends StatefulWidget {
+  static const routeName = "main";
+  static const routeURL = "/";
   const MainNavigation({
     super.key,
     required this.initSelectedIndex,
@@ -22,18 +30,41 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   late int _selectedIndex;
+  bool _isLogined = false;
 
   @override
   void initState() {
     super.initState();
 
     _selectedIndex = widget.initSelectedIndex;
+
+    checkLoginType();
   }
 
   void _onTap(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index == 2) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    } else if (index == 4 && !_isLogined) {
+      SecureStorageLogin.loginCheckIsNone(context, mounted);
+    } else {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
+  }
+
+  // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
+  void checkLoginType() async {
+    var loginType = await SecureStorageLogin.getLoginType();
+    print(loginType);
+    if (loginType == "naver" || loginType == "kakao") {
+      _isLogined = true;
+    } else {
+      _isLogined = false;
+    }
+    setState(() {});
   }
 
   @override
@@ -49,11 +80,11 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 1,
-            child: const ChattingScreen(),
+            child: const SearchVolScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 2,
-            child: const UserCalendarScreen(),
+            child: const ComunityScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 3,
@@ -66,6 +97,7 @@ class _MainNavigationState extends State<MainNavigation> {
         ],
       ),
       bottomNavigationBar: Container(
+        color: Colors.grey.shade50,
         child: Padding(
           padding: const EdgeInsets.all(Sizes.size1),
           child: Row(
@@ -74,26 +106,55 @@ class _MainNavigationState extends State<MainNavigation> {
               NavTab(
                 text: "봉사검색",
                 isSelected: _selectedIndex == 0,
-                icon: FontAwesomeIcons.magnifyingGlass,
-                selectedIcon: FontAwesomeIcons.magnifyingGlass,
+                icon: Icons.search_outlined,
+                selectedIcon: Icons.search,
                 onTap: () => _onTap(0),
                 selectedIndex: _selectedIndex,
+                imgURI: "",
+                logined: _isLogined,
               ),
               NavTab(
-                text: "채팅방",
+                text: "기관검색",
                 isSelected: _selectedIndex == 1,
-                icon: FontAwesomeIcons.comment,
-                selectedIcon: FontAwesomeIcons.solidComment,
+                icon: Icons.content_paste_search,
+                selectedIcon: Icons.content_paste_search_outlined,
                 onTap: () => _onTap(1),
                 selectedIndex: _selectedIndex,
+                imgURI: "",
+                logined: _isLogined,
               ),
+              // GestureDetector(
+              //   onTap: () => _onTap(2),
+              //   child: AnimatedOpacity(
+              //     opacity: _selectedIndex == 2 ? 1 : 0.6,
+              //     duration: const Duration(milliseconds: 300),
+              //     child: Container(
+              //       height: 60,
+              //       padding: const EdgeInsets.symmetric(
+              //         horizontal: Sizes.size6,
+              //       ),
+              //       decoration: BoxDecoration(
+              //         borderRadius: BorderRadius.circular(Sizes.size80),
+              //         color: Colors.grey.shade100,
+              //       ),
+              //       child: Center(
+              //         child: Icon(
+              //           _selectedIndex == 2 ? Icons.home : Icons.home_outlined,
+              //           size: 50,
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // ),
               NavTab(
-                text: "내일정",
+                text: "홈",
                 isSelected: _selectedIndex == 2,
-                icon: FontAwesomeIcons.calendar,
-                selectedIcon: FontAwesomeIcons.solidCalendar,
+                icon: Icons.home_outlined,
+                selectedIcon: Icons.home,
                 onTap: () => _onTap(2),
                 selectedIndex: _selectedIndex,
+                imgURI: "",
+                logined: _isLogined,
               ),
               NavTab(
                 text: "동아리",
@@ -102,6 +163,8 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.people_rounded,
                 onTap: () => _onTap(3),
                 selectedIndex: _selectedIndex,
+                imgURI: "",
+                logined: _isLogined,
               ),
               NavTab(
                 text: "프로필",
@@ -110,6 +173,8 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: FontAwesomeIcons.solidCircleUser,
                 onTap: () => _onTap(4),
                 selectedIndex: _selectedIndex,
+                imgURI: "https://avatars.githubusercontent.com/u/77985708?v=4",
+                logined: _isLogined,
               ),
             ],
           ),

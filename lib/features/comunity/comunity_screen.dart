@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_button.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_comunity_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_notice_box.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
-class MainPageSliver extends StatefulWidget {
-  const MainPageSliver({super.key});
+class ComunityScreen extends StatefulWidget {
+  const ComunityScreen({super.key});
 
   @override
-  State<MainPageSliver> createState() => _MainPageSliverState();
+  State<ComunityScreen> createState() => _ComunityScreenState();
 }
 
-class _MainPageSliverState extends State<MainPageSliver> {
+class _ComunityScreenState extends State<ComunityScreen> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
@@ -97,30 +96,12 @@ class _MainPageSliverState extends State<MainPageSliver> {
   }
 
   void _alertIconTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AlertScreen(),
-      ),
-    );
-  }
-
-  // 네비게이션 페이지로 이동하는 함수
-  void _onNavigationPageMoveTap(int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MainNavigation(initSelectedIndex: index),
-      ),
-    );
+    context.pushNamed(AlertScreen.routeName);
   }
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SignInMain(),
-      ),
-    );
+    context.pushNamed(SignInMain.routeName);
   }
 
   // 스크롤 위치를 맨위로 이동시킵니다.
@@ -154,11 +135,13 @@ class _MainPageSliverState extends State<MainPageSliver> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       floatingActionButton: AnimatedOpacity(
         opacity: _showJumpUpButton ? 1 : 0,
         duration: const Duration(milliseconds: 200),
         child: FloatingActionButton(
+          heroTag: "comunity",
           onPressed: _scrollToTop,
           backgroundColor: Colors.purpleAccent.shade100,
           child: const FaIcon(
@@ -197,17 +180,6 @@ class _MainPageSliverState extends State<MainPageSliver> {
                                 color: Colors.black54,
                               ),
                             ),
-                            Gaps.h10,
-                            GestureDetector(
-                              onTap: () => _onNavigationPageMoveTap(4),
-                              child: const CircleAvatar(
-                                radius: Sizes.size20,
-                                foregroundImage: NetworkImage(
-                                  "https://avatars.githubusercontent.com/u/77985708?v=4",
-                                ),
-                                child: Text("재현"),
-                              ),
-                            ),
                           ]
                         : [
                             GestureDetector(
@@ -227,45 +199,48 @@ class _MainPageSliverState extends State<MainPageSliver> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: Sizes.size10,
-                  horizontal: Sizes.size32,
+                  horizontal: Sizes.size20,
                 ),
                 child: Center(
                   child: Column(
                     children: [
-                      Container(
-                          height: 100,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size5,
-                            vertical: Sizes.size5,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 1.5,
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Sizes.size10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "공지사항",
+                              style: TextStyle(
+                                fontSize: Sizes.size20,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
+                            Text(
+                              "목록 보기",
+                              style: TextStyle(
+                                fontSize: Sizes.size16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Gaps.v8,
+                      SizedBox(
+                        width: size.width,
+                        height: 110,
+                        child: ListView.separated(
+                          // 가로로 스크롤
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) => const NoticeBox(
+                            title: "공지사항",
+                            content: "공지사항의 내용입니다.",
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              MainNoticeBox(title: "공지사항1"),
-                              MainNoticeBox(title: "공지사항2"),
-                              MainNoticeBox(title: "공지사항3"),
-                            ],
-                          )),
-                      Gaps.v20,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                            onTap: () => _onNavigationPageMoveTap(0),
-                            child: const MainButton(text: "봉사 찾기"),
-                          ),
-                          GestureDetector(
-                            onTap: () => _onNavigationPageMoveTap(2),
-                            child: const MainButton(text: "커뮤니티"),
-                          ),
-                        ],
+                          separatorBuilder: (context, index) => Gaps.h10,
+                        ),
                       ),
                     ],
                   ),
@@ -279,12 +254,14 @@ class _MainPageSliverState extends State<MainPageSliver> {
                 (context, index) {
                   final item = comunityList[index];
                   if (item["type"] != "ad") {
-                    return MainComunityBox(
+                    return ComunityItemBox(
                       key: Key(item["title"]),
                       title: item["title"],
                       img: item["imgUrl"],
                       initCheckGood: item["checkGood"],
                       content: item["content"],
+                      date: item["date"],
+                      user: item["user"],
                     );
                   } else {
                     return StatefulBuilder(
@@ -324,34 +301,44 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-1",
+    "user": "유저1",
   },
   {
     "type": "default",
     "title": "제목2",
     "checkGood": false,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용밖에 없습니다.",
+    "date": "2023-05-2",
+    "user": "유저2",
   },
   {
     "type": "default",
     "title": "제목3",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-3",
+    "user": "유저3",
   },
   {
     "type": "default",
     "title": "제목4",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용밖에 없습니다.",
+    "date": "2023-05-4",
+    "user": "유저4",
   },
   {
     "type": "default",
     "title": "제목5",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-5",
+    "user": "유저5",
   },
   {
     "type": "default",
@@ -359,6 +346,8 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-6",
+    "user": "유저6",
   },
   {
     "type": "default",
@@ -366,21 +355,27 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-7",
+    "user": "유저7",
   },
   {
     "type": "default",
     "title": "제목8",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용밖에 없습니다.",
+    "date": "2023-05-8",
+    "user": "유저8",
   },
   {
     "type": "default",
     "id": 9,
     "title": "제목9",
     "checkGood": false,
-    "imgUrl": "",
+    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-9",
+    "user": "유저9",
   },
   {
     "type": "default",
@@ -389,5 +384,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
     "content": "이것은 내용입니다.",
+    "date": "2023-05-10",
+    "user": "유저10",
   },
 ];

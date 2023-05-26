@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
-import 'package:swag_cross_app/features/user_profile/view/notice_page.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 // 마이페이지-메인
@@ -14,32 +19,60 @@ class UserProfileScreen extends StatefulWidget {
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
   @override
+  void initState() {
+    super.initState();
+
+    // SecureStorageLogin.loginCheckIsNone(context, mounted);
+  }
+
+  void _alertIconTap() {
+    context.pushNamed(AlertScreen.routeName);
+  }
+
+  void _customerServiceTap() {
+    context.pushNamed(
+      CustomerServiceScreen.routeName,
+      queryParams: {"initIndex": "0"},
+    );
+  }
+
+  void onLogoutTap(BuildContext context) {
+    SecureStorageLogin.setLogout();
+    context.pushReplacementNamed(MainNavigation.routeName);
+  }
+
+  @override
   Widget build(BuildContext context) {
     // final _imageSize = MediaQuery.of(context).size.width / 4;
     String name = "강소연";
     String level = "GOLD 등급";
     int volTime = 20;
 
-    void onLogoutTap(BuildContext context) {
-      SecureStorageLogin.setLogout();
-      SecureStorageLogin.loginCheckIsNone(context, mounted);
-    }
-
     return Scaffold(
+      // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("마이페이지"),
-        actions: <Widget>[
+        actions: [
           // IconButton(
           //     icon: const Icon(Icons.search),
           //     onPressed: () {
           //       print("검색");
           //     }),
-          IconButton(
-              icon: const Icon(Icons.notifications_outlined),
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const NoticePage()));
-              }),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: Sizes.size10,
+              horizontal: Sizes.size10,
+            ),
+            child: GestureDetector(
+              onTap: _alertIconTap,
+              child: const FaIcon(
+                FontAwesomeIcons.bell,
+                size: 34,
+                color: Colors.black54,
+              ),
+            ),
+          ),
         ],
       ),
       //  body: Column(
@@ -168,13 +201,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                   Container(height: 1, width: 350, color: Colors.grey),
-                  Expanded(
+                  const Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 20),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [Text("누적 봉사 시간: 20시간")],
+                        children: [Text("누적 봉사 시간: 20시간")],
                       ),
                     ),
                   ),
@@ -197,18 +230,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ),
               child: Row(
                 children: [
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       // onTap: ,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [Text("봉사 신청"), Text("2건")],
+                      children: [Text("봉사 신청"), Text("2건")],
                     ),
                   ),
                   Container(height: 50, width: 2, color: Colors.grey),
-                  Expanded(
+                  const Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [Text("봉사 완료"), Text("6건")],
+                      children: [Text("봉사 완료"), Text("6건")],
                     ),
                   ),
                 ],
@@ -219,7 +252,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               children: [
                 const Text("인증서 발급"),
                 Gaps.v20,
-                const Text("고객 센터"),
+                const Text("FAQ"),
+                Gaps.v20,
+                GestureDetector(
+                  onTap: _customerServiceTap,
+                  child: const Text("고객 센터"),
+                ),
                 Gaps.v20,
                 GestureDetector(
                   onTap: () => onLogoutTap(context),
