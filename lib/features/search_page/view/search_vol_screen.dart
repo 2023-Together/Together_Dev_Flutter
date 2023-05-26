@@ -112,9 +112,9 @@ class _SearchVolScreenState extends State<SearchVolScreen> {
         builder: (context) {
           return AlertDialog(
             title: const Text('봉사 신청'),
-            content: const SingleChildScrollView(
+            content: SingleChildScrollView(
               child: ListBody(
-                children: <Widget>[
+                children: const <Widget>[
                   Text('해당 봉사를 신청하시겠습니까?'),
                 ],
               ),

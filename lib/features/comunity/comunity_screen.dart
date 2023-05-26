@@ -204,11 +204,12 @@ class _ComunityScreenState extends State<ComunityScreen> {
                 child: Center(
                   child: Column(
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: Sizes.size10),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.size10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: const [
                             Text(
                               "공지사항",
                               style: TextStyle(

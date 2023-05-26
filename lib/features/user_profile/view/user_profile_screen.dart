@@ -201,13 +201,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                   Container(height: 1, width: 350, color: Colors.grey),
-                  const Expanded(
+                  Expanded(
                     child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text("누적 봉사 시간: 20시간")],
+                        children: const [Text("누적 봉사 시간: 20시간")],
                       ),
                     ),
                   ),
@@ -230,18 +230,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               ),
               child: Row(
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       // onTap: ,
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text("봉사 신청"), Text("2건")],
+                      children: const [Text("봉사 신청"), Text("2건")],
                     ),
                   ),
                   Container(height: 50, width: 2, color: Colors.grey),
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: [Text("봉사 완료"), Text("6건")],
+                      children: const [Text("봉사 완료"), Text("6건")],
                     ),
                   ),
                 ],
