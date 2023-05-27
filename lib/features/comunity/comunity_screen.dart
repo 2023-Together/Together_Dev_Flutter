@@ -165,28 +165,47 @@ class _ComunityScreenState extends State<ComunityScreen> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size20,
-                    vertical: Sizes.size10,
+                    horizontal: Sizes.size18,
+                    vertical: Sizes.size6,
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: _isLogined
-                        ? [
+                        ? <Widget>[
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.search,
+                                size: 38,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Gaps.h6,
                             GestureDetector(
                               onTap: _alertIconTap,
-                              child: const FaIcon(
-                                FontAwesomeIcons.bell,
-                                size: 40,
+                              child: const Icon(
+                                Icons.notifications_none,
+                                size: 38,
                                 color: Colors.black54,
                               ),
                             ),
                           ]
-                        : [
+                        : <Widget>[
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Icon(
+                                Icons.search,
+                                size: 38,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Gaps.h14,
                             GestureDetector(
                               onTap: _onLoginTap,
-                              child: const FaIcon(
-                                FontAwesomeIcons.circleUser,
-                                size: 40,
+                              child: const Icon(
+                                Icons.account_circle_outlined,
+                                size: 38,
+                                color: Colors.black54,
                               ),
                             ),
                           ],
@@ -262,6 +281,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                       content: item["content"],
                       date: item["date"],
                       user: item["user"],
+                      isLogined: _isLogined,
                     );
                   } else {
                     return StatefulBuilder(
@@ -300,7 +320,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목1",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-1",
     "user": "유저1",
   },
@@ -309,7 +329,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목2",
     "checkGood": false,
     "imgUrl": "",
-    "content": "이곳은 내용밖에 없습니다.",
+    "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-2",
     "user": "유저2",
   },
@@ -318,7 +338,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목3",
     "checkGood": false,
     "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-3",
     "user": "유저3",
   },
@@ -327,7 +347,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목4",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이곳은 내용밖에 없습니다.",
+    "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-4",
     "user": "유저4",
   },
@@ -336,7 +356,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목5",
     "checkGood": false,
     "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-5",
     "user": "유저5",
   },
@@ -345,7 +365,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목6",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-6",
     "user": "유저6",
   },
@@ -354,7 +374,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목7",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-7",
     "user": "유저7",
   },
@@ -363,7 +383,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목8",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이곳은 내용밖에 없습니다.",
+    "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-8",
     "user": "유저8",
   },
@@ -373,7 +393,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목9",
     "checkGood": false,
     "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-9",
     "user": "유저9",
   },
@@ -383,7 +403,7 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목10",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-10",
     "user": "유저10",
   },

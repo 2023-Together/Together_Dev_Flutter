@@ -43,7 +43,7 @@ class NavTab extends StatelessWidget {
           // color: Colors.blue,
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 300),
-            opacity: isSelected ? 1 : 0.6,
+            opacity: isSelected ? 1 : 0.4,
             // Column은 세로축으로 최대한 확장 하려고 한다.
             child: Column(
               // 사이즈 조절
