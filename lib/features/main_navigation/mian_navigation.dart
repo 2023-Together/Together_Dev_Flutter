@@ -3,8 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_screen.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
+import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
+import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
@@ -76,11 +77,11 @@ class _MainNavigationState extends State<MainNavigation> {
           // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
           Offstage(
             offstage: _selectedIndex != 0,
-            child: const SearchVolScreen(),
+            child: const VolSearchTestScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 1,
-            child: const SearchVolScreen(),
+            child: const OrgSearchTestScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 2,

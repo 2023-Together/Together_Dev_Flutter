@@ -43,7 +43,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
     checkLoginType();
 
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
-    comunityList = checkAds(initComunityList_networkImage);
+    comunityList = checkAds(initComunityList);
   }
 
   // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
@@ -62,7 +62,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   List<Map<String, dynamic>> checkAds(List<Map<String, dynamic>> list) {
     if (!list.any((item) => item["type"] == "ad")) {
       // 리스트 사이에 광고 넣기
-      for (int i = initComunityList_networkImage.length; i >= 1; i -= 5) {
+      for (int i = initComunityList.length; i >= 1; i -= 5) {
         list.insert(i, {"type": "ad"});
       }
     }
@@ -91,8 +91,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   void _scrollEnd() {
     if (scrollController.offset == scrollController.position.maxScrollExtent) {
       setState(() {
-        comunityList =
-            [...comunityList] + checkAds(initComunityList_networkImage);
+        comunityList = [...comunityList] + checkAds(initComunityList);
       });
     }
   }
@@ -118,7 +117,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   // 리스트 새로고침
   Future _refreshComunityList() async {
     setState(() {
-      comunityList = checkAds(initComunityList_networkImage);
+      comunityList = checkAds(initComunityList);
     });
   }
 
@@ -341,7 +340,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
 
 List<Map<String, dynamic>> comunityList = [];
 
-List<Map<String, dynamic>> initComunityList_jpg = [
+List<Map<String, dynamic>> initComunityList = [
   {
     "type": "default",
     "title": "제목1",
@@ -364,7 +363,7 @@ List<Map<String, dynamic>> initComunityList_jpg = [
     "type": "default",
     "title": "제목3",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-3",
     "user": "유저3",
@@ -382,7 +381,7 @@ List<Map<String, dynamic>> initComunityList_jpg = [
     "type": "default",
     "title": "제목5",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-5",
     "user": "유저5",
@@ -419,102 +418,7 @@ List<Map<String, dynamic>> initComunityList_jpg = [
     "id": 9,
     "title": "제목9",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-9",
-    "user": "유저9",
-  },
-  {
-    "type": "default",
-    "id": 10,
-    "title": "제목10",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-10",
-    "user": "유저10",
-  },
-];
-
-List<Map<String, dynamic>> initComunityList_networkImage = [
-  {
-    "type": "default",
-    "title": "제목1",
-    "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-1",
-    "user": "유저1",
-  },
-  {
-    "type": "default",
-    "title": "제목2",
-    "checkGood": false,
-    "imgUrl": "",
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-2",
-    "user": "유저2",
-  },
-  {
-    "type": "default",
-    "title": "제목3",
-    "checkGood": false,
-    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-3",
-    "user": "유저3",
-  },
-  {
-    "type": "default",
-    "title": "제목4",
-    "checkGood": true,
-    "imgUrl": "",
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-4",
-    "user": "유저4",
-  },
-  {
-    "type": "default",
-    "title": "제목5",
-    "checkGood": false,
-    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-5",
-    "user": "유저5",
-  },
-  {
-    "type": "default",
-    "title": "제목6",
-    "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-6",
-    "user": "유저6",
-  },
-  {
-    "type": "default",
-    "title": "제목7",
-    "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-7",
-    "user": "유저7",
-  },
-  {
-    "type": "default",
-    "title": "제목8",
-    "checkGood": true,
-    "imgUrl": "",
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-8",
-    "user": "유저8",
-  },
-  {
-    "type": "default",
-    "id": 9,
-    "title": "제목9",
-    "checkGood": false,
-    "imgUrl": "http://www.100ssd.co.kr/news/photo/202008/70836_50981_2758.jpg",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-9",
     "user": "유저9",
