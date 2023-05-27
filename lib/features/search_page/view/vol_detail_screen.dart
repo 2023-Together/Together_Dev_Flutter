@@ -34,9 +34,9 @@ class _VolDetailScreenState extends State<VolDetailScreen>
         builder: (context) {
           return AlertDialog(
             title: const Text('봉사 신청'),
-            content: const SingleChildScrollView(
+            content: SingleChildScrollView(
               child: ListBody(
-                children: <Widget>[
+                children: const <Widget>[
                   Text('해당 봉사를 신청하시겠습니까?'),
                 ],
               ),
@@ -112,10 +112,10 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                     //   ),
                     // ),
                     const SizedBox(height: 10),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Column(
-                        children: [
+                        children: const [
                           Text(" 모집기관: 진주 박물관 "),
                           Text(" 봉사기간: 2023.7.6 ~ 2023.8.30 "),
                           Text(" 봉사시간: 13:00 ~ 16:00 "),

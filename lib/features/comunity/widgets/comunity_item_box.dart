@@ -13,6 +13,7 @@ class ComunityItemBox extends StatefulWidget {
     required this.date,
     required this.user,
     required this.isLogined,
+    required this.index,
   });
 
   final String title;
@@ -22,6 +23,7 @@ class ComunityItemBox extends StatefulWidget {
   final String date;
   final String user;
   final bool isLogined;
+  final int index;
 
   @override
   State<ComunityItemBox> createState() => _ComunityItemBox();
@@ -63,13 +65,20 @@ class _ComunityItemBox extends State<ComunityItemBox> {
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
         width: constraints.maxWidth,
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(
-              width: 0.5,
-              color: Colors.black12,
-            ),
-          ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          // border: const Border(
+          //   bottom: BorderSide(
+          //     width: 0.5,
+          //     color: Colors.black12,
+          //   ),
+          // ),
+          borderRadius: widget.index == 0
+              ? const BorderRadius.only(
+                  topLeft: Radius.circular(Sizes.size20),
+                  topRight: Radius.circular(Sizes.size20),
+                )
+              : BorderRadius.zero,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
