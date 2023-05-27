@@ -43,7 +43,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
     checkLoginType();
 
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
-    comunityList = checkAds(initComunityList);
+    comunityList = checkAds(initComunityList_networkImage);
   }
 
   // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
@@ -62,7 +62,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   List<Map<String, dynamic>> checkAds(List<Map<String, dynamic>> list) {
     if (!list.any((item) => item["type"] == "ad")) {
       // 리스트 사이에 광고 넣기
-      for (int i = initComunityList.length; i >= 1; i -= 5) {
+      for (int i = initComunityList_networkImage.length; i >= 1; i -= 5) {
         list.insert(i, {"type": "ad"});
       }
     }
@@ -91,7 +91,8 @@ class _ComunityScreenState extends State<ComunityScreen> {
   void _scrollEnd() {
     if (scrollController.offset == scrollController.position.maxScrollExtent) {
       setState(() {
-        comunityList = [...comunityList] + checkAds(initComunityList);
+        comunityList =
+            [...comunityList] + checkAds(initComunityList_networkImage);
       });
     }
   }
@@ -117,7 +118,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   // 리스트 새로고침
   Future _refreshComunityList() async {
     setState(() {
-      comunityList = checkAds(initComunityList);
+      comunityList = checkAds(initComunityList_networkImage);
     });
   }
 
@@ -154,14 +155,14 @@ class _ComunityScreenState extends State<ComunityScreen> {
       ),
       // CustomScrollView : 스크롤 가능한 구역
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             // 스타일1
-            // stops: [0.09, 0.6],
-            // colors: [Colors.white, Color(0xFF4AA8D8)],
+            stops: [0.09, 0.6],
+            colors: [Colors.white, Color(0xFF4AA8D8)],
             // 스타일2
-            stops: const [0.05, 0.5],
-            colors: [Colors.white, Colors.lightGreen.shade300],
+            // stops: const [0.05, 0.5],
+            // colors: [Colors.white, Colors.lightGreen.shade300],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -193,79 +194,47 @@ class _ComunityScreenState extends State<ComunityScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: _isLogined
-                          ? [
+                          ? <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: const Icon(
+                                  Icons.search,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Gaps.h6,
                               GestureDetector(
                                 onTap: _alertIconTap,
-                                child: const FaIcon(
-                                  FontAwesomeIcons.bell,
-                                  size: 40,
+                                child: const Icon(
+                                  Icons.notifications_none,
+                                  size: 38,
                                   color: Colors.black54,
                                 ),
                               ),
                             ]
-                          : [
+                          : <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: const Icon(
+                                  Icons.search,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Gaps.h14,
                               GestureDetector(
                                 onTap: _onLoginTap,
-                                child: const FaIcon(
-                                  FontAwesomeIcons.circleUser,
-                                  size: 40,
+                                child: const Icon(
+                                  Icons.account_circle_outlined,
+                                  size: 38,
+                                  color: Colors.black54,
                                 ),
                               ),
                             ],
                     ),
                   ),
                 ],
-              ),
-              // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-              SliverToBoxAdapter(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size18,
-                    vertical: Sizes.size6,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: _isLogined
-                        ? <Widget>[
-                            GestureDetector(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.search,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            Gaps.h6,
-                            GestureDetector(
-                              onTap: _alertIconTap,
-                              child: const Icon(
-                                Icons.notifications_none,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ]
-                        : <Widget>[
-                            GestureDetector(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.search,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            Gaps.h14,
-                            GestureDetector(
-                              onTap: _onLoginTap,
-                              child: const Icon(
-                                Icons.account_circle_outlined,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                  ),
-                ),
               ),
               // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
               SliverToBoxAdapter(
@@ -351,7 +320,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                                 onAdFailedToLoad: failedAdsLoading,
                                 onAdLoaded: (_) {},
                               ),
-                              size: AdSize.banner,
+                              size: AdSize.fullBanner,
                               adUnitId: AdHelper.bannerAdUnitId,
                               request: const AdRequest(),
                             )..load(),
@@ -372,7 +341,102 @@ class _ComunityScreenState extends State<ComunityScreen> {
 
 List<Map<String, dynamic>> comunityList = [];
 
-List<Map<String, dynamic>> initComunityList = [
+List<Map<String, dynamic>> initComunityList_jpg = [
+  {
+    "type": "default",
+    "title": "제목1",
+    "checkGood": true,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-1",
+    "user": "유저1",
+  },
+  {
+    "type": "default",
+    "title": "제목2",
+    "checkGood": false,
+    "imgUrl": "",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-2",
+    "user": "유저2",
+  },
+  {
+    "type": "default",
+    "title": "제목3",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-3",
+    "user": "유저3",
+  },
+  {
+    "type": "default",
+    "title": "제목4",
+    "checkGood": true,
+    "imgUrl": "",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-4",
+    "user": "유저4",
+  },
+  {
+    "type": "default",
+    "title": "제목5",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-5",
+    "user": "유저5",
+  },
+  {
+    "type": "default",
+    "title": "제목6",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-6",
+    "user": "유저6",
+  },
+  {
+    "type": "default",
+    "title": "제목7",
+    "checkGood": true,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-7",
+    "user": "유저7",
+  },
+  {
+    "type": "default",
+    "title": "제목8",
+    "checkGood": true,
+    "imgUrl": "",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-8",
+    "user": "유저8",
+  },
+  {
+    "type": "default",
+    "id": 9,
+    "title": "제목9",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-9",
+    "user": "유저9",
+  },
+  {
+    "type": "default",
+    "id": 10,
+    "title": "제목10",
+    "checkGood": false,
+    "imgUrl": "assets/images/dog.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-10",
+    "user": "유저10",
+  },
+];
+
+List<Map<String, dynamic>> initComunityList_networkImage = [
   {
     "type": "default",
     "title": "제목1",
