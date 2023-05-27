@@ -215,9 +215,9 @@ class _ComunityScreenState extends State<ComunityScreen> {
                             width: 1.5,
                           ),
                         ),
-                        child: const Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
+                          children: const [
                             MainNoticeBox(title: "공지사항1"),
                             MainNoticeBox(title: "공지사항2"),
                             MainNoticeBox(title: "공지사항3"),

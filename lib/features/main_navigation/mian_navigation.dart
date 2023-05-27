@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/club/club_screen.dart';
+import 'package:swag_cross_app/features/club/club_page.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
@@ -121,7 +121,7 @@ class _MainNavigationState extends State<MainNavigation>
           ),
           Offstage(
             offstage: _selectedIndex != 3,
-            child: const ClubScreen(),
+            child: const ClubPage(),
           ),
           Offstage(
             offstage: _selectedIndex != 4,

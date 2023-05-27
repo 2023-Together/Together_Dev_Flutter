@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/club/club_page.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
@@ -32,5 +33,10 @@ final router = GoRouter(
       path: NoticeScreen.routeURL,
       builder: (context, state) => const NoticeScreen(),
     ),
+    GoRoute(
+      name: ClubPage.routeName,
+      path: ClubPage.routeURL,
+      builder: (context, state) => const ClubPage(),
+    )
   ],
 );
