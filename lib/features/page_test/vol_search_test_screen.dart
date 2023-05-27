@@ -97,6 +97,7 @@ class VolSearchTestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         shape: const RoundedRectangleBorder(
@@ -141,6 +142,7 @@ class VolSearchTestScreen extends StatelessWidget {
         ),
         child: Column(
           children: [
+            Gaps.v6,
             SizedBox(
               height: 35,
               child: ListView.separated(
@@ -152,6 +154,7 @@ class VolSearchTestScreen extends StatelessWidget {
                     horizontal: Sizes.size6,
                   ),
                   decoration: BoxDecoration(
+                    color: Colors.white,
                     border: Border.all(
                       width: 1,
                     ),
@@ -174,52 +177,37 @@ class VolSearchTestScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = volDatas[index];
                   return Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 1,
-                      ),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
                     ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          leading: Image.asset(
-                            "assets/images/yonam.jpg",
-                            width: 80,
-                          ),
-                          title: Text(
-                            item["title"],
-                            style: const TextStyle(
-                              // fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          subtitle: Text(
-                            item["contnet"],
-                            // style: TextStyle(
-                            //   fontSize: 12,
-                            //   color: Colors.grey.shade600,
-                            // ),
-                          ),
-                          trailing: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(item["address"]),
-                              Gaps.v2,
-                              Text(item["orgName"]),
-                              Gaps.v2,
-                              Text(item["startTime"]),
-                            ],
-                          ),
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      leading: Image.asset(
+                        "assets/images/70836_50981_2758.jpg",
+                        width: 80,
+                      ),
+                      title: Text(
+                        item["title"],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
                         ),
-                        // Row(
-                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        //   children: [
-                        //     Text(item["startTime"]),
-                        //   ],
-                        // ),
-                      ],
+                      ),
+                      subtitle: Text(
+                        item["contnet"],
+                      ),
+                      trailing: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(item["address"]),
+                          Gaps.v4,
+                          Text(item["orgName"]),
+                          Gaps.v4,
+                          Text(item["startTime"]),
+                        ],
+                      ),
                     ),
                   );
                 },

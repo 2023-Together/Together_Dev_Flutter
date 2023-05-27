@@ -118,7 +118,7 @@ class OrgSearchTestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         shape: const RoundedRectangleBorder(
@@ -197,8 +197,8 @@ class OrgSearchTestScreen extends StatelessWidget {
                 itemCount: 18,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: Sizes.size6,
-                  mainAxisSpacing: Sizes.size6,
+                  crossAxisSpacing: Sizes.size10,
+                  mainAxisSpacing: Sizes.size10,
                   childAspectRatio: 10 / 11,
                 ),
                 itemBuilder: (context, index) {
@@ -219,7 +219,9 @@ class OrgSearchTestScreen extends StatelessWidget {
                             width: constraints.maxWidth,
                           ),
                           Text('이름 : 연암공과대학교${index + 1}'),
+                          // Gaps.v2,
                           const Text("주소 : 진주시 가좌동"),
+                          // Gaps.v2,
                           Text("모집중인 봉사 : ${index + 1}개"),
                         ],
                       ),
