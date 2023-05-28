@@ -8,7 +8,7 @@ class NavTab extends StatelessWidget {
     super.key,
     required this.text,
     required this.isSelected,
-    required this.icon,
+    required this.unSelectedIcon,
     required this.selectedIcon,
     required this.onTap,
     required this.selectedIndex,
@@ -18,7 +18,7 @@ class NavTab extends StatelessWidget {
 
   final String text;
   final bool isSelected;
-  final IconData icon;
+  final IconData unSelectedIcon;
   final IconData selectedIcon;
   final Function onTap;
   final int selectedIndex;
@@ -51,7 +51,7 @@ class NavTab extends StatelessWidget {
               children: [
                 imgURI.isEmpty
                     ? FaIcon(
-                        isSelected ? selectedIcon : icon,
+                        isSelected ? selectedIcon : unSelectedIcon,
                         size: Sizes.size24 + Sizes.size2,
                       )
                     : logined

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 
 final List<String> volAddress = [
   "지역1",
@@ -169,23 +170,8 @@ class OrgSearchTestScreen extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: volAddress.length,
-                itemBuilder: (context, index) => Container(
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Sizes.size8,
-                    horizontal: Sizes.size6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      width: 1,
-                    ),
-                    borderRadius: const BorderRadius.all(
-                      Radius.circular(
-                        Sizes.size20,
-                      ),
-                    ),
-                  ),
-                  child: Text(volAddress[index]),
+                itemBuilder: (context, index) => CategoriButtons(
+                  title: volAddress[index],
                 ),
                 separatorBuilder: (context, index) => Gaps.h8,
               ),
