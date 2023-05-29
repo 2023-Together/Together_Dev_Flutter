@@ -5,6 +5,8 @@ import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 
 class SignUpMain extends StatelessWidget {
+  static const routeName = "signup";
+  static const routeURL = "/signup";
   const SignUpMain({super.key});
 
   @override

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class VolDetailScreen extends StatefulWidget {
-
   const VolDetailScreen({super.key});
 
   @override
   State<VolDetailScreen> createState() => _VolDetailScreenState();
-
 }
 
 class _VolDetailScreenState extends State<VolDetailScreen>
@@ -24,7 +23,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
   }
 
   // void Future<List> async {
-    
+
   // }
 
   Future<void> _showAlertDialog() async {
@@ -46,7 +45,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
               TextButton(
                 // 취소 버튼
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  context.pop();
                 },
                 child: const Text('아니오'),
               ),
@@ -71,9 +70,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
           IconButton(
               icon: const Icon(Icons.search),
               // 아이콘 클릭 시 bottom sheet 모달 창 생성 (검색 창)
-              onPressed: () {
-                
-              }),
+              onPressed: () {}),
           IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
@@ -197,7 +194,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                             ),
                           ),
                           Container(
-                            color: Color.fromARGB(255, 239, 132, 167),
+                            color: const Color.fromARGB(255, 239, 132, 167),
                             alignment: Alignment.center,
                             child: const Text(
                               '지도 삽입',
@@ -223,7 +220,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: Icon(Icons.favorite_border_outlined),
+                icon: const Icon(Icons.favorite_border_outlined),
                 onPressed: () {},
               ),
               SizedBox(
@@ -234,7 +231,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                   onPressed: () {
                     _showAlertDialog();
                   },
-                  child: Text("신청하기"),
+                  child: const Text("신청하기"),
                 ),
               ),
             ],

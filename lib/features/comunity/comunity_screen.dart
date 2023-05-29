@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/main_page/widgets/main_comunity_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
+import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
-
-import '../main_page/widgets/main_notice_box.dart';
 
 class ComunityScreen extends StatefulWidget {
   const ComunityScreen({super.key});
@@ -68,8 +69,9 @@ class _ComunityScreenState extends State<ComunityScreen> {
     return list;
   }
 
+  // 스크롤 할때마다 호출
   void _onScroll() {
-    if (scrollController.offset > 310) {
+    if (scrollController.offset > 260) {
       // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
       // 리턴처리 필요
       if (_showJumpUpButton) return;
@@ -79,7 +81,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
     } else {
       // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
       // 리턴처리 필요
-      if (_showJumpUpButton == false) return;
+      if (!_showJumpUpButton) return;
       setState(() {
         _showJumpUpButton = false;
       });
@@ -95,20 +97,12 @@ class _ComunityScreenState extends State<ComunityScreen> {
   }
 
   void _alertIconTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const AlertScreen(),
-      ),
-    );
+    context.pushNamed(AlertScreen.routeName);
   }
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SignInMain(),
-      ),
-    );
+    context.pushNamed(SignInMain.routeName);
   }
 
   // 스크롤 위치를 맨위로 이동시킵니다.
@@ -142,7 +136,9 @@ class _ComunityScreenState extends State<ComunityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
+      // backgroundColor: Colors.blue.shade100,
       floatingActionButton: AnimatedOpacity(
         opacity: _showJumpUpButton ? 1 : 0,
         duration: const Duration(milliseconds: 200),
@@ -157,123 +153,185 @@ class _ComunityScreenState extends State<ComunityScreen> {
         ),
       ),
       // CustomScrollView : 스크롤 가능한 구역
-      body: RefreshIndicator(
-        onRefresh: _refreshComunityList,
-        child: CustomScrollView(
-          controller: scrollController,
-          // CustomScrollView 안에 들어갈 element들
-          // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-          slivers: [
-            // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
-            SliverAppBar(
-              automaticallyImplyLeading: false,
-              pinned: true,
-              actions: [
-                Padding(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            // 스타일1
+            stops: [0.09, 0.6],
+            colors: [Colors.white, Color(0xFF4AA8D8)],
+            // 스타일2
+            // stops: const [0.05, 0.5],
+            // colors: [Colors.white, Colors.lightGreen.shade300],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: RefreshIndicator(
+          onRefresh: _refreshComunityList,
+          child: CustomScrollView(
+            controller: scrollController,
+            // CustomScrollView 안에 들어갈 element들
+            // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+            slivers: [
+              // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
+              SliverAppBar(
+                automaticallyImplyLeading: false,
+                // pinned: true,
+                floating: true,
+                snap: true,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20.0),
+                  ),
+                ),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Sizes.size20,
+                      vertical: Sizes.size10,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: _isLogined
+                          ? <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: const Icon(
+                                  Icons.search,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Gaps.h6,
+                              GestureDetector(
+                                onTap: _alertIconTap,
+                                child: const Icon(
+                                  Icons.notifications_none,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ]
+                          : <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: const Icon(
+                                  Icons.search,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Gaps.h14,
+                              GestureDetector(
+                                onTap: _onLoginTap,
+                                child: const Icon(
+                                  Icons.account_circle_outlined,
+                                  size: 38,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ],
+                    ),
+                  ),
+                ],
+              ),
+              // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
+              SliverToBoxAdapter(
+                child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size20,
                     vertical: Sizes.size10,
+                    horizontal: Sizes.size20,
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: _isLogined
-                        ? [
-                            GestureDetector(
-                              onTap: _alertIconTap,
-                              child: const FaIcon(
-                                FontAwesomeIcons.bell,
-                                size: 40,
-                                color: Colors.black54,
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Sizes.size10,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "공지사항",
+                                style: TextStyle(
+                                  fontSize: Sizes.size20,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ]
-                        : [
-                            GestureDetector(
-                              onTap: _onLoginTap,
-                              child: const FaIcon(
-                                FontAwesomeIcons.circleUser,
-                                size: 40,
+                              Text(
+                                "목록 보기",
+                                style: TextStyle(
+                                  fontSize: Sizes.size16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.purple.shade400,
+                                ),
                               ),
-                            ),
-                          ],
-                  ),
-                ),
-              ],
-            ),
-            // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: Sizes.size10,
-                  horizontal: Sizes.size32,
-                ),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 100,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Sizes.size5,
-                          vertical: Sizes.size5,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: Colors.white,
-                          border: Border.all(
-                            width: 1.5,
+                            ],
                           ),
                         ),
-                        child: const Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            MainNoticeBox(title: "공지사항1"),
-                            MainNoticeBox(title: "공지사항2"),
-                            MainNoticeBox(title: "공지사항3"),
-                          ],
+                        Gaps.v8,
+                        SizedBox(
+                          width: size.width,
+                          height: 110,
+                          child: ListView.separated(
+                            // 가로로 스크롤
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 5,
+                            itemBuilder: (context, index) => const NoticeBox(
+                              title: "공지사항",
+                              content: "공지사항의 내용입니다.",
+                            ),
+                            separatorBuilder: (context, index) => Gaps.h10,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-            // SliverFixedExtentList : item들의 리스트를 만들어 냄
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                childCount: comunityList.length,
-                (context, index) {
-                  final item = comunityList[index];
-                  if (item["type"] != "ad") {
-                    return MainComunityBox(
-                      key: Key(item["title"]),
-                      title: item["title"],
-                      img: item["imgUrl"],
-                      initCheckGood: item["checkGood"],
-                      content: item["content"],
-                    );
-                  } else {
-                    return StatefulBuilder(
-                      builder: (context, setState) => Container(
-                        height: 50,
-                        alignment: Alignment.center,
-                        child: AdWidget(
-                          ad: BannerAd(
-                            listener: BannerAdListener(
-                              onAdFailedToLoad: failedAdsLoading,
-                              onAdLoaded: (_) {},
-                            ),
-                            size: AdSize.banner,
-                            adUnitId: AdHelper.bannerAdUnitId,
-                            request: const AdRequest(),
-                          )..load(),
+              // SliverFixedExtentList : item들의 리스트를 만들어 냄
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  childCount: comunityList.length,
+                  (context, index) {
+                    final item = comunityList[index];
+                    if (item["type"] != "ad") {
+                      return ComunityItemBox(
+                        key: Key(item["title"]),
+                        title: item["title"],
+                        img: item["imgUrl"],
+                        initCheckGood: item["checkGood"],
+                        content: item["content"],
+                        date: item["date"],
+                        user: item["user"],
+                        isLogined: _isLogined,
+                        index: index,
+                      );
+                    } else {
+                      return StatefulBuilder(
+                        builder: (context, setState) => Container(
+                          height: 50,
+                          alignment: Alignment.center,
+                          child: AdWidget(
+                            ad: BannerAd(
+                              listener: BannerAdListener(
+                                onAdFailedToLoad: failedAdsLoading,
+                                onAdLoaded: (_) {},
+                              ),
+                              size: AdSize.fullBanner,
+                              adUnitId: AdHelper.bannerAdUnitId,
+                              request: const AdRequest(),
+                            )..load(),
+                          ),
                         ),
-                      ),
-                    );
-                  }
-                },
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -288,64 +346,82 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목1",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-1",
+    "user": "유저1",
   },
   {
     "type": "default",
     "title": "제목2",
     "checkGood": false,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-2",
+    "user": "유저2",
   },
   {
     "type": "default",
     "title": "제목3",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-3",
+    "user": "유저3",
   },
   {
     "type": "default",
     "title": "제목4",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-4",
+    "user": "유저4",
   },
   {
     "type": "default",
     "title": "제목5",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-5",
+    "user": "유저5",
   },
   {
     "type": "default",
     "title": "제목6",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-6",
+    "user": "유저6",
   },
   {
     "type": "default",
     "title": "제목7",
     "checkGood": true,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-7",
+    "user": "유저7",
   },
   {
     "type": "default",
     "title": "제목8",
     "checkGood": true,
     "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "content": "이곳은 내용만 있습니다.",
+    "date": "2023-05-8",
+    "user": "유저8",
   },
   {
     "type": "default",
     "id": 9,
     "title": "제목9",
     "checkGood": false,
-    "imgUrl": "",
-    "content": "이것은 내용입니다.",
+    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-9",
+    "user": "유저9",
   },
   {
     "type": "default",
@@ -353,6 +429,8 @@ List<Map<String, dynamic>> initComunityList = [
     "title": "제목10",
     "checkGood": false,
     "imgUrl": "assets/images/dog.jpg",
-    "content": "이것은 내용입니다.",
+    "content": "이것은 내용과 사진입니다.",
+    "date": "2023-05-10",
+    "user": "유저10",
   },
 ];

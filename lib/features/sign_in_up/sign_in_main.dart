@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
@@ -6,6 +7,8 @@ import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 
 class SignInMain extends StatefulWidget {
+  static const routeName = "login";
+  static const routeURL = "/login";
   const SignInMain({super.key});
 
   @override
@@ -14,11 +17,7 @@ class SignInMain extends StatefulWidget {
 
 class _SignInMainState extends State<SignInMain> {
   void _onSignUpTap(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => const SignUpMain(),
-      ),
-    );
+    context.pushNamed(SignUpMain.routeName);
   }
 
   @override
@@ -28,10 +27,10 @@ class _SignInMainState extends State<SignInMain> {
       appBar: AppBar(
         title: const Text("로그인"),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: [
+          children: const [
             Gaps.v36,
             SignInButton(
               path: "naver",
