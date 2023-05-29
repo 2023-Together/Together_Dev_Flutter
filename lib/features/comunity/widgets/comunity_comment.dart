@@ -4,14 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
-class MainComment extends StatefulWidget {
-  const MainComment({super.key});
+class ComunityComment extends StatefulWidget {
+  const ComunityComment({super.key});
 
   @override
-  State<MainComment> createState() => _MainCommentState();
+  State<ComunityComment> createState() => _ComunityCommentState();
 }
 
-class _MainCommentState extends State<MainComment> {
+class _ComunityCommentState extends State<ComunityComment> {
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
@@ -177,15 +177,6 @@ class _MainCommentState extends State<MainComment> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      FaIcon(
-                                        FontAwesomeIcons.at,
-                                        color: Colors.grey.shade900,
-                                      ),
-                                      Gaps.h10,
-                                      FaIcon(
-                                        FontAwesomeIcons.gift,
-                                        color: Colors.grey.shade900,
-                                      ),
                                       Gaps.h10,
                                       FaIcon(
                                         FontAwesomeIcons.faceSmile,

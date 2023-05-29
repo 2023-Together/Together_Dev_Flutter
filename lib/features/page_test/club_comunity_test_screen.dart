@@ -5,20 +5,19 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
 import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
+import 'package:swag_cross_app/features/page_test/widgets/club_comunity_item_box.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
-class ComunityScreen extends StatefulWidget {
-  const ComunityScreen({super.key});
+class ClubComunityTestScreen extends StatefulWidget {
+  const ClubComunityTestScreen({super.key});
 
   @override
-  State<ComunityScreen> createState() => _ComunityScreenState();
+  State<ClubComunityTestScreen> createState() => _ClubComunityTestScreenState();
 }
 
-class _ComunityScreenState extends State<ComunityScreen> {
+class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
 
@@ -100,11 +99,6 @@ class _ComunityScreenState extends State<ComunityScreen> {
     context.pushNamed(AlertScreen.routeName);
   }
 
-  // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
-  void _onLoginTap() {
-    context.pushNamed(SignInMain.routeName);
-  }
-
   // 스크롤 위치를 맨위로 이동시킵니다.
   void _scrollToTop() {
     scrollController.animateTo(
@@ -175,7 +169,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
             slivers: [
               // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
               SliverAppBar(
-                automaticallyImplyLeading: false,
+                automaticallyImplyLeading: true,
                 // pinned: true,
                 floating: true,
                 snap: true,
@@ -191,47 +185,26 @@ class _ComunityScreenState extends State<ComunityScreen> {
                       vertical: Sizes.size10,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: _isLogined
-                          ? <Widget>[
-                              GestureDetector(
-                                onTap: () {},
-                                child: const Icon(
-                                  Icons.search,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                              Gaps.h6,
-                              GestureDetector(
-                                onTap: _alertIconTap,
-                                child: const Icon(
-                                  Icons.notifications_none,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ]
-                          : <Widget>[
-                              GestureDetector(
-                                onTap: () {},
-                                child: const Icon(
-                                  Icons.search,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                              Gaps.h14,
-                              GestureDetector(
-                                onTap: _onLoginTap,
-                                child: const Icon(
-                                  Icons.account_circle_outlined,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ],
-                    ),
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: const Icon(
+                              Icons.search,
+                              size: 38,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          Gaps.h6,
+                          GestureDetector(
+                            onTap: _alertIconTap,
+                            child: const Icon(
+                              Icons.notifications_none,
+                              size: 38,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ]),
                   ),
                 ],
               ),
@@ -253,14 +226,14 @@ class _ComunityScreenState extends State<ComunityScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "공지사항",
+                                "동아리장의 공지",
                                 style: TextStyle(
                                   fontSize: Sizes.size20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                "목록 보기",
+                                "더보기 >",
                                 style: TextStyle(
                                   fontSize: Sizes.size16,
                                   fontWeight: FontWeight.w600,
@@ -297,7 +270,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                   (context, index) {
                     final item = comunityList[index];
                     if (item["type"] != "ad") {
-                      return ComunityItemBox(
+                      return ClubComunityItemBox(
                         key: Key(item["title"]),
                         title: item["title"],
                         img: item["imgUrl"],

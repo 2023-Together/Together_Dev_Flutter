@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
@@ -28,6 +29,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     context.pushNamed(AlertScreen.routeName);
   }
 
+  void _customerServiceTap() {
+    context.pushNamed(
+      CustomerServiceScreen.routeName,
+      queryParams: {"initIndex": "0"},
+    );
+  }
+
   void onLogoutTap(BuildContext context) {
     SecureStorageLogin.setLogout();
     context.pushReplacementNamed(MainNavigation.routeName);
@@ -41,6 +49,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     int volTime = 20;
 
     return Scaffold(
+      // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text("마이페이지"),
         actions: [
@@ -244,7 +254,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 Gaps.v20,
                 const Text("FAQ"),
                 Gaps.v20,
-                const Text("고객 센터"),
+                GestureDetector(
+                  onTap: _customerServiceTap,
+                  child: const Text("고객 센터"),
+                ),
                 Gaps.v20,
                 GestureDetector(
                   onTap: () => onLogoutTap(context),
