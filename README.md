@@ -49,3 +49,5 @@ samples, guidance on mobile development, and a full API reference.
 - table_calendar: 3.0.9 (달력 라이브러리)
 - intl: 0.18.0 (메시지 번역, 복수형 및 성별, 날짜/숫자 형식 지정 및 구문 분석, 양방향 텍스트를 포함한 국제화 및 현지화 기능을 제공)
 - google_mobile_ads: 2.3.0 (구글 광고 라이브러리)
+- provider: 6.0.5 (상태 관리 라이브러리)
+- go_router: ^6.5.5 (라우터 페이지 관리 라이브러리)
