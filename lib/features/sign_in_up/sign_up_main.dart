@@ -15,10 +15,10 @@ class SignUpMain extends StatelessWidget {
       appBar: AppBar(
         title: const Text("회원가입"),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: [
+          children: const [
             Gaps.v36,
             SignInButton(
               path: "naver",

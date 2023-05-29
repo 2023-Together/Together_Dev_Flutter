@@ -27,10 +27,10 @@ class _SignInMainState extends State<SignInMain> {
       appBar: AppBar(
         title: const Text("로그인"),
       ),
-      body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: [
+          children: const [
             Gaps.v36,
             SignInButton(
               path: "naver",
