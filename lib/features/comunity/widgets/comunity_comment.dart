@@ -177,15 +177,6 @@ class _ComunityCommentState extends State<ComunityComment> {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      FaIcon(
-                                        FontAwesomeIcons.at,
-                                        color: Colors.grey.shade900,
-                                      ),
-                                      Gaps.h10,
-                                      FaIcon(
-                                        FontAwesomeIcons.gift,
-                                        color: Colors.grey.shade900,
-                                      ),
                                       Gaps.h10,
                                       FaIcon(
                                         FontAwesomeIcons.faceSmile,

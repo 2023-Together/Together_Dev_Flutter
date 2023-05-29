@@ -8,7 +8,7 @@ class NavTab extends StatelessWidget {
     super.key,
     required this.text,
     required this.isSelected,
-    required this.icon,
+    required this.unSelectedIcon,
     required this.selectedIcon,
     required this.onTap,
     required this.selectedIndex,
@@ -18,7 +18,7 @@ class NavTab extends StatelessWidget {
 
   final String text;
   final bool isSelected;
-  final IconData icon;
+  final IconData unSelectedIcon;
   final IconData selectedIcon;
   final Function onTap;
   final int selectedIndex;
@@ -43,7 +43,7 @@ class NavTab extends StatelessWidget {
           // color: Colors.blue,
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 300),
-            opacity: isSelected ? 1 : 0.6,
+            opacity: isSelected ? 1 : 0.4,
             // Column은 세로축으로 최대한 확장 하려고 한다.
             child: Column(
               // 사이즈 조절
@@ -51,7 +51,7 @@ class NavTab extends StatelessWidget {
               children: [
                 imgURI.isEmpty
                     ? FaIcon(
-                        isSelected ? selectedIcon : icon,
+                        isSelected ? selectedIcon : unSelectedIcon,
                         size: Sizes.size24 + Sizes.size2,
                       )
                     : logined

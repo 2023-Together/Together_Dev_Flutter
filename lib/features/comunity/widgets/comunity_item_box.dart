@@ -12,6 +12,7 @@ class ComunityItemBox extends StatefulWidget {
     required this.content,
     required this.date,
     required this.user,
+    required this.isLogined,
     required this.index,
   });
 
@@ -21,6 +22,7 @@ class ComunityItemBox extends StatefulWidget {
   final bool initCheckGood;
   final String date;
   final String user;
+  final bool isLogined;
   final int index;
 
   @override
@@ -82,9 +84,12 @@ class _ComunityItemBox extends State<ComunityItemBox> {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              leading: CircleAvatar(
+              leading: const CircleAvatar(
                 radius: 20,
-                child: Text(widget.user),
+                backgroundImage: NetworkImage(
+                  "https://avatars.githubusercontent.com/u/77985708?v=4",
+                ),
+                backgroundColor: Colors.transparent,
               ),
               title: Text(
                 widget.user,
@@ -106,10 +111,16 @@ class _ComunityItemBox extends State<ComunityItemBox> {
                   IconButton(
                     onPressed: _onGoodTap,
                     icon: FaIcon(
-                      _checkGood
-                          ? FontAwesomeIcons.solidThumbsUp
+                      widget.isLogined
+                          ? _checkGood
+                              ? FontAwesomeIcons.solidThumbsUp
+                              : FontAwesomeIcons.thumbsUp
                           : FontAwesomeIcons.thumbsUp,
-                      color: _checkGood ? Colors.blue.shade600 : Colors.black,
+                      color: widget.isLogined
+                          ? _checkGood
+                              ? Colors.blue.shade600
+                              : Colors.black
+                          : Colors.black,
                     ),
                   ),
                   IconButton(
