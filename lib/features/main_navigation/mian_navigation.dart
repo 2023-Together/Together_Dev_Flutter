@@ -90,7 +90,7 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 3,
-              child: const ClubScreen(),
+              child: const ClubPage(),
               // child: const ClubScreen(),
             ),
             Offstage(
