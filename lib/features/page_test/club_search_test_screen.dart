@@ -113,31 +113,37 @@ class _ClubSearchTestScreenState extends State<ClubSearchTestScreen> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   StateDropDownButton(
+                    title: "제목1",
                     initOption: option1,
                     onChangeOption: onChangeOption1,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
+                    title: "제목2",
                     initOption: option2,
                     onChangeOption: onChangeOption2,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
+                    title: "제목3",
                     initOption: option3,
                     onChangeOption: onChangeOption3,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
+                    title: "제목3",
                     initOption: option3,
                     onChangeOption: onChangeOption3,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
+                    title: "제목3",
                     initOption: option3,
                     onChangeOption: onChangeOption3,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
+                    title: "제목3",
                     initOption: option3,
                     onChangeOption: onChangeOption3,
                   ),
