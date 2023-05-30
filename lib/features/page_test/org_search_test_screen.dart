@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
+import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
 final List<String> volAddress = [
   "지역1",
@@ -109,24 +109,70 @@ final List<Map<String, dynamic>> orgDatas = [
   },
 ];
 
-class OrgSearchTestScreen extends StatelessWidget {
+class OrgSearchTestScreen extends StatefulWidget {
   const OrgSearchTestScreen({super.key});
+
+  @override
+  State<OrgSearchTestScreen> createState() => _OrgSearchTestScreenState();
+}
+
+class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
+  String option1 = "";
+  String option2 = "";
+  String option3 = "";
+
+  void onChangeOption1(String? value) {
+    if (value == null) {
+      return;
+    } else {
+      option1 = value;
+    }
+    setState(() {});
+  }
+
+  void onChangeOption2(String? value) {
+    if (value == null) {
+      return;
+    } else {
+      option2 = value;
+    }
+    setState(() {});
+  }
+
+  void onChangeOption3(String? value) {
+    if (value == null) {
+      return;
+    } else {
+      option3 = value;
+    }
+    setState(() {});
+  }
 
   void _alertIconTap(BuildContext context) {
     context.pushNamed(AlertScreen.routeName);
   }
 
+  void onOptionReset() {
+    option1 = "";
+    option2 = "";
+    option3 = "";
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
+    print("$option1, $option2, $option3");
     return Scaffold(
-      backgroundColor: Colors.grey.shade100,
+      // backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20.0),
-          ),
-        ),
+        // shape: const RoundedRectangleBorder(
+        //   borderRadius: BorderRadius.vertical(
+        //     bottom: Radius.circular(20.0),
+        //   ),
+        // ),
+        elevation: 0.2,
+        title: const Text("기관 찾기"),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(
@@ -160,20 +206,42 @@ class OrgSearchTestScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: Sizes.size10,
+          horizontal: Sizes.size5,
         ),
         child: Column(
           children: [
             Gaps.v6,
-            SizedBox(
-              height: 35,
-              child: ListView.separated(
+            Container(
+              height: 45,
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.size14,
+              ),
+              child: ListView(
                 scrollDirection: Axis.horizontal,
-                itemCount: volAddress.length,
-                itemBuilder: (context, index) => CategoriButtons(
-                  title: volAddress[index],
-                ),
-                separatorBuilder: (context, index) => Gaps.h8,
+                children: [
+                  StateDropDownButton(
+                    title: "주소",
+                    initOption: option1,
+                    onChangeOption: onChangeOption1,
+                  ),
+                  Gaps.h14,
+                  StateDropDownButton(
+                    title: "분야",
+                    initOption: option2,
+                    onChangeOption: onChangeOption2,
+                  ),
+                  Gaps.h14,
+                  StateDropDownButton(
+                    title: "인증",
+                    initOption: option3,
+                    onChangeOption: onChangeOption3,
+                  ),
+                  TextButton(
+                    onPressed: onOptionReset,
+                    child: const Text("초기화"),
+                  ),
+                ],
               ),
             ),
             Gaps.v6,
@@ -183,32 +251,80 @@ class OrgSearchTestScreen extends StatelessWidget {
                 itemCount: 18,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  crossAxisSpacing: Sizes.size10,
+                  // crossAxisSpacing: Sizes.size10,
                   mainAxisSpacing: Sizes.size10,
-                  childAspectRatio: 10 / 11,
+                  childAspectRatio: 10 / 12,
                 ),
                 itemBuilder: (context, index) {
-                  final item = orgDatas[index];
+                  // final item = orgDatas[index];
                   return LayoutBuilder(
                     builder: (context, constraints) => Container(
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: Sizes.size5,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        border: Border.all(
-                          width: 1,
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(
+                            Sizes.size6,
+                          ),
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 3,
+                            offset: const Offset(3, 3), // 그림자의 위치 조정
+                          ),
+                        ],
                       ),
+                      clipBehavior: Clip.hardEdge,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Image.asset(
                             "assets/images/yonam.jpg",
                             width: constraints.maxWidth,
+                            fit: BoxFit.fill,
                           ),
-                          Text('이름 : 연암공과대학교${index + 1}'),
-                          // Gaps.v2,
-                          const Text("주소 : 진주시 가좌동"),
-                          // Gaps.v2,
-                          Text("모집중인 봉사 : ${index + 1}개"),
+                          Gaps.v4,
+                          Row(
+                            children: [
+                              Gaps.h8,
+                              Text(
+                                "연암공과대학교${index + 1}",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: Sizes.size16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Gaps.v3,
+                          const Row(
+                            children: [
+                              Gaps.h8,
+                              Text("주소 : "),
+                              Text(
+                                "진주시 가좌동",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Gaps.h8,
+                              const Text("모집중인 봉사 : "),
+                              Text(
+                                "${index + 1}개",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),

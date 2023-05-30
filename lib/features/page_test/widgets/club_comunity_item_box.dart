@@ -263,7 +263,7 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Sizes.size20),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   IconButton(
                     onPressed: _onGoodTap,

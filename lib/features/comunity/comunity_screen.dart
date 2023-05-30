@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,9 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
-import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/page_test/widgets/custom_indicator.dart';
+import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
@@ -21,9 +24,12 @@ class ComunityScreen extends StatefulWidget {
 class _ComunityScreenState extends State<ComunityScreen> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController scrollController = ScrollController();
+  // 공지사항 스크롤 제어를 위한 컨트롤러
+  final CarouselController _carouselController = CarouselController();
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
+  int _currentNoticeIndex = 0;
 
   double width = 0;
   double height = 0;
@@ -127,6 +133,14 @@ class _ComunityScreenState extends State<ComunityScreen> {
     print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
   }
 
+  void onLogoutTap() {
+    SecureStorageLogin.setLogout();
+    context.pushReplacementNamed(
+      MainNavigation.routeName,
+      queryParams: {"initIndex": "2"},
+    );
+  }
+
   @override
   void dispose() {
     scrollController.dispose();
@@ -139,29 +153,44 @@ class _ComunityScreenState extends State<ComunityScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: Colors.blue.shade100,
-      floatingActionButton: AnimatedOpacity(
-        opacity: _showJumpUpButton ? 1 : 0,
-        duration: const Duration(milliseconds: 200),
-        child: FloatingActionButton(
-          heroTag: "comunity",
-          onPressed: _scrollToTop,
-          backgroundColor: Colors.purpleAccent.shade100,
-          child: const FaIcon(
-            FontAwesomeIcons.arrowUp,
-            color: Colors.black,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          AnimatedOpacity(
+            opacity: _showJumpUpButton ? 1 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton(
+              heroTag: "comunity",
+              onPressed: _scrollToTop,
+              backgroundColor: Colors.purpleAccent.shade100,
+              child: const FaIcon(
+                FontAwesomeIcons.arrowUp,
+                color: Colors.black,
+              ),
+            ),
           ),
-        ),
+          Gaps.v6,
+          FloatingActionButton(
+            heroTag: "comunity_edit",
+            onPressed: () {},
+            backgroundColor: Colors.blue.shade300,
+            child: const FaIcon(
+              FontAwesomeIcons.penToSquare,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       // CustomScrollView : 스크롤 가능한 구역
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             // 스타일1
-            stops: [0.09, 0.6],
-            colors: [Colors.white, Color(0xFF4AA8D8)],
+            // stops: [0.09, 0.6],
+            // colors: [Colors.white, Color(0xFF4AA8D8)],
             // 스타일2
-            // stops: const [0.05, 0.5],
-            // colors: [Colors.white, Colors.lightGreen.shade300],
+            stops: const [0.05, 0.5],
+            colors: [Colors.white, Colors.lightGreen.shade100],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
           ),
@@ -184,25 +213,27 @@ class _ComunityScreenState extends State<ComunityScreen> {
                     bottom: Radius.circular(20.0),
                   ),
                 ),
+                centerTitle: false,
+                title: const Text("Together(로고)"),
                 actions: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Sizes.size20,
+                      horizontal: Sizes.size14,
                       vertical: Sizes.size10,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: _isLogined
-                          ? <Widget>[
+                          ? [
                               GestureDetector(
-                                onTap: () {},
+                                onTap: onLogoutTap,
                                 child: const Icon(
                                   Icons.search,
                                   size: 38,
                                   color: Colors.black54,
                                 ),
                               ),
-                              Gaps.h6,
+                              Gaps.h2,
                               GestureDetector(
                                 onTap: _alertIconTap,
                                 child: const Icon(
@@ -212,7 +243,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                                 ),
                               ),
                             ]
-                          : <Widget>[
+                          : [
                               GestureDetector(
                                 onTap: () {},
                                 child: const Icon(
@@ -221,7 +252,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                                   color: Colors.black54,
                                 ),
                               ),
-                              Gaps.h14,
+                              Gaps.h10,
                               GestureDetector(
                                 onTap: _onLoginTap,
                                 child: const Icon(
@@ -253,37 +284,62 @@ class _ComunityScreenState extends State<ComunityScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "공지사항",
+                                "공지",
                                 style: TextStyle(
                                   fontSize: Sizes.size20,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(
-                                "목록 보기",
+                                "더보기 >",
                                 style: TextStyle(
                                   fontSize: Sizes.size16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.purple.shade400,
+                                  color: Colors.grey.shade500,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Gaps.v8,
-                        SizedBox(
-                          width: size.width,
-                          height: 110,
-                          child: ListView.separated(
-                            // 가로로 스크롤
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            itemBuilder: (context, index) => const NoticeBox(
-                              title: "공지사항",
-                              content: "공지사항의 내용입니다.",
-                            ),
-                            separatorBuilder: (context, index) => Gaps.h10,
+                        // SizedBox(
+                        //   width: size.width,
+                        //   height: 110,
+                        //   child: ListView.separated(
+                        //     // 가로로 스크롤
+                        //     scrollDirection: Axis.horizontal,
+                        //     itemCount: 5,
+                        //     itemBuilder: (context, index) => const NoticeBox(
+                        //       title: "공지사항",
+                        //       content: "공지사항의 내용입니다.",
+                        //     ),
+                        //     separatorBuilder: (context, index) => Gaps.h10,
+                        //   ),
+                        // ),
+                        CarouselSlider.builder(
+                          itemBuilder: (context, index, realIndex) =>
+                              NoticeTestItem(
+                            title: "공지사항 ${index + 1}",
+                            content:
+                                "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
                           ),
+                          itemCount: 5,
+                          options: CarouselOptions(
+                            aspectRatio: 10 / 4,
+                            enlargeCenterPage: true,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentNoticeIndex = index;
+                              });
+                            },
+                            // 옵션 설정
+                          ),
+                          // 인디케이터 설정
+                          carouselController: _carouselController,
+                          // 페이지 변화 이벤트 등록
+                        ),
+                        CustomIndicator(
+                          currentNoticeIndex: _currentNoticeIndex,
+                          noticeItemLength: 5,
                         ),
                       ],
                     ),

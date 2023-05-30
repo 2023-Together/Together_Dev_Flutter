@@ -94,6 +94,54 @@ class ClubSearchTestScreen extends StatelessWidget {
         
                 //   offset: const Offset(0, 7),
                 // ),]
+//         color: Colors.grey.shade200,
+//         child: Column(
+//           children: [
+//             Container(
+//               height: 45,
+//               color: Colors.white,
+//               padding: const EdgeInsets.symmetric(
+//                 horizontal: Sizes.size14,
+//               ),
+//               child: ListView(
+//                 scrollDirection: Axis.horizontal,
+//                 children: [
+//                   StateDropDownButton(
+//                     title: "제목1",
+//                     initOption: option1,
+//                     onChangeOption: onChangeOption1,
+//                   ),
+//                   Gaps.h14,
+//                   StateDropDownButton(
+//                     title: "제목2",
+//                     initOption: option2,
+//                     onChangeOption: onChangeOption2,
+//                   ),
+//                   Gaps.h14,
+//                   StateDropDownButton(
+//                     title: "제목3",
+//                     initOption: option3,
+//                     onChangeOption: onChangeOption3,
+//                   ),
+//                   Gaps.h14,
+//                   StateDropDownButton(
+//                     title: "제목3",
+//                     initOption: option3,
+//                     onChangeOption: onChangeOption3,
+//                   ),
+//                   Gaps.h14,
+//                   StateDropDownButton(
+//                     title: "제목3",
+//                     initOption: option3,
+//                     onChangeOption: onChangeOption3,
+//                   ),
+//                   Gaps.h14,
+//                   StateDropDownButton(
+//                     title: "제목3",
+//                     initOption: option3,
+//                     onChangeOption: onChangeOption3,
+//                   ),
+//                 ],
               ),
               child: GestureDetector(
                

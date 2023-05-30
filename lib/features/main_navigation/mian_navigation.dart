@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/club/club_page.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
+import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
+import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
+import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
+import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 class MainNavigationArgs {
   final int initSelectedIndex;
@@ -104,12 +106,14 @@ class _MainNavigationState extends State<MainNavigation> {
                   club_def: "동아리1에서 부원을 모집합니다. 많은 관심 부탁드립니다 :)",
                 ),
               ),
+              // child: const ClubComunityTestScreen(),
               // child: const ClubScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 4,
               //child: const UserProfileScreen(),
               child:const UserProfileScreen(),
+              //child: const UserProfileTestScreen(),
             ),
           ],
         ),
