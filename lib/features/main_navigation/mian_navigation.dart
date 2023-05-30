@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
+import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
+import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
+import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
+import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
@@ -78,7 +82,8 @@ class _MainNavigationState extends State<MainNavigation> {
             // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
             Offstage(
               offstage: _selectedIndex != 0,
-              child: const SearchVolScreen(),
+              //child: const SearchVolScreen(),
+              child: const VolSearchTestScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 1,
@@ -90,12 +95,25 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 3,
-              child: const ClubComunityTestScreen(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ClubSearchTestScreen (
+                  image: Image.asset(
+                    'assets/images/club1.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                  club_name: "동아리 1",
+                  club_def: "동아리1에서 부원을 모집합니다. 많은 관심 부탁드립니다 :)",
+                ),
+              ),
+              // child: const ClubComunityTestScreen(),
               // child: const ClubScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 4,
-              child: const UserProfileTestScreen(),
+              //child: const UserProfileScreen(),
+              child:const UserProfileScreen(),
+              //child: const UserProfileTestScreen(),
             ),
           ],
         ),
