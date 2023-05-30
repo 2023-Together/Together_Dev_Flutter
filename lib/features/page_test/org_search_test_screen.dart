@@ -256,7 +256,7 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   childAspectRatio: 10 / 12,
                 ),
                 itemBuilder: (context, index) {
-                  final item = orgDatas[index];
+                  // final item = orgDatas[index];
                   return LayoutBuilder(
                     builder: (context, constraints) => Container(
                       margin: const EdgeInsets.symmetric(

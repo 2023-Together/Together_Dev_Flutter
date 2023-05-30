@@ -14,27 +14,21 @@ class StateDropDownButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Row(
-        children: [
-          DropdownButton<String>(
-            // key: UniqueKey(),
-            hint: Text(initOption.isEmpty ? title : initOption),
-            disabledHint: Text(title),
-            onChanged: (value) => onChangeOption(value),
-            items: <String>[
-              '옵션1',
-              '옵션2',
-              '옵션3',
-            ].map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          )
-        ],
-      ),
+    return DropdownButton<String>(
+      // key: UniqueKey(),
+      hint: Text(initOption.isEmpty ? title : initOption),
+      disabledHint: Text(title),
+      onChanged: (value) => onChangeOption(value),
+      items: <String>[
+        '옵션1',
+        '옵션2',
+        '옵션3',
+      ].map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(value),
+        );
+      }).toList(),
     );
   }
 }

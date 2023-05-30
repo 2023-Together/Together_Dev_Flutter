@@ -45,11 +45,11 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
 
   // 최대 높이
   @override
-  double get maxExtent => 68;
+  double get maxExtent => 74;
 
   // 최소 높이
   @override
-  double get minExtent => 68;
+  double get minExtent => 74;
 
   // persistent header가 보여져야 되는지 알려주는 method
   // maxExtent와 minExtent의 값을 변경하고 싶다면 true를 리턴해야함
