@@ -185,7 +185,7 @@ class OrgSearchTestScreen extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: Sizes.size10,
                   mainAxisSpacing: Sizes.size10,
-                  childAspectRatio: 10 / 11,
+                  childAspectRatio: 10 / 12,
                 ),
                 itemBuilder: (context, index) {
                   final item = orgDatas[index];
