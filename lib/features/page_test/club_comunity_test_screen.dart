@@ -5,10 +5,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/comunity/widgets/comunity_notice_box.dart';
 import 'package:swag_cross_app/features/page_test/widgets/club_comunity_item_box.dart';
+import 'package:swag_cross_app/features/page_test/widgets/custom_indicator.dart';
+import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class ClubComunityTestScreen extends StatefulWidget {
   const ClubComunityTestScreen({super.key});
@@ -19,10 +21,13 @@ class ClubComunityTestScreen extends StatefulWidget {
 
 class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
-  final ScrollController scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
+  // 공지사항 스크롤 제어를 위한 컨트롤러
+  final CarouselController _carouselController = CarouselController();
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
+  int _currentNoticeIndex = 0;
 
   double width = 0;
   double height = 0;
@@ -31,7 +36,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
   void initState() {
     super.initState();
 
-    scrollController.addListener(
+    _scrollController.addListener(
       () {
         _onScroll();
         _scrollEnd();
@@ -70,7 +75,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
 
   // 스크롤 할때마다 호출
   void _onScroll() {
-    if (scrollController.offset > 260) {
+    if (_scrollController.offset > 260) {
       // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
       // 리턴처리 필요
       if (_showJumpUpButton) return;
@@ -88,7 +93,8 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
   }
 
   void _scrollEnd() {
-    if (scrollController.offset == scrollController.position.maxScrollExtent) {
+    if (_scrollController.offset ==
+        _scrollController.position.maxScrollExtent) {
       setState(() {
         comunityList = [...comunityList] + checkAds(initComunityList);
       });
@@ -101,8 +107,8 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
 
   // 스크롤 위치를 맨위로 이동시킵니다.
   void _scrollToTop() {
-    scrollController.animateTo(
-      scrollController.position.minScrollExtent,
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -123,7 +129,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
 
   @override
   void dispose() {
-    scrollController.dispose();
+    _scrollController.dispose();
 
     super.dispose();
   }
@@ -133,37 +139,53 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       // backgroundColor: Colors.blue.shade100,
-      floatingActionButton: AnimatedOpacity(
-        opacity: _showJumpUpButton ? 1 : 0,
-        duration: const Duration(milliseconds: 200),
-        child: FloatingActionButton(
-          heroTag: "comunity",
-          onPressed: _scrollToTop,
-          backgroundColor: Colors.purpleAccent.shade100,
-          child: const FaIcon(
-            FontAwesomeIcons.arrowUp,
-            color: Colors.black,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          // AnimatedOpacity(
+          //   opacity: _showJumpUpButton ? 1 : 0,
+          //   duration: const Duration(milliseconds: 200),
+          //   child: FloatingActionButton(
+          //     heroTag: "club_comunity",
+          //     onPressed: _scrollToTop,
+          //     backgroundColor: Colors.purpleAccent.shade100,
+          //     child: const FaIcon(
+          //       FontAwesomeIcons.arrowUp,
+          //       color: Colors.black,
+          //     ),
+          //   ),
+          // ),
+          Gaps.v6,
+          FloatingActionButton(
+            heroTag: "club_comunity_edit",
+            onPressed: () {},
+            backgroundColor: Colors.blue.shade300,
+            child: const FaIcon(
+              FontAwesomeIcons.penToSquare,
+              color: Colors.black,
+            ),
           ),
-        ),
+        ],
       ),
       // CustomScrollView : 스크롤 가능한 구역
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            // 스타일1
-            stops: [0.09, 0.6],
-            colors: [Colors.white, Color(0xFF4AA8D8)],
-            // 스타일2
-            // stops: const [0.05, 0.5],
-            // colors: [Colors.white, Colors.lightGreen.shade300],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+            // 그라데이션
+            // gradient: LinearGradient(
+            //   // 스타일1
+            //   stops: [0.09, 0.6],
+            //   colors: [Colors.white, Color(0xFF4AA8D8)],
+            //   // 스타일2
+            //   // stops: const [0.05, 0.5],
+            //   // colors: [Colors.white, Colors.lightGreen.shade300],
+            //   begin: Alignment.topCenter,
+            //   end: Alignment.bottomCenter,
+            // ),
+            ),
         child: RefreshIndicator(
           onRefresh: _refreshComunityList,
           child: CustomScrollView(
-            controller: scrollController,
+            controller: _scrollController,
             // CustomScrollView 안에 들어갈 element들
             // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
             slivers: [
@@ -178,6 +200,8 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                     bottom: Radius.circular(20.0),
                   ),
                 ),
+                centerTitle: false,
+                title: const Text("SWAG 동아리(10명)"),
                 actions: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -185,26 +209,27 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                       vertical: Sizes.size10,
                     ),
                     child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () {},
-                            child: const Icon(
-                              Icons.search,
-                              size: 38,
-                              color: Colors.black54,
-                            ),
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {},
+                          child: const Icon(
+                            Icons.search,
+                            size: 38,
+                            color: Colors.black54,
                           ),
-                          Gaps.h6,
-                          GestureDetector(
-                            onTap: _alertIconTap,
-                            child: const Icon(
-                              Icons.notifications_none,
-                              size: 38,
-                              color: Colors.black54,
-                            ),
+                        ),
+                        Gaps.h6,
+                        GestureDetector(
+                          onTap: () {},
+                          child: const FaIcon(
+                            FontAwesomeIcons.penToSquare,
+                            size: 30,
+                            color: Colors.black54,
                           ),
-                        ]),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -218,6 +243,12 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                   child: Center(
                     child: Column(
                       children: [
+                        Image.asset(
+                          "assets/images/volImg.jpg",
+                          width: size.width,
+                          height: 160,
+                          fit: BoxFit.cover,
+                        ),
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: Sizes.size10,
@@ -226,7 +257,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               const Text(
-                                "동아리장의 공지",
+                                "공지",
                                 style: TextStyle(
                                   fontSize: Sizes.size20,
                                   fontWeight: FontWeight.bold,
@@ -237,26 +268,51 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                                 style: TextStyle(
                                   fontSize: Sizes.size16,
                                   fontWeight: FontWeight.w600,
-                                  color: Colors.purple.shade400,
+                                  color: Colors.grey.shade500,
                                 ),
                               ),
                             ],
                           ),
                         ),
-                        Gaps.v8,
-                        SizedBox(
-                          width: size.width,
-                          height: 110,
-                          child: ListView.separated(
-                            // 가로로 스크롤
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 5,
-                            itemBuilder: (context, index) => const NoticeBox(
-                              title: "공지사항",
-                              content: "공지사항의 내용입니다.",
-                            ),
-                            separatorBuilder: (context, index) => Gaps.h10,
+                        // SizedBox(
+                        //   width: size.width,
+                        //   height: 110,
+                        //   child: ListView.separated(
+                        //     // 가로로 스크롤
+                        //     scrollDirection: Axis.horizontal,
+                        //     itemCount: 5,
+                        //     itemBuilder: (context, index) => const NoticeBox(
+                        //       title: "공지사항",
+                        //       content: "공지사항의 내용입니다.",
+                        //     ),
+                        //     separatorBuilder: (context, index) => Gaps.h10,
+                        //   ),
+                        // ),
+                        CarouselSlider.builder(
+                          itemBuilder: (context, index, realIndex) =>
+                              NoticeTestItem(
+                            title: "공지사항 ${index + 1}",
+                            content:
+                                "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
                           ),
+                          itemCount: 5,
+                          options: CarouselOptions(
+                            aspectRatio: 10 / 4,
+                            enlargeCenterPage: true,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentNoticeIndex = index;
+                              });
+                            },
+                            // 옵션 설정
+                          ),
+                          // 인디케이터 설정
+                          carouselController: _carouselController,
+                          // 페이지 변화 이벤트 등록
+                        ),
+                        CustomIndicator(
+                          currentNoticeIndex: _currentNoticeIndex,
+                          noticeItemLength: 5,
                         ),
                       ],
                     ),

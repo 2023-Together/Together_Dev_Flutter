@@ -5,8 +5,10 @@ class StateDropDownButton extends StatelessWidget {
     super.key,
     required this.initOption,
     required this.onChangeOption,
+    required this.title,
   });
 
+  final String title;
   final String initOption;
   final Function(String?) onChangeOption;
 
@@ -16,8 +18,9 @@ class StateDropDownButton extends StatelessWidget {
       child: Row(
         children: [
           DropdownButton<String>(
-            key: UniqueKey(),
-            value: initOption,
+            // key: UniqueKey(),
+            hint: Text(initOption.isEmpty ? title : initOption),
+            disabledHint: Text(title),
             onChanged: (value) => onChangeOption(value),
             items: <String>[
               '옵션1',
