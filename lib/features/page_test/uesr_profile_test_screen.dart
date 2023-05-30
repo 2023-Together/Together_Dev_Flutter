@@ -137,15 +137,23 @@ class UserProfileTestScreen extends StatelessWidget {
                           AspectRatio(
                             aspectRatio: 9 / 12,
                             child: index % 2 == 0
-                                ? FadeInImage.assetNetwork(
-                                    // 부모 요소에 맞춰서 크기 조절
-                                    fit: BoxFit.cover,
-                                    // 로딩 되기전에 보여줄 이미지 지정
-                                    placeholder: "assets/images/dog.jpg",
-                                    // 로딩 이미지 지정
-                                    image:
-                                        "https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                                  )
+                                ? index % 3 == 0
+                                    ? const FadeInImage(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            AssetImage("assets/images/dog.jpg"),
+                                        image:
+                                            AssetImage("assets/images/dog.jpg"),
+                                      )
+                                    : FadeInImage.assetNetwork(
+                                        // 부모 요소에 맞춰서 크기 조절
+                                        fit: BoxFit.cover,
+                                        // 로딩 되기전에 보여줄 이미지 지정
+                                        placeholder: "assets/images/dog.jpg",
+                                        // 로딩 이미지 지정
+                                        image:
+                                            "https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                                      )
                                 : const FadeInImage(
                                     fit: BoxFit.cover,
                                     placeholder:
