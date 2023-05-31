@@ -200,19 +200,6 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    // 지역, 분야, 기간별 카테고리 선택 버튼
-                    // StateDropDownButton(
-                    //     initOption: option1,
-                    //     onChangeOption: onChangeOption1,
-                    // ),
-                    // StateDropDownButton(
-                    //     initOption: option2,
-                    //     onChangeOption: onChangeOption2,
-                    // ),
-                    // StateDropDownButton(
-                    //     initOption: option3,
-                    //     onChangeOption: onChangeOption3,
-                    // ),
                     DropdownButton(
                       value: selectedDropdown1,
                       items: dropdownList1.map((String item) {
@@ -288,14 +275,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                         item["contnet"],
                       ),
                       trailing: Column(
-                        mainAxisSize: MainAxisSize.max,
+                        // mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(item["address"]),
-                          Gaps.v4,
                           Text(item["orgName"]),
-                          Gaps.v4,
                           Text(item["startTime"]),
                         ],
                       ),

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
 
 class ClubSearchTestScreen extends StatelessWidget {
   // 필드
@@ -68,139 +69,50 @@ class ClubSearchTestScreen extends StatelessWidget {
         color: Colors.white,
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
+            return GestureDetector(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ClubComunityTestScreen(),
+                ),
               ),
-              child: GestureDetector(
-                child: Column(
-                  children: [
-                    Gaps.v7,
-
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: image,
-                    ),
-
-                    const SizedBox(height: 16.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          club_name,
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: GestureDetector(
+                  child: Column(
+                    children: [
+                      Gaps.v7,
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: image,
+                      ),
+                      const SizedBox(height: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            club_name,
+                            style: const TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 8.0,
-                        ),
-                        Text(
-                          club_def,
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                            color: Colors.grey,
+                          const SizedBox(
+                            height: 8.0,
                           ),
-                        ),
-                      ],
-                    )
-                    // // 동아리원 모집 글 Listview
-                    // Expanded(
-                    //   child: ListView.separated(
-                    //     shrinkWrap: true,
-                    //     itemBuilder: (context, index) => LayoutBuilder(
-                    //       builder: (context, constraints) => Padding(
-                    //         padding: const EdgeInsets.symmetric(
-                    //           horizontal: Sizes.size14,
-                    //         ),
-                    //         child: GestureDetector(
-                    //           onTap: () {
-                    //             Navigator.push(
-                    //               context,
-                    //               MaterialPageRoute(
-                    //                 builder: (context) =>
-                    //                     const ClubComunityTestScreen(),
-                    //               ),
-                    //             );
-                    //           },
-                    //           child: Container(
-                    //             width: constraints.maxWidth,
-                    //             height: 150,
-                    //             padding: const EdgeInsets.symmetric(
-                    //               vertical: Sizes.size10,
-                    //               horizontal: Sizes.size14,
-                    //             ),
-                    //             decoration: BoxDecoration(
-                    //               color: Colors.white,
-                    //               border: Border.all(
-                    //                 width: 1,
-                    //               ),
-                    //               borderRadius: const BorderRadius.all(
-                    //                 Radius.circular(
-                    //                   Sizes.size20,
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //             child: Column(
-                    //               crossAxisAlignment: CrossAxisAlignment.start,
-                    //               children: [
-                    //                 Expanded(
-                    //                   flex: 1,
-                    //                   child: Text(
-                    //                     title,
-                    //                     style: const TextStyle(
-                    //                       fontSize: Sizes.size20,
-                    //                       fontWeight: FontWeight.bold,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //                 const Divider(
-                    //                   thickness: 1,
-                    //                 ),
-                    //                 Expanded(
-                    //                   flex: 3,
-                    //                   child: Text(
-                    //                     content * 5,
-                    //                     maxLines: 3,
-                    //                     overflow: TextOverflow.ellipsis,
-                    //                     style: TextStyle(
-                    //                       color: Colors.grey.shade500,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //                 const Expanded(
-                    //                   flex: 1,
-                    //                   child: Row(
-                    //                     mainAxisAlignment:
-                    //                         MainAxisAlignment.spaceBetween,
-                    //                     children: [
-                    //                       Text(
-                    //                         "SWAG 동아리",
-                    //                         style: TextStyle(
-                    //                           fontWeight: FontWeight.bold,
-                    //                         ),
-                    //                       ),
-                    //                       Text(
-                    //                         "조회수 24",
-                    //                         style: TextStyle(
-                    //                           color: Colors.grey,
-                    //                         ),
-                    //                       ),
-                    //                     ],
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //     separatorBuilder: (context, index) => Gaps.v10,
-                    //     itemCount: 12,
-                    //   ),
-                    // ),
-                  ],
+                          Text(
+                            club_def,
+                            style: const TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
