@@ -227,20 +227,12 @@ class _ComunityScreenState extends State<ComunityScreen> {
                           ? [
                               GestureDetector(
                                 onTap: onLogoutTap,
-                                child: const Icon(
-                                  Icons.search,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
+                                child: const Icon(Icons.search),
                               ),
                               Gaps.h2,
                               GestureDetector(
                                 onTap: _alertIconTap,
-                                child: const Icon(
-                                  Icons.notifications_none,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
+                                child: const Icon(Icons.notifications_none),
                               ),
                             ]
                           : [

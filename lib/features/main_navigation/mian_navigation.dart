@@ -6,11 +6,7 @@ import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class MainNavigationArgs {
@@ -97,7 +93,7 @@ class _MainNavigationState extends State<MainNavigation> {
               offstage: _selectedIndex != 3,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ClubSearchTestScreen (
+                child: ClubSearchTestScreen(
                   image: Image.asset(
                     'assets/images/club1.jpg',
                     fit: BoxFit.cover,
@@ -112,7 +108,7 @@ class _MainNavigationState extends State<MainNavigation> {
             Offstage(
               offstage: _selectedIndex != 4,
               //child: const UserProfileScreen(),
-              child:const UserProfileScreen(),
+              child: const UserProfileTestScreen(),
               //child: const UserProfileTestScreen(),
             ),
           ],

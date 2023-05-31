@@ -4,9 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/club/club_post_detail_page.dart';
-import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
 class ClubSearchTestScreen extends StatelessWidget {
   // 필드
@@ -37,17 +34,11 @@ class ClubSearchTestScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        // shape: const RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.vertical(
-        //     bottom: Radius.circular(20.0),
-        //   ),
-        // ),
-
         title: const Text("동아리"),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size20,
+              horizontal: Sizes.size14,
               vertical: Sizes.size10,
             ),
             child: Row(
@@ -55,20 +46,12 @@ class ClubSearchTestScreen extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {},
-                  child: const Icon(
-                    Icons.search,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.search),
                 ),
-                Gaps.h6,
+                Gaps.h2,
                 GestureDetector(
                   onTap: () => _alertIconTap(context),
-                  child: const Icon(
-                    Icons.notifications_none,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.notifications_none),
                 ),
               ],
             ),
@@ -86,66 +69,10 @@ class ClubSearchTestScreen extends StatelessWidget {
         child: ListView.separated(
           itemBuilder: (context, index) {
             return Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                // boxShadow: [ 
-                //   BoxShadow (
-                //   color: Colors.grey.withOpacity(0.7),
-        
-                //   offset: const Offset(0, 7),
-                // ),]
-//         color: Colors.grey.shade200,
-//         child: Column(
-//           children: [
-//             Container(
-//               height: 45,
-//               color: Colors.white,
-//               padding: const EdgeInsets.symmetric(
-//                 horizontal: Sizes.size14,
-//               ),
-//               child: ListView(
-//                 scrollDirection: Axis.horizontal,
-//                 children: [
-//                   StateDropDownButton(
-//                     title: "제목1",
-//                     initOption: option1,
-//                     onChangeOption: onChangeOption1,
-//                   ),
-//                   Gaps.h14,
-//                   StateDropDownButton(
-//                     title: "제목2",
-//                     initOption: option2,
-//                     onChangeOption: onChangeOption2,
-//                   ),
-//                   Gaps.h14,
-//                   StateDropDownButton(
-//                     title: "제목3",
-//                     initOption: option3,
-//                     onChangeOption: onChangeOption3,
-//                   ),
-//                   Gaps.h14,
-//                   StateDropDownButton(
-//                     title: "제목3",
-//                     initOption: option3,
-//                     onChangeOption: onChangeOption3,
-//                   ),
-//                   Gaps.h14,
-//                   StateDropDownButton(
-//                     title: "제목3",
-//                     initOption: option3,
-//                     onChangeOption: onChangeOption3,
-//                   ),
-//                   Gaps.h14,
-//                   StateDropDownButton(
-//                     title: "제목3",
-//                     initOption: option3,
-//                     onChangeOption: onChangeOption3,
-//                   ),
-//                 ],
               ),
               child: GestureDetector(
-               
-              
                 child: Column(
                   children: [
                     Gaps.v7,
@@ -161,7 +88,7 @@ class ClubSearchTestScreen extends StatelessWidget {
                       children: [
                         Text(
                           club_name,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.w500,
                           ),
@@ -171,7 +98,7 @@ class ClubSearchTestScreen extends StatelessWidget {
                         ),
                         Text(
                           club_def,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                             color: Colors.grey,
                           ),

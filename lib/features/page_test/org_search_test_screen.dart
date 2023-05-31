@@ -166,17 +166,12 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
       // backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        // shape: const RoundedRectangleBorder(
-        //   borderRadius: BorderRadius.vertical(
-        //     bottom: Radius.circular(20.0),
-        //   ),
-        // ),
         elevation: 0.2,
         title: const Text("기관 찾기"),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size20,
+              horizontal: Sizes.size14,
               vertical: Sizes.size10,
             ),
             child: Row(
@@ -184,20 +179,12 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
               children: [
                 GestureDetector(
                   onTap: () {},
-                  child: const Icon(
-                    Icons.search,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.search),
                 ),
-                Gaps.h6,
+                Gaps.h2,
                 GestureDetector(
                   onTap: () => _alertIconTap(context),
-                  child: const Icon(
-                    Icons.notifications_none,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.notifications_none),
                 ),
               ],
             ),
