@@ -91,17 +91,7 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ClubSearchTestScreen(
-                  image: Image.asset(
-                    'assets/images/club1.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                  club_name: "동아리 1",
-                  club_def: "동아리1에서 부원을 모집합니다. 많은 관심 부탁드립니다 :)",
-                ),
-              ),
+              child: const ClubSearchTestScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 4,

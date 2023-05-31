@@ -9,21 +9,8 @@ import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart
 class ClubSearchTestScreen extends StatelessWidget {
   // 필드
 
-  // String option1 = "옵션1";
-  final Widget image;
-
-  // 동아리 이름
-  final String club_name;
-
-  // 동아리 설명
-  final String club_def;
-
   // 생성자
-  const ClubSearchTestScreen(
-      {super.key,
-      required this.image,
-      required this.club_name,
-      required this.club_def});
+  const ClubSearchTestScreen({super.key});
 
   void _alertIconTap(BuildContext context) {
     context.pushNamed(AlertScreen.routeName);
@@ -33,6 +20,11 @@ class ClubSearchTestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color(0xFF6524FF),
+        child: const Icon(FontAwesomeIcons.pen),
+        onPressed: () {},
+      ),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text("동아리"),
@@ -59,11 +51,6 @@ class ClubSearchTestScreen extends StatelessWidget {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF6524FF),
-        child: const Icon(FontAwesomeIcons.pen),
-        onPressed: () {},
-      ),
       body: Container(
         //color: Colors.grey .shade200,
         color: Colors.white,
@@ -77,39 +64,68 @@ class ClubSearchTestScreen extends StatelessWidget {
                 ),
               ),
               child: Container(
-                decoration: const BoxDecoration(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: Sizes.size16,
+                ),
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
                   color: Colors.white,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(Sizes.size12),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 3,
+                      offset: const Offset(3, 3), // 그림자의 위치 조정
+                    ),
+                  ],
                 ),
                 child: GestureDetector(
                   child: Column(
                     children: [
-                      Gaps.v7,
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: image,
+                      Image.asset(
+                        'assets/images/club1.jpg',
+                        fit: BoxFit.cover,
                       ),
-                      const SizedBox(height: 16.0),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            club_name,
-                            style: const TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.w500,
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Sizes.size10,
+                          vertical: Sizes.size8,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              "제목 ${index + 1}",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 8.0,
-                          ),
-                          Text(
-                            club_def,
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              color: Colors.grey,
+                            const Divider(),
+                            Text(
+                              "동아리${index + 1}에서 부원을 모집합니다. 많은 관심 부탁드립니다 :)",
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ],
+                            Gaps.v10,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("SWAG 동아리"),
+                                Text("조회수 ${index * 3}"),
+                              ],
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -118,7 +134,7 @@ class ClubSearchTestScreen extends StatelessWidget {
             );
           },
           separatorBuilder: (context, index) {
-            return Gaps.v10;
+            return Gaps.v14;
           },
           itemCount: 10,
         ),

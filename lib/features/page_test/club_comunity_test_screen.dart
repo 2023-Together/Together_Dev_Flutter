@@ -214,11 +214,13 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                         GestureDetector(
                           onTap: () {},
                           child: const Icon(Icons.search),
+                          // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
                         ),
                         Gaps.h2,
                         GestureDetector(
                           onTap: () {},
-                          child: const FaIcon(FontAwesomeIcons.penToSquare),
+                          child: const Icon(Icons.edit_note_rounded),
+                          // child: const FaIcon(FontAwesomeIcons.penToSquare),
                         ),
                       ],
                     ),

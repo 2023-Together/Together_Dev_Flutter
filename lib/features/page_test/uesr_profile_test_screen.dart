@@ -44,11 +44,7 @@ class UserProfileTestScreen extends StatelessWidget {
                         children: [
                           GestureDetector(
                             onTap: () {},
-                            child: const Icon(
-                              Icons.settings_outlined,
-                              size: 38,
-                              color: Colors.black54,
-                            ),
+                            child: const Icon(Icons.settings_outlined),
                           ),
                         ],
                       ),
