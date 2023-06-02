@@ -205,7 +205,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                 actions: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: Sizes.size20,
+                      horizontal: Sizes.size14,
                       vertical: Sizes.size10,
                     ),
                     child: Row(
@@ -213,20 +213,14 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                       children: [
                         GestureDetector(
                           onTap: () {},
-                          child: const Icon(
-                            Icons.search,
-                            size: 38,
-                            color: Colors.black54,
-                          ),
+                          child: const Icon(Icons.search),
+                          // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
                         ),
-                        Gaps.h6,
+                        Gaps.h2,
                         GestureDetector(
                           onTap: () {},
-                          child: const FaIcon(
-                            FontAwesomeIcons.penToSquare,
-                            size: 30,
-                            color: Colors.black54,
-                          ),
+                          child: const Icon(Icons.edit_note_rounded),
+                          // child: const FaIcon(FontAwesomeIcons.penToSquare),
                         ),
                       ],
                     ),

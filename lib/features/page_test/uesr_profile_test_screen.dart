@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
@@ -25,12 +24,29 @@ class UserProfileTestScreen extends StatelessWidget {
               return [
                 SliverAppBar(
                   title: const Text("내정보"),
+                  // actions: [
+                  //   IconButton(
+                  //     onPressed: () {},
+                  //     icon: const FaIcon(
+                  //       FontAwesomeIcons.gear,
+                  //       size: Sizes.size20,
+                  //     ),
+                  //   ),
+                  // ],
                   actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const FaIcon(
-                        FontAwesomeIcons.gear,
-                        size: Sizes.size20,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Sizes.size14,
+                        vertical: Sizes.size10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {},
+                            child: const Icon(Icons.settings_outlined),
+                          ),
+                        ],
                       ),
                     ),
                   ],

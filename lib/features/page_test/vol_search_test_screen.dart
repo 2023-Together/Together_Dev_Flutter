@@ -106,9 +106,8 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
   String selectedDropdown3 = '기간별';
 
   List<String> dropdownList1 = ['지역별', '가좌동', '평거동', '충무공동'];
-  List<String> dropdownList2 = ['분야별','의료봉사', '문화체험', '행사보조'];
-  List<String> dropdownList3 = ['기간별','1', '2', '3'];
-  
+  List<String> dropdownList2 = ['분야별', '의료봉사', '문화체험', '행사보조'];
+  List<String> dropdownList3 = ['기간별', '1', '2', '3'];
 
   // String option1 = "지역별";
   // String option2 = "분야별";
@@ -148,15 +147,10 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
       appBar: AppBar(
         title: const Text("봉사 검색"),
         automaticallyImplyLeading: false,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(20.0),
-          ),
-        ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: Sizes.size20,
+              horizontal: Sizes.size14,
               vertical: Sizes.size10,
             ),
             child: Row(
@@ -164,20 +158,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
               children: [
                 GestureDetector(
                   onTap: () {},
-                  child: const Icon(
-                    Icons.search,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.search),
                 ),
-                Gaps.h6,
+                Gaps.h2,
                 GestureDetector(
                   onTap: () => _alertIconTap(context),
-                  child: const Icon(
-                    Icons.notifications_none,
-                    size: 38,
-                    color: Colors.black54,
-                  ),
+                  child: const Icon(Icons.notifications_none),
                 ),
               ],
             ),
@@ -214,25 +200,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
-                    // 지역, 분야, 기간별 카테고리 선택 버튼
-                    // StateDropDownButton(
-                    //     initOption: option1,
-                    //     onChangeOption: onChangeOption1,
-                    // ),
-                    // StateDropDownButton(
-                    //     initOption: option2,
-                    //     onChangeOption: onChangeOption2,
-                    // ),
-                    // StateDropDownButton(
-                    //     initOption: option3,
-                    //     onChangeOption: onChangeOption3,
-                    // ),
                     DropdownButton(
                       value: selectedDropdown1,
                       items: dropdownList1.map((String item) {
-                        return DropdownMenuItem<String> (
-                          child: Text('$item'),
+                        return DropdownMenuItem<String>(
                           value: item,
+                          child: Text(item),
                         );
                       }).toList(),
                       onChanged: (dynamic value) {
@@ -241,12 +214,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                         });
                       },
                     ),
-                     DropdownButton(
+                    DropdownButton(
                       value: selectedDropdown2,
                       items: dropdownList2.map((String item) {
-                        return DropdownMenuItem<String> (
-                          child: Text('$item'),
+                        return DropdownMenuItem<String>(
                           value: item,
+                          child: Text(item),
                         );
                       }).toList(),
                       onChanged: (dynamic value) {
@@ -255,12 +228,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                         });
                       },
                     ),
-                     DropdownButton(
+                    DropdownButton(
                       value: selectedDropdown3,
                       items: dropdownList3.map((String item) {
-                        return DropdownMenuItem<String> (
-                          child: Text('$item'),
+                        return DropdownMenuItem<String>(
                           value: item,
+                          child: Text(item),
                         );
                       }).toList(),
                       onChanged: (dynamic value) {
@@ -302,14 +275,12 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                         item["contnet"],
                       ),
                       trailing: Column(
-                        mainAxisSize: MainAxisSize.max,
+                        // mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(item["address"]),
-                          Gaps.v4,
                           Text(item["orgName"]),
-                          Gaps.v4,
                           Text(item["startTime"]),
                         ],
                       ),

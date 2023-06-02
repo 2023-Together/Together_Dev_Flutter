@@ -3,14 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/comunity/comunity_screen.dart';
 import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
+import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class MainNavigationArgs {
@@ -95,24 +91,12 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 3,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: ClubSearchTestScreen (
-                  image: Image.asset(
-                    'assets/images/club1.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                  club_name: "동아리 1",
-                  club_def: "동아리1에서 부원을 모집합니다. 많은 관심 부탁드립니다 :)",
-                ),
-              ),
-              // child: const ClubComunityTestScreen(),
-              // child: const ClubScreen(),
+              child: const ClubSearchTestScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 4,
               //child: const UserProfileScreen(),
-              child:const UserProfileScreen(),
+              child: const UserProfileTestScreen(),
               //child: const UserProfileTestScreen(),
             ),
           ],

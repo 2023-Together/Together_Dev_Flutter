@@ -6,8 +6,8 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/comunity/widgets/comunity_item_box.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/page_test/widgets/club_comunity_item_box.dart';
 import 'package:swag_cross_app/features/page_test/widgets/custom_indicator.dart';
 import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
@@ -227,20 +227,12 @@ class _ComunityScreenState extends State<ComunityScreen> {
                           ? [
                               GestureDetector(
                                 onTap: onLogoutTap,
-                                child: const Icon(
-                                  Icons.search,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
+                                child: const Icon(Icons.search),
                               ),
                               Gaps.h2,
                               GestureDetector(
                                 onTap: _alertIconTap,
-                                child: const Icon(
-                                  Icons.notifications_none,
-                                  size: 38,
-                                  color: Colors.black54,
-                                ),
+                                child: const Icon(Icons.notifications_none),
                               ),
                             ]
                           : [
@@ -353,7 +345,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                   (context, index) {
                     final item = comunityList[index];
                     if (item["type"] != "ad") {
-                      return ComunityItemBox(
+                      return ClubComunityItemBox(
                         key: Key(item["title"]),
                         title: item["title"],
                         img: item["imgUrl"],
