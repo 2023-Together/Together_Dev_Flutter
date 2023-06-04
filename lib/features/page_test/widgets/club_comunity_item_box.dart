@@ -59,6 +59,16 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
     );
   }
 
+  // 게시글 수정
+  void _postUpdate() {
+    print("게시글 수정 페이지 이동");
+  }
+
+  // 게시글 삭제
+  void _postDelete() {
+    print("게시글 삭제");
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -109,9 +119,21 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.more_vert),
+              trailing: PopupMenuButton<String>(
+                offset: const Offset(0, 25),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      onTap: _postUpdate,
+                      child: const Text("수정"),
+                    ),
+                    PopupMenuItem(
+                      onTap: _postDelete,
+                      child: const Text("삭제"),
+                    ),
+                  ];
+                },
+                child: const Icon(Icons.more_vert),
               ),
             ),
             Container(
