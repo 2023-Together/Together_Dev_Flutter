@@ -5,7 +5,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
 import 'package:swag_cross_app/features/club/club_post_write_screen.dart';
 import 'package:swag_cross_app/features/club/widgets/post_card_widget.dart';
 import 'package:swag_cross_app/features/page_test/widgets/custom_indicator.dart';
@@ -127,12 +126,6 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
   void failedAdsLoading(Ad ad, LoadAdError error) {
     ad.dispose();
     print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
-  }
-
-  void _postUpdate() {
-    print("게시글 수정");
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => const ClubPostUpdateScreen()));
   }
 
   @override

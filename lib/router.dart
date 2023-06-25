@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
+import 'package:swag_cross_app/features/club/club_post_write_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
@@ -49,6 +51,16 @@ final router = GoRouter(
         }
         return CustomerServiceScreen(initSelectedIndex: initIndex);
       },
+    ),
+    GoRoute(
+      name: ClubPostWriteScreen.routeName,
+      path: ClubPostWriteScreen.routeURL,
+      builder: (context, state) => const ClubPostWriteScreen(),
+    ),
+    GoRoute(
+      name: ClubPostUpdateScreen.routeName,
+      path: ClubPostUpdateScreen.routeURL,
+      builder: (context, state) => const ClubPostUpdateScreen(),
     ),
   ],
 );

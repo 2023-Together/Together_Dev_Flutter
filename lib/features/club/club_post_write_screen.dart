@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 
 class ClubPostWriteScreen extends StatefulWidget {
+  static const routeName = "post_write";
+  static const routeURL = "/post_write";
+
   const ClubPostWriteScreen({super.key});
 
   @override

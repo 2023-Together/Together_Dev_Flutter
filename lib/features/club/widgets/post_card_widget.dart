@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_post_detail_screen.dart';
+import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
 import 'package:swag_cross_app/features/comunity/widgets/comunity_comment.dart';
 
 class ClubPostCardItem extends StatefulWidget {
@@ -117,6 +119,7 @@ class _ClubPostCardItem extends State<ClubPostCardItem> {
                     PopupMenuItem(
                       onTap: () {
                         print("게시글 수정");
+                        context.push(ClubPostUpdateScreen.routeURL);
                       },
                       child: const Text("수정"),
                     ),
