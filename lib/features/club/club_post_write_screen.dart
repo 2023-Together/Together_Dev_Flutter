@@ -24,6 +24,13 @@ class _ClubPostWriteScreenState extends State<ClubPostWriteScreen> {
       title: const Text("동아리 게시글 작성"),
       actions: [
         TextButton(
+          child: const Text(
+            "완료",
+            style: TextStyle(
+              color: Color(0xFF6524FF),
+              fontSize: 18,
+            ),
+          ),
           onPressed: () {
             // 글 작성
             var title = _titleController.text;
@@ -33,13 +40,6 @@ class _ClubPostWriteScreenState extends State<ClubPostWriteScreen> {
             print("제목: $title");
             print("내용: $content");
           },
-          child: const Text(
-            "완료",
-            style: TextStyle(
-              color: Color(0xFF6524FF),
-              fontSize: 16,
-            ),
-          ),
         ),
       ],
     );
