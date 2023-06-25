@@ -59,16 +59,6 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
     );
   }
 
-  // 게시글 수정
-  void _postUpdate() {
-    print("게시글 수정 페이지 이동");
-  }
-
-  // 게시글 삭제
-  void _postDelete() {
-    print("게시글 삭제");
-  }
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -124,11 +114,15 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
                 itemBuilder: (context) {
                   return [
                     PopupMenuItem(
-                      onTap: _postUpdate,
+                      onTap: () {
+                        print("게시글 수정");
+                      },
                       child: const Text("수정"),
                     ),
                     PopupMenuItem(
-                      onTap: _postDelete,
+                      onTap: () {
+                        print("게시글 삭제");
+                      },
                       child: const Text("삭제"),
                     ),
                   ];

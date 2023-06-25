@@ -5,7 +5,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/page_test/widgets/club_comunity_item_box.dart';
+import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
+import 'package:swag_cross_app/features/club/club_post_write_screen.dart';
+import 'package:swag_cross_app/features/club/widgets/post_card_widget.dart';
 import 'package:swag_cross_app/features/page_test/widgets/custom_indicator.dart';
 import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
@@ -127,6 +129,12 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
     print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
   }
 
+  void _postUpdate() {
+    print("게시글 수정");
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => const ClubPostUpdateScreen()));
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -158,7 +166,15 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
           Gaps.v6,
           FloatingActionButton(
             heroTag: "club_comunity_edit",
-            onPressed: () {},
+            onPressed: () {
+              // 동아리 게시글 작성
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ClubPostWriteScreen(),
+                ),
+              );
+            },
             backgroundColor: Colors.blue.shade300,
             child: const FaIcon(
               FontAwesomeIcons.penToSquare,
@@ -320,7 +336,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                   (context, index) {
                     final item = comunityList[index];
                     if (item["type"] != "ad") {
-                      return ClubComunityItemBox(
+                      return ClubPostCardItem(
                         key: Key(item["title"]),
                         title: item["title"],
                         img: item["imgUrl"],
