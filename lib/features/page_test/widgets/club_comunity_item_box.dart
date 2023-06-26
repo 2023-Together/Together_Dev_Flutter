@@ -109,9 +109,25 @@ class _ClubComunityItemBox extends State<ClubComunityItemBox> {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              trailing: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.more_vert),
+              trailing: PopupMenuButton<String>(
+                offset: const Offset(0, 25),
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                      onTap: () {
+                        print("게시글 수정");
+                      },
+                      child: const Text("수정"),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        print("게시글 삭제");
+                      },
+                      child: const Text("삭제"),
+                    ),
+                  ];
+                },
+                child: const Icon(Icons.more_vert),
               ),
             ),
             Container(

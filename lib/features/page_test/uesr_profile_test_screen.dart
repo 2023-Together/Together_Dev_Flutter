@@ -85,25 +85,25 @@ class UserProfileTestScreen extends StatelessWidget {
                       Gaps.v10,
                       Row(
                         children: [
-                          const Expanded(
+                          Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 신청"), Text("2건")],
+                              children: const [Text("봉사 신청"), Text("2건")],
                             ),
                           ),
                           Container(height: 50, width: 2, color: Colors.grey),
-                          const Expanded(
+                          Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 완료"), Text("6건")],
+                              children: const [Text("봉사 완료"), Text("6건")],
                             ),
                           ),
                         ],
                       ),
                       Gaps.v20,
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
+                        children: const [
                           Gaps.h20,
                           Text(
                             "내가 올린 게시글",
@@ -178,11 +178,11 @@ class UserProfileTestScreen extends StatelessWidget {
                                         "assets/images/70836_50981_2758.jpg"),
                                   ),
                           ),
-                          const Positioned(
+                          Positioned(
                             bottom: Sizes.size10,
                             left: Sizes.size10,
                             child: Column(
-                              children: [
+                              children: const [
                                 Text(
                                   "제목",
                                   style: TextStyle(

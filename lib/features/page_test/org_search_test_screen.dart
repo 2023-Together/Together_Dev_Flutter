@@ -290,8 +290,8 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                             ],
                           ),
                           Gaps.v3,
-                          const Row(
-                            children: [
+                          Row(
+                            children: const [
                               Gaps.h8,
                               Text("주소 : "),
                               Text(
