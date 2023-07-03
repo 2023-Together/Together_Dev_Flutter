@@ -328,11 +328,12 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                   childCount: comunityList.length,
                   (context, index) {
                     final item = comunityList[index];
+                    print(item["imgUrl"].runtimeType);
                     if (item["type"] != "ad") {
                       return ClubPostCardItem(
                         key: Key(item["title"]),
                         title: item["title"],
-                        img: item["imgUrl"],
+                        images: List<String>.from(item["imgUrl"]),
                         initCheckGood: item["checkGood"],
                         content: item["content"],
                         date: item["date"],
@@ -359,6 +360,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen> {
                         ),
                       );
                     }
+                    return null;
                   },
                 ),
               ),
@@ -377,7 +379,12 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목1",
     "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-1",
     "user": "유저1",
@@ -386,7 +393,7 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목2",
     "checkGood": false,
-    "imgUrl": "",
+    "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-2",
     "user": "유저2",
@@ -395,7 +402,12 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목3",
     "checkGood": false,
-    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-3",
     "user": "유저3",
@@ -404,7 +416,7 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목4",
     "checkGood": true,
-    "imgUrl": "",
+    "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-4",
     "user": "유저4",
@@ -413,7 +425,12 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목5",
     "checkGood": false,
-    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-5",
     "user": "유저5",
@@ -422,7 +439,12 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목6",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-6",
     "user": "유저6",
@@ -431,7 +453,12 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목7",
     "checkGood": true,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-7",
     "user": "유저7",
@@ -440,7 +467,7 @@ List<Map<String, dynamic>> initComunityList = [
     "type": "default",
     "title": "제목8",
     "checkGood": true,
-    "imgUrl": "",
+    "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-8",
     "user": "유저8",
@@ -450,7 +477,12 @@ List<Map<String, dynamic>> initComunityList = [
     "id": 9,
     "title": "제목9",
     "checkGood": false,
-    "imgUrl": "assets/images/70836_50981_2758.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-9",
     "user": "유저9",
@@ -460,7 +492,12 @@ List<Map<String, dynamic>> initComunityList = [
     "id": 10,
     "title": "제목10",
     "checkGood": false,
-    "imgUrl": "assets/images/dog.jpg",
+    "imgUrl": [
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
+      "assets/images/70836_50981_2758.jpg",
+      "assets/images/70836_50981_2758.jpg"
+    ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-10",
     "user": "유저10",

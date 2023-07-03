@@ -60,7 +60,14 @@ final router = GoRouter(
     GoRoute(
       name: ClubPostUpdateScreen.routeName,
       path: ClubPostUpdateScreen.routeURL,
-      builder: (context, state) => const ClubPostUpdateScreen(),
+      builder: (context, state) {
+        final args = state.extra as ClubPostUpdateScreenArgs;
+        return ClubPostUpdateScreen(
+          title: args.title,
+          content: args.content,
+          images: args.images,
+        );
+      },
     ),
   ],
 );

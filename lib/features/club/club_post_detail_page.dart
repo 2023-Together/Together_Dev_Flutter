@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ClubPostDetailPage extends StatefulWidget {
-  int id;
+  final int id;
+  final String title;
+  final String content;
+  final String images;
 
-  ClubPostDetailPage({
+  const ClubPostDetailPage({
     super.key,
     required this.id,
+    required this.title,
+    required this.content,
+    required this.images,
   });
 
   @override
@@ -49,9 +56,9 @@ class _ClubPostDetailPageState extends State<ClubPostDetailPage> {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           width: double.infinity,
           color: Colors.white,
-          child: Column(
+          child: const Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
                 "소개",
                 style: TextStyle(
@@ -158,9 +165,9 @@ http://open.kakao.com/o/sdkfj 동아리 단톡방에 들
                               child: Image.asset("assets/images/dog.jpg"),
                             ),
                             const SizedBox(width: 10),
-                            Column(
+                            const Column(
                               children: [
-                                const Text(
+                                Text(
                                   "고사모",
                                   style: TextStyle(
                                     fontSize: 22,
@@ -168,10 +175,10 @@ http://open.kakao.com/o/sdkfj 동아리 단톡방에 들
                                   ),
                                 ),
                                 Row(
-                                  children: const [
-                                    Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
+                                  children: [
+                                    FaIcon(
+                                      FontAwesomeIcons.thumbsUp,
+                                      color: Colors.blue,
                                     ),
                                     SizedBox(width: 1),
                                     Text(

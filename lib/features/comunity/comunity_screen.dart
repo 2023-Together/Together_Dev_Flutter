@@ -38,6 +38,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
   void initState() {
     super.initState();
 
+    // 스크롤 이벤트 처리
     scrollController.addListener(
       () {
         _onScroll();
@@ -64,7 +65,9 @@ class _ComunityScreenState extends State<ComunityScreen> {
     setState(() {});
   }
 
-  // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않는 함수
+  // 리스트 체크
+  // 광고가 없음 : 광고 삽입
+  // 광고가 있음 : 그냥 리턴
   List<Map<String, dynamic>> checkAds(List<Map<String, dynamic>> list) {
     if (!list.any((item) => item["type"] == "ad")) {
       // 리스트 사이에 광고 넣기
@@ -94,9 +97,11 @@ class _ComunityScreenState extends State<ComunityScreen> {
     }
   }
 
+  // 스크롤이 맨아래로 내려가면 새로운 리스트 추가
   void _scrollEnd() {
     if (scrollController.offset == scrollController.position.maxScrollExtent) {
       setState(() {
+        // 새로 추가한 리스트에 광고 넣기
         comunityList = [...comunityList] + checkAds(initComunityList);
       });
     }
@@ -345,6 +350,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                   (context, index) {
                     final item = comunityList[index];
                     if (item["type"] != "ad") {
+                      // 해당 번지가 게시물일때
                       return ClubComunityItemBox(
                         key: Key(item["title"]),
                         title: item["title"],
@@ -357,6 +363,7 @@ class _ComunityScreenState extends State<ComunityScreen> {
                         index: index,
                       );
                     } else {
+                      // 해당 번지가 광고일때
                       return StatefulBuilder(
                         builder: (context, setState) => Container(
                           height: 50,

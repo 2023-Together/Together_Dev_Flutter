@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 
+class ClubPostUpdateScreenArgs {
+  final String title;
+  final String content;
+  final List<String> images;
+
+  ClubPostUpdateScreenArgs({
+    required this.title,
+    required this.content,
+    required this.images,
+  });
+}
+
 class ClubPostUpdateScreen extends StatefulWidget {
   static const routeName = "post_update";
   static const routeURL = "/post_update";
-  const ClubPostUpdateScreen({super.key});
+  const ClubPostUpdateScreen({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.images,
+  });
+
+  final String title;
+  final String content;
+  final List<String> images;
 
   @override
   State<ClubPostUpdateScreen> createState() => _ClubPostUpdateScreenState();
@@ -99,6 +120,13 @@ class _ClubPostUpdateScreenState extends State<ClubPostUpdateScreen> {
         fontSize: 18,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _contentController.dispose();
+    _titleController.dispose();
+    super.dispose();
   }
 
   @override

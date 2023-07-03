@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/club/club_post_detail_screen.dart';
 import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
@@ -10,7 +11,7 @@ class ClubPostCardItem extends StatefulWidget {
   const ClubPostCardItem({
     super.key,
     required this.title,
-    required this.img,
+    required this.images,
     required this.initCheckGood,
     required this.content,
     required this.date,
@@ -21,7 +22,7 @@ class ClubPostCardItem extends StatefulWidget {
 
   final String title;
   final String content;
-  final String img;
+  final List<String> images;
   final bool initCheckGood;
   final String date;
   final String user;
@@ -34,7 +35,7 @@ class ClubPostCardItem extends StatefulWidget {
 
 class _ClubPostCardItem extends State<ClubPostCardItem> {
   late bool _checkGood;
-  final imgHeight = 175.0;
+  final int imgHeight = 100;
 
   @override
   void initState() {
@@ -119,7 +120,13 @@ class _ClubPostCardItem extends State<ClubPostCardItem> {
                     PopupMenuItem(
                       onTap: () {
                         print("게시글 수정");
-                        context.push(ClubPostUpdateScreen.routeURL);
+                        context.pushNamed(
+                          ClubPostUpdateScreen.routeName,
+                          extra: ClubPostUpdateScreenArgs(
+                              title: widget.title,
+                              content: widget.content,
+                              images: widget.images),
+                        );
                       },
                       child: const Text("수정"),
                     ),
@@ -137,9 +144,11 @@ class _ClubPostCardItem extends State<ClubPostCardItem> {
             GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ClubPostDetailScreen()));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ClubPostDetailScreen(),
+                  ),
+                );
               },
               child: Column(
                 children: [
@@ -161,81 +170,55 @@ class _ClubPostCardItem extends State<ClubPostCardItem> {
                       ),
                     ),
                   ),
-                  if (widget.img.isNotEmpty)
-                    widget.img.contains("https") || widget.img.contains("http")
-                        ? Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: Sizes.size8,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        Sizes.size14,
-                                      ), // 원하는 둥글기 정도를 설정
-                                      child: Image.network(
-                                        widget.img,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
+                  if (widget.images.isNotEmpty)
+                    Container(
+                      height: 200,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Sizes.size10,
+                      ),
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          if (widget.images[index].contains("http://") ||
+                              widget.images[index].contains("https://")) {
+                            return Container(
+                              width: 125,
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: Sizes.size8,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                  Sizes.size14,
+                                ), // 원하는 둥글기 정도를 설정
+                                child: Image.network(
+                                  widget.images[index],
+                                  fit: BoxFit.cover,
                                 ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: Sizes.size8,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        Sizes.size14,
-                                      ), // 원하는 둥글기 정도를 설정
-                                      child: Image.network(
-                                        widget.img,
-                                        fit: BoxFit.cover,
+                              ),
+                            );
+                          } else {
+                            return widget.images.length > 5 && index == 4
+                                ? Stack(
+                                    children: [
+                                      Container(
+                                        width: 125,
+                                        margin: const EdgeInsets.symmetric(
+                                          horizontal: Sizes.size8,
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(
+                                            Sizes.size14,
+                                          ), // 원하는 둥글기 정도를 설정
+                                          child: Image.asset(
+                                            widget.images[index],
+                                            fit: BoxFit.fitHeight,
+                                          ), // 둥글게 처리할 이미지
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: Sizes.size8,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        Sizes.size14,
-                                      ), // 원하는 둥글기 정도를 설정
-                                      child: Image.network(
-                                        widget.img,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                            ),
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
+                                    ],
+                                  )
+                                : Container(
+                                    width: 125,
                                     margin: const EdgeInsets.symmetric(
                                       horizontal: Sizes.size8,
                                     ),
@@ -244,51 +227,18 @@ class _ClubPostCardItem extends State<ClubPostCardItem> {
                                         Sizes.size14,
                                       ), // 원하는 둥글기 정도를 설정
                                       child: Image.asset(
-                                        widget.img,
+                                        widget.images[index],
                                         fit: BoxFit.fitHeight,
                                       ), // 둥글게 처리할 이미지
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: Sizes.size8,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        Sizes.size14,
-                                      ), // 원하는 둥글기 정도를 설정
-                                      child: Image.asset(
-                                        widget.img,
-                                        fit: BoxFit.fitHeight,
-                                      ), // 둥글게 처리할 이미지
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    height: imgHeight,
-                                    margin: const EdgeInsets.symmetric(
-                                      horizontal: Sizes.size8,
-                                    ),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(
-                                        Sizes.size14,
-                                      ), // 원하는 둥글기 정도를 설정
-                                      child: Image.asset(
-                                        widget.img,
-                                        fit: BoxFit.fitHeight,
-                                      ), // 둥글게 처리할 이미지
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                  );
+                          }
+                        },
+                        separatorBuilder: (context, index) => Gaps.h6,
+                        itemCount:
+                            widget.images.length > 5 ? 5 : widget.images.length,
+                      ),
+                    ),
                 ],
               ),
             ),
