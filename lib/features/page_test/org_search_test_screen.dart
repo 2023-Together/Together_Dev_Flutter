@@ -210,18 +210,21 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   StateDropDownButton(
                     title: "주소",
                     initOption: option1,
+                    options: const ["경기도", "진주", "서울", "부산"],
                     onChangeOption: onChangeOption1,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
                     title: "분야",
                     initOption: option2,
+                    options: const ["의료", "행사", "사회"],
                     onChangeOption: onChangeOption2,
                   ),
                   Gaps.h14,
                   StateDropDownButton(
-                    title: "인증",
+                    title: "인증여부",
                     initOption: option3,
+                    options: const ["O", "X"],
                     onChangeOption: onChangeOption3,
                   ),
                   TextButton(
@@ -290,8 +293,8 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                             ],
                           ),
                           Gaps.v3,
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Gaps.h8,
                               Text("주소 : "),
                               Text(

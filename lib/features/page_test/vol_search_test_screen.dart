@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
@@ -105,40 +106,9 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
   String selectedDropdown2 = '분야별';
   String selectedDropdown3 = '기간별';
 
-  List<String> dropdownList1 = ['지역별', '가좌동', '평거동', '충무공동'];
-  List<String> dropdownList2 = ['분야별', '의료봉사', '문화체험', '행사보조'];
-  List<String> dropdownList3 = ['기간별', '1', '2', '3'];
-
-  // String option1 = "지역별";
-  // String option2 = "분야별";
-  // String option3 = "기간별";
-
-  // void onChangeOption1(String? value) {
-  //   if (value == null) {
-  //     option1 = "지역별";
-  //   } else {
-  //     option1 = value;
-  //   }
-  //   setState(() {});
-  // }
-
-  // void onChangeOption2(String? value) {
-  //   if (value == null) {
-  //     option1 = "지역별";
-  //   } else {
-  //     option1 = value;
-  //   }
-  //   setState(() {});
-  // }
-
-  // void onChangeOption3(String? value) {
-  //   if (value == null) {
-  //     option1 = "지역별";
-  //   } else {
-  //     option1 = value;
-  //   }
-  //   setState(() {});
-  // }
+  List<String> dropdownList1 = ['가좌동', '평거동', '충무공동'];
+  List<String> dropdownList2 = ['의료봉사', '문화체험', '행사보조'];
+  List<String> dropdownList3 = ['1', '2', '3'];
 
   @override
   Widget build(BuildContext context) {
@@ -177,73 +147,49 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
         child: Column(
           children: [
             Gaps.v6,
-            // SizedBox(
-            //   height: 35,
-            //   child: ListView.separated(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: volCategories.length,
-            //     itemBuilder: (context, index) => CategoriButtons(
-            //       title: volCategories[index],
-            //     ),
-            //     separatorBuilder: (context, index) => Gaps.h8,
-            //   ),
-            // ),
             Container(
               height: 50,
               color: Colors.white,
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.size14,
-                vertical: Sizes.size11,
+                vertical: Sizes.size4,
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    DropdownButton(
-                      value: selectedDropdown1,
-                      items: dropdownList1.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          selectedDropdown1 = value;
-                        });
-                      },
-                    ),
-                    DropdownButton(
-                      value: selectedDropdown2,
-                      items: dropdownList2.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          selectedDropdown2 = value;
-                        });
-                      },
-                    ),
-                    DropdownButton(
-                      value: selectedDropdown3,
-                      items: dropdownList3.map((String item) {
-                        return DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(item),
-                        );
-                      }).toList(),
-                      onChanged: (dynamic value) {
-                        setState(() {
-                          selectedDropdown3 = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  StateDropDownButton(
+                    initOption: selectedDropdown1,
+                    onChangeOption: (dynamic value) {
+                      setState(() {
+                        selectedDropdown1 = value;
+                      });
+                    },
+                    title: "지역별",
+                    options: dropdownList1,
+                  ),
+                  Gaps.h8,
+                  StateDropDownButton(
+                    initOption: selectedDropdown2,
+                    onChangeOption: (dynamic value) {
+                      setState(() {
+                        selectedDropdown2 = value;
+                      });
+                    },
+                    title: "분야별",
+                    options: dropdownList2,
+                  ),
+                  Gaps.h8,
+                  StateDropDownButton(
+                    initOption: selectedDropdown3,
+                    onChangeOption: (dynamic value) {
+                      setState(() {
+                        selectedDropdown3 = value;
+                      });
+                    },
+                    title: "기간별",
+                    options: dropdownList3,
+                  ),
+                ],
               ),
             ),
             Gaps.v6,

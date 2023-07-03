@@ -6,10 +6,12 @@ class StateDropDownButton extends StatelessWidget {
     required this.initOption,
     required this.onChangeOption,
     required this.title,
+    required this.options,
   });
 
   final String title;
   final String initOption;
+  final List<String> options;
   final Function(String?) onChangeOption;
 
   @override
@@ -19,11 +21,7 @@ class StateDropDownButton extends StatelessWidget {
       hint: Text(initOption.isEmpty ? title : initOption),
       disabledHint: Text(title),
       onChanged: (value) => onChangeOption(value),
-      items: <String>[
-        '옵션1',
-        '옵션2',
-        '옵션3',
-      ].map<DropdownMenuItem<String>>((String value) {
+      items: options.map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
           child: Text(value),
