@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class StateDropDownButton extends StatelessWidget {
-  const StateDropDownButton({
+class SWAGStateDropDownButton extends StatelessWidget {
+  const SWAGStateDropDownButton({
     super.key,
     required this.initOption,
     required this.onChangeOption,

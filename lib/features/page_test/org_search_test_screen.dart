@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 
 final List<String> volAddress = [
   "지역1",
@@ -207,21 +207,21 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  StateDropDownButton(
+                  SWAGStateDropDownButton(
                     title: "주소",
                     initOption: option1,
                     options: const ["경기도", "진주", "서울", "부산"],
                     onChangeOption: onChangeOption1,
                   ),
                   Gaps.h14,
-                  StateDropDownButton(
+                  SWAGStateDropDownButton(
                     title: "분야",
                     initOption: option2,
                     options: const ["의료", "행사", "사회"],
                     onChangeOption: onChangeOption2,
                   ),
                   Gaps.h14,
-                  StateDropDownButton(
+                  SWAGStateDropDownButton(
                     title: "인증여부",
                     initOption: option3,
                     options: const ["O", "X"],

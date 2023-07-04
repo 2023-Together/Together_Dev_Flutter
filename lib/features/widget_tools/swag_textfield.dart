@@ -8,17 +8,17 @@ class SWAGTextField extends StatefulWidget {
     required this.hintText,
     required this.maxLine,
     required this.controller,
-    required this.onChange,
-    required this.onSubmitted,
-    required this.buttonText,
+    this.onChange,
+    this.onSubmitted,
+    this.buttonText,
   });
 
   final String hintText; // 힌트
   final int maxLine; // 최대 줄 개수
   final TextEditingController controller; // text 컨트롤러
-  final Function onChange; // 값이 변경될때 실행될 함수
-  final Function onSubmitted; // 확인 버튼 누를때 실행될 함수
-  final String buttonText; // 버튼의 텍스트
+  final Function? onChange; // 값이 변경될때 실행될 함수
+  final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
+  final String? buttonText; // 버튼의 텍스트
 
   @override
   State<SWAGTextField> createState() => _SWAGTextFieldState();
@@ -37,7 +37,9 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
             onSubmitted: (value) => widget.onSubmitted,
             onChanged: (value) {
               _isEditing = value.isEmpty ? false : true;
-              widget.onChange();
+              if (widget.onChange != null) {
+                widget.onChange!();
+              }
               setState(() {});
             },
             maxLines: widget.maxLine,
@@ -79,40 +81,44 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
           ),
         ),
         Gaps.h6,
-        Expanded(
-          flex: 1,
-          child: GestureDetector(
-            onTap: () {
-              if (_isEditing) {
-                widget.onSubmitted();
-              }
-            },
-            // AnimatedContainer : 해당 컨테이너에 대한 모든 변화를 애니메이션화 한다.
-            // 본인만 애니메이션만 적용시키고 자식은 적용 시키지 않는다.
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              padding: const EdgeInsets.symmetric(vertical: Sizes.size20),
-              decoration: BoxDecoration(
-                color:
-                    _isEditing ? const Color(0xFF6524FF) : Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(Sizes.size5),
-              ),
-              // AnimatedDefaultTextStyle : 해당 텍스트에 대한 모든 변화를 애니메이션화 한다.
-              child: AnimatedDefaultTextStyle(
+        if (widget.buttonText != null)
+          Expanded(
+            flex: 1,
+            child: GestureDetector(
+              onTap: () {
+                if (_isEditing && widget.onSubmitted != null) {
+                  widget.onSubmitted!();
+                } else {
+                  print("버튼이 동작하는 조건이 충족되지 않습니다!");
+                }
+              },
+              // AnimatedContainer : 해당 컨테이너에 대한 모든 변화를 애니메이션화 한다.
+              // 본인만 애니메이션만 적용시키고 자식은 적용 시키지 않는다.
+              child: AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                style: TextStyle(
-                  color: _isEditing ? Colors.white : Colors.grey,
-                  fontWeight: FontWeight.w600,
-                  fontSize: Sizes.size16,
+                padding: const EdgeInsets.symmetric(vertical: Sizes.size20),
+                decoration: BoxDecoration(
+                  color: _isEditing
+                      ? const Color(0xFF6524FF)
+                      : Colors.grey.shade300,
+                  borderRadius: BorderRadius.circular(Sizes.size5),
                 ),
-                child: Text(
-                  widget.buttonText,
-                  textAlign: TextAlign.center,
+                // AnimatedDefaultTextStyle : 해당 텍스트에 대한 모든 변화를 애니메이션화 한다.
+                child: AnimatedDefaultTextStyle(
+                  duration: const Duration(milliseconds: 300),
+                  style: TextStyle(
+                    color: _isEditing ? Colors.white : Colors.grey,
+                    fontWeight: FontWeight.w600,
+                    fontSize: Sizes.size16,
+                  ),
+                  child: Text(
+                    widget.buttonText!,
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

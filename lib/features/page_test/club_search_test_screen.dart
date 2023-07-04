@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/page_test/club_comunity_test_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_comunity_test_screen.dart';
 
 class ClubSearchTestScreen extends StatelessWidget {
   // 필드

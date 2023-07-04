@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
-class CustomIndicator extends StatelessWidget {
-  const CustomIndicator({
+class SWAGCustomIndicator extends StatelessWidget {
+  const SWAGCustomIndicator({
     super.key,
     required this.currentNoticeIndex,
     required this.noticeItemLength,
@@ -19,12 +19,12 @@ class CustomIndicator extends StatelessWidget {
         children: [
           for (int i = 0; i < noticeItemLength; i++)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.size3),
+              padding: const EdgeInsets.symmetric(horizontal: Sizes.size4),
               child: CircleAvatar(
                 backgroundColor: currentNoticeIndex == i
                     ? Colors.blue.shade400
                     : Colors.grey.shade300,
-                radius: Sizes.size5,
+                radius: Sizes.size7,
               ),
             ),
         ],

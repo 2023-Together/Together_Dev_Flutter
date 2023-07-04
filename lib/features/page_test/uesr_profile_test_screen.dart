@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
+
+  void onLogoutTap(BuildContext context) {
+    SecureStorageLogin.setLogout();
+    context.pushReplacementNamed(
+      MainNavigation.routeName,
+      queryParams: {"initIndex": "2"},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +54,7 @@ class UserProfileTestScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () => onLogoutTap(context),
                             child: const Icon(Icons.settings_outlined),
                           ),
                         ],
@@ -85,25 +96,25 @@ class UserProfileTestScreen extends StatelessWidget {
                       Gaps.v10,
                       Row(
                         children: [
-                          Expanded(
+                          const Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [Text("봉사 신청"), Text("2건")],
+                              children: [Text("봉사 신청"), Text("2건")],
                             ),
                           ),
                           Container(height: 50, width: 2, color: Colors.grey),
-                          Expanded(
+                          const Expanded(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [Text("봉사 완료"), Text("6건")],
+                              children: [Text("봉사 완료"), Text("6건")],
                             ),
                           ),
                         ],
                       ),
                       Gaps.v20,
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children: [
                           Gaps.h20,
                           Text(
                             "내가 올린 게시글",
@@ -178,11 +189,11 @@ class UserProfileTestScreen extends StatelessWidget {
                                         "assets/images/70836_50981_2758.jpg"),
                                   ),
                           ),
-                          Positioned(
+                          const Positioned(
                             bottom: Sizes.size10,
                             left: Sizes.size10,
                             child: Column(
-                              children: const [
+                              children: [
                                 Text(
                                   "제목",
                                   style: TextStyle(

@@ -29,18 +29,6 @@ class ClubPersistentTabBar extends SliverPersistentHeaderDelegate {
           fontWeight: FontWeight.bold,
         ),
         tabs: const [
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //     horizontal: Sizes.size20,
-          //   ),
-          //   child: Icon(Icons.grid_4x4_rounded),
-          // ),
-          // Padding(
-          //   padding: EdgeInsets.symmetric(
-          //     horizontal: Sizes.size20,
-          //   ),
-          //   child: FaIcon(FontAwesomeIcons.heart),
-          // ),
           Tab(text: '내용'),
           Tab(text: '댓글 3'),
         ],
@@ -50,11 +38,11 @@ class ClubPersistentTabBar extends SliverPersistentHeaderDelegate {
 
   // 최대 높이
   @override
-  double get maxExtent => 47;
+  double get maxExtent => 50;
 
   // 최소 높이
   @override
-  double get minExtent => 47;
+  double get minExtent => 50;
 
   // persistent header가 보여져야 되는지 알려주는 method
   // maxExtent와 minExtent의 값을 변경하고 싶다면 true를 리턴해야함

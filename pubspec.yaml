@@ -71,6 +71,9 @@ dependencies:
   # 슬라이더 페이징 라이브러리
   carousel_slider: ^4.2.1
 
+  # 이미지 불러오는 라이브러리
+  image_picker: ^1.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

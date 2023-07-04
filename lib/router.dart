@@ -1,7 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/club/club_post_update_screen.dart';
-import 'package:swag_cross_app/features/club/club_post_write_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_update_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_write_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
@@ -53,16 +54,31 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      name: ClubPostWriteScreen.routeName,
-      path: ClubPostWriteScreen.routeURL,
-      builder: (context, state) => const ClubPostWriteScreen(),
+      name: PostDetailScreen.routeName,
+      path: PostDetailScreen.routeURL,
+      builder: (context, state) {
+        final args = state.extra as PostDetailScreenArgs;
+        return PostDetailScreen(
+          title: args.title,
+          content: args.content,
+          images: args.images,
+          user: args.user,
+          date: args.date,
+          tabBarSelected: args.tabBarSelected,
+        );
+      },
     ),
     GoRoute(
-      name: ClubPostUpdateScreen.routeName,
-      path: ClubPostUpdateScreen.routeURL,
+      name: PostWriteScreen.routeName,
+      path: PostWriteScreen.routeURL,
+      builder: (context, state) => const PostWriteScreen(),
+    ),
+    GoRoute(
+      name: PostUpdateScreen.routeName,
+      path: PostUpdateScreen.routeURL,
       builder: (context, state) {
-        final args = state.extra as ClubPostUpdateScreenArgs;
-        return ClubPostUpdateScreen(
+        final args = state.extra as PostUpdateScreenArgs;
+        return PostUpdateScreen(
           title: args.title,
           content: args.content,
           images: args.images,
