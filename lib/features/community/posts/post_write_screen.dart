@@ -19,8 +19,8 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 
-  final List<String> _imgList = [];
-  final List<String> _removeImgList = [];
+  final List<XFile> _imgList = [];
+  final List<XFile> _removeImgList = [];
 
   @override
   void initState() {
@@ -30,23 +30,34 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
   }
 
   // 이미지를 가져오는 함수
-  Future _getImage(ImageSource imageSource) async {
+  Future _getImage(ImageSource? imageSource) async {
     final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
+    if (imageSource != null) {
+      final XFile? pickedFile = await picker.pickImage(source: imageSource);
+      if (pickedFile != null) {
+        setState(() {
+          _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
+        });
+      }
+    } else {
+      final List<XFile> pickedFiles = await picker.pickMultiImage();
       setState(() {
-        _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
+        _imgList.addAll(pickedFiles); //가져온 이미지를 이미지 리스트에 저장
       });
     }
     print(_imgList);
   }
 
   // 선택한 이미지를 삭제리스트에 넣는 함수
-  void _addRemoveImgList(String img) {
-    print(img);
-    _removeImgList.add(img);
+  void _addRemoveImgList(XFile img) {
+    if (_removeImgList.contains(img)) {
+      _removeImgList.remove(img);
+    } else {
+      _removeImgList.add(img);
+    }
+    print(_removeImgList);
   }
 
   // 선택한 모든 이미지를 삭제하는 함수
@@ -54,7 +65,9 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
     _imgList.removeWhere(
       (element) => _removeImgList.contains(element),
     );
-    print(_removeImgList);
+
+    _removeImgList.clear();
+
     print(_imgList);
     setState(() {});
   }
@@ -218,14 +231,10 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
                     //   File(_imgList[index].path),
                     //   fit: BoxFit.cover,
                     // ),
-                    (context, index) => GestureDetector(
-                      onTap: () {
-                        _addRemoveImgList(_imgList[index]);
-                      },
-                      child: SWAGImgFile(
-                        img: _imgList[index],
-                        addRemoveImgList: _addRemoveImgList,
-                      ),
+                    (context, index) => SWAGImgFile(
+                      key: UniqueKey(),
+                      img: _imgList[index],
+                      addRemoveImgList: _addRemoveImgList,
                     ),
                     childCount: _imgList.length,
                   ),
