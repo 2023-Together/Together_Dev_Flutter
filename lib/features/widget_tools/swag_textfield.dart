@@ -11,6 +11,7 @@ class SWAGTextField extends StatefulWidget {
     this.onChange,
     this.onSubmitted,
     this.buttonText,
+    this.focusNode,
   });
 
   final String hintText; // 힌트
@@ -19,6 +20,7 @@ class SWAGTextField extends StatefulWidget {
   final Function? onChange; // 값이 변경될때 실행될 함수
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
+  final FocusNode? focusNode;
 
   @override
   State<SWAGTextField> createState() => _SWAGTextFieldState();
@@ -34,7 +36,12 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
         Expanded(
           flex: 4,
           child: TextField(
-            onSubmitted: (value) => widget.onSubmitted,
+            focusNode: widget.focusNode,
+            onSubmitted: (value) {
+              if (widget.onSubmitted != null) {
+                widget.onSubmitted!();
+              }
+            },
             onChanged: (value) {
               _isEditing = value.isEmpty ? false : true;
               if (widget.onChange != null) {

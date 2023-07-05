@@ -184,7 +184,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget commentScreen() {
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Column(

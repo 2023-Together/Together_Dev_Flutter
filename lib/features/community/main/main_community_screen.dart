@@ -16,14 +16,14 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
-class CommunityScreen extends StatefulWidget {
-  const CommunityScreen({super.key});
+class MainCommunityScreen extends StatefulWidget {
+  const MainCommunityScreen({super.key});
 
   @override
-  State<CommunityScreen> createState() => _CommunityScreenState();
+  State<MainCommunityScreen> createState() => _MainCommunityScreenState();
 }
 
-class _CommunityScreenState extends State<CommunityScreen>
+class _MainCommunityScreenState extends State<MainCommunityScreen>
     with SingleTickerProviderStateMixin {
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
@@ -33,12 +33,12 @@ class _CommunityScreenState extends State<CommunityScreen>
 
   late final Animation<Offset> _panelAnimation = Tween(
     begin: const Offset(0, -1),
-    end: const Offset(0, 0.6),
+    end: const Offset(0, 0),
   ).animate(_animationController);
 
   late final Animation<Color?> _barrierAnimation = ColorTween(
     begin: Colors.transparent,
-    end: Colors.black38,
+    end: Colors.black12,
   ).animate(_animationController);
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
@@ -47,6 +47,10 @@ class _CommunityScreenState extends State<CommunityScreen>
   final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
+  // 포커스 검사
+  final FocusNode _focusNode = FocusNode();
+
+  bool _isFocused = false;
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
@@ -61,11 +65,18 @@ class _CommunityScreenState extends State<CommunityScreen>
   void initState() {
     super.initState();
 
+    _focusNode.addListener(_handleFocusChange);
+
     // 스크롤 이벤트 처리
     _scrollController.addListener(
       () {
         _onScroll();
         _scrollEnd();
+
+        // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
+        if (_animationController.isCompleted) {
+          _toggleAnimations();
+        }
       },
     );
 
@@ -74,6 +85,14 @@ class _CommunityScreenState extends State<CommunityScreen>
 
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
     comunityList = checkAds(initComunityList);
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus != _isFocused) {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    }
   }
 
   // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
@@ -171,19 +190,31 @@ class _CommunityScreenState extends State<CommunityScreen>
   }
 
   // 애니메이션 동작
-  void _toggleAnimations() async {
+  void _toggleAnimations() {
     // 이미 애니메이션이 실행되었다면
     if (_animationController.isCompleted) {
       // 애니메이션을 원래상태로 되돌림
       // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
-      await _animationController.reverse();
-      _showBarrier = false;
+      _animationController.reverse();
+      // _toggleBarrier();
+      _focusNode.unfocus();
     } else {
       // 애니메이션을 실행
       _animationController.forward();
+      _toggleBarrier();
+    }
+
+    setState(() {});
+  }
+
+  void _toggleBarrier() {
+    if (_showBarrier) {
+      _showBarrier = false;
+      _focusNode.unfocus();
+    } else {
       _showBarrier = true;
     }
-    FocusScope.of(context).unfocus();
+
     setState(() {});
   }
 
@@ -192,6 +223,7 @@ class _CommunityScreenState extends State<CommunityScreen>
     _scrollController.dispose();
     _animationController.dispose();
     _searchController.dispose();
+    _focusNode.dispose();
 
     super.dispose();
   }
@@ -200,12 +232,17 @@ class _CommunityScreenState extends State<CommunityScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       // backgroundColor: Colors.blue.shade100,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AnimatedOpacity(
-            opacity: _showJumpUpButton ? 1 : 0,
+            opacity: _showJumpUpButton
+                ? !_isFocused
+                    ? 1
+                    : 0
+                : 0,
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton(
               heroTag: "comunity",
@@ -219,7 +256,11 @@ class _CommunityScreenState extends State<CommunityScreen>
           ),
           Gaps.v6,
           AnimatedOpacity(
-            opacity: _isLogined ? 1 : 0,
+            opacity: _isLogined
+                ? !_isFocused
+                    ? 1
+                    : 0
+                : 0,
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton(
               heroTag: "community_edit",
@@ -283,7 +324,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                           children: _isLogined
                               ? [
                                   GestureDetector(
-                                    onTap: onLogoutTap,
+                                    onTap: _toggleAnimations,
                                     child: const Icon(Icons.search),
                                   ),
                                   Gaps.h2,
@@ -362,6 +403,7 @@ class _CommunityScreenState extends State<CommunityScreen>
                               options: CarouselOptions(
                                 aspectRatio: 10 / 4,
                                 enlargeCenterPage: true,
+                                enableInfiniteScroll: false,
                                 onPageChanged: (index, reason) {
                                   setState(() {
                                     _currentNoticeIndex = index;
@@ -426,14 +468,15 @@ class _CommunityScreenState extends State<CommunityScreen>
               ),
             ),
           ),
-          if (_showBarrier)
+          if (_isFocused)
             // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            AnimatedModalBarrier(
-              color: _barrierAnimation,
+            ModalBarrier(
+              // color: _barrierAnimation,
+              color: Colors.black12,
               // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
               dismissible: true,
               // 자신을 클릭하면 실행되는 함수
-              onDismiss: _toggleAnimations,
+              onDismiss: () => _focusNode.unfocus(),
             ),
           // 검색 화면
           SlideTransition(
@@ -448,7 +491,11 @@ class _CommunityScreenState extends State<CommunityScreen>
                 onSubmitted: () {
                   print(_searchController.text);
                 },
+                onChange: () {
+                  print(_searchController.text);
+                },
                 buttonText: "검색",
+                focusNode: _focusNode,
               ),
             ),
           ),

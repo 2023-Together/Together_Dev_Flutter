@@ -60,7 +60,7 @@ class ClubSearchTestScreen extends StatelessWidget {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ClubComunityTestScreen(),
+                  builder: (context) => const ClubComunityScreen(),
                 ),
               ),
               child: Container(

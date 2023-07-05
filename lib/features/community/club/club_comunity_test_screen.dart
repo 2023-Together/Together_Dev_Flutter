@@ -14,14 +14,14 @@ import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class ClubComunityTestScreen extends StatefulWidget {
-  const ClubComunityTestScreen({super.key});
+class ClubComunityScreen extends StatefulWidget {
+  const ClubComunityScreen({super.key});
 
   @override
-  State<ClubComunityTestScreen> createState() => _ClubComunityTestScreenState();
+  State<ClubComunityScreen> createState() => _ClubComunityScreenState();
 }
 
-class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
+class _ClubComunityScreenState extends State<ClubComunityScreen>
     with SingleTickerProviderStateMixin {
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
@@ -31,12 +31,13 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
 
   late final Animation<Offset> _panelAnimation = Tween(
     begin: const Offset(0, -1),
-    end: const Offset(0, 0.6),
+    end: const Offset(0, 0),
   ).animate(_animationController);
 
+  // 배리어 애니메이션
   late final Animation<Color?> _barrierAnimation = ColorTween(
     begin: Colors.transparent,
-    end: Colors.black38,
+    end: Colors.black12,
   ).animate(_animationController);
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
@@ -45,6 +46,8 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
+  // 검색 인풋 포커스 제어를 위한 컨트롤러
+  final FocusNode _searchFocusNode = FocusNode();
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
@@ -63,6 +66,11 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
       () {
         _onScroll();
         _scrollEnd();
+
+        // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
+        if (_animationController.isCompleted) {
+          _toggleAnimations();
+        }
       },
     );
 
@@ -151,19 +159,32 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   }
 
   // 애니메이션 동작
-  void _toggleAnimations() async {
+  Future<void> _toggleAnimations() async {
     // 이미 애니메이션이 실행되었다면
     if (_animationController.isCompleted) {
       // 애니메이션을 원래상태로 되돌림
       // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
       await _animationController.reverse();
-      _showBarrier = false;
+      _toggleBarrier();
+      FocusScope.of(context).unfocus();
     } else {
       // 애니메이션을 실행
-      _animationController.forward();
+      await _animationController.forward();
+    }
+
+    setState(() {});
+  }
+
+  void _toggleBarrier() {
+    // 이미 애니메이션이 실행되었다면
+    if (_showBarrier) {
+      _showBarrier = false;
+      FocusScope.of(context).unfocus();
+    } else {
+      // 애니메이션을 실행
       _showBarrier = true;
     }
-    FocusScope.of(context).unfocus();
+
     setState(() {});
   }
 
@@ -172,6 +193,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
     _scrollController.dispose();
     _animationController.dispose();
     _searchController.dispose();
+    _searchFocusNode.dispose();
 
     super.dispose();
   }
@@ -179,217 +201,243 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    return Scaffold(
-      // backgroundColor: Colors.blue.shade100,
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Gaps.v6,
-          FloatingActionButton(
-            heroTag: "club_community_edit",
-            onPressed: () {
-              // 동아리 게시글 작성
-              context.pushNamed(PostWriteScreen.routeName);
-            },
-            backgroundColor: Colors.blue.shade300,
-            child: const FaIcon(
-              FontAwesomeIcons.penToSquare,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
-      // CustomScrollView : 스크롤 가능한 구역
-      body: Stack(
-        children: [
-          // 메인 화면
-          RefreshIndicator(
-            onRefresh: _refreshComunityList,
-            child: CustomScrollView(
-              controller: _scrollController,
-              // CustomScrollView 안에 들어갈 element들
-              // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-              slivers: [
-                // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
-                SliverAppBar(
-                  automaticallyImplyLeading: true,
-                  // pinned: true,
-                  floating: true,
-                  snap: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(20.0),
-                    ),
-                  ),
-                  centerTitle: false,
-                  title: const Text("SWAG 동아리(10명)"),
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size14,
-                        vertical: Sizes.size10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: _toggleAnimations,
-                            child: const Icon(Icons.search),
-                            // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-                          ),
-                          Gaps.h2,
-                          GestureDetector(
-                            onTap: () {},
-                            child: const Icon(Icons.edit_note_rounded),
-                            // child: const FaIcon(FontAwesomeIcons.penToSquare),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+    return SafeArea(
+      child: Scaffold(
+        // backgroundColor: Colors.blue.shade100,
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            AnimatedOpacity(
+              opacity: _showJumpUpButton
+                  ? _animationController.isDismissed
+                      ? 1
+                      : 0
+                  : 0,
+              duration: const Duration(milliseconds: 200),
+              child: FloatingActionButton(
+                heroTag: "comunity",
+                onPressed: _scrollToTop,
+                backgroundColor: Colors.purpleAccent.shade100,
+                child: const FaIcon(
+                  FontAwesomeIcons.arrowUp,
+                  color: Colors.black,
                 ),
-                // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size10,
-                      horizontal: Sizes.size20,
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            "assets/images/volImg.jpg",
-                            width: size.width,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "공지",
-                                  style: TextStyle(
-                                    fontSize: Sizes.size20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "더보기 >",
-                                  style: TextStyle(
-                                    fontSize: Sizes.size16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey.shade500,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          CarouselSlider.builder(
-                            itemBuilder: (context, index, realIndex) =>
-                                NoticeTestItem(
-                              title: "공지사항 ${index + 1}",
-                              content:
-                                  "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
-                            ),
-                            itemCount: 5,
-                            options: CarouselOptions(
-                              aspectRatio: 10 / 4,
-                              enlargeCenterPage: true,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentNoticeIndex = index;
-                                });
-                              },
-                              // 옵션 설정
-                            ),
-                            // 인디케이터 설정
-                            carouselController: _carouselController,
-                            // 페이지 변화 이벤트 등록
-                          ),
-                          SWAGCustomIndicator(
-                            currentNoticeIndex: _currentNoticeIndex,
-                            noticeItemLength: 5,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                // SliverFixedExtentList : item들의 리스트를 만들어 냄
-                SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    childCount: comunityList.length,
-                    (context, index) {
-                      final item = comunityList[index];
-                      if (item["type"] != "ad") {
-                        return PostCard(
-                          key: Key(item["title"]),
-                          title: item["title"],
-                          images: List<String>.from(item["imgUrl"]),
-                          initCheckGood: item["checkGood"],
-                          content: item["content"],
-                          date: item["date"],
-                          user: item["user"],
-                          isLogined: _isLogined,
-                          index: index,
-                        );
-                      } else {
-                        return StatefulBuilder(
-                          builder: (context, setState) => Container(
-                            height: 50,
-                            alignment: Alignment.center,
-                            child: AdWidget(
-                              ad: BannerAd(
-                                listener: BannerAdListener(
-                                  onAdFailedToLoad: failedAdsLoading,
-                                  onAdLoaded: (_) {},
-                                ),
-                                size: AdSize.fullBanner,
-                                adUnitId: AdHelper.bannerAdUnitId,
-                                request: const AdRequest(),
-                              )..load(),
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-          if (_showBarrier)
-            // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            AnimatedModalBarrier(
-              color: _barrierAnimation,
-              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-              dismissible: true,
-              // 자신을 클릭하면 실행되는 함수
-              onDismiss: _toggleAnimations,
-            ),
-          // 검색 화면
-          SlideTransition(
-            position: _panelAnimation,
-            child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-              child: SWAGTextField(
-                hintText: "검색할 제목을 입력해 주세요..",
-                maxLine: 1,
-                controller: _searchController,
-                onSubmitted: () {
-                  print(_searchController.text);
-                },
-                buttonText: "검색",
               ),
             ),
-          ),
-        ],
+            Gaps.v6,
+            AnimatedOpacity(
+              opacity: _animationController.isCompleted ? 0 : 1,
+              duration: const Duration(milliseconds: 200),
+              child: FloatingActionButton(
+                heroTag: "club_community_edit",
+                onPressed: () {
+                  // 동아리 게시글 작성
+                  context.pushNamed(PostWriteScreen.routeName);
+                },
+                backgroundColor: Colors.blue.shade300,
+                child: const FaIcon(
+                  FontAwesomeIcons.penToSquare,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+        // CustomScrollView : 스크롤 가능한 구역
+        body: Stack(
+          children: [
+            // 메인 화면
+            RefreshIndicator(
+              onRefresh: _refreshComunityList,
+              child: CustomScrollView(
+                controller: _scrollController,
+                // CustomScrollView 안에 들어갈 element들
+                // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+                slivers: [
+                  // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
+                  SliverAppBar(
+                    automaticallyImplyLeading: true,
+                    // pinned: true,
+                    floating: true,
+                    snap: true,
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        bottom: Radius.circular(20.0),
+                      ),
+                    ),
+                    centerTitle: false,
+                    title: const Text("SWAG 동아리(10명)"),
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: Sizes.size14,
+                          vertical: Sizes.size10,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: _toggleAnimations,
+                              child: const Icon(Icons.search),
+                              // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+                            ),
+                            Gaps.h2,
+                            GestureDetector(
+                              onTap: () {},
+                              child: const Icon(Icons.edit_note_rounded),
+                              // child: const FaIcon(FontAwesomeIcons.penToSquare),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.size10,
+                        horizontal: Sizes.size20,
+                      ),
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              "assets/images/volImg.jpg",
+                              width: size.width,
+                              height: 160,
+                              fit: BoxFit.cover,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: Sizes.size10,
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    "공지",
+                                    style: TextStyle(
+                                      fontSize: Sizes.size20,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    "더보기 >",
+                                    style: TextStyle(
+                                      fontSize: Sizes.size16,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            CarouselSlider.builder(
+                              itemBuilder: (context, index, realIndex) =>
+                                  NoticeTestItem(
+                                title: "공지사항 ${index + 1}",
+                                content:
+                                    "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
+                              ),
+                              itemCount: 5,
+                              options: CarouselOptions(
+                                aspectRatio: 10 / 4,
+                                enlargeCenterPage: true,
+                                onPageChanged: (index, reason) {
+                                  setState(() {
+                                    _currentNoticeIndex = index;
+                                  });
+                                },
+                                // 옵션 설정
+                              ),
+                              // 인디케이터 설정
+                              carouselController: _carouselController,
+                              // 페이지 변화 이벤트 등록
+                            ),
+                            SWAGCustomIndicator(
+                              currentNoticeIndex: _currentNoticeIndex,
+                              noticeItemLength: 5,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // SliverFixedExtentList : item들의 리스트를 만들어 냄
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: comunityList.length,
+                      (context, index) {
+                        final item = comunityList[index];
+                        if (item["type"] != "ad") {
+                          return PostCard(
+                            key: Key(item["title"]),
+                            title: item["title"],
+                            images: List<String>.from(item["imgUrl"]),
+                            initCheckGood: item["checkGood"],
+                            content: item["content"],
+                            date: item["date"],
+                            user: item["user"],
+                            isLogined: _isLogined,
+                            index: index,
+                          );
+                        } else {
+                          return StatefulBuilder(
+                            builder: (context, setState) => Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: AdWidget(
+                                ad: BannerAd(
+                                  listener: BannerAdListener(
+                                    onAdFailedToLoad: failedAdsLoading,
+                                    onAdLoaded: (_) {},
+                                  ),
+                                  size: AdSize.fullBanner,
+                                  adUnitId: AdHelper.bannerAdUnitId,
+                                  request: const AdRequest(),
+                                )..load(),
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (_searchFocusNode.hasFocus)
+              // 슬라이드 화면 뒤쪽의 검은 화면 구현
+              ModalBarrier(
+                // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                dismissible: true,
+                // 자신을 클릭하면 실행되는 함수
+                onDismiss: _toggleBarrier,
+              ),
+            // 검색 화면
+            SlideTransition(
+              position: _panelAnimation,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                child: SWAGTextField(
+                  hintText: "검색할 제목을 입력해 주세요..",
+                  maxLine: 1,
+                  controller: _searchController,
+                  onSubmitted: () {
+                    print(_searchController.text);
+                  },
+                  onChange: () {
+                    print(_searchController.text);
+                  },
+                  buttonText: "검색",
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

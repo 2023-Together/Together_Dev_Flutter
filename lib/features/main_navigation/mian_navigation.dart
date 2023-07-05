@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/main/community_screen.dart';
+import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
 import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
@@ -72,7 +72,7 @@ class _MainNavigationState extends State<MainNavigation> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: true,
         body: Stack(
           children: [
             // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
@@ -87,7 +87,7 @@ class _MainNavigationState extends State<MainNavigation> {
             ),
             Offstage(
               offstage: _selectedIndex != 2,
-              child: const CommunityScreen(),
+              child: const MainCommunityScreen(),
             ),
             Offstage(
               offstage: _selectedIndex != 3,

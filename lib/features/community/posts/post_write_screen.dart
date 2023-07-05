@@ -118,6 +118,7 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Gaps.v20,
                     _title(title: "카테고리"),
                     Gaps.v10,
                     GestureDetector(
@@ -221,7 +222,10 @@ class _PostWriteScreenState extends State<PostWriteScreen> {
                       onTap: () {
                         _addRemoveImgList(_imgList[index]);
                       },
-                      child: SWAGImgFile(img: _imgList[index]),
+                      child: SWAGImgFile(
+                        img: _imgList[index],
+                        addRemoveImgList: _addRemoveImgList,
+                      ),
                     ),
                     childCount: _imgList.length,
                   ),
