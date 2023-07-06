@@ -102,13 +102,13 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
     context.pushNamed(AlertScreen.routeName);
   }
 
-  String selectedDropdown1 = '지역별';
-  String selectedDropdown2 = '분야별';
-  String selectedDropdown3 = '기간별';
+  String selectedDropdown1 = '';
+  String selectedDropdown2 = '';
+  String selectedDropdown3 = '';
 
-  List<String> dropdownList1 = ['가좌동', '평거동', '충무공동'];
-  List<String> dropdownList2 = ['의료봉사', '문화체험', '행사보조'];
-  List<String> dropdownList3 = ['1', '2', '3'];
+  List<String> dropdownList1 = ['', '가좌동', '평거동', '충무공동'];
+  List<String> dropdownList2 = ['', '의료봉사', '문화체험', '행사보조'];
+  List<String> dropdownList3 = ['', '1', '2', '3'];
 
   @override
   Widget build(BuildContext context) {

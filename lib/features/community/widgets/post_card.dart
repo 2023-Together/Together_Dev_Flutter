@@ -9,6 +9,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_community_images.dart'
 class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
+    required this.postId,
+    required this.category,
     required this.title,
     required this.images,
     required this.initCheckGood,
@@ -16,9 +18,10 @@ class PostCard extends StatefulWidget {
     required this.date,
     required this.user,
     required this.isLogined,
-    required this.index,
   });
 
+  final int postId;
+  final String category;
   final String title;
   final String content;
   final List<String> images;
@@ -26,7 +29,6 @@ class PostCard extends StatefulWidget {
   final String date;
   final String user;
   final bool isLogined;
-  final int index;
 
   @override
   State<PostCard> createState() => _PostCard();
@@ -53,16 +55,18 @@ class _PostCard extends State<PostCard> {
   }
 
   // 댓글로 이동
-  void _comunityComment() {
+  void _goDetailScreen(int page) {
     context.pushNamed(
       PostDetailScreen.routeName,
       extra: PostDetailScreenArgs(
+        postId: widget.postId,
+        category: widget.category,
         title: widget.title,
         content: widget.content,
         images: widget.images,
         date: widget.date,
         user: widget.user,
-        tabBarSelected: 1,
+        tabBarSelected: page,
       ),
     );
   }
@@ -72,36 +76,18 @@ class _PostCard extends State<PostCard> {
     final size = MediaQuery.of(context).size;
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
-        onTap: () {
-          context.pushNamed(
-            PostDetailScreen.routeName,
-            extra: PostDetailScreenArgs(
-              title: widget.title,
-              content: widget.content,
-              images: widget.images,
-              date: widget.date,
-              user: widget.user,
-              tabBarSelected: 0,
-            ),
-          );
-        },
+        onTap: () => _goDetailScreen(0),
         child: Container(
           clipBehavior: Clip.hardEdge,
           width: constraints.maxWidth,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
-            // border: const Border(
-            //   bottom: BorderSide(
-            //     width: 0.5,
-            //     color: Colors.black12,
-            //   ),
-            // ),
-            borderRadius: widget.index == 0
-                ? const BorderRadius.only(
-                    topLeft: Radius.circular(Sizes.size20),
-                    topRight: Radius.circular(Sizes.size20),
-                  )
-                : BorderRadius.zero,
+            border: Border(
+              bottom: BorderSide(
+                width: 0.5,
+                color: Colors.black12,
+              ),
+            ),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -209,7 +195,7 @@ class _PostCard extends State<PostCard> {
                     ),
                     Gaps.h6,
                     GestureDetector(
-                      onTap: _comunityComment,
+                      onTap: () => _goDetailScreen(1),
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         child: const FaIcon(

@@ -6,44 +6,54 @@ import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
-class PostUpdateScreenArgs {
+class PostEditScreenArgs {
+  final int id;
   final String title;
+  final String category;
   final String content;
   final List<String> images;
 
-  PostUpdateScreenArgs({
+  PostEditScreenArgs({
+    required this.id,
+    required this.category,
     required this.title,
     required this.content,
     required this.images,
   });
 }
 
-class PostUpdateScreen extends StatefulWidget {
-  static const routeName = "post_update";
-  static const routeURL = "/post_update";
-  const PostUpdateScreen({
+class PostEditScreen extends StatefulWidget {
+  static const routeName = "post_edit";
+  static const routeURL = "/post_edit";
+
+  const PostEditScreen({
     super.key,
-    required this.title,
-    required this.content,
-    required this.images,
+    this.id,
+    this.category,
+    this.title,
+    this.content,
+    this.images,
   });
 
-  final String title;
-  final String content;
-  final List<String> images;
+  final int? id;
+  final String? category;
+  final String? title;
+  final String? content;
+  final List<String>? images;
 
   @override
-  State<PostUpdateScreen> createState() => _PostUpdateScreenState();
+  State<PostEditScreen> createState() => _PostEditScreenState();
 }
 
-class _PostUpdateScreenState extends State<PostUpdateScreen> {
+class _PostEditScreenState extends State<PostEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 
   final List<XFile> _imgList = [];
+  // final List<XFile> _imgList = [];
   final List<XFile> _removeImgList = [];
 
-  String _category = "";
+  late String _category = widget.category ?? "";
   final List<String> _categoryList = [
     "",
     "옵션 1",
@@ -56,9 +66,10 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.title);
-    _contentController = TextEditingController(text: widget.content);
-    // _imgList.addAll(widget.images);
+    _titleController = TextEditingController(text: widget.title ?? "");
+    _contentController = TextEditingController(text: widget.content ?? "");
+
+    // _imgList.addAll(widget.images ?? []);
   }
 
   // 이미지를 가져오는 함수
@@ -74,7 +85,7 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
         });
       }
     } else {
-      final List<XFile> pickedFiles = await picker.pickMultiImage();
+      List<XFile> pickedFiles = await picker.pickMultiImage();
       setState(() {
         _imgList.addAll(pickedFiles); //가져온 이미지를 이미지 리스트에 저장
       });
@@ -97,7 +108,9 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
     _imgList.removeWhere(
       (element) => _removeImgList.contains(element),
     );
-    print(_removeImgList);
+
+    _removeImgList.clear();
+
     print(_imgList);
     setState(() {});
   }
@@ -109,28 +122,8 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
   }
 
   SliverAppBar _appBar() {
-    return SliverAppBar(
-      title: const Text("동아리 게시글 수정"),
-      actions: [
-        TextButton(
-          child: const Text(
-            "완료",
-            style: TextStyle(
-              color: Color(0xFF6524FF),
-              fontSize: 18,
-            ),
-          ),
-          onPressed: () {
-            // 글 작성
-            var title = _titleController.text;
-            var content = _contentController.text;
-            if (title == "" || content == "") return;
-            print("글작성");
-            print("제목: $title");
-            print("내용: $content");
-          },
-        ),
-      ],
+    return const SliverAppBar(
+      title: Text("동아리 게시글 작성"),
     );
   }
 
@@ -172,9 +165,10 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
                 : null,
             style: ElevatedButton.styleFrom(
               textStyle: const TextStyle(
-                fontSize: 16,
+                fontSize: 18,
               ),
               backgroundColor: Colors.purple.shade300,
+              padding: const EdgeInsets.symmetric(vertical: 12),
             ),
             child: const Text("등록"),
           ),
@@ -182,15 +176,16 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: CustomScrollView(
-            slivers: [
-              _appBar(),
-              SliverToBoxAdapter(
+        child: CustomScrollView(
+          slivers: [
+            _appBar(),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Gaps.v20,
                     _title(title: "카테고리"),
                     Gaps.v10,
                     SWAGStateDropDownButton(
@@ -204,35 +199,29 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
                       fontSize: 18,
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                     ),
-                    Gaps.v20,
+                    Gaps.v40,
                     _title(title: "제목"),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "글 제목을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
-                      onChange: () {
-                        print(_titleController.text);
-                      },
                       onSubmitted: () {
                         print(_titleController.text);
                       },
                     ),
-                    Gaps.v20,
+                    Gaps.v40,
                     _title(title: "내용"),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "내용을 입력해주세요.",
                       maxLine: 6,
                       controller: _contentController,
-                      onChange: () {
-                        print(_contentController.text);
-                      },
                       onSubmitted: () {
                         print(_contentController.text);
                       },
                     ),
-                    Gaps.v20,
+                    Gaps.v40,
                     _title(title: "이미지"),
                     Gaps.v10,
                     Row(
@@ -245,6 +234,11 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
                                 _getImage(ImageSource
                                     .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
                               },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.purple.shade300,
+                                ),
+                              ),
                               child: const Text("카메라"),
                             ),
                             Gaps.h20,
@@ -253,12 +247,22 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
                                 _getImage(ImageSource
                                     .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
                               },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.purple.shade300,
+                                ),
+                              ),
                               child: const Text("갤러리"),
                             ),
                           ],
                         ),
                         ElevatedButton.icon(
                           onPressed: _removeImg,
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateColor.resolveWith(
+                              (states) => Colors.purple.shade300,
+                            ),
+                          ),
                           label: const Text("삭제"),
                           icon: const Icon(Icons.delete),
                         ),
@@ -268,33 +272,33 @@ class _PostUpdateScreenState extends State<PostUpdateScreen> {
                   ],
                 ),
               ),
-              if (_imgList.isNotEmpty)
-                SliverGrid(
-                  delegate: SliverChildBuilderDelegate(
-                    // (context, index) => Image.file(
-                    //   File(_imgList[index].path),
-                    //   fit: BoxFit.cover,
-                    // ),
-                    (context, index) => SWAGImgFile(
-                      key: UniqueKey(),
-                      img: _imgList[index],
-                      addRemoveImgList: _addRemoveImgList,
-                    ),
-                    childCount: _imgList.length,
+            ),
+            if (_imgList.isNotEmpty)
+              SliverGrid(
+                delegate: SliverChildBuilderDelegate(
+                  // (context, index) => Image.file(
+                  //   File(_imgList[index].path),
+                  //   fit: BoxFit.cover,
+                  // ),
+                  (context, index) => SWAGImgFile(
+                    key: UniqueKey(),
+                    img: _imgList[index],
+                    addRemoveImgList: _addRemoveImgList,
                   ),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    // 한 줄당 몇개를 넣을건지 지정
-                    crossAxisCount: 3,
-                    // 좌우 간격
-                    crossAxisSpacing: Sizes.size4,
-                    // 위아래 간격
-                    mainAxisSpacing: Sizes.size4,
-                    // 가로 / 세로 비율
-                    childAspectRatio: 1 / 1,
-                  ),
+                  childCount: _imgList.length,
                 ),
-            ],
-          ),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  // 한 줄당 몇개를 넣을건지 지정
+                  crossAxisCount: 3,
+                  // 좌우 간격
+                  crossAxisSpacing: Sizes.size4,
+                  // 위아래 간격
+                  mainAxisSpacing: Sizes.size4,
+                  // 가로 / 세로 비율
+                  childAspectRatio: 1 / 1,
+                ),
+              ),
+          ],
         ),
       ),
     );

@@ -210,21 +210,21 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   SWAGStateDropDownButton(
                     title: "주소",
                     initOption: option1,
-                    options: const ["경기도", "진주", "서울", "부산"],
+                    options: const ["", "경기도", "진주", "서울", "부산"],
                     onChangeOption: onChangeOption1,
                   ),
                   Gaps.h14,
                   SWAGStateDropDownButton(
                     title: "분야",
                     initOption: option2,
-                    options: const ["의료", "행사", "사회"],
+                    options: const ["", "의료", "행사", "사회"],
                     onChangeOption: onChangeOption2,
                   ),
                   Gaps.h14,
                   SWAGStateDropDownButton(
                     title: "인증여부",
                     initOption: option3,
-                    options: const ["O", "X"],
+                    options: const ["", "O", "X"],
                     onChangeOption: onChangeOption3,
                   ),
                   TextButton(

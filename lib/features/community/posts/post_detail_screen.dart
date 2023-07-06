@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 class PostDetailScreenArgs {
+  final int postId;
+  final String category;
   final String title;
   final String content;
   final List<String> images;
@@ -14,6 +18,8 @@ class PostDetailScreenArgs {
   final int tabBarSelected;
 
   PostDetailScreenArgs({
+    required this.postId,
+    required this.category,
     required this.title,
     required this.content,
     required this.images,
@@ -28,6 +34,8 @@ class PostDetailScreen extends StatefulWidget {
   static const routeURL = "/post_detail";
   const PostDetailScreen({
     super.key,
+    required this.postId,
+    required this.category,
     required this.images,
     required this.title,
     required this.content,
@@ -36,6 +44,8 @@ class PostDetailScreen extends StatefulWidget {
     required this.tabBarSelected,
   });
 
+  final int postId;
+  final String category;
   final String title;
   final String content;
   final List<String> images;
@@ -83,10 +93,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   void dispose() {
     _commentController.dispose();
     super.dispose();
-  }
-
-  AppBar _appBar() {
-    return AppBar();
   }
 
   Widget introScreen() {
@@ -241,7 +247,40 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           child: NestedScrollView(
             physics: const NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
-              const SliverAppBar(),
+              SliverAppBar(
+                actions: [
+                  PopupMenuButton<String>(
+                    offset: const Offset(0, 25),
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                          onTap: () {
+                            print("게시글 수정");
+                            context.pushNamed(
+                              PostEditScreen.routeName,
+                              extra: PostEditScreenArgs(
+                                id: widget.postId,
+                                category: widget.category,
+                                title: widget.title,
+                                content: widget.content,
+                                images: widget.images,
+                              ),
+                            );
+                          },
+                          child: const Text("수정"),
+                        ),
+                        PopupMenuItem(
+                          onTap: () {
+                            print("게시글 삭제");
+                          },
+                          child: const Text("삭제"),
+                        ),
+                      ];
+                    },
+                    child: const Icon(Icons.more_vert),
+                  ),
+                ],
+              ),
               // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
               SliverToBoxAdapter(
                 child: GestureDetector(
