@@ -111,10 +111,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   }),
                   itemCount: widget.images.length,
                   itemBuilder: (context, index) {
-                    return Image.asset(
-                      widget.images[index],
-                      width: size.width,
-                      fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () => context.push,
+                      child: Image.asset(
+                        widget.images[index],
+                        width: size.width,
+                        fit: BoxFit.cover,
+                      ),
                     );
                   },
                 ),
@@ -221,11 +224,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 hintText: "등록할 댓글을 입력해주세요..",
                 maxLine: 1,
                 controller: _commentController,
-                onChange: () {
-                  print(_commentController.text);
-                },
                 onSubmitted: () {
                   print(_commentController.text);
+                  _commentController.text = "";
                 },
                 buttonText: "등록",
               ),

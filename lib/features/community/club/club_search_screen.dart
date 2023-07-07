@@ -61,6 +61,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   bool _isFocused = false;
+  bool _showJumpUpButton = false;
 
   @override
   void initState() {
@@ -69,6 +70,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
+      _onScroll();
       _scrollEnd();
 
       // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
@@ -78,20 +80,48 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     });
   }
 
+  // 스크롤 할때마다 호출
+  void _onScroll() {
+    if (_scrollController.offset > 260) {
+      // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
+      // 리턴처리 필요
+      if (_showJumpUpButton) return;
+      setState(() {
+        _showJumpUpButton = true;
+      });
+    } else {
+      // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
+      // 리턴처리 필요
+      if (!_showJumpUpButton) return;
+      setState(() {
+        _showJumpUpButton = false;
+      });
+    }
+  }
+
   // 스크롤이 맨아래로 내려가면 새로운 리스트 추가
   void _scrollEnd() {
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
       setState(() {
-        clubSearchPostList = [...clubSearchPostList] + clubSearchPostList;
+        clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
       });
     }
+  }
+
+  // 스크롤 위치를 맨위로 이동시킵니다.
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      _scrollController.position.minScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   // 리스트 새로고침
   Future _refreshClubList() async {
     setState(() {
-      clubSearchPostList = clubSearchPostList;
+      clubSearchPostList = initClubSearchPostList;
     });
   }
 
@@ -142,20 +172,43 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        heroTag: "community_edit",
-        onPressed: () {
-          // 동아리 게시글 작성
-          context.pushNamed(
-            PostEditScreen.routeName,
-            extra: PostEditScreenArgs(maxImages: 1),
-          );
-        },
-        backgroundColor: Colors.blue.shade300,
-        child: const FaIcon(
-          FontAwesomeIcons.penToSquare,
-          color: Colors.black,
-        ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          AnimatedOpacity(
+            opacity: _showJumpUpButton
+                ? !_isFocused
+                    ? 1
+                    : 0
+                : 0,
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton(
+              heroTag: "comunity",
+              onPressed: _scrollToTop,
+              backgroundColor: Colors.purpleAccent.shade100,
+              child: const FaIcon(
+                FontAwesomeIcons.arrowUp,
+                color: Colors.black,
+              ),
+            ),
+          ),
+          Gaps.v6,
+          FloatingActionButton(
+            heroTag: "community_edit",
+            onPressed: () {
+              // 동아리 게시글 작성
+              context.pushNamed(
+                PostEditScreen.routeName,
+                extra: PostEditScreenArgs(maxImages: 1),
+              );
+            },
+            backgroundColor: Colors.blue.shade300,
+            child: const FaIcon(
+              FontAwesomeIcons.penToSquare,
+              color: Colors.black,
+            ),
+          ),
+        ],
       ),
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -221,107 +274,100 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
         children: [
           RefreshIndicator.adaptive(
             onRefresh: _refreshClubList,
-            child: Container(
-              margin: const EdgeInsets.only(top: 6),
-              //color: Colors.grey .shade200,
-              color: Colors.white,
-              child: Scrollbar(
-                child: ListView.separated(
-                  controller: _scrollController,
-                  itemBuilder: (context, index) {
-                    final item = clubSearchPostList[index];
-                    return GestureDetector(
-                      onTap: () {
-                        context.pushNamed(
-                          ClubSearchDetailScreen.routeName,
-                          extra: ClubSearchDetailScreenArgs(
-                            postId: item["postId"],
-                            postTitle: item["postTitle"],
-                            postContent: item["postContent"],
-                            clubName: item["clubName"],
-                            postDate: item["postDate"],
-                            clubMaster: item["clubMaster"],
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: Sizes.size16,
-                        ),
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(Sizes.size12),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 3,
-                              offset: const Offset(3, 3), // 그림자의 위치 조정
-                            ),
-                          ],
-                        ),
-                        child: GestureDetector(
-                          child: Column(
-                            children: [
-                              Image.asset(
-                                'assets/images/club1.jpg',
-                                fit: BoxFit.cover,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Sizes.size10,
-                                  vertical: Sizes.size8,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    Text(
-                                      item["postTitle"],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const Divider(),
-                                    Text(
-                                      item["postContent"],
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 14.0,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    Gaps.v10,
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(item["clubName"]),
-                                        Text(item["postDate"]),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
+            child: ListView.separated(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(vertical: 6),
+              itemBuilder: (context, index) {
+                final item = clubSearchPostList[index];
+                return GestureDetector(
+                  onTap: () {
+                    context.pushNamed(
+                      ClubSearchDetailScreen.routeName,
+                      extra: ClubSearchDetailScreenArgs(
+                        postId: item["postId"],
+                        postTitle: item["postTitle"],
+                        postContent: item["postContent"],
+                        clubName: item["clubName"],
+                        postDate: item["postDate"],
+                        clubMaster: item["clubMaster"],
                       ),
                     );
                   },
-                  separatorBuilder: (context, index) {
-                    return Gaps.v14;
-                  },
-                  itemCount: clubSearchPostList.length,
-                ),
-              ),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: Sizes.size16,
+                    ),
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(Sizes.size12),
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 2,
+                          blurRadius: 3,
+                          offset: const Offset(3, 3), // 그림자의 위치 조정
+                        ),
+                      ],
+                    ),
+                    child: GestureDetector(
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'assets/images/club1.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Sizes.size10,
+                              vertical: Sizes.size8,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  item["postTitle"],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const Divider(),
+                                Text(
+                                  item["postContent"],
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                Gaps.v10,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(item["clubName"]),
+                                    Text(item["postDate"]),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Gaps.v14;
+              },
+              itemCount: clubSearchPostList.length,
             ),
           ),
           if (_isFocused)
@@ -367,6 +413,57 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 }
 
 List<Map<String, dynamic>> clubSearchPostList = [
+  {
+    "postId": 1,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-07-09",
+    "clubMaster": "이재현",
+  },
+  {
+    "postId": 2,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-07-07",
+    "clubMaster": "이재현",
+  },
+  {
+    "postId": 3,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-04-20",
+    "clubMaster": "이재현",
+  },
+  {
+    "postId": 4,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-06-25",
+    "clubMaster": "이재현",
+  },
+  {
+    "postId": 5,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-07-01",
+    "clubMaster": "이재현",
+  },
+  {
+    "postId": 6,
+    "postTitle": "SWAG 동아리원 모집",
+    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "postDate": "2023-07-10",
+    "clubMaster": "이재현",
+  },
+];
+
+List<Map<String, dynamic>> initClubSearchPostList = [
   {
     "postId": 1,
     "postTitle": "SWAG 동아리원 모집",
