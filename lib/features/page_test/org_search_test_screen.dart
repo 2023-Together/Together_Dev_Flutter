@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 
 final List<String> volAddress = [
@@ -148,10 +146,6 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
     setState(() {});
   }
 
-  void _alertIconTap(BuildContext context) {
-    context.pushNamed(AlertScreen.routeName);
-  }
-
   void onOptionReset() {
     option1 = "";
     option2 = "";
@@ -181,11 +175,6 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   onTap: () {},
                   child: const Icon(Icons.search),
                 ),
-                Gaps.h2,
-                GestureDetector(
-                  onTap: () => _alertIconTap(context),
-                  child: const Icon(Icons.notifications_none),
-                ),
               ],
             ),
           ),
@@ -210,21 +199,21 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   SWAGStateDropDownButton(
                     title: "주소",
                     initOption: option1,
-                    options: const ["경기도", "진주", "서울", "부산"],
+                    options: const ["", "경기도", "진주", "서울", "부산"],
                     onChangeOption: onChangeOption1,
                   ),
                   Gaps.h14,
                   SWAGStateDropDownButton(
                     title: "분야",
                     initOption: option2,
-                    options: const ["의료", "행사", "사회"],
+                    options: const ["", "의료", "행사", "사회"],
                     onChangeOption: onChangeOption2,
                   ),
                   Gaps.h14,
                   SWAGStateDropDownButton(
                     title: "인증여부",
                     initOption: option3,
-                    options: const ["O", "X"],
+                    options: const ["", "O", "X"],
                     onChangeOption: onChangeOption3,
                   ),
                   TextButton(

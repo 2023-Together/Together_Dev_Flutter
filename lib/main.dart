@@ -32,7 +32,7 @@ class SWAGCrossApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
-        statusBarColor: Colors.white, // 투명색
+        statusBarColor: Colors.transparent, // 투명색
         systemNavigationBarColor: Colors.grey.shade200,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
@@ -58,7 +58,7 @@ class SWAGCrossApp extends StatelessWidget {
           // appBar의 아이콘 스타일 지정
           actionsIconTheme: IconThemeData(
             color: Colors.black54,
-            size: 34,
+            size: 38,
           ),
         ),
         primaryColor: const Color(0xFFE9435A),

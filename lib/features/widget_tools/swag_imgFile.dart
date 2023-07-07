@@ -6,9 +6,11 @@ class SWAGImgFile extends StatefulWidget {
   const SWAGImgFile({
     super.key,
     required this.img,
+    this.addRemoveImgList,
   });
 
   final String img;
+  final Function(String)? addRemoveImgList;
 
   @override
   State<SWAGImgFile> createState() => _SWAGImgFileState();
@@ -21,9 +23,11 @@ class _SWAGImgFileState extends State<SWAGImgFile> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          _isSelected = !_isSelected;
-        });
+        if (widget.addRemoveImgList != null) {
+          widget.addRemoveImgList!(widget.img);
+        }
+        _isSelected = !_isSelected;
+        setState(() {});
       },
       child: AnimatedOpacity(
         opacity: _isSelected ? 0.7 : 1.0,

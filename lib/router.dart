@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
-import 'package:swag_cross_app/features/community/posts/post_update_screen.dart';
-import 'package:swag_cross_app/features/community/posts/post_write_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
@@ -33,14 +35,72 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      name: AlertScreen.routeName,
-      path: AlertScreen.routeURL,
-      builder: (context, state) => const AlertScreen(),
+      name: PostDetailScreen.routeName,
+      path: PostDetailScreen.routeURL,
+      builder: (context, state) {
+        final args = state.extra as PostDetailScreenArgs;
+        return PostDetailScreen(
+          postId: args.postId,
+          category: args.category,
+          title: args.title,
+          content: args.content,
+          images: args.images,
+          user: args.user,
+          date: args.date,
+          tabBarSelected: args.tabBarSelected,
+        );
+      },
     ),
     GoRoute(
-      name: NoticeScreen.routeName,
-      path: NoticeScreen.routeURL,
-      builder: (context, state) => const NoticeScreen(),
+      name: PostEditScreen.routeName,
+      path: PostEditScreen.routeURL,
+      builder: (context, state) {
+        if (state.extra != null) {
+          final args = state.extra as PostEditScreenArgs;
+          return PostEditScreen(
+            id: args.id,
+            category: args.category,
+            title: args.title,
+            content: args.content,
+            images: args.images,
+            isCategory: args.isCategory,
+            maxImages: args.maxImages,
+          );
+        }
+        return const PostEditScreen();
+      },
+    ),
+    GoRoute(
+      path: ClubSearchScreen.routeURL,
+      name: ClubSearchScreen.routeName,
+      builder: (context, state) => const ClubSearchScreen(),
+    ),
+    GoRoute(
+      path: ClubCommunityScreen.routeURL,
+      name: ClubCommunityScreen.routeName,
+      builder: (context, state) {
+        final args = state.extra as ClubCommunityScreenArgs;
+        return ClubCommunityScreen(
+          clubId: args.clubId,
+        );
+      },
+      routes: [
+        GoRoute(
+          path: ClubSearchDetailScreen.routeURL,
+          name: ClubSearchDetailScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as ClubSearchDetailScreenArgs;
+            return ClubSearchDetailScreen(
+              postId: args.postId,
+              postTitle: args.postTitle,
+              postContent: args.postContent,
+              clubName: args.clubName,
+              postDate: args.postDate,
+              clubMaster: args.clubMaster,
+            );
+          },
+        ),
+      ],
     ),
     GoRoute(
       name: CustomerServiceScreen.routeName,
@@ -54,36 +114,14 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      name: PostDetailScreen.routeName,
-      path: PostDetailScreen.routeURL,
-      builder: (context, state) {
-        final args = state.extra as PostDetailScreenArgs;
-        return PostDetailScreen(
-          title: args.title,
-          content: args.content,
-          images: args.images,
-          user: args.user,
-          date: args.date,
-          tabBarSelected: args.tabBarSelected,
-        );
-      },
+      name: AlertScreen.routeName,
+      path: AlertScreen.routeURL,
+      builder: (context, state) => const AlertScreen(),
     ),
     GoRoute(
-      name: PostWriteScreen.routeName,
-      path: PostWriteScreen.routeURL,
-      builder: (context, state) => const PostWriteScreen(),
-    ),
-    GoRoute(
-      name: PostUpdateScreen.routeName,
-      path: PostUpdateScreen.routeURL,
-      builder: (context, state) {
-        final args = state.extra as PostUpdateScreenArgs;
-        return PostUpdateScreen(
-          title: args.title,
-          content: args.content,
-          images: args.images,
-        );
-      },
+      name: NoticeScreen.routeName,
+      path: NoticeScreen.routeURL,
+      builder: (context, state) => const NoticeScreen(),
     ),
   ],
 );

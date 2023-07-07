@@ -6,22 +6,37 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
-import 'package:swag_cross_app/features/community/posts/post_write_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
 import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class ClubComunityTestScreen extends StatefulWidget {
-  const ClubComunityTestScreen({super.key});
+class ClubCommunityScreenArgs {
+  final int clubId;
 
-  @override
-  State<ClubComunityTestScreen> createState() => _ClubComunityTestScreenState();
+  ClubCommunityScreenArgs({required this.clubId});
 }
 
-class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
+class ClubCommunityScreen extends StatefulWidget {
+  final int clubId;
+
+  const ClubCommunityScreen({
+    super.key,
+    required this.clubId,
+  });
+
+  static const routeName = "club_community";
+  static const routeURL = "/club_community";
+
+  @override
+  State<ClubCommunityScreen> createState() => _ClubCommunityScreenState();
+}
+
+class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     with SingleTickerProviderStateMixin {
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
@@ -29,22 +44,32 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
     duration: const Duration(milliseconds: 300),
   );
 
-  late final Animation<Offset> _panelAnimation = Tween(
+  late final Animation<Offset> _panelSlideAnimation = Tween(
     begin: const Offset(0, -1),
-    end: const Offset(0, 0.6),
+    end: const Offset(0, 0),
   ).animate(_animationController);
 
-  late final Animation<Color?> _barrierAnimation = ColorTween(
-    begin: Colors.transparent,
-    end: Colors.black38,
+  late final Animation<double> _panelOpacityAnimation = Tween(
+    begin: 0.0,
+    end: 1.0,
   ).animate(_animationController);
+
+  // 배리어 애니메이션
+  // late final Animation<Color?> _barrierAnimation = ColorTween(
+  //   begin: Colors.transparent,
+  //   end: Colors.black12,
+  // ).animate(_animationController);
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController _scrollController = ScrollController();
-  // 공지사항 스크롤 제어를 위한 컨트롤러
+  // 공지사항 슬라이드 제어를 위한 컨트롤러
   final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
+  // 포커스 검사
+  final FocusNode _focusNode = FocusNode();
+
+  bool _isFocused = false;
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
@@ -53,16 +78,35 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   double width = 0;
   double height = 0;
 
-  bool _showBarrier = false;
+  String _option1 = "";
+  final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+
+  String _option2 = "";
+  final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+
+  String _option3 = "";
+  final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+
+  // 카테고리의 공통 스타일
+  final double _optionsFontSize = 16;
+  final _optionsPadding =
+      const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   @override
   void initState() {
     super.initState();
 
+    _focusNode.addListener(_handleFocusChange);
+
     _scrollController.addListener(
       () {
         _onScroll();
         _scrollEnd();
+
+        // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
+        if (_animationController.isCompleted) {
+          _toggleAnimations();
+        }
       },
     );
 
@@ -71,6 +115,14 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
 
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
     comunityList = checkAds(initComunityList);
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus != _isFocused) {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    }
   }
 
   // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
@@ -151,20 +203,37 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   }
 
   // 애니메이션 동작
-  void _toggleAnimations() async {
+  Future<void> _toggleAnimations() async {
     // 이미 애니메이션이 실행되었다면
     if (_animationController.isCompleted) {
       // 애니메이션을 원래상태로 되돌림
       // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
       await _animationController.reverse();
-      _showBarrier = false;
+      _focusNode.unfocus();
     } else {
       // 애니메이션을 실행
-      _animationController.forward();
-      _showBarrier = true;
+      await _animationController.forward();
     }
-    FocusScope.of(context).unfocus();
+
     setState(() {});
+  }
+
+  void _onChangeOption1(String option) {
+    setState(() {
+      _option1 = option;
+    });
+  }
+
+  void _onChangeOption2(String option) {
+    setState(() {
+      _option2 = option;
+    });
+  }
+
+  void _onChangeOption3(String option) {
+    setState(() {
+      _option3 = option;
+    });
   }
 
   @override
@@ -172,6 +241,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
     _scrollController.dispose();
     _animationController.dispose();
     _searchController.dispose();
+    _focusNode.dispose();
 
     super.dispose();
   }
@@ -180,21 +250,115 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      // backgroundColor: Colors.blue.shade100,
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+        shape: !_showJumpUpButton
+            ? const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20.0),
+                ),
+              )
+            : null,
+        centerTitle: false,
+        title: const Text("SWAG 동아리(10명)"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size14,
+              vertical: Sizes.size10,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: _toggleAnimations,
+                  child: const Icon(Icons.search),
+                  // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+                ),
+                Gaps.h2,
+                GestureDetector(
+                  onTap: () {},
+                  child: const Icon(Icons.edit_note_rounded),
+                  // child: const FaIcon(FontAwesomeIcons.penToSquare),
+                ),
+              ],
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                SWAGStateDropDownButton(
+                  initOption: _option1,
+                  onChangeOption: _onChangeOption1,
+                  title: "카테고리1",
+                  options: _optionList1,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+                Gaps.h8,
+                SWAGStateDropDownButton(
+                  initOption: _option2,
+                  onChangeOption: _onChangeOption2,
+                  title: "카테고리2",
+                  options: _optionList2,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+                Gaps.h8,
+                SWAGStateDropDownButton(
+                  initOption: _option3,
+                  onChangeOption: _onChangeOption3,
+                  title: "카테고리3",
+                  options: _optionList3,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          AnimatedOpacity(
+            opacity: _showJumpUpButton
+                ? _animationController.isDismissed
+                    ? 1
+                    : 0
+                : 0,
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton(
+              heroTag: "comunity",
+              onPressed: _scrollToTop,
+              backgroundColor: Colors.purpleAccent.shade100,
+              child: const FaIcon(
+                FontAwesomeIcons.arrowUp,
+                color: Colors.black,
+              ),
+            ),
+          ),
           Gaps.v6,
-          FloatingActionButton(
-            heroTag: "club_community_edit",
-            onPressed: () {
-              // 동아리 게시글 작성
-              context.pushNamed(PostWriteScreen.routeName);
-            },
-            backgroundColor: Colors.blue.shade300,
-            child: const FaIcon(
-              FontAwesomeIcons.penToSquare,
-              color: Colors.black,
+          AnimatedOpacity(
+            opacity: _animationController.isCompleted ? 0 : 1,
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton(
+              heroTag: "club_community_edit",
+              onPressed: () {
+                // 동아리 게시글 작성
+                context.pushNamed(PostEditScreen.routeName);
+              },
+              backgroundColor: Colors.blue.shade300,
+              child: const FaIcon(
+                FontAwesomeIcons.penToSquare,
+                color: Colors.black,
+              ),
             ),
           ),
         ],
@@ -203,56 +367,18 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
       body: Stack(
         children: [
           // 메인 화면
-          RefreshIndicator(
+          RefreshIndicator.adaptive(
             onRefresh: _refreshComunityList,
             child: CustomScrollView(
               controller: _scrollController,
               // CustomScrollView 안에 들어갈 element들
               // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
               slivers: [
-                // SliverAppBar : slivers 안에 쓰는 AppBar와 비슷한 기능
-                SliverAppBar(
-                  automaticallyImplyLeading: true,
-                  // pinned: true,
-                  floating: true,
-                  snap: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      bottom: Radius.circular(20.0),
-                    ),
-                  ),
-                  centerTitle: false,
-                  title: const Text("SWAG 동아리(10명)"),
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size14,
-                        vertical: Sizes.size10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: _toggleAnimations,
-                            child: const Icon(Icons.search),
-                            // child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
-                          ),
-                          Gaps.h2,
-                          GestureDetector(
-                            onTap: () {},
-                            child: const Icon(Icons.edit_note_rounded),
-                            // child: const FaIcon(FontAwesomeIcons.penToSquare),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
                 // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size10,
+                      vertical: Sizes.size4,
                       horizontal: Sizes.size20,
                     ),
                     child: Center(
@@ -264,6 +390,7 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
                             height: 160,
                             fit: BoxFit.cover,
                           ),
+                          Gaps.v4,
                           Container(
                             padding: const EdgeInsets.symmetric(
                               horizontal: Sizes.size10,
@@ -329,6 +456,8 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
                       if (item["type"] != "ad") {
                         return PostCard(
                           key: Key(item["title"]),
+                          category: item["category"],
+                          postId: index,
                           title: item["title"],
                           images: List<String>.from(item["imgUrl"]),
                           initCheckGood: item["checkGood"],
@@ -336,7 +465,6 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
                           date: item["date"],
                           user: item["user"],
                           isLogined: _isLogined,
-                          index: index,
                         );
                       } else {
                         return StatefulBuilder(
@@ -363,29 +491,39 @@ class _ClubComunityTestScreenState extends State<ClubComunityTestScreen>
               ],
             ),
           ),
-          if (_showBarrier)
+          if (_isFocused)
             // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            AnimatedModalBarrier(
-              color: _barrierAnimation,
+            ModalBarrier(
+              // color: _barrierAnimation,
+              color: Colors.transparent,
               // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
               dismissible: true,
               // 자신을 클릭하면 실행되는 함수
-              onDismiss: _toggleAnimations,
+              onDismiss: () => _focusNode.unfocus(),
             ),
           // 검색 화면
-          SlideTransition(
-            position: _panelAnimation,
-            child: Container(
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-              child: SWAGTextField(
-                hintText: "검색할 제목을 입력해 주세요..",
-                maxLine: 1,
-                controller: _searchController,
-                onSubmitted: () {
-                  print(_searchController.text);
-                },
-                buttonText: "검색",
+          FadeTransition(
+            opacity: _panelOpacityAnimation,
+            child: SlideTransition(
+              position: _panelSlideAnimation,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(6),
+                child: SWAGTextField(
+                  hintText: "검색할 제목을 입력해 주세요..",
+                  maxLine: 1,
+                  controller: _searchController,
+                  onSubmitted: () {
+                    _searchController.text = "";
+                    _focusNode.unfocus();
+                    _toggleAnimations();
+                  },
+                  onChange: () {
+                    print(_searchController.text);
+                  },
+                  buttonText: "검색",
+                  focusNode: _focusNode,
+                ),
               ),
             ),
           ),
@@ -412,6 +550,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-1",
     "user": "유저1",
+    "category": "옵션 1",
   },
   {
     "type": "default",
@@ -421,6 +560,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-2",
     "user": "유저2",
+    "category": "옵션 4",
   },
   {
     "type": "default",
@@ -432,6 +572,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-3",
     "user": "유저3",
+    "category": "옵션 2",
   },
   {
     "type": "default",
@@ -441,6 +582,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-4",
     "user": "유저4",
+    "category": "옵션 5",
   },
   {
     "type": "default",
@@ -453,6 +595,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-5",
     "user": "유저5",
+    "category": "옵션 3",
   },
   {
     "type": "default",
@@ -465,6 +608,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-6",
     "user": "유저6",
+    "category": "옵션 5",
   },
   {
     "type": "default",
@@ -478,6 +622,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-7",
     "user": "유저7",
+    "category": "옵션 2",
   },
   {
     "type": "default",
@@ -487,6 +632,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이곳은 내용만 있습니다.",
     "date": "2023-05-8",
     "user": "유저8",
+    "category": "옵션 1",
   },
   {
     "type": "default",
@@ -501,6 +647,7 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-9",
     "user": "유저9",
+    "category": "옵션 2",
   },
   {
     "type": "default",
@@ -515,5 +662,6 @@ List<Map<String, dynamic>> initComunityList = [
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-10",
     "user": "유저10",
+    "category": "옵션 4",
   },
 ];
