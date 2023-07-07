@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 
 final List<String> volAddress = [
@@ -148,10 +146,6 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
     setState(() {});
   }
 
-  void _alertIconTap(BuildContext context) {
-    context.pushNamed(AlertScreen.routeName);
-  }
-
   void onOptionReset() {
     option1 = "";
     option2 = "";
@@ -180,11 +174,6 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Icon(Icons.search),
-                ),
-                Gaps.h2,
-                GestureDetector(
-                  onTap: () => _alertIconTap(context),
-                  child: const Icon(Icons.notifications_none),
                 ),
               ],
             ),

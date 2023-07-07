@@ -15,14 +15,28 @@ import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class ClubComunityScreen extends StatefulWidget {
-  const ClubComunityScreen({super.key});
+class ClubCommunityScreenArgs {
+  final int clubId;
 
-  @override
-  State<ClubComunityScreen> createState() => _ClubComunityScreenState();
+  ClubCommunityScreenArgs({required this.clubId});
 }
 
-class _ClubComunityScreenState extends State<ClubComunityScreen>
+class ClubCommunityScreen extends StatefulWidget {
+  final int clubId;
+
+  const ClubCommunityScreen({
+    super.key,
+    required this.clubId,
+  });
+
+  static const routeName = "club_community";
+  static const routeURL = "/club_community";
+
+  @override
+  State<ClubCommunityScreen> createState() => _ClubCommunityScreenState();
+}
+
+class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     with SingleTickerProviderStateMixin {
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
@@ -48,7 +62,7 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController _scrollController = ScrollController();
-  // 공지사항 스크롤 제어를 위한 컨트롤러
+  // 공지사항 슬라이드 제어를 위한 컨트롤러
   final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
@@ -195,7 +209,6 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
       // 애니메이션을 원래상태로 되돌림
       // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
       await _animationController.reverse();
-      // _toggleBarrier();
       _focusNode.unfocus();
     } else {
       // 애니메이션을 실행
@@ -272,6 +285,44 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(50),
+          child: Container(
+            height: 50,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                SWAGStateDropDownButton(
+                  initOption: _option1,
+                  onChangeOption: _onChangeOption1,
+                  title: "카테고리1",
+                  options: _optionList1,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+                Gaps.h8,
+                SWAGStateDropDownButton(
+                  initOption: _option2,
+                  onChangeOption: _onChangeOption2,
+                  title: "카테고리2",
+                  options: _optionList2,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+                Gaps.h8,
+                SWAGStateDropDownButton(
+                  initOption: _option3,
+                  onChangeOption: _onChangeOption3,
+                  title: "카테고리3",
+                  options: _optionList3,
+                  fontSize: _optionsFontSize,
+                  padding: _optionsPadding,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -316,7 +367,7 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
       body: Stack(
         children: [
           // 메인 화면
-          RefreshIndicator(
+          RefreshIndicator.adaptive(
             onRefresh: _refreshComunityList,
             child: CustomScrollView(
               controller: _scrollController,
@@ -327,7 +378,7 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size10,
+                      vertical: Sizes.size4,
                       horizontal: Sizes.size20,
                     ),
                     child: Center(
@@ -393,55 +444,6 @@ class _ClubComunityScreenState extends State<ClubComunityScreen>
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                ),
-                // 카테고리 중간 메뉴
-                SliverAppBar(
-                  automaticallyImplyLeading: false,
-                  pinned: true,
-                  centerTitle: false,
-                  shape: !_showJumpUpButton
-                      ? const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(20.0),
-                          ),
-                        )
-                      : null,
-                  title: Container(
-                    height: 60,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: [
-                        SWAGStateDropDownButton(
-                          initOption: _option1,
-                          onChangeOption: _onChangeOption1,
-                          title: "카테고리1",
-                          options: _optionList1,
-                          fontSize: _optionsFontSize,
-                          padding: _optionsPadding,
-                        ),
-                        Gaps.h8,
-                        SWAGStateDropDownButton(
-                          initOption: _option2,
-                          onChangeOption: _onChangeOption2,
-                          title: "카테고리2",
-                          options: _optionList2,
-                          fontSize: _optionsFontSize,
-                          padding: _optionsPadding,
-                        ),
-                        Gaps.h8,
-                        SWAGStateDropDownButton(
-                          initOption: _option3,
-                          onChangeOption: _onChangeOption3,
-                          title: "카테고리3",
-                          options: _optionList3,
-                          fontSize: _optionsFontSize,
-                          padding: _optionsPadding,
-                        ),
-                      ],
                     ),
                   ),
                 ),

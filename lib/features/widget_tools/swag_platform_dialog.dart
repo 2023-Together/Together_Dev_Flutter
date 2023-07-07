@@ -2,7 +2,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void showPlatformDialog({
+void swagPlatformDialog({
   required BuildContext context,
   required String title,
   required String message,

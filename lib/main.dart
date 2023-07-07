@@ -58,7 +58,7 @@ class SWAGCrossApp extends StatelessWidget {
           // appBar의 아이콘 스타일 지정
           actionsIconTheme: IconThemeData(
             color: Colors.black54,
-            size: 34,
+            size: 38,
           ),
         ),
         primaryColor: const Color(0xFFE9435A),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/community/club/club_main_screen.dart';
 import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
-import 'package:swag_cross_app/features/page_test/club_search_test_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
@@ -47,7 +47,7 @@ class _MainNavigationState extends State<MainNavigation> {
       setState(() {
         _selectedIndex = index;
       });
-    } else if (index == 4 && !_isLogined) {
+    } else if ((index == 3 || index == 4) && !_isLogined) {
       SecureStorageLogin.loginCheckIsNone(context, mounted);
     } else {
       setState(() {
@@ -90,7 +90,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 3,
-            child: const ClubSearchTestScreen(),
+            child: const ClubMainScreen(),
           ),
           Offstage(
             offstage: _selectedIndex != 4,
@@ -127,30 +127,6 @@ class _MainNavigationState extends State<MainNavigation> {
                 imgURI: "",
                 logined: _isLogined,
               ),
-              // 홈버튼 애니메이션 버전
-              // GestureDetector(
-              //   onTap: () => _onTap(2),
-              //   child: AnimatedOpacity(
-              //     opacity: _selectedIndex == 2 ? 1 : 0.6,
-              //     duration: const Duration(milliseconds: 300),
-              //     child: Container(
-              //       height: 60,
-              //       padding: const EdgeInsets.symmetric(
-              //         horizontal: Sizes.size6,
-              //       ),
-              //       decoration: BoxDecoration(
-              //         borderRadius: BorderRadius.circular(Sizes.size80),
-              //         color: Colors.grey.shade100,
-              //       ),
-              //       child: Center(
-              //         child: Icon(
-              //           _selectedIndex == 2 ? Icons.home : Icons.home_outlined,
-              //           size: 50,
-              //         ),
-              //       ),
-              //     ),
-              //   ),
-              // ),
               NavTab(
                 text: "홈",
                 isSelected: _selectedIndex == 2,

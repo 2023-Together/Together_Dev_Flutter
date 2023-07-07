@@ -49,7 +49,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController _scrollController = ScrollController();
-  // 공지사항 스크롤 제어를 위한 컨트롤러
+  // 공지사항 슬라이드 제어를 위한 컨트롤러
   final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
@@ -211,14 +211,11 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
       // 애니메이션을 원래상태로 되돌림
       // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
       _animationController.reverse();
-      // _toggleBarrier();
       _focusNode.unfocus();
     } else {
       // 애니메이션을 실행
       _animationController.forward();
     }
-
-    setState(() {});
   }
 
   void _onChangeOption1(String option) {
@@ -253,110 +250,144 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return SafeArea(
-      child: Stack(
-        children: [
-          Scaffold(
-            resizeToAvoidBottomInset: true,
-            // backgroundColor: Colors.blue.shade100,
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              shape: !_showJumpUpButton
-                  ? const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(20.0),
-                      ),
-                    )
-                  : null,
-              centerTitle: false,
-              title: const Text("Together(로고)"),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size14,
-                    vertical: Sizes.size10,
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        // backgroundColor: Colors.blue.shade100,
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          shape: !_showJumpUpButton
+              ? const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(20.0),
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: _isLogined
-                        ? [
-                            GestureDetector(
-                              onTap: _toggleAnimations,
-                              child: const Icon(Icons.search),
-                            ),
-                            Gaps.h2,
-                            GestureDetector(
-                              onTap: _alertIconTap,
-                              child: const Icon(Icons.notifications_none),
-                            ),
-                          ]
-                        : [
-                            GestureDetector(
-                              onTap: () {},
-                              child: const Icon(
-                                Icons.search,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            Gaps.h10,
-                            GestureDetector(
-                              onTap: _onLoginTap,
-                              child: const Icon(
-                                Icons.account_circle_outlined,
-                                size: 38,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          ],
-                  ),
-                ),
-              ],
+                )
+              : null,
+          centerTitle: false,
+          title: const Text("Together(로고)"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.size14,
+                vertical: Sizes.size10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: _isLogined
+                    ? [
+                        GestureDetector(
+                          onTap: _toggleAnimations,
+                          child: const Icon(Icons.search),
+                        ),
+                        Gaps.h2,
+                        GestureDetector(
+                          onTap: _alertIconTap,
+                          child: const Icon(Icons.notifications_none),
+                        ),
+                      ]
+                    : [
+                        GestureDetector(
+                          onTap: _toggleAnimations,
+                          child: const Icon(
+                            Icons.search,
+                          ),
+                        ),
+                        Gaps.h4,
+                        GestureDetector(
+                          onTap: _onLoginTap,
+                          child: const Icon(
+                            Icons.account_circle_outlined,
+                          ),
+                        ),
+                      ],
+              ),
             ),
-            floatingActionButton: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                AnimatedOpacity(
-                  opacity: _showJumpUpButton
-                      ? !_isFocused
-                          ? 1
-                          : 0
-                      : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: FloatingActionButton(
-                    heroTag: "comunity",
-                    onPressed: _scrollToTop,
-                    backgroundColor: Colors.purpleAccent.shade100,
-                    child: const FaIcon(
-                      FontAwesomeIcons.arrowUp,
-                      color: Colors.black,
-                    ),
+          ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Container(
+              height: 50,
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              child: ListView(
+                scrollDirection: Axis.horizontal,
+                children: [
+                  SWAGStateDropDownButton(
+                    initOption: _option1,
+                    onChangeOption: _onChangeOption1,
+                    title: "카테고리1",
+                    options: _optionList1,
+                    fontSize: _optionsFontSize,
+                    padding: _optionsPadding,
                   ),
-                ),
-                Gaps.v6,
-                AnimatedOpacity(
-                  opacity: _isLogined
-                      ? !_isFocused
-                          ? 1
-                          : 0
-                      : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: FloatingActionButton(
-                    heroTag: "community_edit",
-                    onPressed: () {
-                      // 동아리 게시글 작성
-                      context.pushNamed(PostEditScreen.routeName);
-                    },
-                    backgroundColor: Colors.blue.shade300,
-                    child: const FaIcon(
-                      FontAwesomeIcons.penToSquare,
-                      color: Colors.black,
-                    ),
+                  Gaps.h8,
+                  SWAGStateDropDownButton(
+                    initOption: _option2,
+                    onChangeOption: _onChangeOption2,
+                    title: "카테고리2",
+                    options: _optionList2,
+                    fontSize: _optionsFontSize,
+                    padding: _optionsPadding,
                   ),
-                ),
-              ],
+                  Gaps.h8,
+                  SWAGStateDropDownButton(
+                    initOption: _option3,
+                    onChangeOption: _onChangeOption3,
+                    title: "카테고리3",
+                    options: _optionList3,
+                    fontSize: _optionsFontSize,
+                    padding: _optionsPadding,
+                  ),
+                ],
+              ),
             ),
-            // CustomScrollView : 스크롤 가능한 구역
-            body: Container(
+          ),
+        ),
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            AnimatedOpacity(
+              opacity: _showJumpUpButton
+                  ? !_isFocused
+                      ? 1
+                      : 0
+                  : 0,
+              duration: const Duration(milliseconds: 200),
+              child: FloatingActionButton(
+                heroTag: "comunity",
+                onPressed: _scrollToTop,
+                backgroundColor: Colors.purpleAccent.shade100,
+                child: const FaIcon(
+                  FontAwesomeIcons.arrowUp,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            Gaps.v6,
+            AnimatedOpacity(
+              opacity: _isLogined
+                  ? !_isFocused
+                      ? 1
+                      : 0
+                  : 0,
+              duration: const Duration(milliseconds: 200),
+              child: FloatingActionButton(
+                heroTag: "community_edit",
+                onPressed: () {
+                  // 동아리 게시글 작성
+                  context.pushNamed(PostEditScreen.routeName);
+                },
+                backgroundColor: Colors.blue.shade300,
+                child: const FaIcon(
+                  FontAwesomeIcons.penToSquare,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+        // CustomScrollView : 스크롤 가능한 구역
+        body: Stack(
+          children: [
+            Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   // 스타일1
@@ -369,7 +400,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: RefreshIndicator(
+              child: RefreshIndicator.adaptive(
                 onRefresh: _refreshComunityList,
                 child: CustomScrollView(
                   controller: _scrollController,
@@ -380,7 +411,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          vertical: Sizes.size10,
+                          vertical: Sizes.size4,
                           horizontal: Sizes.size20,
                         ),
                         child: Center(
@@ -444,55 +475,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                         ),
                       ),
                     ),
-                    // 카테고리 중간 메뉴
-                    SliverAppBar(
-                      pinned: true,
-                      centerTitle: false,
-                      // centerTitle: false,
-                      shape: !_showJumpUpButton
-                          ? const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(20.0),
-                              ),
-                            )
-                          : null,
-                      title: Container(
-                        height: 60,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        margin: const EdgeInsets.symmetric(vertical: 10),
-                        child: ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: [
-                            SWAGStateDropDownButton(
-                              initOption: _option1,
-                              onChangeOption: _onChangeOption1,
-                              title: "카테고리1",
-                              options: _optionList1,
-                              fontSize: _optionsFontSize,
-                              padding: _optionsPadding,
-                            ),
-                            Gaps.h8,
-                            SWAGStateDropDownButton(
-                              initOption: _option2,
-                              onChangeOption: _onChangeOption2,
-                              title: "카테고리2",
-                              options: _optionList2,
-                              fontSize: _optionsFontSize,
-                              padding: _optionsPadding,
-                            ),
-                            Gaps.h8,
-                            SWAGStateDropDownButton(
-                              initOption: _option3,
-                              onChangeOption: _onChangeOption3,
-                              title: "카테고리3",
-                              options: _optionList3,
-                              fontSize: _optionsFontSize,
-                              padding: _optionsPadding,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         childCount: comunityList.length,
@@ -537,44 +519,44 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                 ),
               ),
             ),
-          ),
-          if (_isFocused)
-            // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            ModalBarrier(
-              // color: _barrierAnimation,
-              color: Colors.transparent,
-              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-              dismissible: true,
-              // 자신을 클릭하면 실행되는 함수
-              onDismiss: () => _focusNode.unfocus(),
-            ),
-          // 검색 화면
-          FadeTransition(
-            opacity: _panelOpacityAnimation,
-            child: SlideTransition(
-              position: _panelSlideAnimation,
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(6),
-                child: SWAGTextField(
-                  hintText: "검색할 제목을 입력해 주세요..",
-                  maxLine: 1,
-                  controller: _searchController,
-                  onSubmitted: () {
-                    _searchController.text = "";
-                    _focusNode.unfocus();
-                    _toggleAnimations();
-                  },
-                  onChange: () {
-                    print(_searchController.text);
-                  },
-                  buttonText: "검색",
-                  focusNode: _focusNode,
+            if (_isFocused)
+              // 슬라이드 화면 뒤쪽의 검은 화면 구현
+              ModalBarrier(
+                // color: _barrierAnimation,
+                color: Colors.transparent,
+                // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                dismissible: true,
+                // 자신을 클릭하면 실행되는 함수
+                onDismiss: () => _focusNode.unfocus(),
+              ),
+            // 검색 화면
+            FadeTransition(
+              opacity: _panelOpacityAnimation,
+              child: SlideTransition(
+                position: _panelSlideAnimation,
+                child: Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(6),
+                  child: SWAGTextField(
+                    hintText: "검색할 제목을 입력해 주세요..",
+                    maxLine: 1,
+                    controller: _searchController,
+                    onSubmitted: () {
+                      _searchController.text = "";
+                      _focusNode.unfocus();
+                      _toggleAnimations();
+                    },
+                    onChange: () {
+                      print(_searchController.text);
+                    },
+                    buttonText: "검색",
+                    focusNode: _focusNode,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

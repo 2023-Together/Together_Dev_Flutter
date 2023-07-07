@@ -264,6 +264,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                 title: widget.title,
                                 content: widget.content,
                                 images: widget.images,
+                                isCategory: true,
                               ),
                             );
                           },

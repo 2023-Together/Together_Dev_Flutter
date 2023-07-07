@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class SWAGImgFile extends StatefulWidget {
   const SWAGImgFile({
@@ -10,8 +9,8 @@ class SWAGImgFile extends StatefulWidget {
     this.addRemoveImgList,
   });
 
-  final XFile img;
-  final Function(XFile)? addRemoveImgList;
+  final String img;
+  final Function(String)? addRemoveImgList;
 
   @override
   State<SWAGImgFile> createState() => _SWAGImgFileState();
@@ -37,7 +36,7 @@ class _SWAGImgFileState extends State<SWAGImgFile> {
           fit: StackFit.expand,
           children: [
             Image.file(
-              File(widget.img.path),
+              File(widget.img),
               fit: BoxFit.cover,
             ),
             Positioned(

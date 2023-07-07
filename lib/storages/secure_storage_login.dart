@@ -3,7 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/storages/methods/show_platform_dialog.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class SecureStorageLogin {
   static const FlutterSecureStorage storage = FlutterSecureStorage();
@@ -33,10 +33,10 @@ class SecureStorageLogin {
     if (!mounted) return;
     if (loginType != "naver" || loginType != "kakao") {
       await storage.write(key: _keyValue, value: "none");
-      showPlatformDialog(
+      swagPlatformDialog(
         context: context,
-        title: "로그인 오류",
-        message: "현재 로그인 상태가 아닙니다! 로그인창으로 이동하시겠습니까?",
+        title: "로그인 알림",
+        message: "로그인을 해야만 사용할 수 있는 기능입니다! 로그인 창으로 이동하시겠습니까?",
         actions: [
           TextButton(
             onPressed: () => context.pop(),

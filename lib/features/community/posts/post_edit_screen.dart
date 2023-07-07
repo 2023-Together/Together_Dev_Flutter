@@ -1,24 +1,33 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class PostEditScreenArgs {
-  final int id;
-  final String title;
-  final String category;
-  final String content;
-  final List<String> images;
+  final int? id;
+  final String? title;
+  final String? category;
+  final String? content;
+  final List<String>? images;
+  final bool? isCategory;
+  final int? maxImages;
 
   PostEditScreenArgs({
-    required this.id,
-    required this.category,
-    required this.title,
-    required this.content,
-    required this.images,
+    this.id,
+    this.category,
+    this.title,
+    this.content,
+    this.images,
+    this.isCategory,
+    this.maxImages,
   });
 }
 
@@ -26,20 +35,23 @@ class PostEditScreen extends StatefulWidget {
   static const routeName = "post_edit";
   static const routeURL = "/post_edit";
 
-  const PostEditScreen({
-    super.key,
-    this.id,
-    this.category,
-    this.title,
-    this.content,
-    this.images,
-  });
+  const PostEditScreen(
+      {super.key,
+      this.id,
+      this.category,
+      this.title,
+      this.content,
+      this.images,
+      this.isCategory,
+      this.maxImages});
 
   final int? id;
   final String? category;
   final String? title;
   final String? content;
   final List<String>? images;
+  final bool? isCategory;
+  final int? maxImages;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -49,9 +61,9 @@ class _PostEditScreenState extends State<PostEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 
-  final List<XFile> _imgList = [];
+  final List<String> _imgList = [];
   // final List<XFile> _imgList = [];
-  final List<XFile> _removeImgList = [];
+  final List<String> _removeImgList = [];
 
   late String _category = widget.category ?? "";
   final List<String> _categoryList = [
@@ -74,27 +86,80 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
   // 이미지를 가져오는 함수
   Future _getImage(ImageSource? imageSource) async {
-    final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+    if (widget.maxImages != null) {
+      if (_imgList.length >= widget.maxImages!) {
+        swagPlatformDialog(
+          context: context,
+          title: "사진 개수 오류",
+          message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text("확인"),
+            ),
+          ],
+        );
+        return;
+      } else {
+        final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
-    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-    if (imageSource != null) {
-      final XFile? pickedFile = await picker.pickImage(source: imageSource);
-      if (pickedFile != null) {
-        setState(() {
-          _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
-        });
+        //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
+        if (imageSource != null) {
+          // 카메라
+          final XFile? pickedFile = await picker.pickImage(source: imageSource);
+          if (pickedFile != null) {
+            setState(() {
+              _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
+            });
+          }
+        } else {
+          // 갤러리
+          List<XFile> pickedFiles = await picker.pickMultiImage();
+          if (_imgList.length + pickedFiles.length > widget.maxImages!) {
+            swagPlatformDialog(
+              context: context,
+              title: "사진 개수 오류",
+              message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text("확인"),
+                ),
+              ],
+            );
+            return;
+          }
+          setState(() {
+            _imgList
+                .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
+          });
+        }
       }
     } else {
-      List<XFile> pickedFiles = await picker.pickMultiImage();
-      setState(() {
-        _imgList.addAll(pickedFiles); //가져온 이미지를 이미지 리스트에 저장
-      });
+      final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+
+      //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
+      if (imageSource != null) {
+        // 카메라
+        final XFile? pickedFile = await picker.pickImage(source: imageSource);
+        if (pickedFile != null) {
+          setState(() {
+            _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
+          });
+        }
+      } else {
+        // 갤러리
+        List<XFile> pickedFiles = await picker.pickMultiImage();
+        setState(() {
+          _imgList
+              .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
+        });
+      }
     }
-    print(_imgList);
   }
 
   // 선택한 이미지를 삭제리스트에 넣는 함수
-  void _addRemoveImgList(XFile img) {
+  void _addRemoveImgList(String img) {
     if (_removeImgList.contains(img)) {
       _removeImgList.remove(img);
     } else {
@@ -121,6 +186,21 @@ class _PostEditScreenState extends State<PostEditScreen> {
     });
   }
 
+  Future<void> _onSubmitFinishButton() async {
+    Iterable<String> base64Images = _imgList.isNotEmpty
+        ? _imgList.map(
+            (e) => base64Encode(File(e).readAsBytesSync()),
+          )
+        : [];
+
+    if (widget.isCategory != null) {
+      print("카테고리 : $_category");
+    }
+    print("제목 : ${_titleController.text}");
+    print("내용 : ${_contentController.text}");
+    print("이미지 : $base64Images");
+  }
+
   SliverAppBar _appBar() {
     return const SliverAppBar(
       title: Text("동아리 게시글 작성"),
@@ -131,7 +211,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
     return Text(
       title,
       style: const TextStyle(
-        color: Color(0xFF767676),
+        color: Color.fromARGB(255, 53, 50, 50),
         fontSize: 16,
         fontWeight: FontWeight.w800,
       ),
@@ -151,27 +231,19 @@ class _PostEditScreenState extends State<PostEditScreen> {
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          child: ElevatedButton(
-            onPressed: _titleController.text.trim().isNotEmpty &&
-                    _contentController.text.trim().isNotEmpty
-                ? () {
-                    print("카테고리 : $_category");
-                    print("제목 : ${_titleController.text.trim()}");
-                    print("내용 : ${_contentController.text.trim()}");
-                    print("이미지 : $_imgList");
-                  }
-                : null,
-            style: ElevatedButton.styleFrom(
-              textStyle: const TextStyle(
-                fontSize: 18,
-              ),
-              backgroundColor: Colors.purple.shade300,
-              padding: const EdgeInsets.symmetric(vertical: 12),
+        child: ElevatedButton(
+          onPressed: _titleController.text.trim().isNotEmpty &&
+                  _contentController.text.trim().isNotEmpty
+              ? _onSubmitFinishButton
+              : null,
+          style: ElevatedButton.styleFrom(
+            textStyle: const TextStyle(
+              fontSize: 18,
             ),
-            child: const Text("등록"),
+            backgroundColor: Colors.purple.shade300,
+            padding: const EdgeInsets.symmetric(vertical: 12),
           ),
+          child: const Text("등록"),
         ),
       ),
       body: GestureDetector(
@@ -185,21 +257,27 @@ class _PostEditScreenState extends State<PostEditScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (!(widget.isCategory ?? true))
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Gaps.v20,
+                          _title(title: "카테고리"),
+                          Gaps.v10,
+                          SWAGStateDropDownButton(
+                            initOption: _category,
+                            onChangeOption: _onChangeOption,
+                            title: "카테고리를 선택해주세요.",
+                            options: _categoryList,
+                            isExpanded: true,
+                            width: double.infinity,
+                            height: 60,
+                            fontSize: 18,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                          ),
+                        ],
+                      ),
                     Gaps.v20,
-                    _title(title: "카테고리"),
-                    Gaps.v10,
-                    SWAGStateDropDownButton(
-                      initOption: _category,
-                      onChangeOption: _onChangeOption,
-                      title: "카테고리를 선택해주세요.",
-                      options: _categoryList,
-                      isExpanded: true,
-                      width: double.infinity,
-                      height: 60,
-                      fontSize: 18,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                    Gaps.v40,
                     _title(title: "제목"),
                     Gaps.v10,
                     SWAGTextField(

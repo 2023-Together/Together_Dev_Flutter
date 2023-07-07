@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
@@ -98,10 +96,6 @@ class VolSearchTestScreen extends StatefulWidget {
 }
 
 class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
-  void _alertIconTap(BuildContext context) {
-    context.pushNamed(AlertScreen.routeName);
-  }
-
   String selectedDropdown1 = '';
   String selectedDropdown2 = '';
   String selectedDropdown3 = '';
@@ -129,11 +123,6 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                 GestureDetector(
                   onTap: () {},
                   child: const Icon(Icons.search),
-                ),
-                Gaps.h2,
-                GestureDetector(
-                  onTap: () => _alertIconTap(context),
-                  child: const Icon(Icons.notifications_none),
                 ),
               ],
             ),
