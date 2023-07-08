@@ -3,9 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
+import 'package:swag_cross_app/features/community/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 class ClubSearchScreen extends StatefulWidget {
@@ -46,22 +45,26 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
-  String _option1 = "";
-  final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option1 = "";
+  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option2 = "";
-  final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option2 = "";
+  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option3 = "";
-  final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option3 = "";
+  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  // 카테고리의 공통 스타일
-  final double _optionsFontSize = 16;
-  final _optionsPadding =
-      const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
+  // // 카테고리의 공통 스타일
+  // final double _optionsFontSize = 16;
+  // final _optionsPadding =
+  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   bool _isFocused = false;
   bool _showJumpUpButton = false;
+  bool _isOnlyRequest = false;
+  List<Map<String, dynamic>> filteredList = clubSearchPostList
+      .where((element) => element["isRequest"] == true)
+      .toList();
 
   @override
   void initState() {
@@ -105,6 +108,9 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
         _scrollController.position.maxScrollExtent) {
       setState(() {
         clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
+        filteredList = clubSearchPostList
+            .where((element) => element["isRequest"] == true)
+            .toList();
       });
     }
   }
@@ -150,23 +156,30 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     setState(() {});
   }
 
-  void _onChangeOption1(String option) {
+  void _toggleOnlyRequest() {
+    _scrollToTop();
     setState(() {
-      _option1 = option;
+      _isOnlyRequest = !_isOnlyRequest;
     });
   }
 
-  void _onChangeOption2(String option) {
-    setState(() {
-      _option2 = option;
-    });
-  }
+  // void _onChangeOption1(String option) {
+  //   setState(() {
+  //     _option1 = option;
+  //   });
+  // }
 
-  void _onChangeOption3(String option) {
-    setState(() {
-      _option3 = option;
-    });
-  }
+  // void _onChangeOption2(String option) {
+  //   setState(() {
+  //     _option2 = option;
+  //   });
+  // }
+
+  // void _onChangeOption3(String option) {
+  //   setState(() {
+  //     _option3 = option;
+  //   });
+  // }
 
   // void onChangeOption1(String? value) {
   @override
@@ -239,31 +252,19 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                SWAGStateDropDownButton(
-                  initOption: _option1,
-                  onChangeOption: _onChangeOption1,
-                  title: "카테고리1",
-                  options: _optionList1,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
-                ),
-                Gaps.h8,
-                SWAGStateDropDownButton(
-                  initOption: _option2,
-                  onChangeOption: _onChangeOption2,
-                  title: "카테고리2",
-                  options: _optionList2,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
-                ),
-                Gaps.h8,
-                SWAGStateDropDownButton(
-                  initOption: _option3,
-                  onChangeOption: _onChangeOption3,
-                  title: "카테고리3",
-                  options: _optionList3,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
+                ElevatedButton(
+                  onPressed: _toggleOnlyRequest,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                      (states) => _isOnlyRequest
+                          ? Colors.purple.shade300
+                          : Colors.grey.shade400,
+                    ),
+                  ),
+                  child: const Text(
+                    "신청 가능",
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ],
             ),
@@ -278,96 +279,36 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
               controller: _scrollController,
               padding: const EdgeInsets.symmetric(vertical: 6),
               itemBuilder: (context, index) {
-                final item = clubSearchPostList[index];
-                return GestureDetector(
-                  onTap: () {
-                    context.pushNamed(
-                      ClubSearchDetailScreen.routeName,
-                      extra: ClubSearchDetailScreenArgs(
-                        postId: item["postId"],
-                        postTitle: item["postTitle"],
-                        postContent: item["postContent"],
-                        clubName: item["clubName"],
-                        postDate: item["postDate"],
-                        clubMaster: item["clubMaster"],
-                      ),
-                    );
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: Sizes.size16,
-                    ),
-                    clipBehavior: Clip.hardEdge,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(Sizes.size12),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 2,
-                          blurRadius: 3,
-                          offset: const Offset(3, 3), // 그림자의 위치 조정
-                        ),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'assets/images/club1.jpg',
-                            fit: BoxFit.cover,
-                          ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                              vertical: Sizes.size8,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  item["postTitle"],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const Divider(),
-                                Text(
-                                  item["postContent"],
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Gaps.v10,
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(item["clubName"]),
-                                    Text(item["postDate"]),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                );
+                if (_isOnlyRequest) {
+                  final item = filteredList[index];
+                  return ClubRequestCard(
+                    postId: item["postId"],
+                    postTitle: item["postTitle"],
+                    postContent: item["postContent"],
+                    clubName: item["clubName"],
+                    clubMaster: item["clubMaster"],
+                    postDate: item["postDate"],
+                    isRequest: item["isRequest"],
+                  );
+                } else {
+                  final item = clubSearchPostList[index];
+                  return ClubRequestCard(
+                    postId: item["postId"],
+                    postTitle: item["postTitle"],
+                    postContent: item["postContent"],
+                    clubName: item["clubName"],
+                    clubMaster: item["clubMaster"],
+                    postDate: item["postDate"],
+                    isRequest: item["isRequest"],
+                  );
+                }
               },
               separatorBuilder: (context, index) {
                 return Gaps.v14;
               },
-              itemCount: clubSearchPostList.length,
+              itemCount: _isOnlyRequest
+                  ? filteredList.length
+                  : clubSearchPostList.length,
             ),
           ),
           if (_isFocused)
@@ -420,6 +361,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-09",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 2,
@@ -428,6 +370,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-07",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 3,
@@ -436,6 +379,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-04-20",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
   {
     "postId": 4,
@@ -444,6 +388,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-06-25",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 5,
@@ -452,6 +397,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-01",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
   {
     "postId": 6,
@@ -460,6 +406,7 @@ List<Map<String, dynamic>> clubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-10",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
 ];
 
@@ -471,6 +418,7 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-09",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 2,
@@ -479,6 +427,7 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-07",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 3,
@@ -487,6 +436,7 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-04-20",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
   {
     "postId": 4,
@@ -495,6 +445,7 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-06-25",
     "clubMaster": "이재현",
+    "isRequest": true,
   },
   {
     "postId": 5,
@@ -503,6 +454,7 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-01",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
   {
     "postId": 6,
@@ -511,5 +463,6 @@ List<Map<String, dynamic>> initClubSearchPostList = [
     "clubName": "SWAG 동아리",
     "postDate": "2023-07-10",
     "clubMaster": "이재현",
+    "isRequest": false,
   },
 ];

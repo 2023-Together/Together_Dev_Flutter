@@ -427,6 +427,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                             options: CarouselOptions(
                               aspectRatio: 10 / 4,
                               enlargeCenterPage: true,
+                              enableInfiniteScroll: false,
                               onPageChanged: (index, reason) {
                                 setState(() {
                                   _currentNoticeIndex = index;

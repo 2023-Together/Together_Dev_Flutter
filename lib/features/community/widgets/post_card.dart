@@ -117,55 +117,38 @@ class _PostCard extends State<PostCard> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                // trailing: PopupMenuButton<String>(
-                //   offset: const Offset(0, 25),
-                //   itemBuilder: (context) {
-                //     return [
-                //       PopupMenuItem(
-                //         onTap: () {
-                //           print("게시글 수정");
-                //           context.pushNamed(
-                //             PostUpdateScreen.routeName,
-                //             extra: PostUpdateScreenArgs(
-                //               title: widget.title,
-                //               content: widget.content,
-                //               images: widget.images,
-                //             ),
-                //           );
-                //         },
-                //         child: const Text("수정"),
-                //       ),
-                //       PopupMenuItem(
-                //         onTap: () {
-                //           print("게시글 삭제");
-                //         },
-                //         child: const Text("삭제"),
-                //       ),
-                //     ];
-                //   },
-                //   child: const Icon(Icons.more_vert),
-                // ),
               ),
               Column(
                 children: [
                   Container(
-                    width: size.width,
-                    padding: const EdgeInsets.only(
-                      left: Sizes.size12,
-                      right: Sizes.size12,
-                      bottom: Sizes.size20,
-                    ),
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      widget.content,
-                      maxLines: 4,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: Sizes.size16,
-                        height: 1.5,
-                      ),
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: Sizes.size20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Gaps.v4,
+                        Text(
+                          widget.content,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: Sizes.size16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+                  Gaps.v20,
                   if (widget.images.isNotEmpty)
                     SWAGCommunityImages(images: widget.images),
                 ],
