@@ -4,9 +4,14 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 
-class ClubMainScreen extends StatelessWidget {
+class ClubMainScreen extends StatefulWidget {
   const ClubMainScreen({super.key});
 
+  @override
+  State<ClubMainScreen> createState() => _ClubMainScreenState();
+}
+
+class _ClubMainScreenState extends State<ClubMainScreen> {
   void _onMoveClubSearchScreen(BuildContext context) {
     context.pushNamed(ClubSearchScreen.routeName);
   }
@@ -16,6 +21,13 @@ class ClubMainScreen extends StatelessWidget {
       ClubCommunityScreen.routeName,
       extra: ClubCommunityScreenArgs(clubId: 1),
     );
+  }
+
+  // 리스트 새로고침
+  Future _refreshClubList() async {
+    setState(() {
+      clubList = clubList;
+    });
   }
 
   @override
@@ -41,42 +53,45 @@ class ClubMainScreen extends StatelessWidget {
                 ),
               ),
             )
-          : ListView.separated(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 6,
-                vertical: 6,
+          : RefreshIndicator.adaptive(
+              onRefresh: _refreshClubList,
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 6,
+                  vertical: 6,
+                ),
+                itemBuilder: (context, index) => ListTile(
+                  onTap: () => _onMoveClubCommunityScreen(context),
+                  title: Text(
+                    clubList[index]["clubName"],
+                  ),
+                  titleTextStyle: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
+                    overflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  subtitle: Text(
+                    clubList[index]["clubContent"] * 4,
+                  ),
+                  subtitleTextStyle: const TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 14,
+                  ),
+                  trailing: const Icon(
+                    Icons.keyboard_arrow_right_rounded,
+                    size: 40,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(10.0), // 원하는 모양의 border radius 설정
+                    side: const BorderSide(
+                        color: Colors.black, width: 0.5), // border의 색상과 너비 설정
+                  ),
+                ),
+                separatorBuilder: (context, index) => Gaps.v10,
+                itemCount: clubList.length,
               ),
-              itemBuilder: (context, index) => ListTile(
-                onTap: () => _onMoveClubCommunityScreen(context),
-                title: Text(
-                  clubList[index]["clubName"],
-                ),
-                titleTextStyle: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 18,
-                  overflow: TextOverflow.ellipsis,
-                  fontWeight: FontWeight.bold,
-                ),
-                subtitle: Text(
-                  clubList[index]["clubContent"],
-                ),
-                subtitleTextStyle: const TextStyle(
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: 14,
-                ),
-                trailing: const Icon(
-                  Icons.keyboard_arrow_right_rounded,
-                  size: 40,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius:
-                      BorderRadius.circular(10.0), // 원하는 모양의 border radius 설정
-                  side: const BorderSide(
-                      color: Colors.black, width: 0.5), // border의 색상과 너비 설정
-                ),
-              ),
-              separatorBuilder: (context, index) => Gaps.v10,
-              itemCount: clubList.length,
             ),
     );
   }

@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:swag_cross_app/constants/breakpoints.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/customer_service/QnA/QnA_screen.dart';
 import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
+import 'package:swag_cross_app/features/customer_service/qna/qna_screen.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 final tabs = [
   "공지사항",
   "QnA",
 ];
 
-class CustomerServiceArgs {
+class CustomerServiceScreenArgs {
   final int initSelectedIndex;
+  final bool isLogined;
 
-  CustomerServiceArgs({required this.initSelectedIndex});
+  CustomerServiceScreenArgs({
+    required this.initSelectedIndex,
+    required this.isLogined,
+  });
 }
 
 class CustomerServiceScreen extends StatefulWidget {
@@ -25,44 +28,65 @@ class CustomerServiceScreen extends StatefulWidget {
   const CustomerServiceScreen({
     super.key,
     required this.initSelectedIndex,
+    required this.isLogined,
   });
 
   final int initSelectedIndex;
+  final bool isLogined;
 
   @override
   State<CustomerServiceScreen> createState() => _CustomerServiceScreenState();
 }
 
 class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
-  final TextEditingController _textEditingController =
-      TextEditingController(text: "Initial Text");
+  final TextEditingController _textSearchController = TextEditingController();
+  // 포커스 검사
+  final FocusNode _focusNode = FocusNode();
 
-  late bool _isThereSearchValue = _textEditingController.text.isNotEmpty;
+  bool _isFocused = false;
+
+  late bool _isThereSearchValue = _textSearchController.text.isNotEmpty;
+
+  int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _focusNode.addListener(_handleFocusChange);
+
+    _selectedIndex = widget.initSelectedIndex;
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus != _isFocused) {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    }
+  }
 
   void _onSearchChanged(String value) {
-    print("Searching form $value");
     setState(() {
       _isThereSearchValue = value.isNotEmpty;
     });
   }
 
-  void _onSearchSubmitted(String value) {
-    print("Submitted $value");
+  void _onSearchSubmitted() {
+    print(_textSearchController.text);
   }
 
   void _onTabBar(int value) {
-    FocusScope.of(context).unfocus();
+    _focusNode.unfocus();
+    _selectedIndex = value;
+    setState(() {});
   }
 
   void _onCloseIcon() {
     setState(() {
-      _textEditingController.text = '';
+      _textSearchController.text = '';
       _isThereSearchValue = false;
     });
-  }
-
-  void _moveBack() {
-    context.pop();
   }
 
   void _alertIconTap() {
@@ -77,92 +101,21 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
       child: Scaffold(
         appBar: AppBar(
           // 자동 뒤로가기 생성 여부
-          automaticallyImplyLeading: false,
+          automaticallyImplyLeading: true,
           // 맨아래 구분선
           elevation: 1,
+          leadingWidth: 30,
           // ConstrainedBox : 최대 크기, 최소 크기를 지정할수 있음
           // 만약 Container를 사용하고 있다면 ConstrainedBox를 사용할 필요 X
           // Container가 constraints속성을 가지고 있기때문
-          title: ConstrainedBox(
-            constraints: const BoxConstraints(
-              maxWidth: Breakpoints.sm,
-            ),
-            // 커스텀 검색 구현
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: _moveBack,
-                  child: Container(
-                    child: const Icon(Icons.arrow_back_ios_rounded),
-                  ),
-                ),
-                // 검색 바
-                Expanded(
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Sizes.size18),
-                    height: Sizes.size44,
-                    child: TextField(
-                      controller: _textEditingController,
-                      onChanged: _onSearchChanged,
-                      onSubmitted: _onSearchSubmitted,
-                      cursorColor: Colors.purple,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(Sizes.size5),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey.shade200,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: Sizes.size12),
-                        prefixIcon: Container(
-                          width: Sizes.size20,
-                          alignment: Alignment.center,
-                          child: const FaIcon(
-                            FontAwesomeIcons.magnifyingGlass,
-                            color: Colors.black,
-                            size: Sizes.size18,
-                          ),
-                        ),
-                        suffixIcon: Container(
-                          width: Sizes.size20,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.only(
-                            left: Sizes.size10,
-                            right: Sizes.size8,
-                          ),
-                          child: AnimatedOpacity(
-                            opacity: _isThereSearchValue ? 1 : 0,
-                            duration: const Duration(milliseconds: 200),
-                            child: GestureDetector(
-                              onTap: _onCloseIcon,
-                              child: FaIcon(
-                                FontAwesomeIcons.solidCircleXmark,
-                                color: Colors.grey.shade600,
-                                size: Sizes.size18,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                // 알림 아이콘
-                GestureDetector(
-                  onTap: _alertIconTap,
-                  child: Container(
-                    child: const FaIcon(
-                      FontAwesomeIcons.bell,
-                      size: 40,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+          title: SWAGTextField(
+            hintText: "검색어를 입력하세요.",
+            maxLine: 1,
+            controller: _textSearchController,
+            isLogined: widget.isLogined,
+            buttonText: "검색",
+            onSubmitted: _onSearchSubmitted,
+            focusNode: _focusNode,
           ),
           bottom: TabBar(
             onTap: (value) => _onTabBar(value),
@@ -185,10 +138,26 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: Stack(
           children: [
-            NoticeScreen(),
-            QnaScreen(),
+            TabBarView(
+              children: [
+                NoticeScreen(isLogined: widget.isLogined),
+                QnAScreen(
+                  isFocused: _isFocused,
+                  isLogined: widget.isLogined,
+                ),
+              ],
+            ),
+            if (_isFocused)
+              ModalBarrier(
+                // color: _barrierAnimation,
+                color: Colors.transparent,
+                // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                dismissible: true,
+                // 자신을 클릭하면 실행되는 함수
+                onDismiss: () => _focusNode.unfocus(),
+              ),
           ],
         ),
       ),

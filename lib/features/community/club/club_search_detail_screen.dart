@@ -131,7 +131,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Gaps.v10,
+                  Gaps.v16,
                   RichText(
                     text: TextSpan(
                       style: const TextStyle(
@@ -167,16 +167,28 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const VerticalDivider(
-                        width: 1,
-                        color: Colors.black,
-                      ),
                       Text(
                         postDate,
                         style: const TextStyle(fontSize: 18),
                       ),
                     ],
-                  )
+                  ),
+                  Gaps.v10,
+                  RichText(
+                    text: const TextSpan(
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black,
+                      ),
+                      children: [
+                        TextSpan(text: "동아리 인원(명) : "),
+                        TextSpan(
+                          text: "53",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             )

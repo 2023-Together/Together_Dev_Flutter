@@ -5,10 +5,10 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
+import 'package:swag_cross_app/features/community/widgets/notice_item.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
-import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
@@ -417,16 +417,24 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                             ),
                           ),
                           CarouselSlider.builder(
-                            itemBuilder: (context, index, realIndex) =>
-                                NoticeTestItem(
-                              title: "공지사항 ${index + 1}",
-                              content:
-                                  "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
-                            ),
+                            itemBuilder: (context, index, realIndex) {
+                              final item = noticeList[index];
+                              return NoticeItem(
+                                noticeId: item["id"],
+                                noticeTitle: item["title"],
+                                noticeContent: item["content"],
+                                noticeDate: item["date"],
+                                noticeImage: const [
+                                  "assets/images/70836_50981_2758.jpg"
+                                ],
+                                isLogined: _isLogined,
+                              );
+                            },
                             itemCount: 5,
                             options: CarouselOptions(
                               aspectRatio: 10 / 4,
                               enlargeCenterPage: true,
+                              enableInfiniteScroll: false,
                               onPageChanged: (index, reason) {
                                 setState(() {
                                   _currentNoticeIndex = index;
@@ -510,15 +518,16 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                 color: Colors.white,
                 padding: const EdgeInsets.all(6),
                 child: SWAGTextField(
-                  hintText: "검색할 제목을 입력해 주세요..",
+                  hintText: "검색어를 입력하세요.",
                   maxLine: 1,
                   controller: _searchController,
+                  isLogined: true,
                   onSubmitted: () {
                     _searchController.text = "";
                     _focusNode.unfocus();
                     _toggleAnimations();
                   },
-                  onChange: () {
+                  onChanged: (String value) {
                     print(_searchController.text);
                   },
                   buttonText: "검색",
@@ -663,5 +672,38 @@ List<Map<String, dynamic>> initComunityList = [
     "date": "2023-05-10",
     "user": "유저10",
     "category": "옵션 4",
+  },
+];
+
+List<Map<String, dynamic>> noticeList = [
+  {
+    "id": 1,
+    "title": "제목1",
+    "content": "내용1",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 2,
+    "title": "제목2",
+    "content": "내용2",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 3,
+    "title": "제목3",
+    "content": "내용3",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 4,
+    "title": "제목4",
+    "content": "내용4",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 5,
+    "title": "제목5",
+    "content": "내용5",
+    "date": "2023-07-10 16:43",
   },
 ];

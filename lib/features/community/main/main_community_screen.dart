@@ -7,10 +7,12 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
+import 'package:swag_cross_app/features/community/widgets/notice_item.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
+import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
+import 'package:swag_cross_app/features/customer_service/notice/notice_detail_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
-import 'package:swag_cross_app/features/page_test/widgets/notice_test_item.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -362,26 +364,27 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
               ),
             ),
             Gaps.v6,
-            AnimatedOpacity(
-              opacity: _isLogined
-                  ? !_isFocused
-                      ? 1
-                      : 0
-                  : 0,
-              duration: const Duration(milliseconds: 200),
-              child: FloatingActionButton(
-                heroTag: "community_edit",
-                onPressed: () {
-                  // 동아리 게시글 작성
-                  context.pushNamed(PostEditScreen.routeName);
-                },
-                backgroundColor: Colors.blue.shade300,
-                child: const FaIcon(
-                  FontAwesomeIcons.penToSquare,
-                  color: Colors.black,
+            if (_isLogined && !_isFocused)
+              AnimatedOpacity(
+                opacity: _isLogined
+                    ? !_isFocused
+                        ? 1
+                        : 0
+                    : 0,
+                duration: const Duration(milliseconds: 200),
+                child: FloatingActionButton(
+                  heroTag: "community_edit",
+                  onPressed: () {
+                    // 동아리 게시글 작성
+                    context.pushNamed(PostEditScreen.routeName);
+                  },
+                  backgroundColor: Colors.blue.shade300,
+                  child: const FaIcon(
+                    FontAwesomeIcons.penToSquare,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
         // CustomScrollView : 스크롤 가능한 구역
@@ -411,15 +414,17 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
-                          vertical: Sizes.size4,
+                          vertical: Sizes.size10,
                           horizontal: Sizes.size20,
                         ),
                         child: Center(
                           child: Column(
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Sizes.size10,
+                                padding: const EdgeInsets.only(
+                                  right: Sizes.size10,
+                                  left: Sizes.size10,
+                                  bottom: Sizes.size6,
                                 ),
                                 child: Row(
                                   mainAxisAlignment:
@@ -432,24 +437,60 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      "더보기 >",
-                                      style: TextStyle(
-                                        fontSize: Sizes.size16,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey.shade500,
+                                    GestureDetector(
+                                      onTap: () {
+                                        context.pushNamed(
+                                          CustomerServiceScreen.routeName,
+                                          extra: CustomerServiceScreenArgs(
+                                            initSelectedIndex: 0,
+                                            isLogined: _isLogined,
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "더보기 >",
+                                        style: TextStyle(
+                                          fontSize: Sizes.size16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey.shade500,
+                                        ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
                               CarouselSlider.builder(
-                                itemBuilder: (context, index, realIndex) =>
-                                    NoticeTestItem(
-                                  title: "공지사항 ${index + 1}",
-                                  content:
-                                      "이곳은 공지사항${index + 1} 입니다.\n자세히 읽어주세요.\n감사합니다.",
-                                ),
+                                itemBuilder: (context, index, realIndex) {
+                                  final item = noticeList[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      context.pushNamed(
+                                        NoticeDetailScreen.routeName,
+                                        extra: NoticeDetailScreenArgs(
+                                          noticeId: item["id"],
+                                          noticeTitle: item["title"],
+                                          noticeContent: item["content"],
+                                          noticeDate: item["date"],
+                                          noticeImage: [
+                                            "assets/images/70836_50981_2758.jpg"
+                                          ],
+                                          isLogined: _isLogined,
+                                          isPageWhere: true,
+                                        ),
+                                      );
+                                    },
+                                    child: NoticeItem(
+                                      noticeId: item["id"],
+                                      noticeTitle: item["title"],
+                                      noticeContent: item["content"],
+                                      noticeDate: item["date"],
+                                      noticeImage: const [
+                                        "assets/images/70836_50981_2758.jpg"
+                                      ],
+                                      isLogined: _isLogined,
+                                    ),
+                                  );
+                                },
                                 itemCount: 5,
                                 options: CarouselOptions(
                                   aspectRatio: 10 / 4,
@@ -538,15 +579,16 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   color: Colors.white,
                   padding: const EdgeInsets.all(6),
                   child: SWAGTextField(
-                    hintText: "검색할 제목을 입력해 주세요..",
+                    hintText: "검색어를 입력하세요.",
                     maxLine: 1,
                     controller: _searchController,
+                    isLogined: true,
                     onSubmitted: () {
                       _searchController.text = "";
                       _focusNode.unfocus();
                       _toggleAnimations();
                     },
-                    onChange: () {
+                    onChanged: (String value) {
                       print(_searchController.text);
                     },
                     buttonText: "검색",
@@ -692,5 +734,38 @@ List<Map<String, dynamic>> initComunityList = [
     "date": "2023-05-10",
     "user": "유저10",
     "category": "옵션 4",
+  },
+];
+
+List<Map<String, dynamic>> noticeList = [
+  {
+    "id": 1,
+    "title": "제목1",
+    "content": "내용1",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 2,
+    "title": "제목2",
+    "content": "내용2",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 3,
+    "title": "제목3",
+    "content": "내용3",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 4,
+    "title": "제목4",
+    "content": "내용4",
+    "date": "2023-07-10 16:43",
+  },
+  {
+    "id": 5,
+    "title": "제목5",
+    "content": "내용5",
+    "date": "2023-07-10 16:43",
   },
 ];

@@ -16,6 +16,7 @@ class PostDetailScreenArgs {
   final String date;
   final String user;
   final int tabBarSelected;
+  final bool isLogined;
 
   PostDetailScreenArgs({
     required this.postId,
@@ -26,6 +27,7 @@ class PostDetailScreenArgs {
     required this.date,
     required this.user,
     required this.tabBarSelected,
+    required this.isLogined,
   });
 }
 
@@ -42,6 +44,7 @@ class PostDetailScreen extends StatefulWidget {
     required this.date,
     required this.user,
     required this.tabBarSelected,
+    required this.isLogined,
   });
 
   final int postId;
@@ -52,6 +55,7 @@ class PostDetailScreen extends StatefulWidget {
   final String date;
   final String user;
   final int tabBarSelected;
+  final bool isLogined;
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -111,10 +115,13 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   }),
                   itemCount: widget.images.length,
                   itemBuilder: (context, index) {
-                    return Image.asset(
-                      widget.images[index],
-                      width: size.width,
-                      fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: () => context.push,
+                      child: Image.asset(
+                        widget.images[index],
+                        width: size.width,
+                        fit: BoxFit.cover,
+                      ),
                     );
                   },
                 ),
@@ -221,11 +228,10 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 hintText: "등록할 댓글을 입력해주세요..",
                 maxLine: 1,
                 controller: _commentController,
-                onChange: () {
-                  print(_commentController.text);
-                },
+                isLogined: widget.isLogined,
                 onSubmitted: () {
                   print(_commentController.text);
+                  _commentController.text = "";
                 },
                 buttonText: "등록",
               ),
