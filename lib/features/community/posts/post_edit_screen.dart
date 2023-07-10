@@ -75,6 +75,9 @@ class _PostEditScreenState extends State<PostEditScreen> {
     "옵션 5",
   ];
 
+  late bool _isThereSearchValue =
+      _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -82,6 +85,13 @@ class _PostEditScreenState extends State<PostEditScreen> {
     _contentController = TextEditingController(text: widget.content ?? "");
 
     // _imgList.addAll(widget.images ?? []);
+  }
+
+  void _textOnChange(String value) {
+    setState(() {
+      _isThereSearchValue = _titleController.text.isNotEmpty &&
+          _contentController.text.isNotEmpty;
+    });
   }
 
   // 이미지를 가져오는 함수
@@ -284,9 +294,11 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       hintText: "글 제목을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
+                      isLogined: true,
                       onSubmitted: () {
                         print(_titleController.text);
                       },
+                      onChanged: _textOnChange,
                     ),
                     Gaps.v40,
                     _title(title: "내용"),
@@ -295,9 +307,11 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       hintText: "내용을 입력해주세요.",
                       maxLine: 6,
                       controller: _contentController,
+                      isLogined: true,
                       onSubmitted: () {
                         print(_contentController.text);
                       },
+                      onChanged: _textOnChange,
                     ),
                     Gaps.v40,
                     _title(title: "이미지"),

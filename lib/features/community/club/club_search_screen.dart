@@ -330,15 +330,16 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 color: Colors.white,
                 padding: const EdgeInsets.all(6),
                 child: SWAGTextField(
-                  hintText: "검색할 제목을 입력해 주세요..",
+                  hintText: "검색어를 입력하세요.",
                   maxLine: 1,
                   controller: _searchController,
+                  isLogined: true,
                   onSubmitted: () {
                     _searchController.text = "";
                     _focusNode.unfocus();
                     _toggleAnimations();
                   },
-                  onChange: () {
+                  onChanged: (String value) {
                     print(_searchController.text);
                   },
                   buttonText: "검색",

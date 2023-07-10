@@ -67,6 +67,7 @@ class _PostCard extends State<PostCard> {
         date: widget.date,
         user: widget.user,
         tabBarSelected: page,
+        isLogined: widget.isLogined,
       ),
     );
   }

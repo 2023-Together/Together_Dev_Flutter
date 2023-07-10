@@ -7,7 +7,8 @@ class SWAGTextField extends StatefulWidget {
     required this.hintText,
     required this.maxLine,
     required this.controller,
-    this.onChange,
+    required this.isLogined,
+    this.onChanged,
     this.onSubmitted,
     this.buttonText,
     this.focusNode,
@@ -16,10 +17,11 @@ class SWAGTextField extends StatefulWidget {
   final String hintText; // 힌트
   final int maxLine; // 최대 줄 개수
   final TextEditingController controller; // text 컨트롤러
-  final Function? onChange; // 값이 변경될때 실행될 함수
+  final Function(String)? onChanged; // 값이 변경될때 실행될 함수
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
+  final bool isLogined;
 
   @override
   State<SWAGTextField> createState() => _SWAGTextFieldState();
@@ -27,6 +29,11 @@ class SWAGTextField extends StatefulWidget {
 
 class _SWAGTextFieldState extends State<SWAGTextField> {
   bool _isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,19 +48,21 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                 widget.onSubmitted!();
               }
             },
+            // onChanged: widget.onChanged,
             onChanged: (value) {
               _isEditing = value.trim().isEmpty ? false : true;
-              if (widget.onChange != null) {
-                widget.onChange!();
+              if (widget.onChanged != null) {
+                widget.onChanged!(value);
               }
               setState(() {});
             },
             maxLines: widget.maxLine,
             controller: widget.controller,
+            enabled: widget.isLogined,
             cursorColor: const Color(0xFf6524FF),
             decoration: InputDecoration(
               isDense: true,
-              hintText: widget.hintText,
+              hintText: widget.isLogined ? widget.hintText : "로그인을 해야합니다.",
               filled: true,
               fillColor: Colors.white,
               hintStyle: TextStyle(
@@ -76,8 +85,8 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                 ),
               ),
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 20,
-                vertical: 20,
+                horizontal: 16,
+                vertical: 16,
               ),
             ),
             style: const TextStyle(
@@ -101,7 +110,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                   fontSize: 18,
                 ),
                 backgroundColor: Colors.purple.shade300,
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 17),
               ),
               child: Text(widget.buttonText ?? "버튼"),
             ),

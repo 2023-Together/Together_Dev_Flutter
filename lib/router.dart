@@ -6,8 +6,10 @@ import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
+import 'package:swag_cross_app/features/customer_service/notice/notice_detail_screen.dart';
+import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
+import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/customer_service/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
 
@@ -48,6 +50,7 @@ final router = GoRouter(
           user: args.user,
           date: args.date,
           tabBarSelected: args.tabBarSelected,
+          isLogined: args.isLogined,
         );
       },
     ),
@@ -106,22 +109,71 @@ final router = GoRouter(
       name: CustomerServiceScreen.routeName,
       path: CustomerServiceScreen.routeURL,
       builder: (context, state) {
-        int initIndex = 0;
-        if (state.queryParams["initIndex"] != null) {
-          initIndex = int.parse(state.queryParams["initIndex"]!);
+        if (state.extra != null) {
+          final args = state.extra as CustomerServiceScreenArgs;
+          return CustomerServiceScreen(
+            initSelectedIndex: args.initSelectedIndex,
+            isLogined: args.isLogined,
+          );
         }
-        return CustomerServiceScreen(initSelectedIndex: initIndex);
+        return const CustomerServiceScreen(
+          initSelectedIndex: 0,
+          isLogined: false,
+        );
       },
+      routes: [
+        GoRoute(
+          name: QnAEditScreen.routeName,
+          path: QnAEditScreen.routeURL,
+          builder: (context, state) {
+            if (state.extra != null) {
+              final args = state.extra as QnAEditScreenArgs;
+              return QnAEditScreen(
+                id: args.id,
+                title: args.title,
+                content: args.content,
+              );
+            }
+            return const QnAEditScreen();
+          },
+        ),
+        GoRoute(
+          path: NoticeDetailScreen.routeURL,
+          name: NoticeDetailScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as NoticeDetailScreenArgs;
+            return NoticeDetailScreen(
+              noticeId: args.noticeId,
+              noticeTitle: args.noticeTitle,
+              noticeContent: args.noticeContent,
+              noticeDate: args.noticeDate,
+              noticeImage: args.noticeImage,
+              isLogined: args.isLogined,
+              isPageWhere: args.isPageWhere,
+            );
+          },
+        ),
+        GoRoute(
+          path: QnADetailScreen.routeURL,
+          name: QnADetailScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as QnADetailScreenArgs;
+            return QnADetailScreen(
+              qnaId: args.qnaId,
+              qnaUser: args.qnaUser,
+              qnaContent: args.qnaContent,
+              qnaDate: args.qnaDate,
+              isLogined: args.isLogined,
+              answerText: args.answerText,
+            );
+          },
+        ),
+      ],
     ),
     GoRoute(
       name: AlertScreen.routeName,
       path: AlertScreen.routeURL,
       builder: (context, state) => const AlertScreen(),
-    ),
-    GoRoute(
-      name: NoticeScreen.routeName,
-      path: NoticeScreen.routeURL,
-      builder: (context, state) => const NoticeScreen(),
     ),
   ],
 );
