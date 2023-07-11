@@ -5,13 +5,13 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
-class QnAEditScreenArgs {
+class NoticeEditScreenArgs {
   final int id;
   final String title;
   final String content;
   final List<String> images;
 
-  QnAEditScreenArgs({
+  NoticeEditScreenArgs({
     required this.id,
     required this.title,
     required this.content,
@@ -19,11 +19,11 @@ class QnAEditScreenArgs {
   });
 }
 
-class QnAEditScreen extends StatefulWidget {
-  static const routeName = "qna_edit";
-  static const routeURL = "qna_edit";
+class NoticeEditScreen extends StatefulWidget {
+  static const routeName = "notice_edit";
+  static const routeURL = "notice_edit";
 
-  const QnAEditScreen({
+  const NoticeEditScreen({
     super.key,
     this.id,
     this.title,
@@ -37,10 +37,10 @@ class QnAEditScreen extends StatefulWidget {
   final List<String>? images;
 
   @override
-  State<QnAEditScreen> createState() => _QnAEditScreenState();
+  State<NoticeEditScreen> createState() => _NoticeEditScreenState();
 }
 
-class _QnAEditScreenState extends State<QnAEditScreen> {
+class _NoticeEditScreenState extends State<NoticeEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 
@@ -48,7 +48,6 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
       _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
 
   final List<String> _imgList = [];
-  // final List<XFile> _imgList = [];
   final List<String> _removeImgList = [];
 
   @override
@@ -101,7 +100,6 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
 
     _removeImgList.clear();
 
-    print(_imgList);
     setState(() {});
   }
 
@@ -112,12 +110,11 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
     } else {
       _removeImgList.add(img);
     }
-    print(_removeImgList);
   }
 
   SliverAppBar _appBar() {
     return const SliverAppBar(
-      title: Text("QnA 작성"),
+      title: Text("공지사항 작성"),
     );
   }
 

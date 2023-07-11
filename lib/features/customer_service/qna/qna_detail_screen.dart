@@ -45,21 +45,7 @@ class QnADetailScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.25,
-        actions: [
-          if (isLogined)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateColor.resolveWith(
-                    (states) => Colors.purple.shade300,
-                  ),
-                ),
-                onPressed: () {},
-                child: const Text("수정"),
-              ),
-            ),
-        ],
+        title: const Text("Q&A"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -101,6 +87,30 @@ class QnADetailScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.purple.shade300,
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Text("수정"),
+                ),
+                Gaps.h10,
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.purple.shade300,
+                    ),
+                  ),
+                  onPressed: () {},
+                  child: const Text("삭제"),
+                ),
+              ],
+            ),
             Gaps.v10,
             const Divider(
               thickness: 1,
@@ -113,11 +123,31 @@ class QnADetailScreen extends StatelessWidget {
                     constraints: const BoxConstraints(
                       minHeight: 100, // 최소 높이
                     ),
-                    child: Text(
-                      answerText,
-                      style: const TextStyle(
-                        fontSize: 18,
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
                       ),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(10),
+                      ),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const ListTile(
+                          title: Text(
+                            "관리자",
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          subtitle: Text("1시간전"),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(answerText),
+                        ),
+                      ],
                     ),
                   )
                 : Center(

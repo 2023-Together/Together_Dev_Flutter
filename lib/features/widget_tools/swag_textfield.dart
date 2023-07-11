@@ -85,8 +85,8 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                 ),
               ),
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 16,
+                horizontal: 14,
+                vertical: 14,
               ),
             ),
             style: const TextStyle(
@@ -110,7 +110,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                   fontSize: 18,
                 ),
                 backgroundColor: Colors.purple.shade300,
-                padding: const EdgeInsets.symmetric(vertical: 17),
+                padding: const EdgeInsets.symmetric(vertical: 14),
               ),
               child: Text(widget.buttonText ?? "버튼"),
             ),

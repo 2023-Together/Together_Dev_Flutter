@@ -155,38 +155,36 @@ class _PostCard extends State<PostCard> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Sizes.size20),
+                padding: const EdgeInsets.only(
+                  left: Sizes.size20,
+                  right: Sizes.size20,
+                  bottom: Sizes.size10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                      onTap: _onGoodTap,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        child: FaIcon(
-                          widget.isLogined
-                              ? _checkGood
-                                  ? FontAwesomeIcons.solidThumbsUp
-                                  : FontAwesomeIcons.thumbsUp
-                              : FontAwesomeIcons.thumbsUp,
-                          color: widget.isLogined
-                              ? _checkGood
-                                  ? Colors.blue.shade600
-                                  : Colors.black
-                              : Colors.black,
-                        ),
+                    IconButton(
+                      onPressed: _onGoodTap,
+                      icon: FaIcon(
+                        widget.isLogined
+                            ? _checkGood
+                                ? FontAwesomeIcons.solidThumbsUp
+                                : FontAwesomeIcons.thumbsUp
+                            : FontAwesomeIcons.thumbsUp,
+                        color: widget.isLogined
+                            ? _checkGood
+                                ? Colors.blue.shade600
+                                : Colors.black
+                            : Colors.black,
                       ),
                     ),
                     Gaps.h6,
-                    GestureDetector(
-                      onTap: () => _goDetailScreen(1),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        child: const FaIcon(
-                          FontAwesomeIcons.comment,
-                          color: Colors.black,
-                          size: 30,
-                        ),
+                    IconButton(
+                      onPressed: () => _goDetailScreen(1),
+                      icon: const FaIcon(
+                        FontAwesomeIcons.comment,
+                        color: Colors.black,
+                        size: 30,
                       ),
                     ),
                   ],

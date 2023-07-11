@@ -63,8 +63,11 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   final TextEditingController _commentController = TextEditingController();
+  final PageController _imagesPageController = PageController();
 
-  int currentIntroPage = 0;
+  int _currentIndicatorPage = 0;
+  bool _showRightArrow = true;
+  bool _showLeftArrow = false;
 
   List<Map<String, dynamic>> comments = [
     {
@@ -96,6 +99,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   @override
   void dispose() {
     _commentController.dispose();
+    _imagesPageController.dispose();
     super.dispose();
   }
 
@@ -106,30 +110,101 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         if (widget.images.isNotEmpty)
           Column(
             children: [
-              SizedBox(
-                width: size.width,
-                height: 350,
-                child: PageView.builder(
-                  onPageChanged: (value) => setState(() {
-                    currentIntroPage = value;
-                  }),
-                  itemCount: widget.images.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () => context.push,
-                      child: Image.asset(
-                        widget.images[index],
-                        width: size.width,
-                        fit: BoxFit.cover,
+              Stack(
+                children: [
+                  SizedBox(
+                    width: size.width,
+                    height: 350,
+                    child: PageView.builder(
+                      onPageChanged: (value) => setState(() {
+                        _currentIndicatorPage = value;
+                        if (value == 0) {
+                          _showRightArrow = true;
+                          _showLeftArrow = false;
+                        } else if (value == widget.images.length - 1) {
+                          _showRightArrow = false;
+                          _showLeftArrow = true;
+                        } else {
+                          _showRightArrow = true;
+                          _showLeftArrow = true;
+                        }
+                      }),
+                      controller: _imagesPageController,
+                      itemCount: widget.images.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () => context.push,
+                          child: Image.asset(
+                            widget.images[index],
+                            width: size.width,
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    left: 10,
+                    height: 350,
+                    child: AnimatedOpacity(
+                      opacity: _showLeftArrow ? 1 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _imagesPageController.previousPage(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.ease);
+                            _currentIndicatorPage = _currentIndicatorPage - 1;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.withOpacity(0.9),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_left_rounded,
+                            size: 40,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    height: 350,
+                    child: AnimatedOpacity(
+                      opacity: _showRightArrow ? 1 : 0,
+                      duration: const Duration(milliseconds: 200),
+                      child: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _imagesPageController.nextPage(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.ease);
+                            _currentIndicatorPage = _currentIndicatorPage + 1;
+                          });
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.grey.withOpacity(0.9),
+                          ),
+                          child: const Icon(
+                            Icons.keyboard_arrow_right_rounded,
+                            size: 40,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               Gaps.v10,
               SWAGCustomIndicator(
-                currentNoticeIndex: currentIntroPage,
-                noticeItemLength: widget.images.length,
+                currentIndex: _currentIndicatorPage,
+                itemLength: widget.images.length,
               ),
             ],
           ),

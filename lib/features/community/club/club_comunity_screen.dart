@@ -5,11 +5,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/community/widgets/notice_item.dart';
+import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/storages/secure_storage_login.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
@@ -73,7 +71,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   bool _isLogined = false;
   bool _showJumpUpButton = false;
-  int _currentNoticeIndex = 0;
+  final int _currentNoticeIndex = 0;
 
   double width = 0;
   double height = 0;
@@ -285,44 +283,44 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
             ),
           ),
         ],
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(50),
-          child: Container(
-            height: 50,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              children: [
-                SWAGStateDropDownButton(
-                  initOption: _option1,
-                  onChangeOption: _onChangeOption1,
-                  title: "카테고리1",
-                  options: _optionList1,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
-                ),
-                Gaps.h8,
-                SWAGStateDropDownButton(
-                  initOption: _option2,
-                  onChangeOption: _onChangeOption2,
-                  title: "카테고리2",
-                  options: _optionList2,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
-                ),
-                Gaps.h8,
-                SWAGStateDropDownButton(
-                  initOption: _option3,
-                  onChangeOption: _onChangeOption3,
-                  title: "카테고리3",
-                  options: _optionList3,
-                  fontSize: _optionsFontSize,
-                  padding: _optionsPadding,
-                ),
-              ],
-            ),
-          ),
-        ),
+        // bottom: PreferredSize(
+        //   preferredSize: const Size.fromHeight(50),
+        //   child: Container(
+        //     height: 50,
+        //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        //     child: ListView(
+        //       scrollDirection: Axis.horizontal,
+        //       children: [
+        //         SWAGStateDropDownButton(
+        //           initOption: _option1,
+        //           onChangeOption: _onChangeOption1,
+        //           title: "카테고리1",
+        //           options: _optionList1,
+        //           fontSize: _optionsFontSize,
+        //           padding: _optionsPadding,
+        //         ),
+        //         Gaps.h8,
+        //         SWAGStateDropDownButton(
+        //           initOption: _option2,
+        //           onChangeOption: _onChangeOption2,
+        //           title: "카테고리2",
+        //           options: _optionList2,
+        //           fontSize: _optionsFontSize,
+        //           padding: _optionsPadding,
+        //         ),
+        //         Gaps.h8,
+        //         SWAGStateDropDownButton(
+        //           initOption: _option3,
+        //           onChangeOption: _onChangeOption3,
+        //           title: "카테고리3",
+        //           options: _optionList3,
+        //           fontSize: _optionsFontSize,
+        //           padding: _optionsPadding,
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -376,82 +374,45 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
               slivers: [
                 // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size4,
-                      horizontal: Sizes.size20,
-                    ),
-                    child: Center(
-                      child: Column(
-                        children: [
-                          Image.asset(
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: Sizes.size4,
+                            horizontal: Sizes.size20,
+                          ),
+                          child: Image.asset(
                             "assets/images/volImg.jpg",
                             width: size.width,
                             height: 160,
                             fit: BoxFit.cover,
                           ),
-                          Gaps.v4,
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: Sizes.size10,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  "공지",
-                                  style: TextStyle(
-                                    fontSize: Sizes.size20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "더보기 >",
-                                  style: TextStyle(
-                                    fontSize: Sizes.size16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey.shade500,
-                                  ),
-                                ),
-                              ],
+                        ),
+                        Gaps.v8,
+                        ListTile(
+                          onTap: () => context.pushNamed(
+                            ClubNoticeScreen.routeName,
+                            extra: ClubNoticeScreenArgs(isLogined: _isLogined),
+                          ),
+                          shape: const BeveledRectangleBorder(
+                            side: BorderSide(
+                              width: 0.1,
                             ),
                           ),
-                          CarouselSlider.builder(
-                            itemBuilder: (context, index, realIndex) {
-                              final item = noticeList[index];
-                              return NoticeItem(
-                                noticeId: item["id"],
-                                noticeTitle: item["title"],
-                                noticeContent: item["content"],
-                                noticeDate: item["date"],
-                                noticeImage: const [
-                                  "assets/images/70836_50981_2758.jpg"
-                                ],
-                                isLogined: _isLogined,
-                              );
-                            },
-                            itemCount: 5,
-                            options: CarouselOptions(
-                              aspectRatio: 10 / 4,
-                              enlargeCenterPage: true,
-                              enableInfiniteScroll: false,
-                              onPageChanged: (index, reason) {
-                                setState(() {
-                                  _currentNoticeIndex = index;
-                                });
-                              },
-                              // 옵션 설정
-                            ),
-                            // 인디케이터 설정
-                            carouselController: _carouselController,
-                            // 페이지 변화 이벤트 등록
+                          title: const Text("동아리 공지사항"),
+                          titleTextStyle: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
                           ),
-                          SWAGCustomIndicator(
-                            currentNoticeIndex: _currentNoticeIndex,
-                            noticeItemLength: 5,
+                          subtitle: const Text("최근 등록일 : 5일전"),
+                          trailing: const Icon(
+                            Icons.keyboard_arrow_right,
+                            size: 30,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
