@@ -15,10 +15,10 @@ class SignUpMain extends StatelessWidget {
       appBar: AppBar(
         title: const Text("회원가입"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: const [
+          children: [
             Gaps.v36,
             SignInButton(
               path: "naver",
@@ -26,13 +26,13 @@ class SignUpMain extends StatelessWidget {
               signType: SNSType.naver,
               authType: SignType.signUp,
             ),
-            Gaps.v16,
-            SignInButton(
-              path: "kakao",
-              text: "카카오 회원가입",
-              signType: SNSType.kakao,
-              authType: SignType.signUp,
-            ),
+            // Gaps.v16,
+            // SignInButton(
+            //   path: "kakao",
+            //   text: "카카오 회원가입",
+            //   signType: SNSType.kakao,
+            //   authType: SignType.signUp,
+            // ),
           ],
         ),
       ),

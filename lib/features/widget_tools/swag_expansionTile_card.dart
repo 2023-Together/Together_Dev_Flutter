@@ -3,54 +3,36 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 
-class NoticeCard extends StatefulWidget {
-  const NoticeCard({
+class SWAGExpansionTileCard extends StatefulWidget {
+  const SWAGExpansionTileCard({
     super.key,
     required this.id,
     required this.title,
     required this.content,
     required this.date,
-    required this.images,
+    this.images,
     required this.isLogined,
+    this.isFAQ = false,
   });
 
   final int id;
   final String title;
   final String content;
   final String date;
-  final List<String> images;
+  final List<String>? images;
   final bool isLogined;
+  final bool isFAQ;
 
   @override
-  State<NoticeCard> createState() => _NoticeCardState();
+  State<SWAGExpansionTileCard> createState() => _SWAGExpansionTileCardState();
 }
 
-class _NoticeCardState extends State<NoticeCard> {
+class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
   bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      backgroundColor: Colors.white,
-      collapsedBackgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        side: BorderSide(
-          color: Colors.black,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-      ),
-      collapsedShape: const RoundedRectangleBorder(
-        side: BorderSide(
-          color: Colors.black,
-          width: 1,
-        ),
-        borderRadius: BorderRadius.all(
-          Radius.circular(10.0),
-        ),
-      ),
       onExpansionChanged: (value) {
         setState(() {
           _isExpanded = value;
@@ -58,22 +40,18 @@ class _NoticeCardState extends State<NoticeCard> {
       },
       title: Text(
         widget.title,
-        style: const TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
       ),
-      subtitle: Text(
-        widget.date,
-        style: TextStyle(
-          color: Colors.grey.shade600,
-        ),
-      ),
+      subtitle: widget.isFAQ
+          ? null
+          : Text(
+              widget.date,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+              ),
+            ),
       trailing: Icon(
         _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
         size: 30,
-        color: Colors.black54,
       ),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
@@ -81,40 +59,35 @@ class _NoticeCardState extends State<NoticeCard> {
           width: double.infinity,
           child: Text(
             widget.content,
-            style: const TextStyle(
-              fontSize: 18,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
         Gaps.v20,
-        // const Divider(thickness: 2),
-        GridView(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 4,
-            mainAxisSpacing: 4,
+        if (widget.images != null)
+          GridView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 4,
+            ),
+            children: [
+              for (var img in widget.images!)
+                Image.asset(
+                  img,
+                  fit: BoxFit.cover,
+                ),
+            ],
           ),
-          children: [
-            for (var img in widget.images)
-              Image.asset(
-                img,
-                fit: BoxFit.cover,
-              ),
-          ],
-        ),
         Gaps.v10,
-        if (widget.isLogined)
+        if (widget.isLogined && !widget.isFAQ)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple.shade300,
-                  ),
                   onPressed: () => context.pushNamed(
                     NoticeEditScreen.routeName,
                     extra: NoticeEditScreenArgs(
@@ -128,9 +101,6 @@ class _NoticeCardState extends State<NoticeCard> {
                 ),
                 Gaps.h10,
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple.shade300,
-                  ),
                   onPressed: () {},
                   child: const Text("삭제"),
                 ),

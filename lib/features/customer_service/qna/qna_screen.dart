@@ -72,17 +72,10 @@ class QnAScreen extends StatelessWidget {
                     title: Text(
                       item["user"],
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    titleTextStyle: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                     subtitle: Text(
                       item["date"],
                       maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                     trailing: index % 2 == 0
                         ? Container(

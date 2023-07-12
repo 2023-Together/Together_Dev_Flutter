@@ -12,8 +12,14 @@ void swagPlatformDialog({
     showCupertinoDialog(
       context: context,
       builder: (_) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        content: Text(
+          message,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
         actions: actions,
       ),
     );
@@ -21,8 +27,14 @@ void swagPlatformDialog({
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        content: Text(
+          message,
+          style: Theme.of(context).textTheme.bodyMedium,
+        ),
         actions: actions,
       ),
     );

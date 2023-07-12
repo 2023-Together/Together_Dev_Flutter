@@ -46,7 +46,7 @@ class SWAGStateDropDownButton extends StatelessWidget {
           hint: Text(
             title,
             style: TextStyle(
-              color: Colors.grey.shade500,
+              color: Colors.black45,
               fontSize: fontSize,
               overflow: TextOverflow.ellipsis,
             ),

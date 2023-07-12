@@ -211,23 +211,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
     print("이미지 : $base64Images");
   }
 
-  SliverAppBar _appBar() {
-    return const SliverAppBar(
-      title: Text("동아리 게시글 작성"),
-    );
-  }
-
-  Widget _title({required String title}) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 53, 50, 50),
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
-
   @override
   void dispose() {
     _contentController.dispose();
@@ -250,7 +233,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            backgroundColor: Colors.purple.shade300,
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: const Text("등록"),
@@ -260,7 +242,9 @@ class _PostEditScreenState extends State<PostEditScreen> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: CustomScrollView(
           slivers: [
-            _appBar(),
+            const SliverAppBar(
+              title: Text("동아리 게시글 작성"),
+            ),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -272,7 +256,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Gaps.v20,
-                          _title(title: "카테고리"),
+                          Text(
+                            "카테고리",
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
                           Gaps.v10,
                           SWAGStateDropDownButton(
                             initOption: _category,
@@ -288,7 +275,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
                         ],
                       ),
                     Gaps.v20,
-                    _title(title: "제목"),
+                    Text(
+                      "제목",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "글 제목을 입력해주세요.",
@@ -301,7 +291,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       onChanged: _textOnChange,
                     ),
                     Gaps.v40,
-                    _title(title: "내용"),
+                    Text(
+                      "내용",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "내용을 입력해주세요.",
@@ -314,7 +307,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       onChanged: _textOnChange,
                     ),
                     Gaps.v40,
-                    _title(title: "이미지"),
+                    Text(
+                      "이미지",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -326,11 +322,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                 _getImage(ImageSource
                                     .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
                               },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.purple.shade300,
-                                ),
-                              ),
                               child: const Text("카메라"),
                             ),
                             Gaps.h20,
@@ -339,22 +330,12 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                 _getImage(ImageSource
                                     .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
                               },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.purple.shade300,
-                                ),
-                              ),
                               child: const Text("갤러리"),
                             ),
                           ],
                         ),
                         ElevatedButton.icon(
                           onPressed: _removeImg,
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.purple.shade300,
-                            ),
-                          ),
                           label: const Text("삭제"),
                           icon: const Icon(Icons.delete),
                         ),

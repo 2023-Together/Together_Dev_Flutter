@@ -27,10 +27,10 @@ class _SignInMainState extends State<SignInMain> {
       appBar: AppBar(
         title: const Text("로그인"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Sizes.size24),
         child: Column(
-          children: const [
+          children: [
             Gaps.v36,
             SignInButton(
               path: "naver",
@@ -38,13 +38,13 @@ class _SignInMainState extends State<SignInMain> {
               signType: SNSType.naver,
               authType: SignType.signIn,
             ),
-            Gaps.v16,
-            SignInButton(
-              path: "kakao",
-              text: "카카오 로그인",
-              signType: SNSType.kakao,
-              authType: SignType.signIn,
-            ),
+            // Gaps.v16,
+            // SignInButton(
+            //   path: "kakao",
+            //   text: "카카오 로그인",
+            //   signType: SNSType.kakao,
+            //   authType: SignType.signIn,
+            // ),
           ],
         ),
       ),

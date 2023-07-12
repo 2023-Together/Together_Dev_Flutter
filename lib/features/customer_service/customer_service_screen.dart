@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/customer_service/faq/faq_screen.dart';
 import 'package:swag_cross_app/features/customer_service/inquiry/inquiry_screen.dart';
 import 'package:swag_cross_app/features/customer_service/suggestion/suggestion_screen.dart';
-import 'package:swag_cross_app/features/customer_service/qna/qna_screen.dart';
 
 final tabs = [
-  "QnA",
+  "FAQ",
   "문의하기",
   "건의하기",
 ];
@@ -91,7 +91,12 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
                 fontWeight: FontWeight.w600,
                 fontSize: Sizes.size16,
               ),
-              indicatorColor: Colors.purple,
+              // 선택한 탭의 밑줄 색
+              indicatorColor: Colors.purple.shade300,
+              labelPadding: const EdgeInsets.symmetric(
+                vertical: Sizes.size10,
+              ),
+              indicatorSize: TabBarIndicatorSize.label,
               labelColor: Colors.black,
               // 탭의 양이 많으면 옆으로 스크롤 하는 기능 부여 가능
               // isScrollable: true,
@@ -107,14 +112,23 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
           ),
           body: TabBarView(
             children: [
-              QnAScreen(
-                isLogined: widget.isLogined,
+              Offstage(
+                offstage: false,
+                child: FAQScreen(
+                  isLogined: widget.isLogined,
+                ),
               ),
-              InquiryScreen(
-                isLogined: widget.isLogined,
+              Offstage(
+                offstage: false,
+                child: InquiryScreen(
+                  isLogined: widget.isLogined,
+                ),
               ),
-              SuggestionScreen(
-                isLogined: widget.isLogined,
+              Offstage(
+                offstage: false,
+                child: SuggestionScreen(
+                  isLogined: widget.isLogined,
+                ),
               ),
             ],
           ),

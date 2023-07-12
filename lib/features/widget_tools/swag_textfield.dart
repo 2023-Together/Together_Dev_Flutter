@@ -60,6 +60,10 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
             controller: widget.controller,
             enabled: widget.isLogined,
             cursorColor: const Color(0xFf6524FF),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.normal,
+            ),
             decoration: InputDecoration(
               isDense: true,
               hintText: widget.isLogined ? widget.hintText : "로그인을 해야합니다.",
@@ -68,6 +72,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
               hintStyle: TextStyle(
                 color: Colors.grey.shade500,
                 fontSize: 18,
+                fontWeight: FontWeight.normal,
               ),
               // border: InputBorder.none,
               enabledBorder: OutlineInputBorder(
@@ -88,10 +93,6 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
                 horizontal: 14,
                 vertical: 14,
               ),
-            ),
-            style: const TextStyle(
-              color: Color(0xFF191919),
-              fontSize: 18,
             ),
           ),
         ),

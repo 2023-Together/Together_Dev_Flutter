@@ -59,79 +59,71 @@ class ClubRequestCard extends StatelessWidget {
             ),
           ],
         ),
-        child: GestureDetector(
-          child: Column(
-            children: [
-              Image.asset(
-                'assets/images/club1.jpg',
-                fit: BoxFit.cover,
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/images/club1.jpg',
+              fit: BoxFit.cover,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Sizes.size10,
+                vertical: Sizes.size8,
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size10,
-                  vertical: Sizes.size8,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          postTitle,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        if (isRequest)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.purple.shade300,
-                              // border: Border.all(
-                              //   width: 1,
-                              // ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                            ),
-                            child: const Text(
-                              "신청 가능",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )
-                      ],
-                    ),
-                    const Divider(),
-                    Text(
-                      postContent,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        color: Colors.grey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        postTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.titleMedium,
                       ),
-                    ),
-                    Gaps.v10,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(clubName),
-                        Text(postDate),
-                      ],
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+                      if (isRequest)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 6, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Colors.purple.shade300,
+                            // border: Border.all(
+                            //   width: 1,
+                            // ),
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                          ),
+                          child: const Text(
+                            "신청 가능",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
+                          ),
+                        )
+                    ],
+                  ),
+                  const Divider(),
+                  Text(
+                    postContent,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  Gaps.v10,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(clubName),
+                      Text(postDate),
+                    ],
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );

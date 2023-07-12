@@ -400,13 +400,14 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                               width: 0.1,
                             ),
                           ),
-                          title: const Text("동아리 공지사항"),
-                          titleTextStyle: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                          title: const Text(
+                            "동아리 공지사항",
+                            maxLines: 1,
                           ),
-                          subtitle: const Text("최근 등록일 : 5일전"),
+                          subtitle: const Text(
+                            "마지막 등록일 : 5일전",
+                            maxLines: 1,
+                          ),
                           trailing: const Icon(
                             Icons.keyboard_arrow_right,
                             size: 30,

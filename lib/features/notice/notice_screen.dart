@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
-import 'package:swag_cross_app/features/notice/widgets/notice_card.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_expansionTile_card.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 
 class NoticeScreenArgs {
@@ -56,7 +56,7 @@ class NoticeScreen extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final item = noticeList[index];
-          return NoticeCard(
+          return SWAGExpansionTileCard(
             id: item["id"],
             title: item["title"],
             content: item["content"],

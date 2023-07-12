@@ -44,13 +44,10 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
         ],
       ),
       body: clubList.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                "사용자가 소속되어 있는 동아리가 존재하지 않습니다!\n 상단의 '+'버튼을 눌러 동아리에 신청해주세요!",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
+                "사용자가 소속되어 있는 동아리가 존재하지 않습니다!\n 상단의 '+'버튼을 눌러 동아리에 가입해주세요!",
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             )
           : RefreshIndicator.adaptive(
@@ -65,18 +62,8 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
                   title: Text(
                     clubList[index]["clubName"],
                   ),
-                  titleTextStyle: const TextStyle(
-                    color: Colors.black,
-                    fontSize: 18,
-                    overflow: TextOverflow.ellipsis,
-                    fontWeight: FontWeight.bold,
-                  ),
                   subtitle: Text(
-                    clubList[index]["clubContent"] * 4,
-                  ),
-                  subtitleTextStyle: const TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    fontSize: 14,
+                    clubList[index]["clubContent"],
                   ),
                   trailing: const Icon(
                     Icons.keyboard_arrow_right_rounded,

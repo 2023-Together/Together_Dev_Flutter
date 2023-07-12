@@ -11,10 +11,10 @@ class PostCard extends StatefulWidget {
     super.key,
     required this.postId,
     required this.category,
-    required this.title,
-    required this.images,
+    this.title,
+    this.images,
     required this.initCheckGood,
-    required this.content,
+    this.content,
     required this.date,
     required this.user,
     required this.isLogined,
@@ -22,9 +22,9 @@ class PostCard extends StatefulWidget {
 
   final int postId;
   final String category;
-  final String title;
-  final String content;
-  final List<String> images;
+  final String? title;
+  final String? content;
+  final List<String>? images;
   final bool initCheckGood;
   final String date;
   final String user;
@@ -106,17 +106,11 @@ class _PostCard extends State<PostCard> {
                 ),
                 title: Text(
                   widget.user,
-                  style: const TextStyle(
-                    fontSize: Sizes.size16,
-                    fontWeight: FontWeight.bold,
-                  ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: const Text(
                   "2개월전",
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Column(
@@ -128,30 +122,28 @@ class _PostCard extends State<PostCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: Sizes.size20,
-                            fontWeight: FontWeight.bold,
+                        if (widget.title != null)
+                          Text(
+                            widget.title!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        ),
                         Gaps.v4,
-                        Text(
-                          widget.content,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: Sizes.size16,
+                        if (widget.content != null)
+                          Text(
+                            widget.content!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        ),
                       ],
                     ),
                   ),
                   Gaps.v20,
-                  if (widget.images.isNotEmpty)
-                    SWAGCommunityImages(images: widget.images),
+                  if (widget.images != null)
+                    if (widget.images!.isNotEmpty)
+                      SWAGCommunityImages(images: widget.images!),
                 ],
               ),
               Padding(

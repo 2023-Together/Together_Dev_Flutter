@@ -91,21 +91,11 @@ class QnADetailScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.purple.shade300,
-                    ),
-                  ),
                   onPressed: () {},
                   child: const Text("수정"),
                 ),
                 Gaps.h10,
                 ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.purple.shade300,
-                    ),
-                  ),
                   onPressed: () {},
                   child: const Text("삭제"),
                 ),
@@ -137,11 +127,12 @@ class QnADetailScreen extends StatelessWidget {
                         const ListTile(
                           title: Text(
                             "관리자",
-                            style: TextStyle(
-                              fontSize: 18,
-                            ),
+                            maxLines: 1,
                           ),
-                          subtitle: Text("1시간전"),
+                          subtitle: Text(
+                            "1시간전",
+                            maxLines: 1,
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),

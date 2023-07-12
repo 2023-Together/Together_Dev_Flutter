@@ -42,17 +42,6 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
     super.dispose();
   }
 
-  Widget _title({required String title}) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 53, 50, 50),
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +56,6 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            backgroundColor: Colors.purple.shade300,
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: const Text("등록"),
@@ -79,7 +67,10 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Gaps.v10,
-            _title(title: "건의 내용"),
+            Text(
+              "건의 내용",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             Gaps.v10,
             SWAGTextField(
               hintText:

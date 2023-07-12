@@ -253,17 +253,10 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
               scrollDirection: Axis.horizontal,
               children: [
                 ElevatedButton(
-                  onPressed: _toggleOnlyRequest,
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => _isOnlyRequest
-                          ? Colors.purple.shade300
-                          : Colors.grey.shade400,
-                    ),
-                  ),
-                  child: const Text(
+                  onPressed: _isOnlyRequest ? _toggleOnlyRequest : null,
+                  child: Text(
                     "신청 가능",
-                    style: TextStyle(fontSize: 16),
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ],

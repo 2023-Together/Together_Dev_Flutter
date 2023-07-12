@@ -121,17 +121,6 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
     );
   }
 
-  Widget _title({required String title}) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 53, 50, 50),
-        fontSize: 16,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,7 +136,6 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            backgroundColor: Colors.purple.shade300,
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: const Text("등록"),
@@ -165,7 +153,10 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Gaps.v10,
-                    _title(title: "제목"),
+                    Text(
+                      "제목",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "글 제목을 입력해주세요.",
@@ -178,7 +169,10 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
                       onChanged: _textOnChange,
                     ),
                     Gaps.v40,
-                    _title(title: "내용"),
+                    Text(
+                      "내용",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     SWAGTextField(
                       hintText: "내용을 입력해주세요.",
@@ -191,7 +185,10 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
                       onChanged: _textOnChange,
                     ),
                     Gaps.v40,
-                    _title(title: "이미지"),
+                    Text(
+                      "이미지",
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                     Gaps.v10,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -203,11 +200,6 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
                                 _getImage(ImageSource
                                     .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
                               },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.purple.shade300,
-                                ),
-                              ),
                               child: const Text("카메라"),
                             ),
                             Gaps.h20,
@@ -216,22 +208,12 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
                                 _getImage(ImageSource
                                     .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
                               },
-                              style: ButtonStyle(
-                                backgroundColor: MaterialStateColor.resolveWith(
-                                  (states) => Colors.purple.shade300,
-                                ),
-                              ),
                               child: const Text("갤러리"),
                             ),
                           ],
                         ),
                         ElevatedButton.icon(
                           onPressed: _removeImg,
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => Colors.purple.shade300,
-                            ),
-                          ),
                           label: const Text("삭제"),
                           icon: const Icon(Icons.delete),
                         ),

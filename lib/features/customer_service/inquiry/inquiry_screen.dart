@@ -64,17 +64,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
     super.dispose();
   }
 
-  Widget _title({required String title}) {
-    return Text(
-      title,
-      style: const TextStyle(
-        color: Color.fromARGB(255, 53, 50, 50),
-        fontSize: 18,
-        fontWeight: FontWeight.w800,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +78,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            backgroundColor: Colors.purple.shade300,
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: const Text("등록"),
@@ -101,7 +89,10 @@ class _InquiryScreenState extends State<InquiryScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Gaps.v20,
-            _title(title: "답변받을 이메일"),
+            Text(
+              "답변받을 이메일",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             Gaps.v10,
             SWAGTextField(
               hintText: widget.isLogined ? "메일주소를 입력해주세요." : "로그인을 해야합니다!",
@@ -112,7 +103,10 @@ class _InquiryScreenState extends State<InquiryScreen> {
               onChanged: _textOnChange,
             ),
             Gaps.v20,
-            _title(title: "문의 유형"),
+            Text(
+              "문의 유형",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             Gaps.v10,
             SWAGStateDropDownButton(
               initOption: _category,
@@ -126,7 +120,10 @@ class _InquiryScreenState extends State<InquiryScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 16),
             ),
             Gaps.v20,
-            _title(title: "문의 내용"),
+            Text(
+              "문의 내용",
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
             Gaps.v10,
             SWAGTextField(
               hintText: widget.isLogined ? "문의할 내용을 입력해주세요." : "로그인을 해야합니다!",
