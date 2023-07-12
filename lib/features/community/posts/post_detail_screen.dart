@@ -10,9 +10,9 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 class PostDetailScreenArgs {
   final int postId;
   final String category;
-  final String title;
-  final String content;
-  final List<String> images;
+  final String? title;
+  final String? content;
+  final List<String>? images;
   final String date;
   final String user;
   final int tabBarSelected;
@@ -21,9 +21,9 @@ class PostDetailScreenArgs {
   PostDetailScreenArgs({
     required this.postId,
     required this.category,
-    required this.title,
-    required this.content,
-    required this.images,
+    this.title,
+    this.content,
+    this.images,
     required this.date,
     required this.user,
     required this.tabBarSelected,
@@ -38,9 +38,9 @@ class PostDetailScreen extends StatefulWidget {
     super.key,
     required this.postId,
     required this.category,
-    required this.images,
-    required this.title,
-    required this.content,
+    this.images,
+    this.title,
+    this.content,
     required this.date,
     required this.user,
     required this.tabBarSelected,
@@ -49,9 +49,9 @@ class PostDetailScreen extends StatefulWidget {
 
   final int postId;
   final String category;
-  final String title;
-  final String content;
-  final List<String> images;
+  final String? title;
+  final String? content;
+  final List<String>? images;
   final String date;
   final String user;
   final int tabBarSelected;
@@ -105,135 +105,137 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Widget introScreen() {
     final size = MediaQuery.of(context).size;
-    return Column(
-      children: [
-        if (widget.images.isNotEmpty)
-          Column(
-            children: [
-              Stack(
+    return Scaffold(
+      body: Column(
+        children: [
+          if (widget.images != null)
+            if (widget.images!.isNotEmpty)
+              Column(
                 children: [
-                  SizedBox(
-                    width: size.width,
-                    height: 350,
-                    child: PageView.builder(
-                      onPageChanged: (value) => setState(() {
-                        _currentIndicatorPage = value;
-                        if (value == 0) {
-                          _showRightArrow = true;
-                          _showLeftArrow = false;
-                        } else if (value == widget.images.length - 1) {
-                          _showRightArrow = false;
-                          _showLeftArrow = true;
-                        } else {
-                          _showRightArrow = true;
-                          _showLeftArrow = true;
-                        }
-                      }),
-                      controller: _imagesPageController,
-                      itemCount: widget.images.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () => context.push,
-                          child: Image.asset(
-                            widget.images[index],
-                            width: size.width,
-                            fit: BoxFit.cover,
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Positioned(
-                    left: 10,
-                    height: 350,
-                    child: AnimatedOpacity(
-                      opacity: _showLeftArrow ? 1 : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _imagesPageController.previousPage(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.ease);
-                            _currentIndicatorPage = _currentIndicatorPage - 1;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.withOpacity(0.9),
-                          ),
-                          child: const Icon(
-                            Icons.keyboard_arrow_left_rounded,
-                            size: 40,
+                  Stack(
+                    children: [
+                      SizedBox(
+                        width: size.width,
+                        height: 350,
+                        child: PageView.builder(
+                          onPageChanged: (value) => setState(() {
+                            _currentIndicatorPage = value;
+                            if (value == 0) {
+                              _showRightArrow = true;
+                              _showLeftArrow = false;
+                            } else if (value == widget.images!.length - 1) {
+                              _showRightArrow = false;
+                              _showLeftArrow = true;
+                            } else {
+                              _showRightArrow = true;
+                              _showLeftArrow = true;
+                            }
+                          }),
+                          controller: _imagesPageController,
+                          itemCount: widget.images!.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () => context.push,
+                              child: Image.asset(
+                                widget.images![index],
+                                width: size.width,
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 10,
+                        height: 350,
+                        child: AnimatedOpacity(
+                          opacity: _showLeftArrow ? 1 : 0,
+                          duration: const Duration(milliseconds: 200),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _imagesPageController.previousPage(
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.ease);
+                                _currentIndicatorPage =
+                                    _currentIndicatorPage - 1;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.withOpacity(0.9),
+                              ),
+                              child: const Icon(
+                                Icons.keyboard_arrow_left_rounded,
+                                size: 40,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 10,
-                    height: 350,
-                    child: AnimatedOpacity(
-                      opacity: _showRightArrow ? 1 : 0,
-                      duration: const Duration(milliseconds: 200),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _imagesPageController.nextPage(
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.ease);
-                            _currentIndicatorPage = _currentIndicatorPage + 1;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.grey.withOpacity(0.9),
-                          ),
-                          child: const Icon(
-                            Icons.keyboard_arrow_right_rounded,
-                            size: 40,
+                      Positioned(
+                        right: 10,
+                        height: 350,
+                        child: AnimatedOpacity(
+                          opacity: _showRightArrow ? 1 : 0,
+                          duration: const Duration(milliseconds: 200),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _imagesPageController.nextPage(
+                                    duration: const Duration(milliseconds: 200),
+                                    curve: Curves.ease);
+                                _currentIndicatorPage =
+                                    _currentIndicatorPage + 1;
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.grey.withOpacity(0.9),
+                              ),
+                              child: const Icon(
+                                Icons.keyboard_arrow_right_rounded,
+                                size: 40,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
+                  ),
+                  Gaps.v10,
+                  SWAGCustomIndicator(
+                    currentIndex: _currentIndicatorPage,
+                    itemLength: widget.images!.length,
                   ),
                 ],
               ),
-              Gaps.v10,
-              SWAGCustomIndicator(
-                currentIndex: _currentIndicatorPage,
-                itemLength: widget.images.length,
-              ),
-            ],
+          Gaps.v10,
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            width: size.width,
+            color: Colors.white,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.title != null)
+                  Text(
+                    widget.title!,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  ),
+                Gaps.v10,
+                if (widget.content != null)
+                  Text(
+                    widget.content!,
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+              ],
+            ),
           ),
-        Gaps.v10,
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          width: size.width,
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.title,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Gaps.v20,
-              Text(
-                widget.content,
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -248,19 +250,18 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         children: [
           Text(
             comment,
-            style: const TextStyle(
-              fontSize: 18,
-            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodyLarge,
           ),
-          const SizedBox(height: 5),
+          Gaps.v5,
           Text(
             date,
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 16,
-            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.labelLarge,
           ),
-          const SizedBox(height: 20),
+          Gaps.v20,
           Container(
             color: Colors.grey.withOpacity(0.5),
             height: 1,
@@ -349,13 +350,19 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               ),
                             );
                           },
-                          child: const Text("수정"),
+                          child: Text(
+                            "수정",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                         ),
                         PopupMenuItem(
                           onTap: () {
                             print("게시글 삭제");
                           },
-                          child: const Text("삭제"),
+                          child: Text(
+                            "삭제",
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
                         ),
                       ];
                     },
@@ -369,55 +376,32 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   onTap: () => FocusScope.of(context).unfocus(),
                   child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 30, vertical: 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      ListTile(
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 30),
+                        leading: const CircleAvatar(
+                          radius: 24,
+                          backgroundImage: NetworkImage(
+                            "https://avatars.githubusercontent.com/u/77985708?v=4",
+                          ),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        title: Text(
+                          widget.user,
+                        ),
+                        subtitle: Text(
+                          widget.date,
+                        ),
+                        trailing: Column(
                           children: [
-                            Row(
-                              children: [
-                                const CircleAvatar(
-                                  radius: 24,
-                                  backgroundImage: NetworkImage(
-                                    "https://avatars.githubusercontent.com/u/77985708?v=4",
-                                  ),
-                                  backgroundColor: Colors.transparent,
-                                ),
-                                Gaps.h10,
-                                Column(
-                                  children: [
-                                    Text(
-                                      widget.user,
-                                      style: const TextStyle(
-                                        fontSize: 22,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Row(
-                                      children: [
-                                        FaIcon(
-                                          FontAwesomeIcons.thumbsUp,
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(width: 1),
-                                        Text(
-                                          "120",
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
+                            const FaIcon(
+                              FontAwesomeIcons.thumbsUp,
+                              color: Colors.blue,
                             ),
+                            const SizedBox(width: 1),
                             Text(
-                              widget.date,
-                              style: const TextStyle(
-                                fontSize: 16,
-                              ),
+                              "120",
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                           ],
                         ),
