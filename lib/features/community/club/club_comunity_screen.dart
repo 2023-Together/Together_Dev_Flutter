@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
@@ -9,7 +10,7 @@ import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -69,7 +70,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   bool _isFocused = false;
 
-  bool _isLogined = false;
   bool _showJumpUpButton = false;
   final int _currentNoticeIndex = 0;
 
@@ -108,9 +108,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       },
     );
 
-    // 로그인 타입을 가져와서 로그인 상태를 적용한다.
-    checkLoginType();
-
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
     comunityList = checkAds(initComunityList);
   }
@@ -121,18 +118,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         _isFocused = _focusNode.hasFocus;
       });
     }
-  }
-
-  // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
-  void checkLoginType() async {
-    var loginType = await SecureStorageLogin.getLoginType();
-    print(loginType);
-    if (loginType == "naver" || loginType == "kakao") {
-      _isLogined = true;
-    } else {
-      _isLogined = false;
-    }
-    setState(() {});
   }
 
   // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않는 함수
@@ -246,6 +231,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -393,7 +379,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                         ListTile(
                           onTap: () => context.pushNamed(
                             ClubNoticeScreen.routeName,
-                            extra: ClubNoticeScreenArgs(isLogined: _isLogined),
                           ),
                           shape: const BeveledRectangleBorder(
                             side: BorderSide(
@@ -434,7 +419,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                           content: item["content"],
                           date: item["date"],
                           user: item["user"],
-                          isLogined: _isLogined,
                         );
                       } else {
                         return StatefulBuilder(
@@ -489,7 +473,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                     _focusNode.unfocus();
                     _toggleAnimations();
                   },
-                  onChanged: (String value) {
+                  onChanged: (String? value) {
                     print(_searchController.text);
                   },
                   buttonText: "검색",

@@ -12,11 +12,9 @@ final tabs = [
 
 class CustomerServiceScreenArgs {
   final int initSelectedIndex;
-  final bool isLogined;
 
   CustomerServiceScreenArgs({
     required this.initSelectedIndex,
-    required this.isLogined,
   });
 }
 
@@ -27,11 +25,9 @@ class CustomerServiceScreen extends StatefulWidget {
   const CustomerServiceScreen({
     super.key,
     required this.initSelectedIndex,
-    required this.isLogined,
   });
 
   final int initSelectedIndex;
-  final bool isLogined;
 
   @override
   State<CustomerServiceScreen> createState() => _CustomerServiceScreenState();
@@ -110,25 +106,19 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
               ],
             ),
           ),
-          body: TabBarView(
+          body: const TabBarView(
             children: [
               Offstage(
                 offstage: false,
-                child: FAQScreen(
-                  isLogined: widget.isLogined,
-                ),
+                child: FAQScreen(),
               ),
               Offstage(
                 offstage: false,
-                child: InquiryScreen(
-                  isLogined: widget.isLogined,
-                ),
+                child: InquiryScreen(),
               ),
               Offstage(
                 offstage: false,
-                child: SuggestionScreen(
-                  isLogined: widget.isLogined,
-                ),
+                child: SuggestionScreen(),
               ),
             ],
           ),

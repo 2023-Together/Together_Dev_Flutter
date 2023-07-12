@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_expansionTile_card.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class FAQScreen extends StatelessWidget {
   const FAQScreen({
     super.key,
-    required this.isLogined,
   });
-
-  final bool isLogined;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class FAQScreen extends StatelessWidget {
             title: item["title"],
             content: item["content"],
             date: item["date"],
-            isLogined: isLogined,
+            isLogined: context.watch<UserProvider>().isLogined,
             isFAQ: true,
           );
         },

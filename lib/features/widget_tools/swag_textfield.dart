@@ -12,16 +12,20 @@ class SWAGTextField extends StatefulWidget {
     this.onSubmitted,
     this.buttonText,
     this.focusNode,
+    this.errorText,
+    this.isPassword = false,
   });
 
   final String hintText; // 힌트
   final int maxLine; // 최대 줄 개수
   final TextEditingController controller; // text 컨트롤러
-  final Function(String)? onChanged; // 값이 변경될때 실행될 함수
+  final Function(String?)? onChanged; // 값이 변경될때 실행될 함수
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
   final bool isLogined;
+  final String? errorText;
+  final bool isPassword;
 
   @override
   State<SWAGTextField> createState() => _SWAGTextFieldState();
@@ -59,6 +63,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
             maxLines: widget.maxLine,
             controller: widget.controller,
             enabled: widget.isLogined,
+            obscureText: widget.isPassword,
             cursorColor: const Color(0xFf6524FF),
             style: const TextStyle(
               fontSize: 18,
@@ -66,7 +71,21 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
             ),
             decoration: InputDecoration(
               isDense: true,
-              hintText: widget.isLogined ? widget.hintText : "로그인을 해야합니다.",
+              hintText: widget.hintText,
+              errorText: widget.errorText,
+              errorMaxLines: 2,
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                ),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: const BorderSide(
+                  color: Colors.red,
+                ),
+              ),
               filled: true,
               fillColor: Colors.white,
               hintStyle: TextStyle(

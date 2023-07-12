@@ -64,7 +64,7 @@ class _QnAEditScreenState extends State<QnAEditScreen> {
     print("내용 : ${_contentController.text}");
   }
 
-  void _textOnChange(String value) {
+  void _textOnChange(String? value) {
     setState(() {
       _isThereSearchValue = _titleController.text.isNotEmpty &&
           _contentController.text.isNotEmpty;

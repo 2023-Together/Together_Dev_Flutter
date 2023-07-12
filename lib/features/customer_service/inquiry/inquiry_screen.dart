@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class InquiryScreen extends StatefulWidget {
   const InquiryScreen({
     super.key,
-    required this.isLogined,
   });
-
-  final bool isLogined;
 
   @override
   State<InquiryScreen> createState() => _InquiryScreenState();
@@ -20,6 +19,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
   late TextEditingController _emailController;
 
   bool _isThereSearchValue = false;
+  String? _emailError;
 
   String _category = "";
   final List<String> _categoryList = [
@@ -39,13 +39,6 @@ class _InquiryScreenState extends State<InquiryScreen> {
     _emailController = TextEditingController();
   }
 
-  void _textOnChange(String value) {
-    setState(() {
-      _isThereSearchValue = _emailController.text.trim().isNotEmpty &&
-          _contentController.text.trim().isNotEmpty;
-    });
-  }
-
   void _onChangeOption(String option) {
     setState(() {
       _category = option;
@@ -58,22 +51,57 @@ class _InquiryScreenState extends State<InquiryScreen> {
     print("내용 : ${_contentController.text}");
   }
 
+  void _emailOnChange(String? value) {
+    _validateEmail(_emailController.text);
+    _textOnChange(value);
+  }
+
+  void _textOnChange(String? value) {
+    setState(() {
+      _isThereSearchValue =
+          (_emailError == null && _emailController.text.trim().isNotEmpty) &&
+              _contentController.text.trim().isNotEmpty;
+    });
+  }
+
+  bool _validateEmail(String value) {
+    // 이메일 정규식 패턴
+    RegExp emailRegex =
+        RegExp(r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9]+\.)+[a-zA-Z]{2,}$');
+    if (value.isEmpty) {
+      setState(() {
+        _emailError = '이메일을 입력해주세요.';
+      });
+      return false;
+    } else if (!emailRegex.hasMatch(value)) {
+      setState(() {
+        _emailError = '올바른 이메일 주소를 입력해주세요.';
+      });
+      return false;
+    }
+    setState(() {
+      _emailError = null;
+    });
+    return true;
+  }
+
   @override
   void dispose() {
     _contentController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed: widget.isLogined && _isThereSearchValue
-              ? _onSubmitFinishButton
-              : null,
+          onPressed:
+              isLogined && _isThereSearchValue ? _onSubmitFinishButton : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
@@ -95,12 +123,13 @@ class _InquiryScreenState extends State<InquiryScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText: widget.isLogined ? "메일주소를 입력해주세요." : "로그인을 해야합니다!",
+              hintText: isLogined ? "메일주소를 입력해주세요." : "로그인을 해야합니다!",
               maxLine: 1,
               controller: _emailController,
               isLogined: true,
               onSubmitted: _onSubmitFinishButton,
-              onChanged: _textOnChange,
+              onChanged: _emailOnChange,
+              errorText: _emailError,
             ),
             Gaps.v20,
             Text(
@@ -126,7 +155,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText: widget.isLogined ? "문의할 내용을 입력해주세요." : "로그인을 해야합니다!",
+              hintText: isLogined ? "문의할 내용을 입력해주세요." : "로그인을 해야합니다!",
               maxLine: 10,
               controller: _contentController,
               isLogined: true,

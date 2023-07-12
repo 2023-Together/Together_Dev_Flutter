@@ -6,7 +6,6 @@ class QnADetailScreenArgs {
   final String qnaUser;
   final String qnaContent;
   final String qnaDate;
-  final bool isLogined;
   final String answerText;
 
   const QnADetailScreenArgs({
@@ -14,7 +13,6 @@ class QnADetailScreenArgs {
     required this.qnaUser,
     required this.qnaContent,
     required this.qnaDate,
-    required this.isLogined,
     required this.answerText,
   });
 }
@@ -29,7 +27,6 @@ class QnADetailScreen extends StatelessWidget {
     required this.qnaUser,
     required this.qnaContent,
     required this.qnaDate,
-    required this.isLogined,
     required this.answerText,
   });
 
@@ -37,7 +34,6 @@ class QnADetailScreen extends StatelessWidget {
   final String qnaUser;
   final String qnaContent;
   final String qnaDate;
-  final bool isLogined;
   final String answerText;
 
   @override

@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class QnAScreen extends StatelessWidget {
   const QnAScreen({
     super.key,
-    required this.isLogined,
   });
-
-  final bool isLogined;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
       resizeToAvoidBottomInset: false,
-      floatingActionButton: isLogined
+      floatingActionButton: context.watch<UserProvider>().isLogined
           ? FloatingActionButton(
               heroTag: "community_edit",
               onPressed: () {
@@ -43,7 +42,6 @@ class QnAScreen extends StatelessWidget {
                   qnaUser: item["user"],
                   qnaContent: item["content"],
                   qnaDate: item["date"],
-                  isLogined: isLogined,
                   answerText: "답변입니다!",
                 ),
               );

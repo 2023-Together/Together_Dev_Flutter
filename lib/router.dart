@@ -12,30 +12,66 @@ import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dar
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_screen.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(
-      name: SignInMain.routeName,
-      path: SignInMain.routeURL,
-      builder: (context, state) => const SignInMain(),
+      name: SignInScreen.routeName,
+      path: SignInScreen.routeURL,
+      builder: (context, state) => const SignInScreen(),
     ),
     GoRoute(
-      name: SignUpMain.routeName,
-      path: SignUpMain.routeURL,
-      builder: (context, state) => const SignUpMain(),
+      name: SignUpScreen.routeName,
+      path: SignUpScreen.routeURL,
+      builder: (context, state) => const SignUpScreen(),
+      routes: [
+        GoRoute(
+          path: SignUpCheckUserDataScreen.routeURL,
+          name: SignUpCheckUserDataScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as SignUpCheckUserDataScreenArgs;
+            return SignUpCheckUserDataScreen(
+              name: args.name,
+              email: args.email,
+              gender: args.gender,
+              birthday: args.birthday,
+              profileImage: args.profileImage,
+              mobile: args.mobile,
+            );
+          },
+          routes: [
+            GoRoute(
+              name: SignUpIdPwScreen.routeName,
+              path: SignUpIdPwScreen.routeURL,
+              builder: (context, state) {
+                final args = state.extra as SignUpIdPwScreenArgs;
+                return SignUpIdPwScreen(
+                  name: args.name,
+                  email: args.email,
+                  gender: args.gender,
+                  birthday: args.birthday,
+                  mobile: args.mobile,
+                  profileImage: args.profileImage,
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
       name: MainNavigation.routeName,
       path: MainNavigation.routeURL,
       builder: (context, state) {
-        int initIndex = 2;
-        if (state.queryParams["initIndex"] != null) {
-          initIndex = int.parse(state.queryParams["initIndex"]!);
+        if (state.extra != null) {
+          final args = state.extra as MainNavigationArgs;
+          return MainNavigation(initSelectedIndex: args.initSelectedIndex);
         }
-        return MainNavigation(initSelectedIndex: initIndex);
+        return const MainNavigation();
       },
     ),
     GoRoute(
@@ -52,7 +88,6 @@ final router = GoRouter(
           user: args.user,
           date: args.date,
           tabBarSelected: args.tabBarSelected,
-          isLogined: args.isLogined,
         );
       },
     ),
@@ -110,8 +145,7 @@ final router = GoRouter(
           path: ClubNoticeScreen.routeURL,
           name: ClubNoticeScreen.routeName,
           builder: (context, state) {
-            final args = state.extra as ClubNoticeScreenArgs;
-            return ClubNoticeScreen(isLogined: args.isLogined);
+            return const ClubNoticeScreen();
           },
         )
       ],
@@ -124,12 +158,10 @@ final router = GoRouter(
           final args = state.extra as CustomerServiceScreenArgs;
           return CustomerServiceScreen(
             initSelectedIndex: args.initSelectedIndex,
-            isLogined: args.isLogined,
           );
         }
         return const CustomerServiceScreen(
           initSelectedIndex: 0,
-          isLogined: false,
         );
       },
       routes: [
@@ -159,7 +191,6 @@ final router = GoRouter(
               qnaUser: args.qnaUser,
               qnaContent: args.qnaContent,
               qnaDate: args.qnaDate,
-              isLogined: args.isLogined,
               answerText: args.answerText,
             );
           },
@@ -170,8 +201,7 @@ final router = GoRouter(
       path: NoticeScreen.routeURL,
       name: NoticeScreen.routeName,
       builder: (context, state) {
-        final args = state.extra as NoticeScreenArgs;
-        return NoticeScreen(isLogined: args.isLogined);
+        return const NoticeScreen();
       },
       routes: [
         GoRoute(

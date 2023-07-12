@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
 class MainCommunityScreen extends StatefulWidget {
-  const MainCommunityScreen({super.key});
+  const MainCommunityScreen({
+    super.key,
+  });
 
   @override
   State<MainCommunityScreen> createState() => _MainCommunityScreenState();
@@ -57,23 +59,22 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   bool _isFocused = false;
 
-  bool _isLogined = false;
   bool _showJumpUpButton = false;
-  final int _currentNoticeIndex = 0;
+  // final int _currentNoticeIndex = 0;
 
-  String _option1 = "";
-  final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option1 = "";
+  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option2 = "";
-  final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option2 = "";
+  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option3 = "";
-  final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option3 = "";
+  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  // 카테고리의 공통 스타일
-  final double _optionsFontSize = 16;
-  final _optionsPadding =
-      const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
+  // // 카테고리의 공통 스타일
+  // final double _optionsFontSize = 16;
+  // final _optionsPadding =
+  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   @override
   void initState() {
@@ -94,9 +95,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
       },
     );
 
-    // 로그인 타입을 가져와서 로그인 상태를 적용한다.
-    checkLoginType();
-
     // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
     comunityList = checkAds(initComunityList);
   }
@@ -107,18 +105,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         _isFocused = _focusNode.hasFocus;
       });
     }
-  }
-
-  // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
-  void checkLoginType() async {
-    var loginType = await SecureStorageLogin.getLoginType();
-    print(loginType);
-    if (loginType == "naver" || loginType == "kakao") {
-      _isLogined = true;
-    } else {
-      _isLogined = false;
-    }
-    setState(() {});
   }
 
   // 리스트 체크
@@ -170,7 +156,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    context.pushNamed(SignInMain.routeName);
+    context.pushNamed(SignInScreen.routeName);
   }
 
   // 스크롤 위치를 맨위로 이동시킵니다.
@@ -195,14 +181,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     print("광고 로딩에 실패! 사유 : ${error.message}, ${error.code}");
   }
 
-  void onLogoutTap() {
-    SecureStorageLogin.setLogout();
-    context.pushReplacementNamed(
-      MainNavigation.routeName,
-      queryParams: {"initIndex": "2"},
-    );
-  }
-
   // 애니메이션 동작
   void _toggleAnimations() {
     // 이미 애니메이션이 실행되었다면
@@ -217,23 +195,23 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     }
   }
 
-  void _onChangeOption1(String option) {
-    setState(() {
-      _option1 = option;
-    });
-  }
+  // void _onChangeOption1(String option) {
+  //   setState(() {
+  //     _option1 = option;
+  //   });
+  // }
 
-  void _onChangeOption2(String option) {
-    setState(() {
-      _option2 = option;
-    });
-  }
+  // void _onChangeOption2(String option) {
+  //   setState(() {
+  //     _option2 = option;
+  //   });
+  // }
 
-  void _onChangeOption3(String option) {
-    setState(() {
-      _option3 = option;
-    });
-  }
+  // void _onChangeOption3(String option) {
+  //   setState(() {
+  //     _option3 = option;
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -248,6 +226,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isLogined = context.watch<UserProvider>().isLogined;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: true,
@@ -271,7 +250,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: _isLogined
+                children: isLogined
                     ? [
                         GestureDetector(
                           onTap: _toggleAnimations,
@@ -283,7 +262,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                             CustomerServiceScreen.routeName,
                             extra: CustomerServiceScreenArgs(
                               initSelectedIndex: 0,
-                              isLogined: _isLogined,
                             ),
                           ),
                           child: const Icon(Icons.settings),
@@ -367,9 +345,9 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
               ),
             ),
             Gaps.v6,
-            if (_isLogined && !_isFocused)
+            if (isLogined && !_isFocused)
               AnimatedOpacity(
-                opacity: _isLogined
+                opacity: isLogined
                     ? !_isFocused
                         ? 1
                         : 0
@@ -446,7 +424,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     //                       CustomerServiceScreen.routeName,
                     //                       extra: CustomerServiceScreenArgs(
                     //                         initSelectedIndex: 0,
-                    //                         isLogined: _isLogined,
+                    //                         isLogined: widget.isLogined,
                     //                       ),
                     //                     );
                     //                   },
@@ -477,7 +455,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     //                       noticeImage: [
                     //                         "assets/images/70836_50981_2758.jpg"
                     //                       ],
-                    //                       isLogined: _isLogined,
+                    //                       isLogined: widget.isLogined,
                     //                       isPageWhere: true,
                     //                     ),
                     //                   );
@@ -490,7 +468,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     //                   noticeImage: const [
                     //                     "assets/images/70836_50981_2758.jpg"
                     //                   ],
-                    //                   isLogined: _isLogined,
+                    //                   isLogined: widget.isLogined,
                     //                 ),
                     //               );
                     //             },
@@ -526,9 +504,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                           onTap: () {
                             context.pushNamed(
                               NoticeScreen.routeName,
-                              extra: NoticeScreenArgs(
-                                isLogined: _isLogined,
-                              ),
                             );
                           },
                           shape: const BeveledRectangleBorder(
@@ -567,7 +542,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                               content: item["content"],
                               date: item["date"],
                               user: item["user"],
-                              isLogined: _isLogined,
                             );
                           } else {
                             return StatefulBuilder(
@@ -623,7 +597,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                       _focusNode.unfocus();
                       _toggleAnimations();
                     },
-                    onChanged: (String value) {
+                    onChanged: (String? value) {
                       print(_searchController.text);
                     },
                     buttonText: "검색",

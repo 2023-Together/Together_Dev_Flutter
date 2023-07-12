@@ -56,7 +56,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
         TextButton(
           onPressed: () => context.goNamed(
             MainNavigation.routeName,
-            queryParams: {"initIndex": "3"},
+            extra: MainNavigationArgs(initSelectedIndex: 3),
           ),
           child: const Text("예"),
         ),

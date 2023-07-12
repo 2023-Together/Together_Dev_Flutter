@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/storages/login_storage.dart';
 
 class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
 
   void onLogoutTap(BuildContext context) {
-    SecureStorageLogin.setLogout();
-    context.pushReplacementNamed(
-      MainNavigation.routeName,
-      queryParams: {"initIndex": "2"},
-    );
+    LoginStorage.resetLoginData();
+    context.read<UserProvider>().logout();
+    context.pushReplacementNamed(MainNavigation.routeName);
   }
 
   @override

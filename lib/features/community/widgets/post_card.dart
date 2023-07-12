@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_community_images.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -17,7 +19,6 @@ class PostCard extends StatefulWidget {
     this.content,
     required this.date,
     required this.user,
-    required this.isLogined,
   });
 
   final int postId;
@@ -28,7 +29,6 @@ class PostCard extends StatefulWidget {
   final bool initCheckGood;
   final String date;
   final String user;
-  final bool isLogined;
 
   @override
   State<PostCard> createState() => _PostCard();
@@ -67,7 +67,6 @@ class _PostCard extends State<PostCard> {
         date: widget.date,
         user: widget.user,
         tabBarSelected: page,
-        isLogined: widget.isLogined,
       ),
     );
   }
@@ -75,6 +74,7 @@ class _PostCard extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isLogined = context.watch<UserProvider>().isLogined;
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         onTap: () => _goDetailScreen(0),
@@ -158,12 +158,12 @@ class _PostCard extends State<PostCard> {
                     IconButton(
                       onPressed: _onGoodTap,
                       icon: FaIcon(
-                        widget.isLogined
+                        isLogined
                             ? _checkGood
                                 ? FontAwesomeIcons.solidThumbsUp
                                 : FontAwesomeIcons.thumbsUp
                             : FontAwesomeIcons.thumbsUp,
-                        color: widget.isLogined
+                        color: isLogined
                             ? _checkGood
                                 ? Colors.blue.shade600
                                 : Colors.black

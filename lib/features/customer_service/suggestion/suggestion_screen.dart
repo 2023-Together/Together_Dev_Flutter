@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class SuggestionScreen extends StatefulWidget {
   const SuggestionScreen({
     super.key,
-    required this.isLogined,
   });
-
-  final bool isLogined;
 
   @override
   State<SuggestionScreen> createState() => _SuggestionScreenState();
@@ -26,7 +25,7 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
     _contentController = TextEditingController();
   }
 
-  void _textOnChange(String value) {
+  void _textOnChange(String? value) {
     setState(() {
       _isThereSearchValue = _contentController.text.trim().isNotEmpty;
     });
@@ -44,14 +43,14 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed: widget.isLogined && _isThereSearchValue
-              ? _onSubmitFinishButton
-              : null,
+          onPressed:
+              isLogined && _isThereSearchValue ? _onSubmitFinishButton : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
@@ -73,8 +72,7 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText:
-                  widget.isLogined ? "추가 되었으면 하는 내용을 입력해주세요." : "로그인을 해야합니다!",
+              hintText: isLogined ? "추가 되었으면 하는 기능을 입력해주세요." : "로그인을 해야합니다!",
               maxLine: 10,
               controller: _contentController,
               isLogined: true,

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class PostDetailScreenArgs {
   final int postId;
@@ -16,7 +18,6 @@ class PostDetailScreenArgs {
   final String date;
   final String user;
   final int tabBarSelected;
-  final bool isLogined;
 
   PostDetailScreenArgs({
     required this.postId,
@@ -27,7 +28,6 @@ class PostDetailScreenArgs {
     required this.date,
     required this.user,
     required this.tabBarSelected,
-    required this.isLogined,
   });
 }
 
@@ -44,7 +44,6 @@ class PostDetailScreen extends StatefulWidget {
     required this.date,
     required this.user,
     required this.tabBarSelected,
-    required this.isLogined,
   });
 
   final int postId;
@@ -55,7 +54,6 @@ class PostDetailScreen extends StatefulWidget {
   final String date;
   final String user;
   final int tabBarSelected;
-  final bool isLogined;
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -304,7 +302,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                 hintText: "등록할 댓글을 입력해주세요..",
                 maxLine: 1,
                 controller: _commentController,
-                isLogined: widget.isLogined,
+                isLogined: context.watch<UserProvider>().isLogined,
                 onSubmitted: () {
                   print(_commentController.text);
                   _commentController.text = "";

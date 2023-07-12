@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 
 class SignInButton extends StatefulWidget {
   const SignInButton({
@@ -61,29 +62,7 @@ class _SignInButtonState extends State<SignInButton> {
 
   // 네이버 로그인
   void _signInForNaver(BuildContext context) async {
-    /*
-    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
-    final NaverLoginResult result = await FlutterNaverLogin.logIn();
-
-    if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
-
-      print(result.account);
-
-      await SecureStorageLogin.saveLoginType("naver");
-
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => const MainPage(),
-        ),
-        (route) => false,
-      );
-    } else {
-      await SecureStorageLogin.saveLoginType("none");
-      print("error = ${result.errorMessage}");
-    }
-    */
-    await SecureStorageLogin.saveLoginType("naver");
+    // await LoginStorage.saveLoginType("naver");
 
     if (!mounted) return;
     context.goNamed(MainNavigation.routeName);
@@ -91,15 +70,38 @@ class _SignInButtonState extends State<SignInButton> {
 
   // 네이버 회원가입
   void _signUpForNaver(BuildContext context) async {
-    // _loginType = await SecureStorageLogin.getLoginType();
-    // print(_loginType);
+    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
+    final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
-    // setState(() {});
+    if (result.status == NaverLoginStatus.loggedIn) {
+      print('accessToken = ${result.accessToken}');
+
+      final userData = result.account;
+      print(userData);
+
+      // await SecureStorageLogin.saveLoginType("naver");
+
+      if (!mounted) return;
+      context.pushNamed(
+        SignUpCheckUserDataScreen.routeName,
+        extra: SignUpCheckUserDataScreenArgs(
+          name: userData.name,
+          email: userData.email,
+          gender: userData.gender,
+          birthday: "${userData.birthyear}-${userData.birthday}",
+          profileImage: userData.profileImage,
+          mobile: userData.mobile,
+        ),
+      );
+    } else {
+      // await SecureStorageLogin.saveLoginType("none");
+      print("error = ${result.errorMessage}");
+    }
   }
 
   // 카카오 로그인
   void _signInForKakao(BuildContext context) async {
-    await SecureStorageLogin.saveLoginType("kakao");
+    // await LoginStorage.saveLoginType("kakao");
 
     if (!mounted) return;
     context.goNamed(MainNavigation.routeName);
@@ -119,30 +121,6 @@ class _SignInButtonState extends State<SignInButton> {
     // );
     context.goNamed(MainNavigation.routeName);
   }
-
-  /*
-  String forString(SNSType type) {
-    switch (type) {
-      case SNSType.kakao:
-        return "kakao";
-      case SNSType.naver:
-        return "naver";
-      default:
-        return "none";
-    }
-  }
-
-  SNSType forSNSType(String loginType) {
-    switch (loginType) {
-      case "kakao":
-        return SNSType.kakao;
-      case "naver":
-        return SNSType.naver;
-      default:
-        return SNSType.none;
-    }
-  }
-  */
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +158,7 @@ class _SignInButtonState extends State<SignInButton> {
                     widget.text,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: Sizes.size16,
+                      fontSize: Sizes.size18,
                       fontWeight: FontWeight.w600,
                     ),
                   ),

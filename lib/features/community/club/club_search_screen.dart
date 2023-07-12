@@ -45,20 +45,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
-  // String _option1 = "";
-  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option2 = "";
-  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option3 = "";
-  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // // 카테고리의 공통 스타일
-  // final double _optionsFontSize = 16;
-  // final _optionsPadding =
-  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
-
   bool _isFocused = false;
   bool _showJumpUpButton = false;
   bool _isOnlyRequest = false;
@@ -253,10 +239,14 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
               scrollDirection: Axis.horizontal,
               children: [
                 ElevatedButton(
-                  onPressed: _isOnlyRequest ? _toggleOnlyRequest : null,
-                  child: Text(
+                  onPressed: _toggleOnlyRequest,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isOnlyRequest
+                        ? Colors.purple.shade300
+                        : Colors.grey.shade400,
+                  ),
+                  child: const Text(
                     "신청 가능",
-                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ],
@@ -332,7 +322,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                     _focusNode.unfocus();
                     _toggleAnimations();
                   },
-                  onChanged: (String value) {
+                  onChanged: (String? value) {
                     print(_searchController.text);
                   },
                   buttonText: "검색",

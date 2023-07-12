@@ -87,7 +87,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
     // _imgList.addAll(widget.images ?? []);
   }
 
-  void _textOnChange(String value) {
+  void _textOnChange(String? value) {
     setState(() {
       _isThereSearchValue = _titleController.text.isNotEmpty &&
           _contentController.text.isNotEmpty;

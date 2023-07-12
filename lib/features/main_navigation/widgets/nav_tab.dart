@@ -13,7 +13,7 @@ class NavTab extends StatelessWidget {
     required this.onTap,
     required this.selectedIndex,
     required this.imgURI,
-    required this.logined,
+    required this.isLogined,
   });
 
   final String text;
@@ -23,7 +23,7 @@ class NavTab extends StatelessWidget {
   final Function onTap;
   final int selectedIndex;
   final String imgURI;
-  final bool logined;
+  final bool isLogined;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +54,7 @@ class NavTab extends StatelessWidget {
                         isSelected ? selectedIcon : unSelectedIcon,
                         size: Sizes.size24 + Sizes.size2,
                       )
-                    : logined
+                    : isLogined
                         ? CircleAvatar(
                             radius: Sizes.size12,
                             foregroundImage: NetworkImage(

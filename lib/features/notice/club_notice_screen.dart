@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_expansionTile_card.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
-
-class ClubNoticeScreenArgs {
-  final bool isLogined;
-
-  ClubNoticeScreenArgs({
-    required this.isLogined,
-  });
-}
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class ClubNoticeScreen extends StatelessWidget {
   static const routeName = "club_notice";
@@ -19,13 +13,11 @@ class ClubNoticeScreen extends StatelessWidget {
 
   const ClubNoticeScreen({
     super.key,
-    required this.isLogined,
   });
-
-  final bool isLogined;
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return Scaffold(
       // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
       resizeToAvoidBottomInset: false,
