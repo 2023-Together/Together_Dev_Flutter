@@ -29,7 +29,10 @@ class _CommentCardState extends State<CommentCard> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: Sizes.size6),
+          padding: const EdgeInsets.only(
+            top: Sizes.size6,
+            right: Sizes.size16,
+          ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -52,7 +55,7 @@ class _CommentCardState extends State<CommentCard> {
                         bottom: Sizes.size8,
                       ),
                       child: Text(
-                        "${widget.username} - ${widget.date}",
+                        "${widget.username} ㆍ ${widget.date}",
                         maxLines: 1,
                         style: Theme.of(context).textTheme.labelMedium,
                       ),
@@ -60,7 +63,7 @@ class _CommentCardState extends State<CommentCard> {
                     Text(
                       widget.comment * 10,
                       maxLines: _isExpanded ? null : 4,
-                      overflow: TextOverflow.ellipsis,
+                      overflow: _isExpanded ? null : TextOverflow.ellipsis,
                       style: context.textTheme.bodyMedium,
                     ),
                     InkWell(

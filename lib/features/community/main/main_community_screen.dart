@@ -689,7 +689,6 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": [
       "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-5",
@@ -742,6 +741,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
       "assets/images/70836_50981_2758.jpg",
       "assets/images/70836_50981_2758.jpg",
+      "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
     "date": "2023-05-9",

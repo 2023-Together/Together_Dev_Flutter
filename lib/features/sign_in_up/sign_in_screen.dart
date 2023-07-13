@@ -103,7 +103,11 @@ class _SignInScreenState extends State<SignInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(),
+        appBar: AppBar(
+          leading: BackButton(
+            onPressed: () => context.goNamed(MainNavigation.routeName),
+          ),
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
           child: Column(
