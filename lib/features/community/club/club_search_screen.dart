@@ -45,20 +45,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
-  // String _option1 = "";
-  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option2 = "";
-  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option3 = "";
-  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // // 카테고리의 공통 스타일
-  // final double _optionsFontSize = 16;
-  // final _optionsPadding =
-  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
-
   bool _isFocused = false;
   bool _showJumpUpButton = false;
   bool _isOnlyRequest = false;
@@ -254,16 +240,13 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
               children: [
                 ElevatedButton(
                   onPressed: _toggleOnlyRequest,
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => _isOnlyRequest
-                          ? Colors.purple.shade300
-                          : Colors.grey.shade400,
-                    ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _isOnlyRequest
+                        ? Colors.purple.shade300
+                        : Colors.grey.shade400,
                   ),
                   child: const Text(
                     "신청 가능",
-                    style: TextStyle(fontSize: 16),
                   ),
                 ),
               ],
@@ -333,13 +316,12 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                   hintText: "검색어를 입력하세요.",
                   maxLine: 1,
                   controller: _searchController,
-                  isLogined: true,
                   onSubmitted: () {
                     _searchController.text = "";
                     _focusNode.unfocus();
                     _toggleAnimations();
                   },
-                  onChanged: (String value) {
+                  onChanged: (String? value) {
                     print(_searchController.text);
                   },
                   buttonText: "검색",

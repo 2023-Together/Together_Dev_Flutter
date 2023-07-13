@@ -56,7 +56,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
         TextButton(
           onPressed: () => context.goNamed(
             MainNavigation.routeName,
-            queryParams: {"initIndex": "3"},
+            extra: MainNavigationArgs(initSelectedIndex: 3),
           ),
           child: const Text("예"),
         ),
@@ -89,7 +89,6 @@ class ClubSearchDetailScreen extends StatelessWidget {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            backgroundColor: Colors.purple.shade300,
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
           child: const Text("신청"),
@@ -122,10 +121,8 @@ class ClubSearchDetailScreen extends StatelessWidget {
                     child: Scrollbar(
                       child: SingleChildScrollView(
                         child: Text(
-                          postContent * 20,
-                          style: const TextStyle(
-                            fontSize: 17,
-                          ),
+                          postContent,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           maxLines: null,
                         ),
                       ),
@@ -134,10 +131,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                   Gaps.v16,
                   RichText(
                     text: TextSpan(
-                      style: const TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
+                      style: Theme.of(context).textTheme.bodyLarge,
                       children: [
                         const TextSpan(text: "동아리 이름 : "),
                         TextSpan(
@@ -153,10 +147,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                     children: [
                       RichText(
                         text: TextSpan(
-                          style: const TextStyle(
-                            fontSize: 18,
-                            color: Colors.black,
-                          ),
+                          style: Theme.of(context).textTheme.bodyLarge,
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
@@ -169,18 +160,15 @@ class ClubSearchDetailScreen extends StatelessWidget {
                       ),
                       Text(
                         postDate,
-                        style: const TextStyle(fontSize: 18),
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),
                   Gaps.v10,
                   RichText(
-                    text: const TextSpan(
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),
-                      children: [
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyLarge,
+                      children: const [
                         TextSpan(text: "동아리 인원(명) : "),
                         TextSpan(
                           text: "53",

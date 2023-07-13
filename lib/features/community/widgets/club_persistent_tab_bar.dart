@@ -18,16 +18,13 @@ class ClubPersistentTabBar extends SliverPersistentHeaderDelegate {
       ),
       child: TabBar(
         // 선택한 탭의 밑줄 색
-        indicatorColor: Theme.of(context).tabBarTheme.indicatorColor,
+        indicatorColor: Colors.purple.shade300,
         labelPadding: const EdgeInsets.symmetric(
           vertical: Sizes.size10,
         ),
         indicatorSize: TabBarIndicatorSize.label,
         labelColor: Colors.black,
-        labelStyle: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-        ),
+        labelStyle: Theme.of(context).textTheme.titleMedium,
         tabs: const [
           Tab(text: '내용'),
           Tab(text: '댓글 3'),

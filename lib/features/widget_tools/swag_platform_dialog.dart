@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
 
 void swagPlatformDialog({
   required BuildContext context,
@@ -12,8 +13,21 @@ void swagPlatformDialog({
     showCupertinoDialog(
       context: context,
       builder: (_) => CupertinoAlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         actions: actions,
       ),
     );
@@ -21,8 +35,21 @@ void swagPlatformDialog({
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text(title),
-        content: Text(message),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        content: Text(
+          message,
+          style: const TextStyle(
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
         actions: actions,
       ),
     );

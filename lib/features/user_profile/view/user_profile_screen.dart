@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/storages/login_storage.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 // 마이페이지-메인
@@ -37,7 +39,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   void onLogoutTap(BuildContext context) {
-    SecureStorageLogin.setLogout();
+    LoginStorage.resetLoginData();
+    context.read<UserProvider>().logout();
+
     context.pushReplacementNamed(MainNavigation.routeName);
   }
 

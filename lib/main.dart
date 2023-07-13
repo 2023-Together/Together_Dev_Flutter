@@ -43,7 +43,118 @@ class SWAGCrossApp extends StatelessWidget {
       theme: ThemeData(
         // 모든 하위 Scaffold에 배경색을 지정해 준다.
         scaffoldBackgroundColor: Colors.white,
-        // appBar의 공통 스타일을 지정해준다.
+
+        // Text
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
+            fontSize: Sizes.size28,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          displayMedium: TextStyle(
+            fontSize: Sizes.size26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          displaySmall: TextStyle(
+            fontSize: Sizes.size24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          // 제목 글자
+          titleLarge: TextStyle(
+            fontSize: Sizes.size22,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          titleMedium: TextStyle(
+            fontSize: Sizes.size20,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          titleSmall: TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          // 회색 글자
+          labelLarge: TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.normal,
+            color: Colors.black45,
+          ),
+          labelMedium: TextStyle(
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.normal,
+            color: Colors.black45,
+          ),
+          labelSmall: TextStyle(
+            fontSize: Sizes.size14,
+            fontWeight: FontWeight.normal,
+            color: Colors.black45,
+          ),
+          // 일반 글자
+          bodyLarge: TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.normal,
+          ),
+          bodyMedium: TextStyle(
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.normal,
+          ),
+          bodySmall: TextStyle(
+            fontSize: Sizes.size14,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+
+        // ElevatedButton
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.purple.shade300,
+          ),
+        ),
+
+        // ListTile
+        listTileTheme: const ListTileThemeData(
+          titleTextStyle: TextStyle(
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+            overflow: TextOverflow.ellipsis,
+          ),
+          subtitleTextStyle: TextStyle(
+            overflow: TextOverflow.ellipsis,
+          ),
+          iconColor: Colors.black54,
+        ),
+
+        // ExpansionTile
+        expansionTileTheme: const ExpansionTileThemeData(
+          backgroundColor: Colors.white,
+          collapsedBackgroundColor: Colors.white,
+          textColor: Colors.black,
+          iconColor: Colors.black54,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.black,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+          ),
+          collapsedShape: RoundedRectangleBorder(
+            side: BorderSide(
+              color: Colors.black,
+              width: 1,
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(10.0),
+            ),
+          ),
+        ),
+        // AppBar
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,

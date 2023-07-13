@@ -3,37 +3,75 @@ import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
+import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
-import 'package:swag_cross_app/features/customer_service/notice/notice_detail_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_in_main.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_main.dart';
+import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
+import 'package:swag_cross_app/features/notice/notice_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_up_screen.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(
-      name: SignInMain.routeName,
-      path: SignInMain.routeURL,
-      builder: (context, state) => const SignInMain(),
+      name: SignInScreen.routeName,
+      path: SignInScreen.routeURL,
+      builder: (context, state) => const SignInScreen(),
     ),
     GoRoute(
-      name: SignUpMain.routeName,
-      path: SignUpMain.routeURL,
-      builder: (context, state) => const SignUpMain(),
+      name: SignUpScreen.routeName,
+      path: SignUpScreen.routeURL,
+      builder: (context, state) => const SignUpScreen(),
+      routes: [
+        GoRoute(
+          path: SignUpCheckUserDataScreen.routeURL,
+          name: SignUpCheckUserDataScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as SignUpCheckUserDataScreenArgs;
+            return SignUpCheckUserDataScreen(
+              name: args.name,
+              email: args.email,
+              gender: args.gender,
+              birthday: args.birthday,
+              profileImage: args.profileImage,
+              mobile: args.mobile,
+            );
+          },
+          routes: [
+            GoRoute(
+              name: SignUpIdPwScreen.routeName,
+              path: SignUpIdPwScreen.routeURL,
+              builder: (context, state) {
+                final args = state.extra as SignUpIdPwScreenArgs;
+                return SignUpIdPwScreen(
+                  name: args.name,
+                  email: args.email,
+                  gender: args.gender,
+                  birthday: args.birthday,
+                  mobile: args.mobile,
+                  profileImage: args.profileImage,
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     ),
     GoRoute(
       name: MainNavigation.routeName,
       path: MainNavigation.routeURL,
       builder: (context, state) {
-        int initIndex = 2;
-        if (state.queryParams["initIndex"] != null) {
-          initIndex = int.parse(state.queryParams["initIndex"]!);
+        if (state.extra != null) {
+          final args = state.extra as MainNavigationArgs;
+          return MainNavigation(initSelectedIndex: args.initSelectedIndex);
         }
-        return MainNavigation(initSelectedIndex: initIndex);
+        return const MainNavigation();
       },
     ),
     GoRoute(
@@ -50,7 +88,6 @@ final router = GoRouter(
           user: args.user,
           date: args.date,
           tabBarSelected: args.tabBarSelected,
-          isLogined: args.isLogined,
         );
       },
     ),
@@ -74,10 +111,26 @@ final router = GoRouter(
       },
     ),
     GoRoute(
-      path: ClubSearchScreen.routeURL,
-      name: ClubSearchScreen.routeName,
-      builder: (context, state) => const ClubSearchScreen(),
-    ),
+        path: ClubSearchScreen.routeURL,
+        name: ClubSearchScreen.routeName,
+        builder: (context, state) => const ClubSearchScreen(),
+        routes: [
+          GoRoute(
+            path: ClubSearchDetailScreen.routeURL,
+            name: ClubSearchDetailScreen.routeName,
+            builder: (context, state) {
+              final args = state.extra as ClubSearchDetailScreenArgs;
+              return ClubSearchDetailScreen(
+                postId: args.postId,
+                postTitle: args.postTitle,
+                postContent: args.postContent,
+                clubName: args.clubName,
+                postDate: args.postDate,
+                clubMaster: args.clubMaster,
+              );
+            },
+          ),
+        ]),
     GoRoute(
       path: ClubCommunityScreen.routeURL,
       name: ClubCommunityScreen.routeName,
@@ -89,20 +142,12 @@ final router = GoRouter(
       },
       routes: [
         GoRoute(
-          path: ClubSearchDetailScreen.routeURL,
-          name: ClubSearchDetailScreen.routeName,
+          path: ClubNoticeScreen.routeURL,
+          name: ClubNoticeScreen.routeName,
           builder: (context, state) {
-            final args = state.extra as ClubSearchDetailScreenArgs;
-            return ClubSearchDetailScreen(
-              postId: args.postId,
-              postTitle: args.postTitle,
-              postContent: args.postContent,
-              clubName: args.clubName,
-              postDate: args.postDate,
-              clubMaster: args.clubMaster,
-            );
+            return const ClubNoticeScreen();
           },
-        ),
+        )
       ],
     ),
     GoRoute(
@@ -113,12 +158,10 @@ final router = GoRouter(
           final args = state.extra as CustomerServiceScreenArgs;
           return CustomerServiceScreen(
             initSelectedIndex: args.initSelectedIndex,
-            isLogined: args.isLogined,
           );
         }
         return const CustomerServiceScreen(
           initSelectedIndex: 0,
-          isLogined: false,
         );
       },
       routes: [
@@ -132,25 +175,10 @@ final router = GoRouter(
                 id: args.id,
                 title: args.title,
                 content: args.content,
+                images: args.images,
               );
             }
             return const QnAEditScreen();
-          },
-        ),
-        GoRoute(
-          path: NoticeDetailScreen.routeURL,
-          name: NoticeDetailScreen.routeName,
-          builder: (context, state) {
-            final args = state.extra as NoticeDetailScreenArgs;
-            return NoticeDetailScreen(
-              noticeId: args.noticeId,
-              noticeTitle: args.noticeTitle,
-              noticeContent: args.noticeContent,
-              noticeDate: args.noticeDate,
-              noticeImage: args.noticeImage,
-              isLogined: args.isLogined,
-              isPageWhere: args.isPageWhere,
-            );
           },
         ),
         GoRoute(
@@ -163,9 +191,33 @@ final router = GoRouter(
               qnaUser: args.qnaUser,
               qnaContent: args.qnaContent,
               qnaDate: args.qnaDate,
-              isLogined: args.isLogined,
               answerText: args.answerText,
             );
+          },
+        ),
+      ],
+    ),
+    GoRoute(
+      path: NoticeScreen.routeURL,
+      name: NoticeScreen.routeName,
+      builder: (context, state) {
+        return const NoticeScreen();
+      },
+      routes: [
+        GoRoute(
+          path: NoticeEditScreen.routeURL,
+          name: NoticeEditScreen.routeName,
+          builder: (context, state) {
+            if (state.extra != null) {
+              final args = state.extra as NoticeEditScreenArgs;
+              return NoticeEditScreen(
+                id: args.id,
+                title: args.title,
+                content: args.content,
+                images: args.images,
+              );
+            }
+            return const NoticeEditScreen();
           },
         ),
       ],

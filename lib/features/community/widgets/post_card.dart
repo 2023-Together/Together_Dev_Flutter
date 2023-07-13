@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_community_images.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.postId,
     required this.category,
-    required this.title,
-    required this.images,
+    this.title,
+    this.images,
     required this.initCheckGood,
-    required this.content,
+    this.content,
     required this.date,
     required this.user,
-    required this.isLogined,
   });
 
   final int postId;
   final String category;
-  final String title;
-  final String content;
-  final List<String> images;
+  final String? title;
+  final String? content;
+  final List<String>? images;
   final bool initCheckGood;
   final String date;
   final String user;
-  final bool isLogined;
 
   @override
   State<PostCard> createState() => _PostCard();
@@ -67,7 +67,6 @@ class _PostCard extends State<PostCard> {
         date: widget.date,
         user: widget.user,
         tabBarSelected: page,
-        isLogined: widget.isLogined,
       ),
     );
   }
@@ -75,6 +74,7 @@ class _PostCard extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isLogined = context.watch<UserProvider>().isLogined;
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         onTap: () => _goDetailScreen(0),
@@ -106,17 +106,11 @@ class _PostCard extends State<PostCard> {
                 ),
                 title: Text(
                   widget.user,
-                  style: const TextStyle(
-                    fontSize: Sizes.size16,
-                    fontWeight: FontWeight.bold,
-                  ),
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: const Text(
                   "2개월전",
                   maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
                 ),
               ),
               Column(
@@ -128,65 +122,61 @@ class _PostCard extends State<PostCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          widget.title,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: Sizes.size20,
-                            fontWeight: FontWeight.bold,
+                        if (widget.title != null)
+                          Text(
+                            widget.title!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
-                        ),
                         Gaps.v4,
-                        Text(
-                          widget.content,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontSize: Sizes.size16,
+                        if (widget.content != null)
+                          Text(
+                            widget.content!,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
-                        ),
                       ],
                     ),
                   ),
                   Gaps.v20,
-                  if (widget.images.isNotEmpty)
-                    SWAGCommunityImages(images: widget.images),
+                  if (widget.images != null)
+                    if (widget.images!.isNotEmpty)
+                      SWAGCommunityImages(images: widget.images!),
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Sizes.size20),
+                padding: const EdgeInsets.only(
+                  left: Sizes.size20,
+                  right: Sizes.size20,
+                  bottom: Sizes.size10,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                      onTap: _onGoodTap,
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        child: FaIcon(
-                          widget.isLogined
-                              ? _checkGood
-                                  ? FontAwesomeIcons.solidThumbsUp
-                                  : FontAwesomeIcons.thumbsUp
-                              : FontAwesomeIcons.thumbsUp,
-                          color: widget.isLogined
-                              ? _checkGood
-                                  ? Colors.blue.shade600
-                                  : Colors.black
-                              : Colors.black,
-                        ),
+                    IconButton(
+                      onPressed: _onGoodTap,
+                      icon: FaIcon(
+                        isLogined
+                            ? _checkGood
+                                ? FontAwesomeIcons.solidThumbsUp
+                                : FontAwesomeIcons.thumbsUp
+                            : FontAwesomeIcons.thumbsUp,
+                        color: isLogined
+                            ? _checkGood
+                                ? Colors.blue.shade600
+                                : Colors.black
+                            : Colors.black,
                       ),
                     ),
                     Gaps.h6,
-                    GestureDetector(
-                      onTap: () => _goDetailScreen(1),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        child: const FaIcon(
-                          FontAwesomeIcons.comment,
-                          color: Colors.black,
-                          size: 30,
-                        ),
+                    IconButton(
+                      onPressed: () => _goDetailScreen(1),
+                      icon: const FaIcon(
+                        FontAwesomeIcons.comment,
+                        color: Colors.black,
+                        size: 30,
                       ),
                     ),
                   ],

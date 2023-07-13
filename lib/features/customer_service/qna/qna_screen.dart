@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class QnAScreen extends StatelessWidget {
   const QnAScreen({
     super.key,
-    required this.isFocused,
-    required this.isLogined,
   });
-
-  final bool isFocused;
-  final bool isLogined;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
       resizeToAvoidBottomInset: false,
-      floatingActionButton: isLogined && !isFocused
+      floatingActionButton: context.watch<UserProvider>().isLogined
           ? FloatingActionButton(
               heroTag: "community_edit",
               onPressed: () {
@@ -36,98 +33,92 @@ class QnAScreen extends StatelessWidget {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final item = qnaList[index];
-          return Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  width: 0.2,
+          return GestureDetector(
+            onTap: () {
+              context.pushNamed(
+                QnADetailScreen.routeName,
+                extra: QnADetailScreenArgs(
+                  qnaId: index + 1,
+                  qnaUser: item["user"],
+                  qnaContent: item["content"],
+                  qnaDate: item["date"],
+                  answerText: "답변입니다!",
+                ),
+              );
+            },
+            child: Container(
+              decoration: const BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    width: 0.2,
+                  ),
                 ),
               ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  onTap: () {
-                    context.pushNamed(
-                      QnADetailScreen.routeName,
-                      extra: QnADetailScreenArgs(
-                        qnaId: index + 1,
-                        qnaUser: item["user"],
-                        qnaContent: item["content"],
-                        qnaDate: item["date"],
-                        isLogined: isLogined,
-                        answerText: "답변입니다!",
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    contentPadding:
+                        const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                    leading: const CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                        "https://avatars.githubusercontent.com/u/77985708?v=4",
                       ),
-                    );
-                  },
-                  contentPadding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-                  leading: const CircleAvatar(
-                    radius: 20,
-                    backgroundImage: NetworkImage(
-                      "https://avatars.githubusercontent.com/u/77985708?v=4",
+                      backgroundColor: Colors.transparent,
                     ),
-                    backgroundColor: Colors.transparent,
-                  ),
-                  title: Text(
-                    item["user"],
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  titleTextStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  subtitle: Text(
-                    item["date"],
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: index % 2 == 0
-                      ? Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 6,
-                          ),
-                          color: Colors.purple.shade300,
-                          child: const Text(
-                            "답변 완료",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                    title: Text(
+                      item["user"],
+                      maxLines: 1,
+                    ),
+                    subtitle: Text(
+                      item["date"],
+                      maxLines: 1,
+                    ),
+                    trailing: index % 2 == 0
+                        ? Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 6,
+                            ),
+                            color: Colors.purple.shade300,
+                            child: const Text(
+                              "답변 완료",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4,
+                              horizontal: 6,
+                            ),
+                            color: Colors.grey.shade600,
+                            child: const Text(
+                              "답변 미완료",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        )
-                      : Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 4,
-                            horizontal: 6,
-                          ),
-                          color: Colors.grey.shade600,
-                          child: const Text(
-                            "답변 미완료",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                ),
-                Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: 10, left: 16, right: 16),
-                  child: Text(
-                    item["content"],
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 16,
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(bottom: 10, left: 16, right: 16),
+                    child: Text(
+                      item["content"],
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

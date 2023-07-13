@@ -1,90 +1,66 @@
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
-class PostEditScreenArgs {
-  final int? id;
-  final String? title;
-  final String? category;
-  final String? content;
+class NoticeEditScreenArgs {
+  final int id;
+  final String title;
+  final String content;
   final List<String>? images;
-  final bool? isCategory;
-  final int? maxImages;
 
-  PostEditScreenArgs({
-    this.id,
-    this.category,
-    this.title,
-    this.content,
+  NoticeEditScreenArgs({
+    required this.id,
+    required this.title,
+    required this.content,
     this.images,
-    this.isCategory,
-    this.maxImages,
   });
 }
 
-class PostEditScreen extends StatefulWidget {
-  static const routeName = "post_edit";
-  static const routeURL = "/post_edit";
+class NoticeEditScreen extends StatefulWidget {
+  static const routeName = "notice_edit";
+  static const routeURL = "notice_edit";
 
-  const PostEditScreen(
-      {super.key,
-      this.id,
-      this.category,
-      this.title,
-      this.content,
-      this.images,
-      this.isCategory,
-      this.maxImages});
+  const NoticeEditScreen({
+    super.key,
+    this.id,
+    this.title,
+    this.content,
+    this.images,
+  });
 
   final int? id;
-  final String? category;
   final String? title;
   final String? content;
   final List<String>? images;
-  final bool? isCategory;
-  final int? maxImages;
 
   @override
-  State<PostEditScreen> createState() => _PostEditScreenState();
+  State<NoticeEditScreen> createState() => _NoticeEditScreenState();
 }
 
-class _PostEditScreenState extends State<PostEditScreen> {
+class _NoticeEditScreenState extends State<NoticeEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
-
-  final List<String> _imgList = [];
-  // final List<XFile> _imgList = [];
-  final List<String> _removeImgList = [];
-
-  late String _category = widget.category ?? "";
-  final List<String> _categoryList = [
-    "",
-    "옵션 1",
-    "옵션 2",
-    "옵션 3",
-    "옵션 4",
-    "옵션 5",
-  ];
 
   late bool _isThereSearchValue =
       _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
 
+  final List<String> _imgList = [];
+  final List<String> _removeImgList = [];
+
   @override
   void initState() {
     super.initState();
+
     _titleController = TextEditingController(text: widget.title ?? "");
     _contentController = TextEditingController(text: widget.content ?? "");
+  }
 
-    // _imgList.addAll(widget.images ?? []);
+  Future<void> _onSubmitFinishButton() async {
+    print("제목 : ${_titleController.text}");
+    print("내용 : ${_contentController.text}");
   }
 
   void _textOnChange(String? value) {
@@ -96,86 +72,24 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
   // 이미지를 가져오는 함수
   Future _getImage(ImageSource? imageSource) async {
-    if (widget.maxImages != null) {
-      if (_imgList.length >= widget.maxImages!) {
-        swagPlatformDialog(
-          context: context,
-          title: "사진 개수 오류",
-          message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: const Text("확인"),
-            ),
-          ],
-        );
-        return;
-      } else {
-        final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
+    final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
-        //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-        if (imageSource != null) {
-          // 카메라
-          final XFile? pickedFile = await picker.pickImage(source: imageSource);
-          if (pickedFile != null) {
-            setState(() {
-              _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
-            });
-          }
-        } else {
-          // 갤러리
-          List<XFile> pickedFiles = await picker.pickMultiImage();
-          if (_imgList.length + pickedFiles.length > widget.maxImages!) {
-            swagPlatformDialog(
-              context: context,
-              title: "사진 개수 오류",
-              message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
-              actions: [
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text("확인"),
-                ),
-              ],
-            );
-            return;
-          }
-          setState(() {
-            _imgList
-                .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
-          });
-        }
-      }
-    } else {
-      final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-
-      //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-      if (imageSource != null) {
-        // 카메라
-        final XFile? pickedFile = await picker.pickImage(source: imageSource);
-        if (pickedFile != null) {
-          setState(() {
-            _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
-          });
-        }
-      } else {
-        // 갤러리
-        List<XFile> pickedFiles = await picker.pickMultiImage();
+    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
+    if (imageSource != null) {
+      // 카메라
+      final XFile? pickedFile = await picker.pickImage(source: imageSource);
+      if (pickedFile != null) {
         setState(() {
-          _imgList
-              .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
+          _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
         });
       }
-    }
-  }
-
-  // 선택한 이미지를 삭제리스트에 넣는 함수
-  void _addRemoveImgList(String img) {
-    if (_removeImgList.contains(img)) {
-      _removeImgList.remove(img);
     } else {
-      _removeImgList.add(img);
+      // 갤러리
+      List<XFile> pickedFiles = await picker.pickMultiImage();
+      setState(() {
+        _imgList.addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
+      });
     }
-    print(_removeImgList);
   }
 
   // 선택한 모든 이미지를 삭제하는 함수
@@ -186,36 +100,22 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
     _removeImgList.clear();
 
-    print(_imgList);
     setState(() {});
   }
 
-  void _onChangeOption(String option) {
-    setState(() {
-      _category = option;
-    });
-  }
-
-  Future<void> _onSubmitFinishButton() async {
-    Iterable<String> base64Images = _imgList.isNotEmpty
-        ? _imgList.map(
-            (e) => base64Encode(File(e).readAsBytesSync()),
-          )
-        : [];
-
-    if (widget.isCategory != null) {
-      print("카테고리 : $_category");
+  // 선택한 이미지를 삭제리스트에 넣는 함수
+  void _addRemoveImgList(String img) {
+    if (_removeImgList.contains(img)) {
+      _removeImgList.remove(img);
+    } else {
+      _removeImgList.add(img);
     }
-    print("제목 : ${_titleController.text}");
-    print("내용 : ${_contentController.text}");
-    print("이미지 : $base64Images");
   }
 
-  @override
-  void dispose() {
-    _contentController.dispose();
-    _titleController.dispose();
-    super.dispose();
+  SliverAppBar _appBar() {
+    return const SliverAppBar(
+      title: Text("공지사항 작성"),
+    );
   }
 
   @override
@@ -242,39 +142,14 @@ class _PostEditScreenState extends State<PostEditScreen> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: CustomScrollView(
           slivers: [
-            const SliverAppBar(
-              title: Text("동아리 게시글 작성"),
-            ),
+            _appBar(),
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!(widget.isCategory ?? true))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Gaps.v20,
-                          Text(
-                            "카테고리",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          Gaps.v10,
-                          SWAGStateDropDownButton(
-                            initOption: _category,
-                            onChangeOption: _onChangeOption,
-                            title: "카테고리를 선택해주세요.",
-                            options: _categoryList,
-                            isExpanded: true,
-                            width: double.infinity,
-                            height: 60,
-                            fontSize: 18,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                        ],
-                      ),
-                    Gaps.v20,
+                    Gaps.v10,
                     Text(
                       "제목",
                       style: Theme.of(context).textTheme.titleSmall,
@@ -320,6 +195,11 @@ class _PostEditScreenState extends State<PostEditScreen> {
                                 _getImage(ImageSource
                                     .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
                               },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateColor.resolveWith(
+                                  (states) => Colors.purple.shade300,
+                                ),
+                              ),
                               child: const Text("카메라"),
                             ),
                             Gaps.h20,

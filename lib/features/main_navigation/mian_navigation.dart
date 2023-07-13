@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_main_screen.dart';
 import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
@@ -7,7 +9,10 @@ import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
 import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
+import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/storages/login_storage.dart';
 
 class MainNavigationArgs {
   final int initSelectedIndex;
@@ -20,7 +25,7 @@ class MainNavigation extends StatefulWidget {
   static const routeURL = "/";
   const MainNavigation({
     super.key,
-    required this.initSelectedIndex,
+    this.initSelectedIndex = 2,
   });
 
   final int initSelectedIndex;
@@ -31,7 +36,6 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   late int _selectedIndex;
-  bool _isLogined = false;
 
   @override
   void initState() {
@@ -39,7 +43,23 @@ class _MainNavigationState extends State<MainNavigation> {
 
     _selectedIndex = widget.initSelectedIndex;
 
-    checkLoginType();
+    _checkAutoLogined();
+  }
+
+  void _checkAutoLogined() async {
+    final String? loginData = await LoginStorage.getLoginData();
+    print(loginData);
+
+    if (loginData == null) return;
+    if (loginData.trim().isNotEmpty) {
+      List<String> userData = loginData.split(",");
+
+      final id = userData[0];
+      final pw = userData[1];
+
+      context.read<UserProvider>().login("naver");
+      print(context.read<UserProvider>().snsType);
+    }
   }
 
   void _onTap(int index) {
@@ -47,8 +67,28 @@ class _MainNavigationState extends State<MainNavigation> {
       setState(() {
         _selectedIndex = index;
       });
-    } else if ((index == 3 || index == 4) && !_isLogined) {
-      SecureStorageLogin.loginCheckIsNone(context, mounted);
+    } else if ((index == 3 || index == 4) &&
+        !context.read<UserProvider>().isLogined) {
+      // LoginStorage.loginCheckIsNone(context, mounted);
+      final loginType = context.read<UserProvider>().isLogined;
+
+      if (loginType != "naver" && loginType != "kakao") {
+        swagPlatformDialog(
+          context: context,
+          title: "로그인 알림",
+          message: "로그인을 해야만 사용할 수 있는 기능입니다! 로그인 창으로 이동하시겠습니까?",
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text("아니오"),
+            ),
+            TextButton(
+              onPressed: () => context.goNamed(SignInScreen.routeName),
+              child: const Text("예"),
+            ),
+          ],
+        );
+      }
     } else {
       setState(() {
         _selectedIndex = index;
@@ -56,20 +96,9 @@ class _MainNavigationState extends State<MainNavigation> {
     }
   }
 
-  // 로그인 타입을 가져와서 로그인 상태를 적용하는 함수
-  void checkLoginType() async {
-    var loginType = await SecureStorageLogin.getLoginType();
-    print(loginType);
-    if (loginType == "naver" || loginType == "kakao") {
-      _isLogined = true;
-    } else {
-      _isLogined = false;
-    }
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
@@ -115,7 +144,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 onTap: () => _onTap(0),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
-                logined: _isLogined,
+                isLogined: isLogined,
               ),
               NavTab(
                 text: "기관",
@@ -125,7 +154,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 onTap: () => _onTap(1),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
-                logined: _isLogined,
+                isLogined: isLogined,
               ),
               NavTab(
                 text: "홈",
@@ -135,7 +164,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 onTap: () => _onTap(2),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
-                logined: _isLogined,
+                isLogined: isLogined,
               ),
               NavTab(
                 text: "동아리",
@@ -145,7 +174,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 onTap: () => _onTap(3),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
-                logined: _isLogined,
+                isLogined: isLogined,
               ),
               NavTab(
                 text: "프로필",
@@ -155,7 +184,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 onTap: () => _onTap(4),
                 selectedIndex: _selectedIndex,
                 imgURI: "https://avatars.githubusercontent.com/u/77985708?v=4",
-                logined: _isLogined,
+                isLogined: isLogined,
               ),
             ],
           ),
