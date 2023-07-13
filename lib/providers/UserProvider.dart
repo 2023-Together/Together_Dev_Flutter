@@ -5,25 +5,25 @@ import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class UserProvider extends ChangeNotifier {
   bool _isLogined = false;
-  String? _loginType;
+  String? _snsType;
 
   bool get isLogined => _isLogined;
-  String get loginType => _loginType!;
+  String get snsType => _snsType!;
 
   void login(String type) {
     _isLogined = true;
-    _loginType = type;
+    _snsType = type;
     notifyListeners();
   }
 
   void logout() {
     _isLogined = false;
-    _loginType = null;
+    _snsType = null;
     notifyListeners();
   }
 
   void loginCheckIsNone(BuildContext context) {
-    if (_loginType != "naver" || _loginType != "kakao") {
+    if (_snsType != "naver" || _snsType != "kakao") {
       _isLogined = false;
 
       swagPlatformDialog(

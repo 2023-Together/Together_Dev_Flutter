@@ -57,7 +57,7 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          child: const Text("등록"),
+          child: Text(isLogined ? "등록" : "로그인을 해야합니다!"),
         ),
       ),
       body: Padding(
@@ -72,10 +72,9 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText: isLogined ? "추가 되었으면 하는 기능을 입력해주세요." : "로그인을 해야합니다!",
+              hintText: "추가 되었으면 하는 기능을 입력해주세요.",
               maxLine: 10,
               controller: _contentController,
-              isLogined: true,
               onSubmitted: _onSubmitFinishButton,
               onChanged: _textOnChange,
             ),

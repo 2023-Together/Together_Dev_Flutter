@@ -284,7 +284,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       hintText: "글 제목을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
-                      isLogined: true,
                       onSubmitted: () {
                         print(_titleController.text);
                       },
@@ -300,7 +299,6 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       hintText: "내용을 입력해주세요.",
                       maxLine: 6,
                       controller: _contentController,
-                      isLogined: true,
                       onSubmitted: () {
                         print(_contentController.text);
                       },

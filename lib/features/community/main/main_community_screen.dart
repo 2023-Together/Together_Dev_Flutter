@@ -269,6 +269,15 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                       ]
                     : [
                         GestureDetector(
+                          onTap: () => context.pushNamed(
+                            CustomerServiceScreen.routeName,
+                            extra: CustomerServiceScreenArgs(
+                              initSelectedIndex: 0,
+                            ),
+                          ),
+                          child: const Icon(Icons.settings),
+                        ),
+                        GestureDetector(
                           onTap: _toggleAnimations,
                           child: const Icon(
                             Icons.search,
@@ -591,7 +600,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     hintText: "검색어를 입력하세요.",
                     maxLine: 1,
                     controller: _searchController,
-                    isLogined: true,
                     onSubmitted: () {
                       _searchController.text = "";
                       _focusNode.unfocus();

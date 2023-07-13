@@ -7,7 +7,6 @@ class SWAGTextField extends StatefulWidget {
     required this.hintText,
     required this.maxLine,
     required this.controller,
-    required this.isLogined,
     this.onChanged,
     this.onSubmitted,
     this.buttonText,
@@ -23,7 +22,6 @@ class SWAGTextField extends StatefulWidget {
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
-  final bool isLogined;
   final String? errorText;
   final bool isPassword;
 
@@ -62,7 +60,6 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
             },
             maxLines: widget.maxLine,
             controller: widget.controller,
-            enabled: widget.isLogined,
             obscureText: widget.isPassword,
             cursorColor: const Color(0xFf6524FF),
             style: const TextStyle(

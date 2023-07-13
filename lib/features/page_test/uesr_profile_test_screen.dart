@@ -11,8 +11,13 @@ import 'package:swag_cross_app/storages/login_storage.dart';
 class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
 
-  void onLogoutTap(BuildContext context) {
+  void onLogoutAllTap(BuildContext context) {
     LoginStorage.resetLoginData();
+    context.read<UserProvider>().logout();
+    context.pushReplacementNamed(MainNavigation.routeName);
+  }
+
+  void onLogoutTap(BuildContext context) {
     context.read<UserProvider>().logout();
     context.pushReplacementNamed(MainNavigation.routeName);
   }
@@ -108,6 +113,19 @@ class UserProfileTestScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [Text("봉사 완료"), Text("6건")],
                             ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () => onLogoutTap(context),
+                            child: const Text("로그아웃"),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => onLogoutAllTap(context),
+                            child: const Text("로그아웃(계정삭제)"),
                           ),
                         ],
                       ),

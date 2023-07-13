@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/community/widgets/comment_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_custom_indicator.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class PostDetailScreenArgs {
   final int postId;
@@ -67,31 +66,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
   bool _showRightArrow = true;
   bool _showLeftArrow = false;
 
-  List<Map<String, dynamic>> comments = [
-    {
-      "id": 1,
-      "username": "홍길동",
-      "comment": "여기 분위기는 어떤가요?",
-      "date": "2023-05-22 01:19",
-    },
-    {
-      "id": 2,
-      "username": "홍길순",
-      "comment": "언제까지 모집하나요?",
-      "date": "2023-05-26 11:39",
-    },
-    {
-      "id": 3,
-      "username": "임대원",
-      "comment": "제가 찾던 동아리입니다!",
-      "date": "2023-05-28 15:12",
-    },
-  ];
   List<String> imgs = [];
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.images != null) {
+      if (widget.images!.length == 1) {
+        _showRightArrow = false;
+      }
+    }
   }
 
   @override
@@ -118,15 +103,17 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         child: PageView.builder(
                           onPageChanged: (value) => setState(() {
                             _currentIndicatorPage = value;
-                            if (value == 0) {
-                              _showRightArrow = true;
-                              _showLeftArrow = false;
-                            } else if (value == widget.images!.length - 1) {
-                              _showRightArrow = false;
-                              _showLeftArrow = true;
-                            } else {
-                              _showRightArrow = true;
-                              _showLeftArrow = true;
+                            if (widget.images!.length > 1) {
+                              if (value == 0) {
+                                _showRightArrow = true;
+                                _showLeftArrow = false;
+                              } else if (value == widget.images!.length - 1) {
+                                _showRightArrow = false;
+                                _showLeftArrow = true;
+                              } else {
+                                _showRightArrow = true;
+                                _showLeftArrow = true;
+                              }
                             }
                           }),
                           controller: _imagesPageController,
@@ -237,38 +224,6 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     );
   }
 
-  Widget commentWidget({
-    required String comment,
-    required String date,
-  }) {
-    return Container(
-      padding: const EdgeInsets.only(top: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            comment,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          Gaps.v5,
-          Text(
-            date,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-          Gaps.v20,
-          Container(
-            color: Colors.grey.withOpacity(0.5),
-            height: 1,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget commentScreen() {
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -278,18 +233,20 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: ListView.separated(
-                  // shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
-                  itemBuilder: (context, index) => commentWidget(
-                    comment: comments[index]['comment'],
-                    date: comments[index]['date'],
-                  ),
-                  separatorBuilder: (context, index) => Gaps.v6,
-                  itemCount: comments.length,
-                ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const ClampingScrollPhysics(),
+                itemBuilder: (context, index) {
+                  final item = comments[index];
+                  return CommentCard(
+                    username: item['username'],
+                    date: item['date'],
+                    comment: item['comment'],
+                    id: item['id'],
+                  );
+                },
+                separatorBuilder: (context, index) => Gaps.v6,
+                itemCount: comments.length,
               ),
             ),
             Container(
@@ -297,12 +254,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               decoration: BoxDecoration(
                 color: Colors.grey.shade200,
               ),
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              padding: const EdgeInsets.all(10),
               child: SWAGTextField(
                 hintText: "등록할 댓글을 입력해주세요..",
                 maxLine: 1,
                 controller: _commentController,
-                isLogined: context.watch<UserProvider>().isLogined,
                 onSubmitted: () {
                   print(_commentController.text);
                   _commentController.text = "";
@@ -432,3 +388,24 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     );
   }
 }
+
+List<Map<String, dynamic>> comments = [
+  {
+    "id": 1,
+    "username": "홍길동",
+    "comment": "여기 분위기는 어떤가요?",
+    "date": "2023-05-22 01:19",
+  },
+  {
+    "id": 2,
+    "username": "홍길순",
+    "comment": "언제까지 모집하나요?",
+    "date": "2023-05-26 11:39",
+  },
+  {
+    "id": 3,
+    "username": "임대원",
+    "comment": "제가 찾던 동아리입니다!",
+    "date": "2023-05-28 15:12",
+  },
+];

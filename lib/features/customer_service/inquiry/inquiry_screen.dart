@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
@@ -65,6 +66,7 @@ class _InquiryScreenState extends State<InquiryScreen> {
   }
 
   bool _validateEmail(String value) {
+    print(context.read<UserProvider>().isLogined);
     // 이메일 정규식 패턴
     RegExp emailRegex =
         RegExp(r'^[\w-]+(\.[\w-]+)*@([a-zA-Z0-9]+\.)+[a-zA-Z]{2,}$');
@@ -94,11 +96,14 @@ class _InquiryScreenState extends State<InquiryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLogined = context.watch<UserProvider>().isLogined;
+    final isLogined = context.read<UserProvider>().isLogined;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: const EdgeInsets.symmetric(
+          vertical: Sizes.size8,
+          horizontal: Sizes.size12,
+        ),
         child: ElevatedButton(
           onPressed:
               isLogined && _isThereSearchValue ? _onSubmitFinishButton : null,
@@ -106,13 +111,13 @@ class _InquiryScreenState extends State<InquiryScreen> {
             textStyle: const TextStyle(
               fontSize: 18,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(vertical: Sizes.size12),
           ),
-          child: const Text("등록"),
+          child: Text(isLogined ? "등록" : "로그인을 해야합니다!"),
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: Sizes.size16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -123,10 +128,9 @@ class _InquiryScreenState extends State<InquiryScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText: isLogined ? "메일주소를 입력해주세요." : "로그인을 해야합니다!",
+              hintText: "메일주소를 입력해주세요.",
               maxLine: 1,
               controller: _emailController,
-              isLogined: true,
               onSubmitted: _onSubmitFinishButton,
               onChanged: _emailOnChange,
               errorText: _emailError,
@@ -155,10 +159,9 @@ class _InquiryScreenState extends State<InquiryScreen> {
             ),
             Gaps.v10,
             SWAGTextField(
-              hintText: isLogined ? "문의할 내용을 입력해주세요." : "로그인을 해야합니다!",
+              hintText: "문의할 내용을 입력해주세요.",
               maxLine: 10,
               controller: _contentController,
-              isLogined: true,
               onSubmitted: _onSubmitFinishButton,
               onChanged: _textOnChange,
             ),

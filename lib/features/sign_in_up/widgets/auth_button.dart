@@ -5,6 +5,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class SignInButton extends StatefulWidget {
   const SignInButton({
@@ -73,6 +74,7 @@ class _SignInButtonState extends State<SignInButton> {
     // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
+    if (!mounted) return;
     if (result.status == NaverLoginStatus.loggedIn) {
       print('accessToken = ${result.accessToken}');
 
@@ -80,8 +82,6 @@ class _SignInButtonState extends State<SignInButton> {
       print(userData);
 
       // await SecureStorageLogin.saveLoginType("naver");
-
-      if (!mounted) return;
       context.pushNamed(
         SignUpCheckUserDataScreen.routeName,
         extra: SignUpCheckUserDataScreenArgs(
@@ -94,8 +94,17 @@ class _SignInButtonState extends State<SignInButton> {
         ),
       );
     } else {
-      // await SecureStorageLogin.saveLoginType("none");
-      print("error = ${result.errorMessage}");
+      swagPlatformDialog(
+        context: context,
+        title: "오류!",
+        message: result.errorMessage,
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
     }
   }
 

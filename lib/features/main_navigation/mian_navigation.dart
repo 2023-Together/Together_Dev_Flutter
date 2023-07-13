@@ -43,13 +43,23 @@ class _MainNavigationState extends State<MainNavigation> {
 
     _selectedIndex = widget.initSelectedIndex;
 
-    _checkId();
+    _checkAutoLogined();
   }
 
-  void _checkId() async {
+  void _checkAutoLogined() async {
     final String? loginData = await LoginStorage.getLoginData();
+    print(loginData);
 
-    print("main : $loginData");
+    if (loginData == null) return;
+    if (loginData.trim().isNotEmpty) {
+      List<String> userData = loginData.split(",");
+
+      final id = userData[0];
+      final pw = userData[1];
+
+      context.read<UserProvider>().login("naver");
+      print(context.read<UserProvider>().snsType);
+    }
   }
 
   void _onTap(int index) {

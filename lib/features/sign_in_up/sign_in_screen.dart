@@ -31,27 +31,27 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     super.initState();
 
-    _checkAutoLogined();
+    // _checkAutoLogined();
   }
 
-  void _checkAutoLogined() async {
-    final String? loginData = await LoginStorage.getLoginData();
-    print(loginData);
+  // void _checkAutoLogined() async {
+  //   final String? loginData = await LoginStorage.getLoginData();
+  //   print(loginData);
 
-    if (loginData == null) return;
-    if (loginData.isNotEmpty) {
-      List<String> userData = loginData.split(",");
+  //   if (loginData == null) return;
+  //   if (loginData.isNotEmpty) {
+  //     List<String> userData = loginData.split(",");
 
-      setState(() {
-        _onSaveCheck = true;
-        _idController.text = userData[0];
-        _pwController.text = userData[1];
-        _isEditFinished = _idController.text.trim().isNotEmpty &&
-            _pwController.text.trim().isNotEmpty;
-      });
-      _onSignInSubmitted();
-    }
-  }
+  //     setState(() {
+  //       _onSaveCheck = true;
+  //       _idController.text = userData[0];
+  //       _pwController.text = userData[1];
+  //       _isEditFinished = _idController.text.trim().isNotEmpty &&
+  //           _pwController.text.trim().isNotEmpty;
+  //     });
+  //     _onSignInSubmitted();
+  //   }
+  // }
 
   void _onChangeAllText(String? value) {
     if (value == null) return;
@@ -75,8 +75,8 @@ class _SignInScreenState extends State<SignInScreen> {
   void _onSignInSubmitted() async {
     if (_onSaveCheck) {
       LoginStorage.saveLoginData(
-        id: _idController.text,
-        pw: _pwController.text,
+        id: _idController.text.trim(),
+        pw: _pwController.text.trim(),
       );
       context.read<UserProvider>().login("naver");
 
@@ -132,7 +132,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       hintText: "아이디를 입력해주세요.",
                       maxLine: 1,
                       controller: _idController,
-                      isLogined: true,
                       onChanged: _onChangeAllText,
                     ),
                     Gaps.v20,
@@ -145,7 +144,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       hintText: "비밀번호를 입력해주세요.",
                       maxLine: 1,
                       controller: _pwController,
-                      isLogined: true,
                       onChanged: _onChangeAllText,
                       isPassword: true,
                     ),
