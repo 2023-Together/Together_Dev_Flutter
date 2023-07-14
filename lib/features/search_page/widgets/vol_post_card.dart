@@ -89,28 +89,7 @@ class _VolPostCardState extends State<VolPostCard> {
                     ),
                   );
                 },
-                child: 
-                // GestureDetector(
-                //   onTap: () {
-                //     if (!_isLogined) {
-                //       SecureStorageLogin.loginCheckIsNone2(context, mounted);
-                //     } else {
-                //       context.pushNamed(
-                //         VolDetailScreen.routeName,
-                //         extra: VolDetailScreenArgs(
-                //           id: widget.id,
-                //           title: widget.title,
-                //           contnet: widget.contnet,
-                //           host: widget.host,
-                //           locationStr: widget.locationStr,
-                //           startTime: widget.startTime,
-                //           endTime: widget.endTime,
-                //           tabBarSelected: 0,
-                //         ),
-                //       );
-                //     }
-                //   },
-                 Container(
+                child: Container(
                     height: 150,
                     decoration: const BoxDecoration(
                       color: Colors.white,

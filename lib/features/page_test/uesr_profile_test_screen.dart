@@ -5,12 +5,33 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_card.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
-class UserProfileTestScreen extends StatelessWidget {
+final List<Map<String, dynamic>> userDatas = [
+  {
+    "userDid": "1",
+    "userId": "thdusrkd01@naver.com",
+    "userPw": "000000",
+    "userName": "강소연",
+    "userDef": "hello!",
+    "userType": "봉사자",
+    "birth": "2001-09-28"
+  },
+];
+
+class UserProfileTestScreen extends StatefulWidget {
+  static const routeName = "user_profile";
+  static const routeURL = "/user_profile";
+
   const UserProfileTestScreen({super.key});
 
+  @override
+  State<UserProfileTestScreen> createState() => _UserProfileTestScreenState();
+}
+
+class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
   void onLogoutAllTap(BuildContext context) {
     LoginStorage.resetLoginData();
     context.read<UserProvider>().logout();

@@ -243,7 +243,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
         child: CustomScrollView(
           slivers: [
             const SliverAppBar(
-              title: Text("동아리 게시글 작성"),
+              title: Text("동아리 만들기"),
             ),
             SliverToBoxAdapter(
               child: Padding(
@@ -276,12 +276,12 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       ),
                     Gaps.v20,
                     Text(
-                      "제목",
+                      "동아리명",
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Gaps.v10,
                     SWAGTextField(
-                      hintText: "글 제목을 입력해주세요.",
+                      hintText: "동아리명을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
                       onSubmitted: () {
@@ -296,7 +296,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     ),
                     Gaps.v10,
                     SWAGTextField(
-                      hintText: "내용을 입력해주세요.",
+                      hintText: "어떤 동아리인지 설명해주세요. (가입 규칙 또는 인사말 등)",
                       maxLine: 6,
                       controller: _contentController,
                       onSubmitted: () {
