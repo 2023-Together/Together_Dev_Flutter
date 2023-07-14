@@ -57,3 +57,5 @@ samples, guidance on mobile development, and a full API reference.
 - go_router: ^6.5.5 (라우터 페이지 관리 라이브러리)
 - carousel_slider: ^4.2.1 (슬라이드 라이브러리)
 - image_picker: ^1.0.0 (갤러리, 카메라 라이브러리)
+- google_maps_flutter: ^2.3.1 (구글 맵 라이브러리)
+- geolocator: ^9.0.2 (위도, 경도를 불러오는 라이브러리)
