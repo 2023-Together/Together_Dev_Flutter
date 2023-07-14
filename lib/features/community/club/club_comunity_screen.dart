@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
@@ -10,9 +9,7 @@ import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class ClubCommunityScreenArgs {
   final int clubId;
@@ -62,7 +59,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController _scrollController = ScrollController();
   // 공지사항 슬라이드 제어를 위한 컨트롤러
-  final CarouselController _carouselController = CarouselController();
+  // final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
   // 포커스 검사
@@ -71,24 +68,24 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   bool _isFocused = false;
 
   bool _showJumpUpButton = false;
-  final int _currentNoticeIndex = 0;
+  // final int _currentNoticeIndex = 0;
 
   double width = 0;
   double height = 0;
 
-  String _option1 = "";
-  final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option1 = "";
+  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option2 = "";
-  final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option2 = "";
+  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  String _option3 = "";
-  final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
+  // String _option3 = "";
+  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
 
-  // 카테고리의 공통 스타일
-  final double _optionsFontSize = 16;
-  final _optionsPadding =
-      const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
+  // // 카테고리의 공통 스타일
+  // final double _optionsFontSize = 16;
+  // final _optionsPadding =
+  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   @override
   void initState() {
@@ -201,23 +198,23 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     setState(() {});
   }
 
-  void _onChangeOption1(String option) {
-    setState(() {
-      _option1 = option;
-    });
-  }
+  // void _onChangeOption1(String option) {
+  //   setState(() {
+  //     _option1 = option;
+  //   });
+  // }
 
-  void _onChangeOption2(String option) {
-    setState(() {
-      _option2 = option;
-    });
-  }
+  // void _onChangeOption2(String option) {
+  //   setState(() {
+  //     _option2 = option;
+  //   });
+  // }
 
-  void _onChangeOption3(String option) {
-    setState(() {
-      _option3 = option;
-    });
-  }
+  // void _onChangeOption3(String option) {
+  //   setState(() {
+  //     _option3 = option;
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -231,7 +228,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    final isLogined = context.watch<UserProvider>().isLogined;
+    // final isLogined = context.watch<UserProvider>().isLogined;
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(

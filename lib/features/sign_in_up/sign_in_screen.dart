@@ -34,24 +34,23 @@ class _SignInScreenState extends State<SignInScreen> {
     // _checkAutoLogined();
   }
 
-  // void _checkAutoLogined() async {
-  //   final String? loginData = await LoginStorage.getLoginData();
-  //   print(loginData);
+  void _checkAutoLogined() async {
+    final String? loginData = await LoginStorage.getLoginData();
+    print(loginData);
 
-  //   if (loginData == null) return;
-  //   if (loginData.isNotEmpty) {
-  //     List<String> userData = loginData.split(",");
+    if (loginData == null) return;
+    if (loginData.trim().isNotEmpty) {
+      List<String> userData = loginData.split(",");
 
-  //     setState(() {
-  //       _onSaveCheck = true;
-  //       _idController.text = userData[0];
-  //       _pwController.text = userData[1];
-  //       _isEditFinished = _idController.text.trim().isNotEmpty &&
-  //           _pwController.text.trim().isNotEmpty;
-  //     });
-  //     _onSignInSubmitted();
-  //   }
-  // }
+      final id = userData[0];
+      final pw = userData[1];
+
+      if (!mounted) return;
+      context.read<UserProvider>().login("naver");
+
+      context.goNamed(MainNavigation.routeName);
+    }
+  }
 
   void _onChangeAllText(String? value) {
     if (value == null) return;
