@@ -5,7 +5,7 @@ import 'package:swag_cross_app/features/customer_service/inquiry/inquiry_screen.
 import 'package:swag_cross_app/features/customer_service/suggestion/suggestion_screen.dart';
 
 final tabs = [
-  "FAQ",
+  "자주묻는 질문",
   "문의하기",
   "건의하기",
 ];

@@ -15,12 +15,11 @@ class SWAGCommunityImages extends StatelessWidget {
   void _filterImagesCheck() {
     final imgLength = images.length;
     final List<String> checkImages = [];
-    if (imgLength > 5) {
-      checkImages.addAll(images.sublist(0, 6));
+    if (imgLength > 6) {
+      checkImages.addAll(images.sublist(0, 7));
     } else {
       checkImages.addAll(images);
     }
-    print(checkImages);
 
     if (imgLength == 1) {
       _filterImages.add(images);
@@ -34,12 +33,15 @@ class SWAGCommunityImages extends StatelessWidget {
       List<String> subList1 = checkImages.sublist(0, 2);
       List<String> subList2 = checkImages.sublist(2, imgLength);
       _filterImages.addAll([subList1, subList2]);
-    } else if (imgLength >= 5) {
+    } else if (imgLength == 5) {
       List<String> subList1 = checkImages.sublist(0, 3);
-      List<String> subList2 = checkImages.sublist(3, 5);
+      List<String> subList2 = checkImages.sublist(3, imgLength);
+      _filterImages.addAll([subList1, subList2]);
+    } else if (imgLength >= 6) {
+      List<String> subList1 = checkImages.sublist(0, 3);
+      List<String> subList2 = checkImages.sublist(3, 6);
       _filterImages.addAll([subList1, subList2]);
     }
-    print(_filterImages);
   }
 
   @override
@@ -62,13 +64,14 @@ class SWAGCommunityImages extends StatelessWidget {
                         ? 2
                         : 1,
                 mainAxisCellCount:
-                    _filterImages.length == 1 && _filterImages[i].length == 1
+                    _filterImages.length.isOdd && _filterImages[i].length.isOdd
                         ? 2
-                        : images.length >= 5 && (i == 0 && j == 0)
+                        : (images.length == 3 || images.length == 5) &&
+                                (i == 0 && j == 0)
                             ? 2
                             : 1,
-                child: images.length > 5
-                    ? (i == 1 && j == 1)
+                child: images.length > 6
+                    ? (i == 1 && j == 2)
                         ? Stack(
                             fit: StackFit.expand,
                             children: [
@@ -90,7 +93,7 @@ class SWAGCommunityImages extends StatelessWidget {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    "+${images.length - 5}장",
+                                    "+${images.length - 6}장",
                                     style: const TextStyle(
                                       fontSize: 26,
                                       color: Colors.white,

@@ -12,7 +12,6 @@ import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart'
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 class MainNavigationArgs {
   final int initSelectedIndex;
@@ -22,7 +21,7 @@ class MainNavigationArgs {
 
 class MainNavigation extends StatefulWidget {
   static const routeName = "main";
-  static const routeURL = "/";
+  static const routeURL = "/main";
   const MainNavigation({
     super.key,
     this.initSelectedIndex = 2,
@@ -43,24 +42,26 @@ class _MainNavigationState extends State<MainNavigation> {
 
     _selectedIndex = widget.initSelectedIndex;
 
-    _checkAutoLogined();
+    // _checkAutoLogined();
   }
 
-  void _checkAutoLogined() async {
-    final String? loginData = await LoginStorage.getLoginData();
-    print(loginData);
+  // void _checkAutoLogined() async {
+  //   final String? loginData = await LoginStorage.getLoginData();
+  //   print(loginData);
 
-    if (loginData == null) return;
-    if (loginData.trim().isNotEmpty) {
-      List<String> userData = loginData.split(",");
+  //   if (loginData == null) return;
+  //   if (loginData.trim().isNotEmpty) {
+  //     List<String> userData = loginData.split(",");
 
-      final id = userData[0];
-      final pw = userData[1];
+  //     final id = userData[0];
+  //     final pw = userData[1];
 
-      context.read<UserProvider>().login("naver");
-      print(context.read<UserProvider>().snsType);
-    }
-  }
+  //     if (!mounted) return;
+  //     context.read<UserProvider>().login("naver");
+
+  //     context.goNamed(MainNavigation.routeName);
+  //   }
+  // }
 
   void _onTap(int index) {
     if (index == 2) {
@@ -72,7 +73,7 @@ class _MainNavigationState extends State<MainNavigation> {
       // LoginStorage.loginCheckIsNone(context, mounted);
       final loginType = context.read<UserProvider>().isLogined;
 
-      if (loginType != "naver" && loginType != "kakao") {
+      if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
         swagPlatformDialog(
           context: context,
           title: "로그인 알림",
