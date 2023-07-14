@@ -42,8 +42,8 @@ class _SignInScreenState extends State<SignInScreen> {
     if (loginData.trim().isNotEmpty) {
       List<String> userData = loginData.split(",");
 
-      final id = userData[0];
-      final pw = userData[1];
+      // final id = userData[0];
+      // final pw = userData[1];
 
       if (!mounted) return;
       context.read<UserProvider>().login("naver");

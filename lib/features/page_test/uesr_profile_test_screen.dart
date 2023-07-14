@@ -176,7 +176,7 @@ class UserProfileTestScreen extends StatelessWidget {
                   ),
                   // FadeInImage : 실제 사진이 로드 되기 전까지 지정한 이미지를 보여줌
                   itemBuilder: (context, index) => LayoutBuilder(
-                    builder: (context, constraints) => Container(
+                    builder: (context, constraints) => SizedBox(
                       child: Stack(
                         children: [
                           AspectRatio(
