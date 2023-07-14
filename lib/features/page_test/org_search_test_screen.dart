@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/search_page/widgets/org_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 
 final List<String> volAddress = [
@@ -16,93 +17,147 @@ final List<String> volAddress = [
 
 final List<Map<String, dynamic>> orgDatas = [
   {
-    "name": "기관1",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
+    "volCount": "2",
+  },
+  {
+    "host": "경상대학교 중앙도서관",
+    "locationStr": "경상남도 진주시 가좌동 900",
+    "location": "진주시 가좌동",
+    "pNum": "055-772-0522",
+    "bossName": "홍길동",
+    "volCount": "2",
+  },
+  {
+    "host": "진주 생활체육관",
+    "locationStr": "경상남도 진주시 공단로 59",
+    "location": "진주시 상평동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
+    "volCount": "1",
+  },
+  {
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관2",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
+    "volCount": "2",
+  },
+  {
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관3",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관4",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관5",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관6",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관7",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관8",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관9",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관10",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관11",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관12",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관13",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
   {
-    "name": "기관14",
-    "address": "연암공과대학교",
-    "volCount": "6",
-  },
-  {
-    "name": "기관15",
-    "address": "연암공과대학교",
-    "volCount": "6",
-  },
-  {
-    "name": "기관16",
-    "address": "연암공과대학교",
-    "volCount": "6",
-  },
-  {
-    "name": "기관17",
-    "address": "연암공과대학교",
-    "volCount": "6",
-  },
-  {
-    "name": "기관18",
-    "address": "연암공과대학교",
+    "host": "연암공과대학교",
+    "locationStr": "경상남도 진주시 진주대로629번길 35",
+    "location": "진주시 가좌동",
+    "pNum": "055-751-2001",
+    "bossName": "홍길동",
     "volCount": "6",
   },
 ];
@@ -115,6 +170,8 @@ class OrgSearchTestScreen extends StatefulWidget {
 }
 
 class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
+
+  
   String option1 = "";
   String option2 = "";
   String option3 = "";
@@ -227,7 +284,7 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
             Expanded(
               child: GridView.builder(
                 shrinkWrap: true,
-                itemCount: 18,
+                itemCount: orgDatas.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   // crossAxisSpacing: Sizes.size10,
@@ -235,78 +292,15 @@ class _OrgSearchTestScreenState extends State<OrgSearchTestScreen> {
                   childAspectRatio: 10 / 12,
                 ),
                 itemBuilder: (context, index) {
-                  // final item = orgDatas[index];
-                  return LayoutBuilder(
-                    builder: (context, constraints) => Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(
-                            Sizes.size6,
-                          ),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.5),
-                            spreadRadius: 2,
-                            blurRadius: 3,
-                            offset: const Offset(3, 3), // 그림자의 위치 조정
-                          ),
-                        ],
-                      ),
-                      clipBehavior: Clip.hardEdge,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset(
-                            "assets/images/yonam.jpg",
-                            width: constraints.maxWidth,
-                            fit: BoxFit.fill,
-                          ),
-                          Gaps.v4,
-                          Row(
-                            children: [
-                              Gaps.h8,
-                              Text(
-                                "연암공과대학교${index + 1}",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: Sizes.size16,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Gaps.v3,
-                          const Row(
-                            children: [
-                              Gaps.h8,
-                              Text("주소 : "),
-                              Text(
-                                "진주시 가좌동",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Gaps.h8,
-                              const Text("모집중인 봉사 : "),
-                              Text(
-                                "${index + 1}개",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                  final item = orgDatas[index];
+                  return OrgPostCard(
+                    id: item["id"] ?? "",
+                    host: item["host"] ?? "",
+                    locationStr: item["locationStr"] ?? "",
+                    volCount: item["volCount"] ?? "",
+                    location: item["location"] ?? "",
+                    pNum: item["pNum"] ?? "",
+                    bossName: item["bossName"] ?? "",
                   );
                 },
               ),
