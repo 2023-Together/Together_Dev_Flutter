@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/logo_loading_screen.dart';
@@ -101,42 +102,42 @@ final router = GoRouter(
       name: PostEditScreen.routeName,
       path: PostEditScreen.routeURL,
       builder: (context, state) {
-        if (state.extra != null) {
-          final args = state.extra as PostEditScreenArgs;
-          return PostEditScreen(
-            id: args.id,
-            category: args.category,
-            title: args.title,
-            content: args.content,
-            images: args.images,
-            isCategory: args.isCategory,
-            maxImages: args.maxImages,
-          );
-        }
-        return const PostEditScreen();
+        final args = state.extra as PostEditScreenArgs;
+        return PostEditScreen(
+          pageTitle: args.pageTitle,
+          editType: args.editType,
+          id: args.id,
+          category: args.category,
+          title: args.title,
+          content: args.content,
+          images: args.images,
+          isCategory: args.isCategory,
+          maxImages: args.maxImages,
+        );
       },
     ),
     GoRoute(
-        path: ClubSearchScreen.routeURL,
-        name: ClubSearchScreen.routeName,
-        builder: (context, state) => const ClubSearchScreen(),
-        routes: [
-          GoRoute(
-            path: ClubSearchDetailScreen.routeURL,
-            name: ClubSearchDetailScreen.routeName,
-            builder: (context, state) {
-              final args = state.extra as ClubSearchDetailScreenArgs;
-              return ClubSearchDetailScreen(
-                postId: args.postId,
-                postTitle: args.postTitle,
-                postContent: args.postContent,
-                clubName: args.clubName,
-                postDate: args.postDate,
-                clubMaster: args.clubMaster,
-              );
-            },
-          ),
-        ]),
+      path: ClubSearchScreen.routeURL,
+      name: ClubSearchScreen.routeName,
+      builder: (context, state) => const ClubSearchScreen(),
+      routes: [
+        GoRoute(
+          path: ClubSearchDetailScreen.routeURL,
+          name: ClubSearchDetailScreen.routeName,
+          builder: (context, state) {
+            final args = state.extra as ClubSearchDetailScreenArgs;
+            return ClubSearchDetailScreen(
+              postId: args.postId,
+              postTitle: args.postTitle,
+              postContent: args.postContent,
+              clubName: args.clubName,
+              postDate: args.postDate,
+              clubMaster: args.clubMaster,
+            );
+          },
+        ),
+      ],
+    ),
     GoRoute(
       path: ClubCommunityScreen.routeURL,
       name: ClubCommunityScreen.routeName,
@@ -155,6 +156,13 @@ final router = GoRouter(
           },
         )
       ],
+    ),
+    GoRoute(
+      path: ClubMakeScreen.routeURL,
+      name: ClubMakeScreen.routeName,
+      builder: (context, state) {
+        return const ClubMakeScreen();
+      },
     ),
     GoRoute(
       name: CustomerServiceScreen.routeName,

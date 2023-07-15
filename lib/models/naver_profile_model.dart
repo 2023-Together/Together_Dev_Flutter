@@ -10,13 +10,13 @@ class NaverProfileModel {
   // String profileImage;
   // String mobile;
 
-  String userAcid;
-  String userPw;
-  String userName;
-  String userProfileImage;
-  String userDef;
-  String userType;
-  Map<String, dynamic> userSns;
+  String userAcid; // 로그인 id
+  String userPw; // 로그인 비밀번호
+  String userName; // 유저 실명
+  String userProfileImage; // 프로필 이미지
+  String userDef; // 설명
+  String userType; // 로그인 타입
+  Map<String, dynamic> userSns; // json 데이터
 
   // NaverProfileModel({
   //   required this.nickname,

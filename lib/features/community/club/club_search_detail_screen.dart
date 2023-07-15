@@ -97,10 +97,10 @@ class ClubSearchDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/club1.jpg',
-              fit: BoxFit.cover,
-            ),
+            // Image.asset(
+            //   'assets/images/club1.jpg',
+            //   fit: BoxFit.cover,
+            // ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: Column(

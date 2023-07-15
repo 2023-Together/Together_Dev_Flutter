@@ -61,10 +61,10 @@ class ClubRequestCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/club1.jpg',
-              fit: BoxFit.cover,
-            ),
+            // Image.asset(
+            //   'assets/images/club1.jpg',
+            //   fit: BoxFit.cover,
+            // ),
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.size10,
@@ -102,13 +102,13 @@ class ClubRequestCard extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-                        )
+                        ),
                     ],
                   ),
                   const Divider(),
                   Text(
                     postContent,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
