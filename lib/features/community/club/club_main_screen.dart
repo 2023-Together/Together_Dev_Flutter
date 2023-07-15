@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
+import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 
 class ClubMainScreen extends StatefulWidget {
@@ -42,6 +44,14 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
             icon: const Icon(Icons.add),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => context.pushNamed(ClubMakeScreen.routeName),
+        backgroundColor: Colors.blue.shade300,
+        child: const FaIcon(
+          FontAwesomeIcons.penToSquare,
+          color: Colors.black,
+        ),
       ),
       body: clubList.isEmpty
           ? Center(

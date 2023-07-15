@@ -4,8 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_screen.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
@@ -121,91 +122,105 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "아이디",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "아이디를 입력해주세요.",
-                      maxLine: 1,
-                      controller: _idController,
-                      onChanged: _onChangeAllText,
-                    ),
-                    Gaps.v20,
-                    Text(
-                      "비밀번호",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "비밀번호를 입력해주세요.",
-                      maxLine: 1,
-                      controller: _pwController,
-                      onChanged: _onChangeAllText,
-                      isPassword: true,
-                    ),
-                    Gaps.v20,
-                    Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.25,
-                          child: Checkbox.adaptive(
-                            shape: const CircleBorder(),
-                            value: _onSaveCheck,
-                            onChanged: _onChangeUserSaveCheck,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => _onChangeUserSaveCheck(!_onSaveCheck),
-                          child: const Text("자동 로그인"),
-                        ),
-                      ],
-                    ),
-                  ],
+              // Expanded(
+              //   flex: 3,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         "아이디",
+              //         style: Theme.of(context).textTheme.titleMedium,
+              //       ),
+              //       Gaps.v10,
+              //       SWAGTextField(
+              //         hintText: "아이디를 입력해주세요.",
+              //         maxLine: 1,
+              //         controller: _idController,
+              //         onChanged: _onChangeAllText,
+              //       ),
+              //       Gaps.v20,
+              //       Text(
+              //         "비밀번호",
+              //         style: Theme.of(context).textTheme.titleMedium,
+              //       ),
+              //       Gaps.v10,
+              //       SWAGTextField(
+              //         hintText: "비밀번호를 입력해주세요.",
+              //         maxLine: 1,
+              //         controller: _pwController,
+              //         onChanged: _onChangeAllText,
+              //         isPassword: true,
+              //       ),
+              //       Gaps.v20,
+              //       Row(
+              //         children: [
+              //           Transform.scale(
+              //             scale: 1.25,
+              //             child: Checkbox.adaptive(
+              //               shape: const CircleBorder(),
+              //               value: _onSaveCheck,
+              //               onChanged: _onChangeUserSaveCheck,
+              //             ),
+              //           ),
+              //           GestureDetector(
+              //             onTap: () => _onChangeUserSaveCheck(!_onSaveCheck),
+              //             child: const Text("자동 로그인"),
+              //           ),
+              //         ],
+              //       ),
+              //       Container(
+              //         width: MediaQuery.of(context).size.width,
+              //         padding: const EdgeInsets.all(Sizes.size10),
+              //         margin: const EdgeInsets.only(top: Sizes.size10),
+              //         child: ElevatedButton(
+              //           onPressed: _isEditFinished ? _onSignInSubmitted : null,
+              //           child: const Padding(
+              //             padding: EdgeInsets.symmetric(vertical: Sizes.size16),
+              //             child: Text("로그인"),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              const Expanded(
+                flex: 2,
+                child: AuthButton(
+                  path: "naver",
+                  text: "네이버 로그인",
+                  signType: SNSType.naver,
+                  authType: SignType.signIn,
                 ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "계정이 없으신가요?",
-                    style: TextStyle(
-                      fontSize: Sizes.size18,
-                    ),
-                  ),
-                  Gaps.h10,
-                  GestureDetector(
-                    onTap: () => _onSignUpTap(context),
-                    child: const Text(
-                      "회원가입",
-                      style: TextStyle(
-                        fontSize: Sizes.size18,
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
               ),
             ],
           ),
         ),
-        bottomNavigationBar: Container(
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.all(Sizes.size10),
-          margin: const EdgeInsets.only(top: Sizes.size10),
-          child: ElevatedButton(
-            onPressed: _isEditFinished ? _onSignInSubmitted : null,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: Sizes.size16),
-              child: Text("로그인"),
-            ),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.only(
+            bottom: Sizes.size28,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                "계정이 없으신가요?",
+                style: TextStyle(
+                  fontSize: Sizes.size18,
+                ),
+              ),
+              Gaps.h10,
+              GestureDetector(
+                onTap: () => _onSignUpTap(context),
+                child: const Text(
+                  "회원가입",
+                  style: TextStyle(
+                    fontSize: Sizes.size18,
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

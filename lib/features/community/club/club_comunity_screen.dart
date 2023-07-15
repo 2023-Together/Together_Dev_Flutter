@@ -333,7 +333,13 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
               heroTag: "club_community_edit",
               onPressed: () {
                 // 동아리 게시글 작성
-                context.pushNamed(PostEditScreen.routeName);
+                context.pushNamed(
+                  PostEditScreen.routeName,
+                  extra: PostEditScreenArgs(
+                    pageTitle: "동아리 게시물 등록",
+                    editType: "club_post_make",
+                  ),
+                );
               },
               backgroundColor: Colors.blue.shade300,
               child: const FaIcon(

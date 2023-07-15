@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
@@ -144,28 +142,14 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   void _toggleOnlyRequest() {
     _scrollToTop();
+    clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
+    filteredList = clubSearchPostList
+        .where((element) => element["isRequest"] == true)
+        .toList();
     setState(() {
       _isOnlyRequest = !_isOnlyRequest;
     });
   }
-
-  // void _onChangeOption1(String option) {
-  //   setState(() {
-  //     _option1 = option;
-  //   });
-  // }
-
-  // void _onChangeOption2(String option) {
-  //   setState(() {
-  //     _option2 = option;
-  //   });
-  // }
-
-  // void _onChangeOption3(String option) {
-  //   setState(() {
-  //     _option3 = option;
-  //   });
-  // }
 
   // void onChangeOption1(String? value) {
   @override
@@ -191,22 +175,22 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
               ),
             ),
           ),
-          Gaps.v6,
-          FloatingActionButton(
-            heroTag: "community_edit",
-            onPressed: () {
-              // 동아리 게시글 작성
-              context.pushNamed(
-                PostEditScreen.routeName,
-                extra: PostEditScreenArgs(maxImages: 1),
-              );
-            },
-            backgroundColor: Colors.blue.shade300,
-            child: const FaIcon(
-              FontAwesomeIcons.penToSquare,
-              color: Colors.black,
-            ),
-          ),
+          // Gaps.v6,
+          // FloatingActionButton(
+          //   heroTag: "community_edit",
+          //   onPressed: () {
+          //     // 동아리 게시글 작성
+          //     context.pushNamed(
+          //       PostEditScreen.routeName,
+          //       extra: PostEditScreenArgs(maxImages: 1, pageTitle: "동아리 홍보글 작성"),
+          //     );
+          //   },
+          //   backgroundColor: Colors.blue.shade300,
+          //   child: const FaIcon(
+          //     FontAwesomeIcons.penToSquare,
+          //     color: Colors.black,
+          //   ),
+          // ),
         ],
       ),
       appBar: AppBar(

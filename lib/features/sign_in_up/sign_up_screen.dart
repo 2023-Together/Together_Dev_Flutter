@@ -20,7 +20,7 @@ class SignUpScreen extends StatelessWidget {
         child: Column(
           children: [
             Gaps.v36,
-            SignInButton(
+            AuthButton(
               path: "naver",
               text: "네이버 회원가입",
               signType: SNSType.naver,
