@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
@@ -64,7 +63,7 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
       body: Center(
         child: Text(
           "함께해요 Together!",
-          style: context.textTheme.displayMedium,
+          style: Theme.of(context).textTheme.displayMedium,
         ),
       ),
     );
