@@ -22,6 +22,7 @@ import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
@@ -278,6 +279,27 @@ final router = GoRouter(
         );
       },
     ),
-    
+    GoRoute(
+      path: UserInformUpdate.routeURL,
+      name: UserInformUpdate.routeName,
+      builder: (context, state) {
+        final args = state.extra as UserInformArgs;
+        return UserInformUpdate(
+          userDid: args.userDid,
+          userId: args.userId,
+          userPw: args.userPw,
+          userName: args.userName,
+          userDef: args.userDef,
+          userType: args.userType,
+          birth: args.birth,
+
+        );
+      },
+    ),
+     GoRoute(
+      name: UserInformSetup.routeName,
+      path: UserInformSetup.routeURL,
+      builder: (context, state) => const UserInformSetup(),
+    ),
   ],
 );

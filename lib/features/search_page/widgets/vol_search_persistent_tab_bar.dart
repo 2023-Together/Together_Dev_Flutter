@@ -33,7 +33,7 @@ class VolSearchPersistentTabBar extends SliverPersistentHeaderDelegate {
         ),
         tabs: const [
           Tab(text: '상세 정보'),
-          Tab(text: '기관 위치'),
+          Tab(text: '활동 위치'),
         ],
       ),
       );

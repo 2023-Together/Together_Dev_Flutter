@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 class UserProfileCard extends StatefulWidget {
   final String userDid; // 유저 did
@@ -35,21 +38,31 @@ class _UserProfileCardState extends State<UserProfileCard> {
           "https://avatars.githubusercontent.com/u/77985708?v=4",
         ),
       ),
-      title: const Text(
-        "이재현",
+      title: Text(
+        widget.userName,
         style: TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: Sizes.size18,
         ),
       ),
-      subtitle: const Text(
+      subtitle: Text(
         "SWAG 동아리",
         style: TextStyle(
           fontSize: Sizes.size14,
         ),
       ),
       trailing: IconButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed(UserInformUpdate.routeName,
+              extra: UserInformArgs(
+                  userDid: widget.userDid,
+                  userId: widget.userId,
+                  userPw: widget.userPw,
+                  userName: widget.userName,
+                  userDef: widget.userDef,
+                  userType: widget.userType,
+                  birth: widget.birth));
+        },
         icon: const Icon(
           Icons.chevron_right_rounded,
           size: Sizes.size40,

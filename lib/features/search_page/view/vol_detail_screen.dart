@@ -294,19 +294,18 @@ class _VolDetailScreenState extends State<VolDetailScreen>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                icon: const Icon(Icons.favorite_border_outlined),
-                onPressed: () {},
-              ),
-              SizedBox(
-                width: 300.0,
+              Expanded(
+                
+                child: Container(
+                  width: 375.0,
                 height: 40.0,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(),
-                  onPressed: () {
-                    _showAlertDialog();
-                  },
-                  child: const Text("신청하기"),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(),
+                    onPressed: () {
+                      _showAlertDialog();
+                    },
+                    child: const Text("신청하기"),
+                  ),
                 ),
               ),
             ],
