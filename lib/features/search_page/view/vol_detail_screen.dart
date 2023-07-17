@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -57,11 +59,24 @@ class VolDetailScreen extends StatefulWidget {
 
 class _VolDetailScreenState extends State<VolDetailScreen>
     with TickerProviderStateMixin {
+  late GoogleMapController _controller;
+
   static final LatLng schoolLatlng = LatLng(
     // 위도와 경도 값 지정
     35.165992,
     128.096785,
   );
+
+  final List<Marker> markers = [];
+
+  addMarker(cordinate) {
+    int id = Random().nextInt(100);
+
+    setState(() {
+      markers
+          .add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
+    });
+  }
 
   static final CameraPosition initialPosition = CameraPosition(
     target: schoolLatlng, // 카메라 위치
@@ -154,6 +169,18 @@ class _VolDetailScreenState extends State<VolDetailScreen>
         child: GoogleMap(
           initialCameraPosition: initialPosition,
           mapType: MapType.hybrid,
+          onMapCreated: (controller) {
+            setState(() {
+              _controller = controller;
+            });
+          },
+          markers: markers.toSet(),
+
+          //the clicked position will be centered and marked
+          onTap: (cordinate) {
+            _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
+            addMarker(cordinate);
+          },
         ),
       ),
     );
@@ -295,10 +322,9 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                
                 child: Container(
                   width: 375.0,
-                height: 40.0,
+                  height: 40.0,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(),
                     onPressed: () {

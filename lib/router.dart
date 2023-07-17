@@ -292,11 +292,32 @@ final router = GoRouter(
           userDef: args.userDef,
           userType: args.userType,
           birth: args.birth,
-
         );
       },
     ),
-     GoRoute(
+    // GoRoute(
+    //   name: UserInformSetup.routeName,
+    //   path: UserInformSetup.routeURL,
+    //   builder: (context, state) => const UserInformSetup(),
+    //   routes: [
+    //     GoRoute(
+    //       path: UserInformUpdate.routeURL,
+    //       name: UserInformUpdate.routeName,
+    //       builder: (context, state) {
+    //         final args = state.extra as UserInformArgs;
+    //         return UserInformUpdate(
+    //           userDid: args.userDid,
+    //           userId: args.userId,
+    //           userPw: args.userPw,
+    //           userName: args.userName,
+    //           userDef: args.userDef,
+    //           userType: args.userType,
+    //           birth: args.birth,
+    //         );
+    //       },
+    //     ),
+    //   ],
+    GoRoute(
       name: UserInformSetup.routeName,
       path: UserInformSetup.routeURL,
       builder: (context, state) => const UserInformSetup(),
