@@ -176,7 +176,6 @@ class _VolDetailScreenState extends State<VolDetailScreen>
           },
           markers: markers.toSet(),
 
-          //the clicked position will be centered and marked
           onTap: (cordinate) {
             _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
             addMarker(cordinate);
