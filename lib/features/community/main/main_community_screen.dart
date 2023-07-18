@@ -294,44 +294,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
               ),
             ),
           ],
-          // bottom: PreferredSize(
-          //   preferredSize: const Size.fromHeight(50),
-          //   child: Container(
-          //     height: 50,
-          //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          //     child: ListView(
-          //       scrollDirection: Axis.horizontal,
-          //       children: [
-          //         SWAGStateDropDownButton(
-          //           initOption: _option1,
-          //           onChangeOption: _onChangeOption1,
-          //           title: "카테고리1",
-          //           options: _optionList1,
-          //           fontSize: _optionsFontSize,
-          //           padding: _optionsPadding,
-          //         ),
-          //         Gaps.h8,
-          //         SWAGStateDropDownButton(
-          //           initOption: _option2,
-          //           onChangeOption: _onChangeOption2,
-          //           title: "카테고리2",
-          //           options: _optionList2,
-          //           fontSize: _optionsFontSize,
-          //           padding: _optionsPadding,
-          //         ),
-          //         Gaps.h8,
-          //         SWAGStateDropDownButton(
-          //           initOption: _option3,
-          //           onChangeOption: _onChangeOption3,
-          //           title: "카테고리3",
-          //           options: _optionList3,
-          //           fontSize: _optionsFontSize,
-          //           padding: _optionsPadding,
-          //         ),
-          //       ],
-          //     ),
-          //   ),
-          // ),
         ),
         floatingActionButton: Column(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -387,18 +349,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         body: Stack(
           children: [
             Container(
-              // decoration: BoxDecoration(
-              //   gradient: LinearGradient(
-              //     // 스타일1
-              //     // stops: [0.09, 0.6],
-              //     // colors: [Colors.white, Color(0xFF4AA8D8)],
-              //     // 스타일2
-              //     stops: const [0.05, 0.5],
-              //     colors: [Colors.white, Colors.lightGreen.shade100],
-              //     begin: Alignment.topCenter,
-              //     end: Alignment.bottomCenter,
-              //   ),
-              // ),
               child: RefreshIndicator.adaptive(
                 onRefresh: _refreshComunityList,
                 child: CustomScrollView(
@@ -406,112 +356,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   // CustomScrollView 안에 들어갈 element들
                   // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
                   slivers: [
-                    // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-                    // SliverToBoxAdapter(
-                    //   child: Padding(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       vertical: Sizes.size10,
-                    //       horizontal: Sizes.size20,
-                    //     ),
-                    //     child: Center(
-                    //       child: Column(
-                    //         children: [
-                    //           Container(
-                    //             padding: const EdgeInsets.only(
-                    //               right: Sizes.size10,
-                    //               left: Sizes.size10,
-                    //               bottom: Sizes.size6,
-                    //             ),
-                    //             child: Row(
-                    //               mainAxisAlignment:
-                    //                   MainAxisAlignment.spaceBetween,
-                    //               children: [
-                    //                 const Text(
-                    //                   "공지사항",
-                    //                   style: TextStyle(
-                    //                     fontSize: Sizes.size20,
-                    //                     fontWeight: FontWeight.bold,
-                    //                   ),
-                    //                 ),
-                    //                 GestureDetector(
-                    //                   onTap: () {
-                    //                     context.pushNamed(
-                    //                       CustomerServiceScreen.routeName,
-                    //                       extra: CustomerServiceScreenArgs(
-                    //                         initSelectedIndex: 0,
-                    //                         isLogined: widget.isLogined,
-                    //                       ),
-                    //                     );
-                    //                   },
-                    //                   child: Text(
-                    //                     "더보기 >",
-                    //                     style: TextStyle(
-                    //                       fontSize: Sizes.size16,
-                    //                       fontWeight: FontWeight.w600,
-                    //                       color: Colors.grey.shade500,
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ],
-                    //             ),
-                    //           ),
-                    //           CarouselSlider.builder(
-                    //             itemBuilder: (context, index, realIndex) {
-                    //               final item = noticeList[index];
-                    //               return GestureDetector(
-                    //                 onTap: () {
-                    //                   context.pushNamed(
-                    //                     NoticeDetailScreen.routeName,
-                    //                     extra: NoticeDetailScreenArgs(
-                    //                       noticeId: item["id"],
-                    //                       noticeTitle: item["title"],
-                    //                       noticeContent: item["content"],
-                    //                       noticeDate: item["date"],
-                    //                       noticeImage: [
-                    //                         "assets/images/70836_50981_2758.jpg"
-                    //                       ],
-                    //                       isLogined: widget.isLogined,
-                    //                       isPageWhere: true,
-                    //                     ),
-                    //                   );
-                    //                 },
-                    //                 child: NoticeItem(
-                    //                   noticeId: item["id"],
-                    //                   noticeTitle: item["title"],
-                    //                   noticeContent: item["content"],
-                    //                   noticeDate: item["date"],
-                    //                   noticeImage: const [
-                    //                     "assets/images/70836_50981_2758.jpg"
-                    //                   ],
-                    //                   isLogined: widget.isLogined,
-                    //                 ),
-                    //               );
-                    //             },
-                    //             itemCount: 5,
-                    //             options: CarouselOptions(
-                    //               aspectRatio: 10 / 4,
-                    //               enlargeCenterPage: true,
-                    //               enableInfiniteScroll: false,
-                    //               onPageChanged: (index, reason) {
-                    //                 setState(() {
-                    //                   _currentNoticeIndex = index;
-                    //                 });
-                    //               },
-                    //               // 옵션 설정
-                    //             ),
-                    //             // 인디케이터 설정
-                    //             carouselController: _carouselController,
-                    //             // 페이지 변화 이벤트 등록
-                    //           ),
-                    //           SWAGCustomIndicator(
-                    //             currentNoticeIndex: _currentNoticeIndex,
-                    //             noticeItemLength: 5,
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                     SliverToBoxAdapter(
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),

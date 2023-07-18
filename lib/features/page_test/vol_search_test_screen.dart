@@ -194,7 +194,6 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                       color: Colors.white,
                     ),
                     child: ListTile(
-                      contentPadding: EdgeInsets.zero,
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       leading: Image.asset(
                         "assets/images/70836_50981_2758.jpg",
@@ -210,7 +209,6 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                         item["contnet"],
                       ),
                       trailing: Column(
-                        // mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [

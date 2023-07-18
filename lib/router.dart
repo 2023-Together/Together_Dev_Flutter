@@ -4,9 +4,9 @@ import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart
 import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
+import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/logo_loading_screen.dart';
 import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
-import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
