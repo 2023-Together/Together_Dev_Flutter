@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_main_screen.dart';
 import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/page_test/org_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
 import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
@@ -16,7 +15,9 @@ import 'package:swag_cross_app/providers/UserProvider.dart';
 class MainNavigationArgs {
   final int initSelectedIndex;
 
-  MainNavigationArgs({required this.initSelectedIndex});
+  MainNavigationArgs({
+    this.initSelectedIndex = 0,
+  });
 }
 
 class MainNavigation extends StatefulWidget {
@@ -24,7 +25,7 @@ class MainNavigation extends StatefulWidget {
   static const routeURL = "/main";
   const MainNavigation({
     super.key,
-    this.initSelectedIndex = 2,
+    this.initSelectedIndex = 0,
   });
 
   final int initSelectedIndex;
@@ -64,11 +65,11 @@ class _MainNavigationState extends State<MainNavigation> {
   // }
 
   void _onTap(int index) {
-    if (index == 2) {
+    if (index == 0) {
       setState(() {
         _selectedIndex = index;
       });
-    } else if ((index == 3 || index == 4) &&
+    } else if ((index == 2 || index == 3) &&
         !context.read<UserProvider>().isLogined) {
       // LoginStorage.loginCheckIsNone(context, mounted);
       final loginType = context.read<UserProvider>().isLogined;
@@ -107,23 +108,23 @@ class _MainNavigationState extends State<MainNavigation> {
           // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
           Offstage(
             offstage: _selectedIndex != 0,
-            //child: const SearchVolScreen(),
-            child: const VolSearchTestScreen(),
-          ),
-          Offstage(
-            offstage: _selectedIndex != 1,
-            child: const OrgSearchTestScreen(),
-          ),
-          Offstage(
-            offstage: _selectedIndex != 2,
             child: const MainCommunityScreen(),
           ),
           Offstage(
-            offstage: _selectedIndex != 3,
+            offstage: _selectedIndex != 1,
+            //child: const SearchVolScreen(),
+            child: const VolSearchTestScreen(),
+          ),
+          // Offstage(
+          //   offstage: _selectedIndex != 1,
+          //   child: const OrgSearchTestScreen(),
+          // ),
+          Offstage(
+            offstage: _selectedIndex != 2,
             child: const ClubMainScreen(),
           ),
           Offstage(
-            offstage: _selectedIndex != 4,
+            offstage: _selectedIndex != 3,
             //child: const UserProfileScreen(),
             child: const UserProfileTestScreen(),
             //child: const UserProfileTestScreen(),
@@ -138,51 +139,51 @@ class _MainNavigationState extends State<MainNavigation> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               NavTab(
-                text: "봉사",
+                text: "홈",
                 isSelected: _selectedIndex == 0,
-                unSelectedIcon: Icons.manage_search_outlined,
-                selectedIcon: Icons.manage_search,
+                unSelectedIcon: Icons.home_outlined,
+                selectedIcon: Icons.home,
                 onTap: () => _onTap(0),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
                 isLogined: isLogined,
               ),
               NavTab(
-                text: "기관",
+                text: "봉사",
                 isSelected: _selectedIndex == 1,
-                unSelectedIcon: Icons.content_paste_search,
-                selectedIcon: Icons.content_paste_search_outlined,
+                unSelectedIcon: Icons.manage_search_outlined,
+                selectedIcon: Icons.manage_search,
                 onTap: () => _onTap(1),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
                 isLogined: isLogined,
               ),
+              // NavTab(
+              //   text: "기관",
+              //   isSelected: _selectedIndex == 1,
+              //   unSelectedIcon: Icons.content_paste_search,
+              //   selectedIcon: Icons.content_paste_search_outlined,
+              //   onTap: () => _onTap(1),
+              //   selectedIndex: _selectedIndex,
+              //   imgURI: "",
+              //   isLogined: isLogined,
+              // ),
               NavTab(
-                text: "홈",
+                text: "동아리",
                 isSelected: _selectedIndex == 2,
-                unSelectedIcon: Icons.home_outlined,
-                selectedIcon: Icons.home,
+                unSelectedIcon: Icons.groups_2_outlined,
+                selectedIcon: Icons.groups_2,
                 onTap: () => _onTap(2),
                 selectedIndex: _selectedIndex,
                 imgURI: "",
                 isLogined: isLogined,
               ),
               NavTab(
-                text: "동아리",
-                isSelected: _selectedIndex == 3,
-                unSelectedIcon: Icons.groups_2_outlined,
-                selectedIcon: Icons.groups_2,
-                onTap: () => _onTap(3),
-                selectedIndex: _selectedIndex,
-                imgURI: "",
-                isLogined: isLogined,
-              ),
-              NavTab(
                 text: "프로필",
-                isSelected: _selectedIndex == 4,
+                isSelected: _selectedIndex == 3,
                 unSelectedIcon: FontAwesomeIcons.circleUser,
                 selectedIcon: FontAwesomeIcons.solidCircleUser,
-                onTap: () => _onTap(4),
+                onTap: () => _onTap(3),
                 selectedIndex: _selectedIndex,
                 imgURI: "https://avatars.githubusercontent.com/u/77985708?v=4",
                 isLogined: isLogined,

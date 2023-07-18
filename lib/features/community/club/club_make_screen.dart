@@ -17,6 +17,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   final TextEditingController _contentController = TextEditingController();
 
   bool _isThereSearchValue = false;
+  bool _isRequest = false;
 
   void _textOnChange(String? value) {
     setState(() {
@@ -28,6 +29,19 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   Future<void> _onSubmitFinishButton() async {
     print("제목 : ${_titleController.text}");
     print("내용 : ${_contentController.text}");
+  }
+
+  void _onChangeCheckBox(bool? value) {
+    if (value == null) return;
+    setState(() {
+      _isRequest = value;
+    });
+  }
+
+  void _onTapCheckBoxText() {
+    setState(() {
+      _isRequest = !_isRequest;
+    });
   }
 
   @override
@@ -96,6 +110,19 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
                   print(_contentController.text);
                 },
                 onChanged: _textOnChange,
+              ),
+              Gaps.v20,
+              Row(
+                children: [
+                  Checkbox.adaptive(
+                    value: _isRequest,
+                    onChanged: _onChangeCheckBox,
+                  ),
+                  GestureDetector(
+                    onTap: _onTapCheckBoxText,
+                    child: const Text("동아리원 모집 여부"),
+                  ),
+                ],
               ),
             ],
           ),

@@ -7,21 +7,19 @@ import 'package:swag_cross_app/features/community/club/club_search_detail_screen
 class ClubRequestCard extends StatelessWidget {
   const ClubRequestCard({
     super.key,
-    required this.postTitle,
-    required this.postContent,
+    required this.clubDef,
     required this.clubName,
     required this.clubMaster,
-    required this.postDate,
     required this.isRequest,
-    required this.postId,
+    required this.clubId,
+    required this.clubNum,
   });
 
-  final int postId;
-  final String postTitle;
-  final String postContent;
+  final int clubId;
+  final String clubDef;
   final String clubName;
   final String clubMaster;
-  final String postDate;
+  final int clubNum;
   final bool isRequest;
 
   @override
@@ -31,11 +29,9 @@ class ClubRequestCard extends StatelessWidget {
         context.pushNamed(
           ClubSearchDetailScreen.routeName,
           extra: ClubSearchDetailScreenArgs(
-            postId: postId,
-            postTitle: postTitle,
-            postContent: postContent,
+            clubId: clubId,
+            clubDef: clubDef,
             clubName: clubName,
-            postDate: postDate,
             clubMaster: clubMaster,
           ),
         );
@@ -77,37 +73,57 @@ class ClubRequestCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        postTitle,
+                        clubName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      if (isRequest)
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 6, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Colors.purple.shade300,
-                            // border: Border.all(
-                            //   width: 1,
-                            // ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
+                      isRequest
+                          ? Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.purple.shade300,
+                                // border: Border.all(
+                                //   width: 1,
+                                // ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                "신청 가능",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 6, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.grey.shade400,
+                                // border: Border.all(
+                                //   width: 1,
+                                // ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                "신청 불가능",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            "신청 가능",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   const Divider(),
                   Text(
-                    postContent,
+                    clubDef,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -116,8 +132,8 @@ class ClubRequestCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(clubName),
-                      Text(postDate),
+                      const Text("26명"),
+                      Text(clubMaster),
                     ],
                   ),
                 ],

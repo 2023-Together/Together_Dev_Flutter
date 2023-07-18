@@ -5,19 +5,15 @@ import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class ClubSearchDetailScreenArgs {
-  final int postId;
-  final String postTitle;
-  final String postContent;
+  final int clubId;
+  final String clubDef;
   final String clubName;
-  final String postDate;
   final String clubMaster;
 
   ClubSearchDetailScreenArgs({
-    required this.postId,
-    required this.postTitle,
-    required this.postContent,
+    required this.clubId,
+    required this.clubDef,
     required this.clubName,
-    required this.postDate,
     required this.clubMaster,
   });
 }
@@ -28,19 +24,15 @@ class ClubSearchDetailScreen extends StatelessWidget {
 
   const ClubSearchDetailScreen({
     super.key,
-    required this.postId,
-    required this.postTitle,
-    required this.postContent,
+    required this.clubId,
+    required this.clubDef,
     required this.clubName,
-    required this.postDate,
     required this.clubMaster,
   });
 
-  final int postId;
-  final String postTitle;
-  final String postContent;
+  final int clubId;
+  final String clubDef;
   final String clubName;
-  final String postDate;
   final String clubMaster;
 
   void _onSubmit(BuildContext context) {
@@ -56,7 +48,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
         TextButton(
           onPressed: () => context.goNamed(
             MainNavigation.routeName,
-            extra: MainNavigationArgs(initSelectedIndex: 3),
+            extra: MainNavigationArgs(initSelectedIndex: 2),
           ),
           child: const Text("예"),
         ),
@@ -107,7 +99,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Gaps.v10,
-                  _title(title: postTitle),
+                  _title(title: clubName),
                   Gaps.v10,
                   Container(
                     height: 180,
@@ -121,24 +113,11 @@ class ClubSearchDetailScreen extends StatelessWidget {
                     child: Scrollbar(
                       child: SingleChildScrollView(
                         child: Text(
-                          postContent,
+                          clubDef,
                           style: Theme.of(context).textTheme.bodyMedium,
                           maxLines: null,
                         ),
                       ),
-                    ),
-                  ),
-                  Gaps.v16,
-                  RichText(
-                    text: TextSpan(
-                      style: Theme.of(context).textTheme.bodyLarge,
-                      children: [
-                        const TextSpan(text: "동아리 이름 : "),
-                        TextSpan(
-                          text: clubName,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
                     ),
                   ),
                   Gaps.v10,
@@ -157,10 +136,6 @@ class ClubSearchDetailScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                      Text(
-                        postDate,
-                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ],
                   ),

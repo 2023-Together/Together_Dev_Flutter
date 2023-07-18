@@ -9,8 +9,6 @@ import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 
-import 'package:http/http.dart' as http;
-
 class AuthButton extends StatefulWidget {
   const AuthButton({
     super.key,
@@ -93,11 +91,11 @@ class _AuthButtonState extends State<AuthButton> {
     //   );
     // }
 
-    final url = Uri.parse("http://112.164.125.246:8080/together/selectAllUser");
-    final response = await http.get(url, headers: {});
+    // final url = Uri.parse("http://112.164.125.246:80/together/selectAllUser");
+    // final response = await http.post(url);
 
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
 
     if (!mounted) return;
     context.read<UserProvider>().login("naver");
