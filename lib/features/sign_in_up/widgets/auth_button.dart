@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
 
-class SignInButton extends StatefulWidget {
-  const SignInButton({
+class AuthButton extends StatefulWidget {
+  const AuthButton({
     super.key,
     required this.signType,
     required this.authType,
@@ -22,10 +24,10 @@ class SignInButton extends StatefulWidget {
   final SignType authType;
 
   @override
-  State<SignInButton> createState() => _SignInButtonState();
+  State<AuthButton> createState() => _AuthButtonState();
 }
 
-class _SignInButtonState extends State<SignInButton> {
+class _AuthButtonState extends State<AuthButton> {
   @override
   void initState() {
     super.initState();
@@ -63,9 +65,40 @@ class _SignInButtonState extends State<SignInButton> {
 
   // 네이버 로그인
   void _signInForNaver(BuildContext context) async {
-    // await LoginStorage.saveLoginType("naver");
+    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
+    // final NaverLoginResult result = await FlutterNaverLogin.logIn();
+
+    // if (!mounted) return;
+    // if (result.status == NaverLoginStatus.loggedIn) {
+    //   print('accessToken = ${result.accessToken}');
+
+    //   final userData = result.account;
+    //   print(userData);
+
+    //   context.read<UserProvider>().login("naver");
+    //   context.goNamed(MainNavigation.routeName);
+    // } else {
+    //   swagPlatformDialog(
+    //     context: context,
+    //     title: "오류!",
+    //     message: result.errorMessage,
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () => context.pop(),
+    //         child: const Text("알겠습니다"),
+    //       ),
+    //     ],
+    //   );
+    // }
+
+    // final url = Uri.parse("http://112.164.125.246:80/together/selectAllUser");
+    // final response = await http.post(url);
+
+    // print('Response status: ${response.statusCode}');
+    // print('Response body: ${response.body}');
 
     if (!mounted) return;
+    context.read<UserProvider>().login("naver");
     context.goNamed(MainNavigation.routeName);
   }
 

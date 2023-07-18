@@ -28,16 +28,16 @@ class SWAGExpansionTileCard extends StatefulWidget {
 }
 
 class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
-  bool _isExpanded = false;
+  final bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
-      onExpansionChanged: (value) {
-        setState(() {
-          _isExpanded = value;
-        });
-      },
+      // onExpansionChanged: (value) {
+      //   setState(() {
+      //     _isExpanded = value;
+      //   });
+      // },
       title: Text(
         widget.title,
       ),
@@ -49,10 +49,10 @@ class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
                 color: Colors.grey.shade600,
               ),
             ),
-      trailing: Icon(
-        _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
-        size: 30,
-      ),
+      // trailing: Icon(
+      //   _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+      //   size: 30,
+      // ),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         SizedBox(

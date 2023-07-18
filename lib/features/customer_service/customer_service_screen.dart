@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/faq/faq_screen.dart';
-import 'package:swag_cross_app/features/customer_service/inquiry/inquiry_screen.dart';
 import 'package:swag_cross_app/features/customer_service/suggestion/suggestion_screen.dart';
 
 final tabs = [
   "자주묻는 질문",
-  "문의하기",
+  // "문의하기",
   "건의하기",
 ];
 
@@ -112,10 +111,10 @@ class _CustomerServiceScreenState extends State<CustomerServiceScreen> {
                 offstage: false,
                 child: FAQScreen(),
               ),
-              Offstage(
-                offstage: false,
-                child: InquiryScreen(),
-              ),
+              // Offstage(
+              //   offstage: false,
+              //   child: InquiryScreen(),
+              // ),
               Offstage(
                 offstage: false,
                 child: SuggestionScreen(),

@@ -39,7 +39,7 @@ dependencies:
   # 시중에 있는 무료 아이콘 라이브러리
   font_awesome_flutter: ^10.3.0
 
-  get: ^4.6.5
+  # get: ^4.6.5
 
   # 통신 라이브러리
   http: ^0.13.5
@@ -49,9 +49,6 @@ dependencies:
 
   # 스토리지 만드는 라이브러리
   flutter_secure_storage: ^8.0.0
-
-  # 테이블 달력 만드는 라이브러리
-  table_calendar: ^3.0.9
 
   # 메시지 번역, 복수형 및 성별, 날짜/숫자 형식 지정 및 구문 분석, 양방향 텍스트를 포함한 국제화 및 현지화 기능을 제공합니다.
   intl: ^0.18.0
@@ -76,6 +73,9 @@ dependencies:
 
   # Grid를 동적으로 배치하기 위한 라이브러리
   flutter_staggered_grid_view: ^0.6.2
+
+  # XML을 Json으로 변환시켜주는 라이브러리
+  xml2json: ^6.1.0
 
 dev_dependencies:
   flutter_test:
