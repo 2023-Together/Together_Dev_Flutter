@@ -295,6 +295,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                             context.pushNamed(
                               PostEditScreen.routeName,
                               extra: PostEditScreenArgs(
+                                pageTitle: "게시글 수정",
+                                editType: "post_update",
                                 id: widget.postId,
                                 category: widget.category,
                                 title: widget.title,

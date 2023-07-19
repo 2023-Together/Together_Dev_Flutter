@@ -47,11 +47,13 @@ class SignUpIdPwScreen extends StatefulWidget {
 }
 
 class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
+  final TextEditingController _nickNameController = TextEditingController();
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _pwConfirmController = TextEditingController();
 
   bool _isEditFinished = false;
+  String? _nickNameError;
   String? _idError;
   String? _pwError;
   String? _pwConfirmError;
@@ -59,9 +61,32 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
   void _onChangeAllText() {
     _isEditFinished =
         (_idError == null && _idController.text.trim().isNotEmpty) &&
+            (_idError == null && _idController.text.trim().isNotEmpty) &&
             (_pwError == null && _pwController.text.trim().isNotEmpty) &&
             _pwController.text == _pwConfirmController.text;
     setState(() {});
+  }
+
+  bool _onChangeNickName(String? value) {
+    if (value == null) return false;
+    // 비밀번호 정규식 패턴
+    RegExp nickNameRegex = RegExp('[^a-zA-Z0-9\\s]');
+    if (value.isEmpty) {
+      setState(() {
+        _nickNameError = '닉네임을 입력해주세요!';
+      });
+      return false;
+    } else if (!nickNameRegex.hasMatch(value)) {
+      setState(() {
+        _nickNameError = '특수문자는 입력할수 없습니다!';
+      });
+      return false;
+    }
+    setState(() {
+      _nickNameError = null;
+      _onChangeAllText();
+    });
+    return true;
   }
 
   void _onChangeId(String? value) {
@@ -149,6 +174,18 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(
+                "닉네임",
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              Gaps.v10,
+              SWAGTextField(
+                hintText: "SNS에서 사용할 닉네임을 입력해주세요.",
+                maxLine: 1,
+                controller: _nickNameController,
+                onChanged: _onChangeNickName,
+              ),
+              Gaps.v20,
               Text(
                 "아이디",
                 style: Theme.of(context).textTheme.titleMedium,

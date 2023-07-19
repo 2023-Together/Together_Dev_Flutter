@@ -11,6 +11,8 @@ import 'package:swag_cross_app/features/user_profile/view/user_profile_card.dart
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
+import 'package:http/http.dart' as http;
+
 final List<Map<String, dynamic>> userDatas = [
   {
     "userDid": "1",
@@ -27,6 +29,7 @@ class UserProfileTestScreen extends StatefulWidget {
   static const routeName = "user_profile";
   static const routeURL = "/user_profile";
 
+class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
 
   @override
@@ -48,6 +51,28 @@ class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
 
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
+  }
+  
+  void httpTest() async {
+    try {
+      final url =
+          Uri.parse('http://203.255.225.4:8080/together/club/getAllClub');
+      final response = await http.get(url);
+
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      // 응답 처리
+      if (response.statusCode == 200) {
+        // 성공적인 응답 처리
+      } else {
+        // 응답 오류 처리
+      }
+    } catch (e) {
+      // 예외 처리
+      print('예외 발생: $e');
+      // 예외에 따른 추가 처리 수행
+    }
   }
 
   @override
@@ -173,7 +198,7 @@ class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
                   ),
                   // FadeInImage : 실제 사진이 로드 되기 전까지 지정한 이미지를 보여줌
                   itemBuilder: (context, index) => LayoutBuilder(
-                    builder: (context, constraints) => Container(
+                    builder: (context, constraints) => SizedBox(
                       child: Stack(
                         children: [
                           AspectRatio(

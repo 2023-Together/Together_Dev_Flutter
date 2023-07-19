@@ -10,8 +10,11 @@ class PostLikeModel {
     required this.likePostId,
   });
 
-  PostLikeModel.fromJson(Map<String, dynamic> json)
-      : likeId = json['like_id'],
-        likeUserDid = json['like_user_did'],
-        likePostId = json['like_post_id'];
+  factory PostLikeModel.fromJson(Map<String, dynamic> json) {
+    return PostLikeModel(
+      likeId: json['like_id'],
+      likeUserDid: json['like_user_did'],
+      likePostId: json['like_post_id'],
+    );
+  }
 }

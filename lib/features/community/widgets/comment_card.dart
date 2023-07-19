@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 
 class CommentCard extends StatefulWidget {
@@ -64,7 +63,7 @@ class _CommentCardState extends State<CommentCard> {
                       widget.comment * 10,
                       maxLines: _isExpanded ? null : 4,
                       overflow: _isExpanded ? null : TextOverflow.ellipsis,
-                      style: context.textTheme.bodyMedium,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     InkWell(
                       onTap: () {
