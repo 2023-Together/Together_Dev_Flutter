@@ -73,6 +73,12 @@ dependencies:
 
   # Grid를 동적으로 배치하기 위한 라이브러리
   flutter_staggered_grid_view: ^0.6.2
+  
+  # 위도, 경도를 불러오는 라이브러리
+  geolocator: ^9.0.2
+
+  # 구글 맵 라이브러리
+  google_maps_flutter: ^2.3.1
 
   # XML을 Json으로 변환시켜주는 라이브러리
   xml2json: ^6.1.0

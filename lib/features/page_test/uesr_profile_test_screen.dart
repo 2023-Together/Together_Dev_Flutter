@@ -5,13 +5,38 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_card.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
 import 'package:http/http.dart' as http;
 
+final List<Map<String, dynamic>> userDatas = [
+  {
+    "userDid": "1",
+    "userId": "thdusrkd01@naver.com",
+    "userPw": "000000",
+    "userName": "강소연",
+    "userDef": "hello!",
+    "userType": "봉사자",
+    "birth": "2001-09-28"
+  },
+];
+
+class UserProfileTestScreen extends StatefulWidget {
+  static const routeName = "user_profile";
+  static const routeURL = "/user_profile";
+
 class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
+
+  @override
+  State<UserProfileTestScreen> createState() => _UserProfileTestScreenState();
+}
+
+class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
 
   void onLogoutAllTap(BuildContext context) {
     LoginStorage.resetLoginData();
@@ -24,6 +49,10 @@ class UserProfileTestScreen extends StatelessWidget {
     context.pushReplacementNamed(MainNavigation.routeName);
   }
 
+  void _userSetupTap() {
+    context.pushNamed(UserInformSetup.routeName);
+  }
+  
   void httpTest() async {
     try {
       final url =
@@ -83,7 +112,8 @@ class UserProfileTestScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
-                            onTap: () => onLogoutTap(context),
+                            onTap: _userSetupTap,
+                            // () => onLogoutTap(context),
                             child: const Icon(Icons.settings_outlined),
                           ),
                         ],
@@ -94,33 +124,14 @@ class UserProfileTestScreen extends StatelessWidget {
                 SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      ListTile(
-                        leading: const CircleAvatar(
-                          radius: 40,
-                          backgroundImage: NetworkImage(
-                            "https://avatars.githubusercontent.com/u/77985708?v=4",
-                          ),
-                        ),
-                        title: const Text(
-                          "이재현",
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Sizes.size18,
-                          ),
-                        ),
-                        subtitle: const Text(
-                          "SWAG 동아리",
-                          style: TextStyle(
-                            fontSize: Sizes.size14,
-                          ),
-                        ),
-                        trailing: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.chevron_right_rounded,
-                            size: Sizes.size40,
-                          ),
-                        ),
+                      UserProfileCard(
+                        userDid: userDatas[0]['userDid'],
+                        userId: userDatas[0]['userId'],
+                        userPw: userDatas[0]['userPw'],
+                        userName: userDatas[0]['userName'],
+                        userDef: userDatas[0]['userDef'],
+                        userType: userDatas[0]['userType'],
+                        birth: userDatas[0]['birth'],
                       ),
                       Gaps.v10,
                       Row(
@@ -137,28 +148,6 @@ class UserProfileTestScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [Text("봉사 완료"), Text("6건")],
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () => onLogoutTap(context),
-                            child: const Text("로그아웃"),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => onLogoutAllTap(context),
-                            child: const Text("로그아웃(계정삭제)"),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: httpTest,
-                            child: const Text("통신 테스트"),
                           ),
                         ],
                       ),
