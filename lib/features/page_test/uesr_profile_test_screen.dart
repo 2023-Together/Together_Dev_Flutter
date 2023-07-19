@@ -27,7 +27,7 @@ class UserProfileTestScreen extends StatelessWidget {
   void httpTest() async {
     try {
       final url =
-          Uri.parse('http://203.255.225.4:8080/together/club/getAllClub');
+          Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
       final response = await http.get(url);
 
       print('Response status: ${response.statusCode}');
