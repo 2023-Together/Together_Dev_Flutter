@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
@@ -144,28 +142,14 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   void _toggleOnlyRequest() {
     _scrollToTop();
+    clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
+    filteredList = clubSearchPostList
+        .where((element) => element["isRequest"] == true)
+        .toList();
     setState(() {
       _isOnlyRequest = !_isOnlyRequest;
     });
   }
-
-  // void _onChangeOption1(String option) {
-  //   setState(() {
-  //     _option1 = option;
-  //   });
-  // }
-
-  // void _onChangeOption2(String option) {
-  //   setState(() {
-  //     _option2 = option;
-  //   });
-  // }
-
-  // void _onChangeOption3(String option) {
-  //   setState(() {
-  //     _option3 = option;
-  //   });
-  // }
 
   // void onChangeOption1(String? value) {
   @override
@@ -189,22 +173,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 FontAwesomeIcons.arrowUp,
                 color: Colors.black,
               ),
-            ),
-          ),
-          Gaps.v6,
-          FloatingActionButton(
-            heroTag: "community_edit",
-            onPressed: () {
-              // 동아리 게시글 작성
-              context.pushNamed(
-                PostEditScreen.routeName,
-                extra: PostEditScreenArgs(maxImages: 1),
-              );
-            },
-            backgroundColor: Colors.blue.shade300,
-            child: const FaIcon(
-              FontAwesomeIcons.penToSquare,
-              color: Colors.black,
             ),
           ),
         ],
@@ -265,23 +233,21 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 if (_isOnlyRequest) {
                   final item = filteredList[index];
                   return ClubRequestCard(
-                    postId: item["postId"],
-                    postTitle: item["postTitle"],
-                    postContent: item["postContent"],
+                    clubId: item["clubId"],
+                    clubDef: item["clubDef"],
                     clubName: item["clubName"],
                     clubMaster: item["clubMaster"],
-                    postDate: item["postDate"],
+                    clubNum: item["clubNum"],
                     isRequest: item["isRequest"],
                   );
                 } else {
                   final item = clubSearchPostList[index];
                   return ClubRequestCard(
-                    postId: item["postId"],
-                    postTitle: item["postTitle"],
-                    postContent: item["postContent"],
+                    clubId: item["clubId"],
+                    clubDef: item["clubDef"],
                     clubName: item["clubName"],
                     clubMaster: item["clubMaster"],
-                    postDate: item["postDate"],
+                    clubNum: item["clubNum"],
                     isRequest: item["isRequest"],
                   );
                 }
@@ -338,114 +304,102 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
 List<Map<String, dynamic>> clubSearchPostList = [
   {
-    "postId": 1,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 1,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-09",
     "clubMaster": "이재현",
+    "clubNum": 22,
     "isRequest": true,
   },
   {
-    "postId": 2,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 2,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-07",
     "clubMaster": "이재현",
+    "clubNum": 64,
     "isRequest": true,
   },
   {
-    "postId": 3,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 3,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-04-20",
     "clubMaster": "이재현",
+    "clubNum": 21,
     "isRequest": false,
   },
   {
-    "postId": 4,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 4,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-06-25",
     "clubMaster": "이재현",
+    "clubNum": 18,
     "isRequest": true,
   },
   {
-    "postId": 5,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 5,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-01",
     "clubMaster": "이재현",
+    "clubNum": 8,
     "isRequest": false,
   },
   {
-    "postId": 6,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 6,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-10",
     "clubMaster": "이재현",
+    "clubNum": 37,
     "isRequest": false,
   },
 ];
 
 List<Map<String, dynamic>> initClubSearchPostList = [
   {
-    "postId": 1,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 1,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-09",
     "clubMaster": "이재현",
+    "clubNum": 22,
     "isRequest": true,
   },
   {
-    "postId": 2,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 2,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-07",
     "clubMaster": "이재현",
+    "clubNum": 64,
     "isRequest": true,
   },
   {
-    "postId": 3,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 3,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-04-20",
     "clubMaster": "이재현",
+    "clubNum": 21,
     "isRequest": false,
   },
   {
-    "postId": 4,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 4,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-06-25",
     "clubMaster": "이재현",
+    "clubNum": 18,
     "isRequest": true,
   },
   {
-    "postId": 5,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 5,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-01",
     "clubMaster": "이재현",
+    "clubNum": 8,
     "isRequest": false,
   },
   {
-    "postId": 6,
-    "postTitle": "SWAG 동아리원 모집",
-    "postContent": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubId": 6,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
     "clubName": "SWAG 동아리",
-    "postDate": "2023-07-10",
     "clubMaster": "이재현",
+    "clubNum": 37,
     "isRequest": false,
   },
 ];

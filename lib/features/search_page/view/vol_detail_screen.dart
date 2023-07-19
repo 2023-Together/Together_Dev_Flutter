@@ -193,9 +193,9 @@ class _VolDetailScreenState extends State<VolDetailScreen>
         builder: (context) {
           return AlertDialog(
             title: const Text('봉사 신청'),
-            content: SingleChildScrollView(
+            content: const SingleChildScrollView(
               child: ListBody(
-                children: const <Widget>[
+                children: <Widget>[
                   Text('해당 봉사를 신청하시겠습니까?'),
                 ],
               ),

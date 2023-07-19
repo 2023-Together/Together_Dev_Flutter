@@ -12,6 +12,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class PostEditScreenArgs {
+  final String pageTitle;
+  final String editType;
   final int? id;
   final String? title;
   final String? category;
@@ -21,6 +23,8 @@ class PostEditScreenArgs {
   final int? maxImages;
 
   PostEditScreenArgs({
+    required this.pageTitle,
+    required this.editType,
     this.id,
     this.category,
     this.title,
@@ -37,6 +41,8 @@ class PostEditScreen extends StatefulWidget {
 
   const PostEditScreen(
       {super.key,
+      required this.pageTitle,
+      required this.editType,
       this.id,
       this.category,
       this.title,
@@ -45,6 +51,8 @@ class PostEditScreen extends StatefulWidget {
       this.isCategory,
       this.maxImages});
 
+  final String pageTitle;
+  final String editType;
   final int? id;
   final String? category;
   final String? title;
@@ -242,8 +250,8 @@ class _PostEditScreenState extends State<PostEditScreen> {
         onTap: () => FocusScope.of(context).unfocus(),
         child: CustomScrollView(
           slivers: [
-            const SliverAppBar(
-              title: Text("게시글 작성"),
+            SliverAppBar(
+              title: Text(widget.pageTitle),
             ),
             SliverToBoxAdapter(
               child: Padding(

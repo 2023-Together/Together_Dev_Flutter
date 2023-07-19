@@ -89,10 +89,10 @@ class SignUpCheckUserDataScreen extends StatelessWidget {
               name: "이름",
               data: name.replaceRange(1, 2, "*"),
             ),
-            UserDataBox(
-              name: "이메일",
-              data: email,
-            ),
+            // UserDataBox(
+            //   name: "이메일",
+            //   data: email,
+            // ),
             UserDataBox(
               name: "성별",
               data: gender == "M" ? "남" : "여",
@@ -101,10 +101,10 @@ class SignUpCheckUserDataScreen extends StatelessWidget {
               name: "생년월일",
               data: birthday,
             ),
-            UserDataBox(
-              name: "전화번호",
-              data: mobile,
-            ),
+            // UserDataBox(
+            //   name: "전화번호",
+            //   data: mobile,
+            // ),
             Gaps.v20,
             Text(
               "주의사항 : 현재의 데이터 중에서 틀린 부분이 있으면 네이버계정 정보를 수정후 다시 회원가입을 시도하시기 바랍니다!",
