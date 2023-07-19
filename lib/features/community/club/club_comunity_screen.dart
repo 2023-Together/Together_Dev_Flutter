@@ -273,44 +273,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
             ),
           ),
         ],
-        // bottom: PreferredSize(
-        //   preferredSize: const Size.fromHeight(50),
-        //   child: Container(
-        //     height: 50,
-        //     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        //     child: ListView(
-        //       scrollDirection: Axis.horizontal,
-        //       children: [
-        //         SWAGStateDropDownButton(
-        //           initOption: _option1,
-        //           onChangeOption: _onChangeOption1,
-        //           title: "카테고리1",
-        //           options: _optionList1,
-        //           fontSize: _optionsFontSize,
-        //           padding: _optionsPadding,
-        //         ),
-        //         Gaps.h8,
-        //         SWAGStateDropDownButton(
-        //           initOption: _option2,
-        //           onChangeOption: _onChangeOption2,
-        //           title: "카테고리2",
-        //           options: _optionList2,
-        //           fontSize: _optionsFontSize,
-        //           padding: _optionsPadding,
-        //         ),
-        //         Gaps.h8,
-        //         SWAGStateDropDownButton(
-        //           initOption: _option3,
-        //           onChangeOption: _onChangeOption3,
-        //           title: "카테고리3",
-        //           options: _optionList3,
-        //           fontSize: _optionsFontSize,
-        //           padding: _optionsPadding,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

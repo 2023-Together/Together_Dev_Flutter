@@ -132,8 +132,8 @@ class ClubRequestCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("26명"),
-                      Text(clubMaster),
+                      Text("인원 : $clubNum명"),
+                      Text("동아리장 : $clubMaster"),
                     ],
                   ),
                 ],

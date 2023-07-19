@@ -212,7 +212,7 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                       locationStr: item["locationStr"] ?? "", 
                       startTime: item["startTime"] ?? "", 
                       endTime: item["endTime"] ?? "",
-                      ),
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) => Gaps.v10,
