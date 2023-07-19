@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_card.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
@@ -29,7 +28,6 @@ class UserProfileTestScreen extends StatefulWidget {
   static const routeName = "user_profile";
   static const routeURL = "/user_profile";
 
-class UserProfileTestScreen extends StatelessWidget {
   const UserProfileTestScreen({super.key});
 
   @override
@@ -37,7 +35,6 @@ class UserProfileTestScreen extends StatelessWidget {
 }
 
 class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
-
   void onLogoutAllTap(BuildContext context) {
     LoginStorage.resetLoginData();
     context.read<UserProvider>().logout();
@@ -52,11 +49,11 @@ class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
-  
+
   void httpTest() async {
     try {
       final url =
-          Uri.parse('http://203.255.225.4:8080/together/club/getAllClub');
+          Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
       final response = await http.get(url);
 
       print('Response status: ${response.statusCode}');
