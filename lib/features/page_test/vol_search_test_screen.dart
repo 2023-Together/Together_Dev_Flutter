@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
@@ -17,74 +18,84 @@ final List<String> volCategories = [
 
 final List<Map<String, dynamic>> volDatas = [
   {
-    "title": "봉사1",
-    "contnet": "내용1",
-    "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "title": "체육관 보조 자원봉사자 모집",
+    "contnet": "주말 체육관 보조 자원봉사자 모집합니다.",
+    "startTime": "2023.07.01 09:00",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 상평동",
+    "host": "진주 생활체육관",
   },
   {
-    "title": "봉사2",
-    "contnet": "내용2",
-    "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "title": "도서관 자원봉사자 모집",
+    "contnet": "도서관 자원봉사자 모집합니다.",
+    "startTime": "2023.07.01 09:00",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "경상대학교 중앙도서관",
   },
   {
-    "title": "봉사3",
-    "contnet": "내용3",
-    "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "title": "자원봉사자 모집",
+    "contnet": "자원봉사자 구합니다!",
+    "startTime": "2023.07.01 09:00",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
-    "title": "봉사4",
-    "contnet": "내용4",
+    "title": "전시회 보조 자원봉사자 모집",
+    "contnet": "전시회 보조 자원봉사자 모집합니다!",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사5",
     "contnet": "내용5",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사6",
     "contnet": "내용6",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사7",
     "contnet": "내용7",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사8",
     "contnet": "내용8",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사9",
     "contnet": "내용9",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
   {
     "title": "봉사10",
     "contnet": "내용10",
     "startTime": "2023.05.31 09:00",
-    "address": "진주시 가좌동",
-    "orgName": "연암공과대학교",
+    "endTime": "2023.07.30 18:00",
+    "locationStr": "진주시 가좌동",
+    "host": "연암공과대학교",
   },
 ];
 
@@ -189,37 +200,19 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
                 itemBuilder: (context, index) {
                   final item = volDatas[index];
                   return Container(
-                    height: 80,
+                    height: 140,
                     decoration: const BoxDecoration(
                       color: Colors.white,
                     ),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      leading: Image.asset(
-                        "assets/images/70836_50981_2758.jpg",
-                        width: 80,
+                    child: VolPostCard(
+                      id: item["item"] ?? "", 
+                      title: item["title"] ?? "", 
+                      contnet: item["contnet"] ?? "", 
+                      host: item["host"] ?? "", 
+                      locationStr: item["locationStr"] ?? "", 
+                      startTime: item["startTime"] ?? "", 
+                      endTime: item["endTime"] ?? "",
                       ),
-                      title: Text(
-                        item["title"],
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      subtitle: Text(
-                        item["contnet"],
-                      ),
-                      trailing: Column(
-                        // mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(item["address"]),
-                          Text(item["orgName"]),
-                          Text(item["startTime"]),
-                        ],
-                      ),
-                    ),
                   );
                 },
                 separatorBuilder: (context, index) => Gaps.v10,

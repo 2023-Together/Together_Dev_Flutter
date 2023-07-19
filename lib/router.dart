@@ -4,6 +4,7 @@ import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart
 import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
+import 'package:swag_cross_app/features/community/widgets/request_club_join.dart';
 import 'package:swag_cross_app/features/main_navigation/logo_loading_screen.dart';
 import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
@@ -14,10 +15,17 @@ import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dar
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
+import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
+import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -238,6 +246,87 @@ final router = GoRouter(
       name: AlertScreen.routeName,
       path: AlertScreen.routeURL,
       builder: (context, state) => const AlertScreen(),
+    ),
+    GoRoute(
+      name: RequestClubJoin.routeName,
+      path: RequestClubJoin.routeURL,
+      builder: (context, state) => const RequestClubJoin(),
+    ),
+    GoRoute(
+      name: VolDetailScreen.routeName,
+      path: VolDetailScreen.routeURL,
+      builder: (context, state) {
+        final args = state.extra as VolDetailScreenArgs;
+        return VolDetailScreen(
+          id: args.id,
+          title: args.title,
+          contnet: args.contnet,
+          host: args.host,
+          locationStr: args.locationStr,
+          startTime: args.startTime,
+          endTime: args.endTime,
+          tabBarSelected: args.tabBarSelected,
+        );
+      },
+    ),
+    GoRoute(
+      name: OrgDetailScreen.routeName,
+      path: OrgDetailScreen.routeURL,
+      builder: (context, state) {
+        final args = state.extra as OrgDetailScreenArgs;
+        return OrgDetailScreen(
+          id: args.id,
+          host: args.host,
+          locationStr: args.locationStr,
+          location: args.location,
+          volCount: args.volCount,
+          pNum: args.pNum,
+          bossName: args.bossName,
+        );
+      },
+    ),
+    GoRoute(
+      path: UserInformUpdate.routeURL,
+      name: UserInformUpdate.routeName,
+      builder: (context, state) {
+        final args = state.extra as UserInformArgs;
+        return UserInformUpdate(
+          userDid: args.userDid,
+          userId: args.userId,
+          userPw: args.userPw,
+          userName: args.userName,
+          userDef: args.userDef,
+          userType: args.userType,
+          birth: args.birth,
+        );
+      },
+    ),
+    // GoRoute(
+    //   name: UserInformSetup.routeName,
+    //   path: UserInformSetup.routeURL,
+    //   builder: (context, state) => const UserInformSetup(),
+    //   routes: [
+    //     GoRoute(
+    //       path: UserInformUpdate.routeURL,
+    //       name: UserInformUpdate.routeName,
+    //       builder: (context, state) {
+    //         final args = state.extra as UserInformArgs;
+    //         return UserInformUpdate(
+    //           userDid: args.userDid,
+    //           userId: args.userId,
+    //           userPw: args.userPw,
+    //           userName: args.userName,
+    //           userDef: args.userDef,
+    //           userType: args.userType,
+    //           birth: args.birth,
+    //         );
+    //       },
+    //     ),
+    //   ],
+    GoRoute(
+      name: UserInformSetup.routeName,
+      path: UserInformSetup.routeURL,
+      builder: (context, state) => const UserInformSetup(),
     ),
   ],
 );
