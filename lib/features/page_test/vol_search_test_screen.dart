@@ -3,6 +3,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
@@ -106,14 +107,155 @@ class VolSearchTestScreen extends StatefulWidget {
   State<VolSearchTestScreen> createState() => _VolSearchTestScreenState();
 }
 
-class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
+class _VolSearchTestScreenState extends State<VolSearchTestScreen>
+    with SingleTickerProviderStateMixin {
+  // 검색어
+  String searchText = '';
+
+  // 검색 애니메이션 컨트롤러 선언
+  late final AnimationController _animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 300),
+  );
+
+  late final Animation<Offset> _panelSlideAnimation = Tween(
+    begin: const Offset(0, -1),
+    end: const Offset(0, 0),
+  ).animate(_animationController);
+
+  late final Animation<double> _panelOpacityAnimation = Tween(
+    begin: 0.0,
+    end: 1.0,
+  ).animate(_animationController);
+
+  // 검색 제어를 위한 컨트롤러
+  final TextEditingController _searchController = TextEditingController();
+  // 포커스 검사
+  final FocusNode _focusNode = FocusNode();
+
+  bool _isFocused = false;
+
   String selectedDropdown1 = '';
   String selectedDropdown2 = '';
   String selectedDropdown3 = '';
 
-  List<String> dropdownList1 = ['', '가좌동', '평거동', '충무공동'];
-  List<String> dropdownList2 = ['', '의료봉사', '문화체험', '행사보조'];
-  List<String> dropdownList3 = ['', '1', '2', '3'];
+  List<String> dropdownList1 = [
+    '',
+    '가좌동',
+    '강남동',
+    '계동',
+    '귀곡동',
+    '금곡면',
+    '금산면',
+    '남성동',
+    '내동면',
+    '대곡면',
+    '대안동',
+    '대평면',
+    '동성동',
+    '망경동',
+    '명석면',
+    '문산읍',
+    '미천면',
+    '본성동',
+    '봉곡동',
+    '봉래동',
+    '사봉면',
+    '상대동',
+    '상봉동',
+    '상평동',
+    '수곡면',
+    '수정동',
+    '신안동',
+    '옥봉동',
+    '유곡동',
+    '이반성면',
+    '장대동',
+    '장재동',
+    '정촌면',
+    '주약동',
+    '중안동',
+    '중앙동',
+    '지수면',
+    '진성면',
+    '집현면',
+    '초전동',
+    '충무공동',
+    '칠암동',
+    '판문동',
+    '평거동',
+    '평안동',
+    '하대동',
+    '하촌동',
+    '호탄동',
+  ];
+  List<String> dropdownList2 = [
+    '',
+    '의료봉사',
+    '문화행사',
+    '행사보조',
+    '생활편의지원',
+    '주거환경',
+    '상담',
+    '의료',
+    '농어촌 봉사',
+    '환경보호',
+    '안전,예방',
+    '행정보조',
+    '공익,인권',
+    '재해,재난',
+    '국제협력, 해외봉사',
+    '멘토링',
+    '기타',
+  ];
+  List<String> dropdownList3 = [
+    '',
+    '모집 중',
+    '모집 완료',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_handleFocusChange);
+    // 검색 창이 내려와있을 때 스크롤 하면 검색창 다시 사라짐
+    if (_animationController.isCompleted) {
+      _toggleAnimations();
+    }
+  }
+
+  // 애니메이션 동작
+  Future<void> _toggleAnimations() async {
+    // 이미 애니메이션이 실행되었다면
+    if (_animationController.isCompleted) {
+      // 애니메이션을 원래상태로 되돌림
+      // 슬라이드가 다올라갈때까지 배리어를 없애면 안됨
+      await _animationController.reverse();
+      _focusNode.unfocus();
+    } else {
+      // 애니메이션을 실행
+      await _animationController.forward();
+    }
+
+    setState(() {});
+  }
+
+  void _handleFocusChange() {
+    if (_focusNode.hasFocus != _isFocused) {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _searchController.dispose();
+    _focusNode.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +274,7 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: () {},
+                  onTap: _toggleAnimations,
                   child: const Icon(Icons.search),
                 ),
               ],
@@ -140,86 +282,172 @@ class _VolSearchTestScreenState extends State<VolSearchTestScreen> {
           ),
         ],
       ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Sizes.size10,
-        ),
-        child: Column(
-          children: [
-            Gaps.v6,
-            Container(
-              height: 50,
-              color: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                horizontal: Sizes.size14,
-                vertical: Sizes.size4,
-              ),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  SWAGStateDropDownButton(
-                    initOption: selectedDropdown1,
-                    onChangeOption: (dynamic value) {
-                      setState(() {
-                        selectedDropdown1 = value;
-                      });
-                    },
-                    title: "지역별",
-                    options: dropdownList1,
+      body: Stack(
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: Sizes.size10,
+            ),
+            child: Column(
+              children: [
+                Gaps.v6,
+                Container(
+                  height: 50,
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Sizes.size14,
+                    vertical: Sizes.size4,
                   ),
-                  Gaps.h8,
-                  SWAGStateDropDownButton(
-                    initOption: selectedDropdown2,
-                    onChangeOption: (dynamic value) {
-                      setState(() {
-                        selectedDropdown2 = value;
-                      });
-                    },
-                    title: "분야별",
-                    options: dropdownList2,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      SWAGStateDropDownButton(
+                        initOption: selectedDropdown1,
+                        onChangeOption: (dynamic value) {
+                          setState(() {
+                            selectedDropdown1 = value;
+                          });
+                        },
+                        title: "지역별",
+                        options: dropdownList1,
+                      ),
+                      Gaps.h8,
+                      SWAGStateDropDownButton(
+                        initOption: selectedDropdown2,
+                        onChangeOption: (dynamic value) {
+                          setState(() {
+                            selectedDropdown2 = value;
+                          });
+                        },
+                        title: "분야별",
+                        options: dropdownList2,
+                      ),
+                      Gaps.h8,
+                      SWAGStateDropDownButton(
+                        initOption: selectedDropdown3,
+                        onChangeOption: (dynamic value) {
+                          setState(() {
+                            selectedDropdown3 = value;
+                          });
+                        },
+                        title: "모집 여부",
+                        options: dropdownList3,
+                      ),
+                    ],
                   ),
-                  Gaps.h8,
-                  SWAGStateDropDownButton(
-                    initOption: selectedDropdown3,
-                    onChangeOption: (dynamic value) {
-                      setState(() {
-                        selectedDropdown3 = value;
-                      });
+                ),
+                Gaps.v6,
+                Expanded(
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: volDatas.length,
+                    itemBuilder: (context, index) {
+                      final item = volDatas[index];
+                      // 검색 기능, 검색어가 있을 경우 (title)
+                      // if (searchText.isNotEmpty &&
+                      //     !volDatas[index]["title"]
+                      //         .toString()
+                      //         .toLowerCase()
+                      //         .contains(searchText.toLowerCase())) {
+                      //   return SizedBox.shrink();
+                      // }
+
+                      // 검색 기능 - 검색어가 있을 경우 (title, host, locationStr)
+                      if (searchText.isNotEmpty &&
+                          !volDatas[index]["title"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase()) &&
+                          !volDatas[index]["host"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase()) &&
+                          !volDatas[index]["locationStr"]
+                              .toString()
+                              .toLowerCase()
+                              .contains(searchText.toLowerCase())) {
+                        return SizedBox.shrink();
+                      } 
+
+                      // 검색어가 없을 경우, 모든 항목 표시
+                      else {
+                        return Container(
+                          height: 140,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: VolPostCard(
+                            id: item["item"] ?? "",
+                            title: item["title"] ?? "",
+                            contnet: item["contnet"] ?? "",
+                            host: item["host"] ?? "",
+                            locationStr: item["locationStr"] ?? "",
+                            startTime: item["startTime"] ?? "",
+                            endTime: item["endTime"] ?? "",
+                          ),
+                        );
+                      }
+                      // return Container(
+                      //   height: 140,
+                      //   decoration: const BoxDecoration(
+                      //     color: Colors.white,
+                      //   ),
+                      //   child: VolPostCard(
+                      //     id: item["item"] ?? "",
+                      //     title: item["title"] ?? "",
+                      //     contnet: item["contnet"] ?? "",
+                      //     host: item["host"] ?? "",
+                      //     locationStr: item["locationStr"] ?? "",
+                      //     startTime: item["startTime"] ?? "",
+                      //     endTime: item["endTime"] ?? "",
+                      //   ),
+                      // );
                     },
-                    title: "기간별",
-                    options: dropdownList3,
+                    separatorBuilder: (context, index) => Gaps.v10,
                   ),
-                ],
+                ),
+              ],
+            ),
+          ),
+          if (_isFocused)
+            // 슬라이드 화면 뒤쪽의 검은 화면 구현
+            ModalBarrier(
+              // color: _barrierAnimation,
+              color: Colors.transparent,
+              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+              dismissible: true,
+              // 자신을 클릭하면 실행되는 함수
+              onDismiss: () => _focusNode.unfocus(),
+            ),
+          // 검색 화면
+          FadeTransition(
+            opacity: _panelOpacityAnimation,
+            child: SlideTransition(
+              position: _panelSlideAnimation,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(6),
+                child: SWAGTextField(
+                  hintText: "검색어를 입력하세요.",
+                  maxLine: 1,
+                  controller: _searchController,
+                  onSubmitted: () {
+                    _searchController.text = "";
+                    _focusNode.unfocus();
+                    _toggleAnimations();
+                  },
+                  onChanged: (String? value) {
+                    setState(() {
+                      searchText = value ?? '';
+                    });
+                  },
+                  buttonText: "검색",
+                  focusNode: _focusNode,
+                ),
               ),
             ),
-            Gaps.v6,
-            Expanded(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: volDatas.length,
-                itemBuilder: (context, index) {
-                  final item = volDatas[index];
-                  return Container(
-                    height: 140,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: VolPostCard(
-                      id: item["item"] ?? "", 
-                      title: item["title"] ?? "", 
-                      contnet: item["contnet"] ?? "", 
-                      host: item["host"] ?? "", 
-                      locationStr: item["locationStr"] ?? "", 
-                      startTime: item["startTime"] ?? "", 
-                      endTime: item["endTime"] ?? "",
-                      ),
-                  );
-                },
-                separatorBuilder: (context, index) => Gaps.v10,
-              ),
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -68,7 +68,6 @@ class _VolPostCardState extends State<VolPostCard> {
         width: constraints.maxWidth,
         decoration: BoxDecoration(
           color: Colors.white,
-          
         ),
         child: SingleChildScrollView(
           child: Column(
@@ -90,72 +89,95 @@ class _VolPostCardState extends State<VolPostCard> {
                   );
                 },
                 child: Container(
-                    height: 150,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(Sizes.size12),
-                      ),
-                    ),
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              widget.contnet,
-                              style: TextStyle(fontSize: 12.0, height: 2.0),
-                            ),
-                            Text(
-                              "모집기간 : " + widget.startTime + " ~ " + widget.endTime,
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 124, 123, 123),
-                                fontSize: 12.0,
-                                height: 2.8,
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              width: 400,
-                              color: const Color.fromARGB(255, 203, 203, 203),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  widget.host,
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 124, 123, 123),
-                                      fontSize: 12.0,
-                                      height: 2.5),
-                                ),
-                                Text(
-                                  widget.locationStr,
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 124, 123, 123),
-                                      fontSize: 12.0,
-                                      height: 2.5),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                  height: 150,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(Sizes.size12),
                     ),
                   ),
-                
+                  child: ListView(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 7, vertical: 3),
+                                decoration: BoxDecoration(
+                                  color: Colors.purple.shade300,
+                                  // border: Border.all(
+                                  //   width: 1,
+                                  // ),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: const Text(
+                                  "모집 중",
+                                  style: TextStyle(
+                                    fontSize: 12.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                          Text(
+                            widget.contnet,
+                            style: TextStyle(fontSize: 12.0, height: 2.0),
+                          ),
+                          Text(
+                            "모집기간 : " +
+                                widget.startTime +
+                                " ~ " +
+                                widget.endTime,
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 124, 123, 123),
+                              fontSize: 12.0,
+                              height: 2.8,
+                            ),
+                          ),
+                          Container(
+                            height: 1,
+                            width: 400,
+                            color: const Color.fromARGB(255, 203, 203, 203),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.host,
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 124, 123, 123),
+                                    fontSize: 12.0,
+                                    height: 2.5),
+                              ),
+                              Text(
+                                widget.locationStr,
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 124, 123, 123),
+                                    fontSize: 12.0,
+                                    height: 2.5),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),

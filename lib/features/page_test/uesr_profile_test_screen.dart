@@ -67,7 +67,7 @@ class _UserProfileTestScreenState extends State<UserProfileTestScreen> {
             headerSliverBuilder: (context, innerBoxIsScrolled) {
               return [
                 SliverAppBar(
-                  title: const Text("내정보"),
+                  title: const Text("내 정보"),
                   // actions: [
                   //   IconButton(
                   //     onPressed: () {},

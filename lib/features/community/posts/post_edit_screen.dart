@@ -243,7 +243,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
         child: CustomScrollView(
           slivers: [
             const SliverAppBar(
-              title: Text("동아리 만들기"),
+              title: Text("게시글 작성"),
             ),
             SliverToBoxAdapter(
               child: Padding(

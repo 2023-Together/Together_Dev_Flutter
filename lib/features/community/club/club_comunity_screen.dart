@@ -35,6 +35,9 @@ class ClubCommunityScreen extends StatefulWidget {
 
 class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     with SingleTickerProviderStateMixin {
+
+  
+
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
@@ -117,8 +120,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       });
     }
   }
-
-
 
   // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않는 함수
   List<Map<String, dynamic>> checkAds(List<Map<String, dynamic>> list) {
