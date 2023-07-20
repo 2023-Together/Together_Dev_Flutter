@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
@@ -53,11 +55,24 @@ class OrgDetailScreen extends StatefulWidget {
 }
 
 class _OrgDetailScreenState extends State<OrgDetailScreen> {
+  late GoogleMapController _controller;
+
   static final LatLng schoolLatlng = LatLng(
     // 위도와 경도 값 지정
     35.165992,
     128.096785,
   );
+
+  final List<Marker> markers = [];
+
+  addMarker(cordinate) {
+    int id = Random().nextInt(100);
+
+    setState(() {
+      markers
+          .add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
+    });
+  }
 
   static final CameraPosition initialPosition = CameraPosition(
     target: schoolLatlng, // 카메라 위치
@@ -111,12 +126,21 @@ class _OrgDetailScreenState extends State<OrgDetailScreen> {
                 child: GoogleMap(
                   initialCameraPosition: initialPosition,
                   mapType: MapType.hybrid,
+                  onMapCreated: (controller) {
+                    setState(() {
+                      _controller = controller;
+                    });
+                  },
+                  markers: markers.toSet(),
+                  onTap: (cordinate) {
+                    _controller
+                        .animateCamera(CameraUpdate.newLatLng(cordinate));
+                    addMarker(cordinate);
+                  },
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
               Flexible(
                 fit: FlexFit.tight,
                 child: DataTable(
@@ -131,8 +155,7 @@ class _OrgDetailScreenState extends State<OrgDetailScreen> {
                       ),
                     )),
                     DataColumn(
-                      label: Container(
-                      ),
+                      label: Container(),
                     ),
                   ],
                   // rows : 표 각 행의 셀에 들어가는 데이터 리스트
