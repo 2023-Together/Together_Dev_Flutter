@@ -52,7 +52,7 @@ class NavTab extends StatelessWidget {
                 imgURI.isEmpty
                     ? FaIcon(
                         isSelected ? selectedIcon : unSelectedIcon,
-                        size: Sizes.size24 + Sizes.size2,
+                        size: 28,
                       )
                     : isLogined
                         ? CircleAvatar(
@@ -64,13 +64,13 @@ class NavTab extends StatelessWidget {
                           )
                         : const FaIcon(
                             FontAwesomeIcons.circleUser,
-                            size: 24,
+                            size: 26,
                           ),
                 Gaps.v5,
                 Text(
                   text,
                   style: const TextStyle(
-                    fontSize: Sizes.size10,
+                    fontSize: Sizes.size12,
                   ),
                 ),
               ],

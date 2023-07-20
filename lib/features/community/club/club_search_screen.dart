@@ -4,6 +4,9 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
+
+import 'package:http/http.dart' as http;
 
 class ClubSearchScreen extends StatefulWidget {
   // 필드
@@ -50,6 +53,8 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       .where((element) => element["isRequest"] == true)
       .toList();
 
+  List<ClubDataModel> clubList = [];
+
   @override
   void initState() {
     super.initState();
@@ -83,6 +88,22 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       setState(() {
         _showJumpUpButton = false;
       });
+    }
+
+    _clubGetDispatch();
+  }
+
+  // 동아리 리스트를 가져오는 통신
+  void _clubGetDispatch() async {
+    final url = Uri.parse("http://58.150.133.91:8080/together/club/getAllClub");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      print('Response body: ${response.body}');
+      // clubList = response.body
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
     }
   }
 
