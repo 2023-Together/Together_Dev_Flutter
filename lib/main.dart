@@ -63,33 +63,33 @@ class SWAGCrossApp extends StatelessWidget {
           ),
           // 제목 글자
           titleLarge: TextStyle(
-            fontSize: Sizes.size22,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-          titleMedium: TextStyle(
             fontSize: Sizes.size20,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
-          titleSmall: TextStyle(
+          titleMedium: TextStyle(
             fontSize: Sizes.size18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          titleSmall: TextStyle(
+            fontSize: Sizes.size16,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
           // 회색 글자
           labelLarge: TextStyle(
-            fontSize: Sizes.size18,
-            fontWeight: FontWeight.normal,
-            color: Colors.black45,
-          ),
-          labelMedium: TextStyle(
             fontSize: Sizes.size16,
             fontWeight: FontWeight.normal,
             color: Colors.black45,
           ),
-          labelSmall: TextStyle(
+          labelMedium: TextStyle(
             fontSize: Sizes.size14,
+            fontWeight: FontWeight.normal,
+            color: Colors.black45,
+          ),
+          labelSmall: TextStyle(
+            fontSize: Sizes.size12,
             fontWeight: FontWeight.normal,
             color: Colors.black45,
           ),
@@ -118,13 +118,14 @@ class SWAGCrossApp extends StatelessWidget {
         // ListTile
         listTileTheme: const ListTileThemeData(
           titleTextStyle: TextStyle(
-            fontSize: Sizes.size18,
+            fontSize: Sizes.size16,
             fontWeight: FontWeight.bold,
             color: Colors.black,
             overflow: TextOverflow.ellipsis,
           ),
           subtitleTextStyle: TextStyle(
             overflow: TextOverflow.ellipsis,
+            fontSize: Sizes.size14,
           ),
           iconColor: Colors.black54,
         ),
@@ -163,7 +164,7 @@ class SWAGCrossApp extends StatelessWidget {
           // title의 공통 스타일을 지정해준다.
           titleTextStyle: TextStyle(
             color: Colors.black,
-            fontSize: Sizes.size16 + Sizes.size2,
+            fontSize: Sizes.size18,
             fontWeight: FontWeight.w600,
           ),
           // appBar의 아이콘 스타일 지정

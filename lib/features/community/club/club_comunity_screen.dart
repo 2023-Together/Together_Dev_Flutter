@@ -5,7 +5,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
-import 'package:swag_cross_app/features/community/widgets/request_club_join.dart';
+import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
 import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
@@ -164,10 +164,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     context.pushNamed(AlertScreen.routeName);
   }
 
-  void _requestJoinTap() {
-    context.pushNamed(RequestClubJoin.routeName);
-  }
-
   // 스크롤 위치를 맨위로 이동시킵니다.
   void _scrollToTop() {
     _scrollController.animateTo(
@@ -204,6 +200,10 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     }
 
     setState(() {});
+  }
+
+  void _clubSettingTap() {
+    context.pushNamed(ClubSettingScreen.routeName);
   }
 
   // void _onChangeOption1(String option) {
@@ -266,8 +266,8 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                 ),
                 Gaps.h2,
                 GestureDetector(
-                  onTap: _requestJoinTap,
-                  child: const Icon(Icons.notifications_outlined),
+                  onTap: _clubSettingTap,
+                  child: const Icon(Icons.settings_outlined),
                   // child: const FaIcon(FontAwesomeIcons.penToSquare),
                 ),
               ],

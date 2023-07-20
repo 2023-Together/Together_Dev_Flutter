@@ -3,21 +3,15 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
-class UserInformSetup extends StatefulWidget {
+class UserInformSetup extends StatelessWidget {
   static const routeName = "user_setup";
   static const routeURL = "/user_setup";
 
   const UserInformSetup({super.key});
 
-  @override
-  State<UserInformSetup> createState() => _UserInformSetupState();
-}
-
-class _UserInformSetupState extends State<UserInformSetup> {
   Widget _title({required String title}) {
     return Text(
       title,
@@ -43,43 +37,28 @@ class _UserInformSetupState extends State<UserInformSetup> {
   }
 
   // // 회원 정보 수정
-  // void userInformUpdateTap(BuildContext context) {
-  //   context.pushNamed(UserInformUpdate.routeName,
-  //       extra: UserInformArgs(
-  //           userDid: userDid,
-  //           userId: widget.userId,
-  //           userPw: widget.userPw,
-  //           userName: widget.userName,
-  //           userDef: widget.userDef,
-  //           userType: widget.userType,
-  //           birth: widget.birth));
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("설정"),
+        title: const Text("설정"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
         child: ListView(
           children: [
             _title(title: "회원 정보"),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                title: const Text(
-                  "회원 정보 수정",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
+            const ListTile(
+              title: Text(
+                "회원 정보 수정",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
                 ),
-                trailing: const Icon(
-                  Icons.chevron_right_rounded,
-                  size: Sizes.size24,
-                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                size: Sizes.size24,
               ),
             ),
             _title(title: "서비스"),

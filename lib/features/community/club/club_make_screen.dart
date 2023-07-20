@@ -18,6 +18,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
 
   bool _isThereSearchValue = false;
   bool _isRequest = false;
+  bool _clubApply = false;
 
   void _textOnChange(String? value) {
     setState(() {
@@ -103,8 +104,8 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
               ),
               Gaps.v10,
               SWAGTextField(
-                hintText: "동아리의 주요 활동 내용을 입력해주세요.",
-                maxLine: 6,
+                hintText: "동아리의 상세 설명과 활동 내용을 입력해주세요.",
+                maxLine: 8,
                 controller: _contentController,
                 onSubmitted: () {
                   print(_contentController.text);
@@ -112,17 +113,17 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
                 onChanged: _textOnChange,
               ),
               Gaps.v20,
-              Row(
-                children: [
-                  Checkbox.adaptive(
-                    value: _isRequest,
-                    onChanged: _onChangeCheckBox,
-                  ),
-                  GestureDetector(
-                    onTap: _onTapCheckBoxText,
-                    child: const Text("동아리원 모집 여부"),
-                  ),
-                ],
+              SwitchListTile.adaptive(
+                tileColor: Colors.white,
+                value: _clubApply,
+                onChanged: (value) => setState(() {
+                  _clubApply = !_clubApply;
+                }),
+                title: const Text("동아리 신청 받기 여부"),
+                subtitle: const Text(
+                  "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
+                  maxLines: 2,
+                ),
               ),
             ],
           ),
