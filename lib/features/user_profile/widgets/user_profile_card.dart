@@ -4,7 +4,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
-class UserProfileCard extends StatefulWidget {
+class UserProfileCard extends StatelessWidget {
   final String userDid; // 유저 did
   final String userId; // 유저 아이디
   final String userPw; // 유저 비밀번호
@@ -25,11 +25,6 @@ class UserProfileCard extends StatefulWidget {
   });
 
   @override
-  State<UserProfileCard> createState() => _UserProfileCardState();
-}
-
-class _UserProfileCardState extends State<UserProfileCard> {
-  @override
   Widget build(BuildContext context) {
     return ListTile(
       leading: const CircleAvatar(
@@ -39,13 +34,13 @@ class _UserProfileCardState extends State<UserProfileCard> {
         ),
       ),
       title: Text(
-        widget.userName,
-        style: TextStyle(
+        userName,
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: Sizes.size18,
         ),
       ),
-      subtitle: Text(
+      subtitle: const Text(
         "SWAG 동아리",
         style: TextStyle(
           fontSize: Sizes.size14,
@@ -55,13 +50,13 @@ class _UserProfileCardState extends State<UserProfileCard> {
         onPressed: () {
           context.pushNamed(UserInformUpdate.routeName,
               extra: UserInformArgs(
-                  userDid: widget.userDid,
-                  userId: widget.userId,
-                  userPw: widget.userPw,
-                  userName: widget.userName,
-                  userDef: widget.userDef,
-                  userType: widget.userType,
-                  birth: widget.birth));
+                  userDid: userDid,
+                  userId: userId,
+                  userPw: userPw,
+                  userName: userName,
+                  userDef: userDef,
+                  userType: userType,
+                  birth: birth));
         },
         icon: const Icon(
           Icons.chevron_right_rounded,

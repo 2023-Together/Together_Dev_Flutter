@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -37,7 +35,7 @@ class VolPostCard extends StatefulWidget {
 }
 
 class _VolPostCardState extends State<VolPostCard> {
-  bool _isLogined = false;
+  final bool _isLogined = false;
 
   @override
   void initState() {
@@ -63,99 +61,86 @@ class _VolPostCardState extends State<VolPostCard> {
     final size = MediaQuery.of(context).size;
 
     return LayoutBuilder(
-      builder: (context, constraints) => Container(
-        clipBehavior: Clip.hardEdge,
-        width: constraints.maxWidth,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          
-        ),
-        child: SingleChildScrollView(
+      builder: (context, constraints) => GestureDetector(
+        onTap: () {
+          context.pushNamed(
+            VolDetailScreen.routeName,
+            extra: VolDetailScreenArgs(
+              id: widget.id,
+              title: widget.title,
+              contnet: widget.contnet,
+              host: widget.host,
+              locationStr: widget.locationStr,
+              startTime: widget.startTime,
+              endTime: widget.endTime,
+              tabBarSelected: 0,
+            ),
+          );
+        },
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          width: constraints.maxWidth,
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(Sizes.size12),
+            ),
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              GestureDetector(
-                onTap: () {
-                  context.pushNamed(
-                    VolDetailScreen.routeName,
-                    extra: VolDetailScreenArgs(
-                      id: widget.id,
-                      title: widget.title,
-                      contnet: widget.contnet,
-                      host: widget.host,
-                      locationStr: widget.locationStr,
-                      startTime: widget.startTime,
-                      endTime: widget.endTime,
-                      tabBarSelected: 0,
-                    ),
-                  );
-                },
-                child: Container(
-                    height: 150,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(Sizes.size12),
-                      ),
-                    ),
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 12.0),
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  widget.title,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              widget.contnet,
-                              style: TextStyle(fontSize: 12.0, height: 2.0),
-                            ),
-                            Text(
-                              "모집기간 : " + widget.startTime + " ~ " + widget.endTime,
-                              style: TextStyle(
-                                color: const Color.fromARGB(255, 124, 123, 123),
-                                fontSize: 12.0,
-                                height: 2.8,
-                              ),
-                            ),
-                            Container(
-                              height: 1,
-                              width: 400,
-                              color: const Color.fromARGB(255, 203, 203, 203),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  widget.host,
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 124, 123, 123),
-                                      fontSize: 12.0,
-                                      height: 2.5),
-                                ),
-                                Text(
-                                  widget.locationStr,
-                                  style: TextStyle(
-                                      color: Color.fromARGB(255, 124, 123, 123),
-                                      fontSize: 12.0,
-                                      height: 2.5),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+              Row(
+                children: [
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ],
+              ),
+              Text(
+                widget.contnet,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontSize: 14.0, height: 2.0),
+              ),
+              Text(
+                "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 124, 123, 123),
+                  fontSize: 12.0,
+                  height: 2.8,
+                ),
+              ),
+              const Divider(
+                height: 1,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    widget.host,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 124, 123, 123),
+                      fontSize: 12.0,
+                      height: 2.5,
                     ),
                   ),
-                
+                  Text(
+                    widget.locationStr,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      color: Color.fromARGB(255, 124, 123, 123),
+                      fontSize: 12.0,
+                      height: 2.5,
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

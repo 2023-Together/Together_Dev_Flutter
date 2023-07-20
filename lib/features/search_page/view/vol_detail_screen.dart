@@ -61,7 +61,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     with TickerProviderStateMixin {
   late GoogleMapController _controller;
 
-  static final LatLng schoolLatlng = LatLng(
+  static const LatLng schoolLatlng = LatLng(
     // 위도와 경도 값 지정
     35.165992,
     128.096785,
@@ -78,7 +78,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     });
   }
 
-  static final CameraPosition initialPosition = CameraPosition(
+  static const CameraPosition initialPosition = CameraPosition(
     target: schoolLatlng, // 카메라 위치
     zoom: 15, // 확대 정도
   );
@@ -100,11 +100,11 @@ class _VolDetailScreenState extends State<VolDetailScreen>
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Container(
+            child: SizedBox(
               height: 80,
               child: Text(
                 widget.contnet,
-                style: TextStyle(
+                style: const TextStyle(
                   height: 2,
                 ),
               ),
@@ -116,7 +116,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
               child: DataTable(
                 // columns : 표의 첫 행에 들어가는 데이터 리스트이자 각 열의 이름
                 columns: [
-                  DataColumn(
+                  const DataColumn(
                       label: Text(
                     "상세 정보",
                     style: TextStyle(
@@ -131,23 +131,23 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                 // rows : 표 각 행의 셀에 들어가는 데이터 리스트
                 rows: [
                   DataRow(cells: [
-                    DataCell(Text('기관명')),
+                    const DataCell(Text('기관명')),
                     DataCell(Text(widget.host)),
                   ]),
                   DataRow(cells: [
-                    DataCell(Text('위치')),
+                    const DataCell(Text('위치')),
                     DataCell(Text(widget.locationStr)),
                   ]),
-                  DataRow(cells: [
+                  const DataRow(cells: [
                     DataCell(Text('모집 인원')),
                     DataCell(Text("3명")),
                   ]),
                   DataRow(cells: [
-                    DataCell(Text('봉사 모집 시작일')),
+                    const DataCell(Text('봉사 모집 시작일')),
                     DataCell(Text(widget.startTime)),
                   ]),
                   DataRow(cells: [
-                    DataCell(Text('봉사 모집 마감일')),
+                    const DataCell(Text('봉사 모집 마감일')),
                     DataCell(Text(widget.endTime)),
                   ]),
                 ],
@@ -175,7 +175,6 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             });
           },
           markers: markers.toSet(),
-
           onTap: (cordinate) {
             _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
             addMarker(cordinate);
@@ -246,19 +245,19 @@ class _VolDetailScreenState extends State<VolDetailScreen>
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 14.0),
+                      vertical: 12.0, horizontal: 14.0),
                   child: Column(
                     children: [
                       ListTile(
                         title: Text(
                           widget.title,
-                          style: TextStyle(
-                            height: 3,
+                          style: const TextStyle(
+                            height: 2,
                           ),
                         ),
                         subtitle: Text(
                           widget.contnet,
-                          style: TextStyle(
+                          style: const TextStyle(
                             height: 1.5,
                           ),
                         ),
@@ -321,7 +320,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Container(
+                child: SizedBox(
                   width: 375.0,
                   height: 40.0,
                   child: ElevatedButton(
