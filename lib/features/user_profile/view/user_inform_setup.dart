@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
@@ -76,9 +78,24 @@ class _UserInformSetupState extends State<UserInformSetup> {
                     fontSize: 15.0,
                   ),
                 ),
-                trailing: const Icon(
-                  Icons.chevron_right_rounded,
-                  size: Sizes.size24,
+                trailing: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_right_rounded,
+                    size: Sizes.size24,
+                  ),
+                  onPressed: () {
+                    // context.pushNamed(
+                    //   UserInformUpdate.routeName,
+                    //   extra: UserInformArgs(
+                    //       userDid: userDid,
+                    //       userId: userId,
+                    //       userPw: userPw,
+                    //       userName: userName,
+                    //       userDef: userDef,
+                    //       userType: userType,
+                    //       birth: birth),
+                    // );
+                  },
                 ),
               ),
             ),
@@ -115,24 +132,31 @@ class _UserInformSetupState extends State<UserInformSetup> {
                 ),
               ),
             ),
-            _title(title: "고객 센터"),
-            const Card(
+            Card(
               elevation: 0,
               child: ListTile(
-                title: Text(
+                title: const Text(
                   "공지사항",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,
                   ),
                 ),
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: Sizes.size24,
+                trailing: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_right_rounded,
+                    size: Sizes.size24,
+                  ),
+                  onPressed: () {
+                    context.pushNamed(
+                      NoticeScreen.routeName,
+                    );
+                  },
                 ),
               ),
             ),
-            const Card(
+            _title(title: "고객 센터"),
+            Card(
               elevation: 0,
               child: ListTile(
                 title: Text(
@@ -142,25 +166,45 @@ class _UserInformSetupState extends State<UserInformSetup> {
                     fontSize: 15.0,
                   ),
                 ),
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: Sizes.size24,
+                trailing: IconButton(
+                  icon: Icon(
+                    Icons.chevron_right_rounded,
+                    size: Sizes.size24,
+                  ),
+                  onPressed: () {
+                    context.pushNamed(
+                      CustomerServiceScreen.routeName,
+                      extra: CustomerServiceScreenArgs(
+                        initSelectedIndex: 0,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
-            const Card(
+            Card(
               elevation: 0,
               child: ListTile(
-                title: Text(
-                  "QnA",
+                title: const Text(
+                  "1:1 문의하기",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,
                   ),
                 ),
-                trailing: Icon(
-                  Icons.chevron_right_rounded,
-                  size: Sizes.size24,
+                trailing: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_right_rounded,
+                    size: Sizes.size24,
+                  ),
+                  onPressed: () {
+                    context.pushNamed(
+                      CustomerServiceScreen.routeName,
+                      extra: CustomerServiceScreenArgs(
+                        initSelectedIndex: 1,
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

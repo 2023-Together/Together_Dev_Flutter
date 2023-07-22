@@ -61,6 +61,17 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     with TickerProviderStateMixin {
   late GoogleMapController _controller;
 
+  Widget _title({required String title}) {
+    return Text(
+      title,
+      style: const TextStyle(
+          color: Color.fromARGB(255, 152, 152, 152),
+          fontSize: 15,
+          fontWeight: FontWeight.w700,
+          height: 3),
+    );
+  }
+
   static final LatLng schoolLatlng = LatLng(
     // 위도와 경도 값 지정
     35.165992,
@@ -73,8 +84,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     int id = Random().nextInt(100);
 
     setState(() {
-      markers
-          .add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
+      markers.add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
     });
   }
 
@@ -82,7 +92,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     target: schoolLatlng, // 카메라 위치
     zoom: 15, // 확대 정도
   );
-  late TabController _tabController; // tabbar와 tabview를 제어하는데 필요
+  //late TabController _tabController; // tabbar와 tabview를 제어하는데 필요
 
 // initState에서 tabController를 초기설정
   @override
@@ -96,92 +106,151 @@ class _VolDetailScreenState extends State<VolDetailScreen>
 
   Widget introScreen() {
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
-            child: Container(
-              height: 80,
-              child: Text(
-                widget.contnet,
-                style: TextStyle(
-                  height: 2,
-                ),
-              ),
-            ),
-          ),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-            Flexible(
-              fit: FlexFit.tight,
-              child: DataTable(
-                // columns : 표의 첫 행에 들어가는 데이터 리스트이자 각 열의 이름
-                columns: [
-                  DataColumn(
-                      label: Text(
-                    "상세 정보",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    width: 187,
+                    height: 80,
+                    child: Card(
+                      child: ListTile(
+                        leading: Icon(Icons.place),
+                        title: const Text(
+                          "위치",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        subtitle: Text(
+                          widget.locationStr,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
                     ),
-                  )),
-                  DataColumn(
-                    label: Container(),
+                  ),
+                  Container(
+                    width: 187,
+                    height: 80,
+                    child: Card(
+                      child: ListTile(
+                        leading: Icon(Icons.perm_identity),
+                        title: Text(
+                          "모집 인원",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        subtitle: Text(
+                          "3명",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                 ],
-                // rows : 표 각 행의 셀에 들어가는 데이터 리스트
-                rows: [
-                  DataRow(cells: [
-                    DataCell(Text('기관명')),
-                    DataCell(Text(widget.host)),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('위치')),
-                    DataCell(Text(widget.locationStr)),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('모집 인원')),
-                    DataCell(Text("3명")),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('봉사 모집 시작일')),
-                    DataCell(Text(widget.startTime)),
-                  ]),
-                  DataRow(cells: [
-                    DataCell(Text('봉사 모집 마감일')),
-                    DataCell(Text(widget.endTime)),
-                  ]),
+              ),
+              Row(
+                children: [
+                  Container(
+                    width: 187,
+                    height: 80,
+                    child: Card(
+                      child: ListTile(
+                        leading: Icon(Icons.start),
+                        title: Text(
+                          "모집 시작",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        subtitle: Text(
+                          widget.startTime,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 187,
+                    height: 80,
+                    child: Card(
+                      child: ListTile(
+                        leading: Icon(Icons.done),
+                        title: Text(
+                          "모집 마감",
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                        subtitle: Text(
+                          widget.endTime,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
-            )
-          ])
-        ],
-      ),
-    );
-  }
+              _title(title: "상세"),
+              Container(
+                child: Text(widget.contnet,),
+              ),
+              _title(title: "활동 위치"),
+               Container(
+                width: 450,
+                height: 320,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                  vertical: 16.0,
+                  horizontal: 16.0,
+                ),
+                  child: GoogleMap(
+                    initialCameraPosition: initialPosition,
+                    mapType: MapType.hybrid,
+                    onMapCreated: (controller) {
+                      setState(() {
+                        _controller = controller;
+                      });
+                    },
+                    markers: markers.toSet(),
+                    onTap: (cordinate) {
+                      _controller
+                          .animateCamera(CameraUpdate.newLatLng(cordinate));
+                      addMarker(cordinate);
+                    },
+                  ),
+                ),
 
-  Widget hostMapScreen() {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 16.0,
-          horizontal: 16.0,
-        ),
-        child: GoogleMap(
-          initialCameraPosition: initialPosition,
-          mapType: MapType.hybrid,
-          onMapCreated: (controller) {
-            setState(() {
-              _controller = controller;
-            });
-          },
-          markers: markers.toSet(),
-
-          onTap: (cordinate) {
-            _controller.animateCamera(CameraUpdate.newLatLng(cordinate));
-            addMarker(cordinate);
-          },
+              ),
+            ],
+          ),
         ),
       ),
+      // Row(
+      //   children: [
+      //     Card(
+      //       elevation: 1,
+      //       child: ListTile(
+      //         leading: Icon(Icons.location_city),
+      //         title: Text("기관명"),
+      //         subtitle: Text(widget.host),
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
@@ -222,14 +291,16 @@ class _VolDetailScreenState extends State<VolDetailScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("상세 정보"),
+        title: const Text(
+          "상세 정보",
+        ),
         centerTitle: true,
         elevation: 0.5,
         actions: <Widget>[
-          IconButton(
-              icon: const Icon(Icons.search),
-              // 아이콘 클릭 시 bottom sheet 모달 창 생성 (검색 창)
-              onPressed: () {}),
+          // IconButton(
+          //     icon: const Icon(Icons.search),
+          //     // 아이콘 클릭 시 bottom sheet 모달 창 생성 (검색 창)
+          //     onPressed: () {}),
           IconButton(
               icon: const Icon(Icons.notifications_outlined),
               onPressed: () {
@@ -244,73 +315,78 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             physics: const NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 14.0),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        title: Text(
-                          widget.title,
-                          style: TextStyle(
-                            height: 3,
-                          ),
-                        ),
-                        subtitle: Text(
-                          widget.contnet,
-                          style: TextStyle(
-                            height: 1.5,
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0, vertical: 30.0),
-                        child: Row(
-                          children: [
-                            const CircleAvatar(
-                              radius: 22,
-                              backgroundImage: AssetImage(
-                                "assets/images/yonam.jpg",
-                              ),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          title: Text(
+                            widget.title,
+                            style: TextStyle(
+                              height: 3,
                             ),
-                            Gaps.h10,
-                            Column(
+                          ),
+                          subtitle: Text(
+                            widget.contnet,
+                            style: TextStyle(
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 30.0),
+                          child: Container(
+                            child: Row(
                               children: [
-                                Text(
-                                  widget.host,
-                                  style: const TextStyle(
-                                    fontSize: 17.0,
-                                    fontWeight: FontWeight.w500,
+                                const CircleAvatar(
+                                  radius: 20,
+                                  backgroundImage: AssetImage(
+                                    "assets/images/yonam.jpg",
                                   ),
+                                ),
+                                Gaps.h10,
+                                Column(
+                                  children: [
+                                    Text(
+                                      widget.host,
+                                      style: const TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-              SliverPersistentHeader(
-                delegate: VolSearchPersistentTabBar(),
-                pinned: true,
-              ),
+              // SliverPersistentHeader(
+              //   delegate: VolSearchPersistentTabBar(),
+              //   pinned: true,
+              // ),
             ],
-            body: TabBarView(
-              physics: const NeverScrollableScrollPhysics(),
-              children: [
-                Offstage(
-                  offstage: false,
-                  child: introScreen(),
-                ),
-                Offstage(
-                  offstage: false,
-                  child: hostMapScreen(),
-                ),
-              ],
-            ),
+
+            // TabBarView(
+            //   physics: const NeverScrollableScrollPhysics(),
+            //   children: [
+            //     Offstage(
+            //       offstage: false,
+            //       child: introScreen(),
+            //     ),
+            //     Offstage(
+            //       offstage: false,
+            //       child: hostMapScreen(),
+            //     ),
+            //   ],
+            // ),
+            body: introScreen(),
           ),
         ),
       ),

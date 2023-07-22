@@ -28,6 +28,7 @@
         <meta-data android:name="com.naver.sdk.clientName" android:value="@string/client_name" />
         <!-- 구글 광고 -->
         <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-8792702490232026~4276248161"/>
+        <!--구글 맵-->
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyC2fX1Wuziwyeb0dJaY4YXfHdV1aodBXu8"/>
 
         

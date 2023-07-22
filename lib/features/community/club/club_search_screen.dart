@@ -20,6 +20,7 @@ class ClubSearchScreen extends StatefulWidget {
 
 class _ClubSearchScreenState extends State<ClubSearchScreen>
     with SingleTickerProviderStateMixin {
+      
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
