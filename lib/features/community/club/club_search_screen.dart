@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/widgets/club_request_card.dart';
+import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
+import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 
@@ -23,7 +24,6 @@ class ClubSearchScreen extends StatefulWidget {
 
 class _ClubSearchScreenState extends State<ClubSearchScreen>
     with SingleTickerProviderStateMixin {
-      
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
