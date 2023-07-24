@@ -5,6 +5,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 
 class ClubPersistentTabBar extends SliverPersistentHeaderDelegate {
   final int commentLength;
+  
   ClubPersistentTabBar({
     required this.commentLength,
   });

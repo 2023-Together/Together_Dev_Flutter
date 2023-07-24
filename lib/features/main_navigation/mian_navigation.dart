@@ -6,9 +6,9 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_main_screen.dart';
 import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 
@@ -112,11 +112,11 @@ class _MainNavigationState extends State<MainNavigation> {
           Offstage(
             offstage: _selectedIndex != 1,
             //child: const SearchVolScreen(),
-            child: const VolSearchTestScreen(),
+            child: const VolSearchScreen(),
           ),
           // Offstage(
           //   offstage: _selectedIndex != 1,
-          //   child: const OrgSearchTestScreen(),
+          //   child: const OrgSearchScreen(),
           // ),
           Offstage(
             offstage: _selectedIndex != 2,
@@ -125,7 +125,7 @@ class _MainNavigationState extends State<MainNavigation> {
           Offstage(
             offstage: _selectedIndex != 3,
             //child: const UserProfileScreen(),
-            child: const UserProfileTestScreen(),
+            child: const UserProfileScreen(),
             //child: const UserProfileTestScreen(),
           ),
         ],

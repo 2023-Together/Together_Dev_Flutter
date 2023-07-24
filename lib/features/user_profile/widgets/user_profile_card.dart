@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 class UserProfileCard extends StatelessWidget {
   final String userDid; // 유저 did
