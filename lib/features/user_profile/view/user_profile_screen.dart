@@ -1,278 +1,264 @@
-// import 'package:flutter/material.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-// import 'package:go_router/go_router.dart';
-// import 'package:provider/provider.dart';
-// import 'package:swag_cross_app/constants/gaps.dart';
-// import 'package:swag_cross_app/constants/sizes.dart';
-// import 'package:swag_cross_app/features/alert/alert_screen.dart';
-// import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
-// import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-// import 'package:swag_cross_app/providers/UserProvider.dart';
-// import 'package:swag_cross_app/storages/login_storage.dart';
-// import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_card.dart';
+import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/storages/login_storage.dart';
 
-// // 마이페이지-메인
-// class UserProfileScreen extends StatefulWidget {
-//   const UserProfileScreen({super.key});
+import 'package:http/http.dart' as http;
 
-//   @override
-//   State<UserProfileScreen> createState() => _UserProfileScreenState();
-// }
+final List<Map<String, dynamic>> userDatas = [
+  {
+    "userDid": "1",
+    "userId": "thdusrkd01@naver.com",
+    "userPw": "000000",
+    "userName": "강소연",
+    "userDef": "hello!",
+    "userType": "봉사자",
+    "birth": "2001-09-28"
+  },
+];
 
-// class _UserProfileScreenState extends State<UserProfileScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
+class UserProfileScreen extends StatefulWidget {
+  static const routeName = "user_profile";
+  static const routeURL = "/user_profile";
 
-//     // SecureStorageLogin.loginCheckIsNone(context, mounted);
-//   }
+  const UserProfileScreen({super.key});
 
-//   void _alertIconTap() {
-//     context.pushNamed(AlertScreen.routeName);
-//   }
+  @override
+  State<UserProfileScreen> createState() => _UserProfileScreenState();
+}
 
-//   void _customerServiceTap() {
-//     context.pushNamed(
-//       CustomerServiceScreen.routeName,
-//       queryParams: {"initIndex": "0"},
-//     );
-//   }
+class _UserProfileScreenState extends State<UserProfileScreen> {
+  void onLogoutAllTap(BuildContext context) {
+    LoginStorage.resetLoginData();
+    context.read<UserProvider>().logout();
+    context.pushReplacementNamed(MainNavigation.routeName);
+  }
 
-//   void onLogoutTap(BuildContext context) {
-//     LoginStorage.resetLoginData();
-//     context.read<UserProvider>().logout();
+  void onLogoutTap(BuildContext context) {
+    context.read<UserProvider>().logout();
+    context.pushReplacementNamed(MainNavigation.routeName);
+  }
 
-//     context.pushReplacementNamed(MainNavigation.routeName);
-//   }
+  void _userSetupTap() {
+    context.pushNamed(UserInformSetup.routeName);
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     // final _imageSize = MediaQuery.of(context).size.width / 4;
-//     String name = "강소연";
-//     String level = "GOLD 등급";
-//     int volTime = 20;
+  void httpTest() async {
+    try {
+      final url =
+          Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
+      final response = await http.get(url);
 
-//     return Scaffold(
-//       // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
-//       resizeToAvoidBottomInset: false,
-//       appBar: AppBar(
-//         title: const Text("마이페이지"),
-//         actions: [
-//           // IconButton(
-//           //     icon: const Icon(Icons.search),
-//           //     onPressed: () {
-//           //       print("검색");
-//           //     }),
-//           Padding(
-//             padding: const EdgeInsets.symmetric(
-//               vertical: Sizes.size10,
-//               horizontal: Sizes.size10,
-//             ),
-//             child: GestureDetector(
-//               onTap: _alertIconTap,
-//               child: const FaIcon(
-//                 FontAwesomeIcons.bell,
-//                 size: 34,
-//                 color: Colors.black54,
-//               ),
-//             ),
-//           ),
-//         ],
-//       ),
-//       //  body: Column(
-//       //   children: [
-//       //     Container(
-//       //       constraints: BoxConstraints(
-//       //           minHeight: _imageSize,
-//       //           minWidth: _imageSize,
-//       //         ),
-//       //         child: GestureDetector(
-//       //           onTap: () {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
-//       //           },
-//       //           child: const Center(
-//       //             child: Icon(
-//       //               Icons.account_circle,
+      // 응답 처리
+      if (response.statusCode == 200) {
+        // 성공적인 응답 처리
+      } else {
+        // 응답 오류 처리
+      }
+    } catch (e) {
+      // 예외 처리
+      print('예외 발생: $e');
+      // 예외에 따른 추가 처리 수행
+    }
+  }
 
-//       //             ),
-//       //           ),
-//       //         )
-//       //     ),
-//       //   ],
-//       //  ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             Container(
-//               height: 180,
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 boxShadow: [
-//                   BoxShadow(
-//                     color: Colors.grey.withOpacity(0.4),
-//                     blurRadius: 5.0,
-//                     spreadRadius: 0.0,
-//                     offset: const Offset(2, 6),
-//                   )
-//                 ],
-//               ),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.center,
-//                 children: [
-//                   Expanded(
-//                     flex: 3,
-//                     child: Padding(
-//                       padding: const EdgeInsets.all(8.0),
-//                       child: Row(
-//                         crossAxisAlignment: CrossAxisAlignment.start,
-//                         children: [
-//                           Expanded(
-//                             // 내 프로필 이미지
-//                             flex: 1,
-//                             child: GestureDetector(
-//                               child: const CircleAvatar(
-//                                 radius: 48.0,
-//                                 foregroundImage: NetworkImage(
-//                                   "https://avatars.githubusercontent.com/u/77985708?v=4",
-//                                 ),
-//                                 child: Text("재현"),
-//                               ),
-//                             ),
-//                           ),
-//                           Expanded(
-//                             // 내 정보(이름, 등급)
-//                             flex: 1,
-//                             child: Padding(
-//                               padding: const EdgeInsets.symmetric(
-//                                   vertical: 16.0, horizontal: 18.0),
-//                               child: SizedBox(
-//                                 height: 100,
-//                                 child: Column(
-//                                   crossAxisAlignment: CrossAxisAlignment.start,
-//                                   mainAxisAlignment:
-//                                       MainAxisAlignment.spaceEvenly,
-//                                   children: [
-//                                     Text(name,
-//                                         style: const TextStyle(
-//                                             fontSize: 20,
-//                                             fontWeight: FontWeight.bold)),
-//                                     Text(level,
-//                                         style: const TextStyle(fontSize: 18)),
-//                                   ],
-//                                 ),
-//                               ),
-//                             ),
-//                           ),
-//                           Expanded(
-//                             child: Padding(
-//                               padding: const EdgeInsets.all(16.0),
-//                               child: Column(
-//                                 mainAxisAlignment: MainAxisAlignment.center,
-//                                 crossAxisAlignment: CrossAxisAlignment.end,
-//                                 children: [
-//                                   IconButton(
-//                                     icon: const Icon(
-//                                       Icons.chevron_right_rounded,
-//                                       size: 50,
-//                                     ),
-//                                     onPressed: () {
-//                                       Navigator.of(context).push(
-//                                           MaterialPageRoute(
-//                                               builder: (context) =>
-//                                                   const UserInformUpdate()));
-//                                     },
-//                                     color: Colors.grey,
-//                                   ),
-//                                 ],
-//                               ),
-//                             ),
-//                           ),
-//                           // Expanded(
-//                           //   child: Row(
-//                           //     mainAxisAlignment: MainAxisAlignment.center,
-//                           //     children: [
-//                           //       IconButton(
-//                           //           icon: const Icon(Icons.chevron_right),
-//                           //           onPressed: () {
-//                           //             print("검색");
-//                           //           }),
-//                           //     ],
-//                           //   ),
-//                           // )
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                   Container(height: 1, width: 350, color: Colors.grey),
-//                   const Expanded(
-//                     child: Padding(
-//                       padding:
-//                           EdgeInsets.symmetric(vertical: 8.0, horizontal: 20),
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [Text("누적 봉사 시간: 20시간")],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             Gaps.v20,
-//             Container(
-//               height: 100,
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 boxShadow: [
-//                   BoxShadow(
-//                     color: Colors.grey.withOpacity(0.4),
-//                     blurRadius: 5.0,
-//                     spreadRadius: 0.0,
-//                     offset: const Offset(2, 6),
-//                   )
-//                 ],
-//               ),
-//               child: Row(
-//                 children: [
-//                   const Expanded(
-//                     child: Column(
-//                       // onTap: ,
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: [Text("봉사 신청"), Text("2건")],
-//                     ),
-//                   ),
-//                   Container(height: 50, width: 2, color: Colors.grey),
-//                   const Expanded(
-//                     child: Column(
-//                       mainAxisAlignment: MainAxisAlignment.center,
-//                       children: [Text("봉사 완료"), Text("6건")],
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             Gaps.v20,
-//             Column(
-//               children: [
-//                 const Text("인증서 발급"),
-//                 Gaps.v20,
-//                 const Text("FAQ"),
-//                 Gaps.v20,
-//                 GestureDetector(
-//                   onTap: _customerServiceTap,
-//                   child: const Text("고객 센터"),
-//                 ),
-//                 Gaps.v20,
-//                 GestureDetector(
-//                   onTap: () => onLogoutTap(context),
-//                   child: const Text("로그아웃"),
-//                 ),
-//                 Gaps.v20,
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    // CustomScrollView : 스크롤 가능한 구역
+    return Scaffold(
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      body: SafeArea(
+        child: DefaultTabController(
+          initialIndex: 0,
+          length: 3,
+          // NestedScrollView : SliverAppBar와 TabBar를 같이 쓰는 경우 처럼 여러개의 스크롤 함께쓸때 유용한 위젯
+          child: NestedScrollView(
+            // CustomScrollView 안에 들어갈 element들
+            // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+            headerSliverBuilder: (context, innerBoxIsScrolled) {
+              return [
+                SliverAppBar(
+                  title: const Text("내정보"),
+                  // actions: [
+                  //   IconButton(
+                  //     onPressed: () {},
+                  //     icon: const FaIcon(
+                  //       FontAwesomeIcons.gear,
+                  //       size: Sizes.size20,
+                  //     ),
+                  //   ),
+                  // ],
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: Sizes.size14,
+                        vertical: Sizes.size10,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: _userSetupTap,
+                            // () => onLogoutTap(context),
+                            child: const Icon(Icons.settings_outlined),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      UserProfileCard(
+                        userDid: userDatas[0]['userDid'],
+                        userId: userDatas[0]['userId'],
+                        userPw: userDatas[0]['userPw'],
+                        userName: userDatas[0]['userName'],
+                        userDef: userDatas[0]['userDef'],
+                        userType: userDatas[0]['userType'],
+                        birth: userDatas[0]['birth'],
+                      ),
+                      Gaps.v10,
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [Text("봉사 신청"), Text("2건")],
+                            ),
+                          ),
+                          Container(height: 50, width: 2, color: Colors.grey),
+                          const Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [Text("봉사 완료"), Text("6건")],
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gaps.v20,
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Gaps.h20,
+                          Text(
+                            "내가 올린 게시글",
+                            style: TextStyle(
+                              fontSize: Sizes.size20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gaps.v10,
+                    ],
+                  ),
+                ),
+                // SliverPersistentHeader는 SliverToBoxAdapter안에서 선언할수 없음
+                SliverPersistentHeader(
+                  delegate: PersistentTabBar(),
+                  pinned: true,
+                ),
+              ];
+            },
+            body: TabBarView(
+              children: [
+                GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  // 나와있는 키보드에서 스크롤하면 키보드를 없애는 기능
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemCount: 20,
+                  padding: EdgeInsets.zero,
+                  // controller는 아니지만 비슷한 도우미
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    // 한 줄당 몇개를 넣을건지 지정
+                    crossAxisCount: 3,
+                    // 좌우 간격
+                    crossAxisSpacing: Sizes.size2,
+                    // 위아래 간격
+                    mainAxisSpacing: Sizes.size2,
+                    // 한 블럭당 비율 지정 (가로 / 세로)
+                    childAspectRatio: 9 / 12,
+                  ),
+                  // FadeInImage : 실제 사진이 로드 되기 전까지 지정한 이미지를 보여줌
+                  itemBuilder: (context, index) => LayoutBuilder(
+                    builder: (context, constraints) => SizedBox(
+                      child: Stack(
+                        children: [
+                          AspectRatio(
+                            aspectRatio: 9 / 12,
+                            child: index % 2 == 0
+                                ? index % 3 == 0
+                                    ? const FadeInImage(
+                                        fit: BoxFit.cover,
+                                        placeholder:
+                                            AssetImage("assets/images/dog.jpg"),
+                                        image:
+                                            AssetImage("assets/images/dog.jpg"),
+                                      )
+                                    : FadeInImage.assetNetwork(
+                                        // 부모 요소에 맞춰서 크기 조절
+                                        fit: BoxFit.cover,
+                                        // 로딩 되기전에 보여줄 이미지 지정
+                                        placeholder: "assets/images/dog.jpg",
+                                        // 로딩 이미지 지정
+                                        image:
+                                            "https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+                                      )
+                                : const FadeInImage(
+                                    fit: BoxFit.cover,
+                                    placeholder:
+                                        AssetImage("assets/images/dog.jpg"),
+                                    image: AssetImage(
+                                        "assets/images/70836_50981_2758.jpg"),
+                                  ),
+                          ),
+                          const Positioned(
+                            bottom: Sizes.size10,
+                            left: Sizes.size10,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "제목",
+                                  style: TextStyle(
+                                    fontSize: Sizes.size16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const Center(
+                  child: Text("동아리에 올린 게시글"),
+                ),
+                const Center(
+                  child: Text("좋아요한 게시글"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
