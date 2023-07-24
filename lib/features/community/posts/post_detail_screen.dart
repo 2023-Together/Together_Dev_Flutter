@@ -6,6 +6,8 @@ import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
 
+// postId 전송
+
 class PostDetailScreenArgs {
   final int postId;
   final String category;

@@ -13,6 +13,8 @@ class SWAGTextField extends StatefulWidget {
     this.focusNode,
     this.errorText,
     this.isPassword = false,
+    this.keyboardType,
+    this.helperText,
   });
 
   final String hintText; // 힌트
@@ -23,7 +25,9 @@ class SWAGTextField extends StatefulWidget {
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
   final String? errorText;
+  final String? helperText;
   final bool isPassword;
+  final TextInputType? keyboardType;
 
   @override
   State<SWAGTextField> createState() => _SWAGTextFieldState();
@@ -40,6 +44,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
           flex: 4,
@@ -66,10 +71,15 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
               fontSize: 18,
               fontWeight: FontWeight.normal,
             ),
+            keyboardType: widget.keyboardType,
             decoration: InputDecoration(
               isDense: true,
               hintText: widget.hintText,
               errorText: widget.errorText,
+              helperText: widget.helperText,
+              helperStyle: const TextStyle(
+                color: Colors.blue,
+              ),
               errorMaxLines: 2,
               errorBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -114,22 +124,25 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
         ),
         Gaps.h6,
         if (widget.buttonText != null)
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: _isEditing && widget.onSubmitted != null
-                  ? () {
-                      widget.onSubmitted!();
-                    }
-                  : null,
-              style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(
-                  fontSize: 18,
-                ),
-                backgroundColor: Colors.purple.shade300,
-                padding: const EdgeInsets.symmetric(vertical: 14),
+          ElevatedButton(
+            onPressed: _isEditing && widget.onSubmitted != null
+                ? () {
+                    widget.onSubmitted!();
+                  }
+                : null,
+            style: ElevatedButton.styleFrom(
+              textStyle: const TextStyle(
+                fontSize: 18,
               ),
-              child: Text(widget.buttonText ?? "버튼"),
+              backgroundColor: Colors.purple.shade300,
+              padding: const EdgeInsets.symmetric(
+                vertical: 14,
+                horizontal: 4,
+              ),
+            ),
+            child: Text(
+              widget.buttonText ?? "버튼",
+              textAlign: TextAlign.center,
             ),
           ),
       ],

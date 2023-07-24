@@ -59,6 +59,8 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   void initState() {
     super.initState();
 
+    _clubGetDispatch();
+
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
@@ -70,6 +72,22 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
         _toggleAnimations();
       }
     });
+  }
+
+  Future<void> _httpClub() async {
+    final url = Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
+    final response = await http.get(url);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    // 응답 처리
+    if (response.statusCode == 200) {
+      // 성공적인 응답 처리
+      print('Response body: ${response.body}');
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+    }
   }
 
   // 스크롤 할때마다 호출
@@ -89,13 +107,11 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
         _showJumpUpButton = false;
       });
     }
-
-    _clubGetDispatch();
   }
 
   // 동아리 리스트를 가져오는 통신
   void _clubGetDispatch() async {
-    final url = Uri.parse("http://58.150.133.91:8080/together/club/getAllClub");
+    final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {

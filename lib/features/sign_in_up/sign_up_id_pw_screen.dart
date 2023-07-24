@@ -9,7 +9,6 @@ class SignUpIdPwScreenArgs {
   final String email;
   final String gender;
   final String birthday;
-  final String profileImage;
   final String mobile;
 
   SignUpIdPwScreenArgs({
@@ -17,7 +16,6 @@ class SignUpIdPwScreenArgs {
     required this.email,
     required this.gender,
     required this.birthday,
-    required this.profileImage,
     required this.mobile,
   });
 }
@@ -31,7 +29,6 @@ class SignUpIdPwScreen extends StatefulWidget {
     required this.email,
     required this.gender,
     required this.birthday,
-    required this.profileImage,
     required this.mobile,
   });
 
@@ -39,7 +36,6 @@ class SignUpIdPwScreen extends StatefulWidget {
   final String email;
   final String gender;
   final String birthday;
-  final String profileImage;
   final String mobile;
 
   @override
@@ -168,6 +164,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
               context.pop();
             },
           ),
+          title: const Text("회원가입(로그인정보)"),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
@@ -175,7 +172,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "닉네임",
+                "닉네임(SNS)",
                 style: Theme.of(context).textTheme.titleMedium,
               ),
               Gaps.v10,
@@ -184,6 +181,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
                 maxLine: 1,
                 controller: _nickNameController,
                 onChanged: _onChangeNickName,
+                buttonText: "중복확인",
               ),
               Gaps.v20,
               Text(
@@ -196,6 +194,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
                 maxLine: 1,
                 controller: _idController,
                 onChanged: _onChangeId,
+                buttonText: "중복확인",
               ),
               Gaps.v20,
               Text(
