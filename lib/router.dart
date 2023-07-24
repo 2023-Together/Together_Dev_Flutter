@@ -2,7 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
-import 'package:swag_cross_app/features/community/club/club_search_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/club_search_detail_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/request_club_join.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
@@ -15,8 +15,7 @@ import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dar
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
-import 'package:swag_cross_app/features/page_test/vol_search_test_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
