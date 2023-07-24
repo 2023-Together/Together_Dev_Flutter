@@ -33,6 +33,7 @@ class UserInformSetup extends StatelessWidget {
   // 로그아웃
   void onLogoutTap(BuildContext context) {
     context.read<UserProvider>().logout();
+    LoginStorage.resetLoginData();
     context.pushReplacementNamed(MainNavigation.routeName);
   }
 
