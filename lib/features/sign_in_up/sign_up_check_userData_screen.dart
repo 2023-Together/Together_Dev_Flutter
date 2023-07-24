@@ -63,7 +63,6 @@ class SignUpCheckUserDataScreen extends StatelessWidget {
               email: email,
               gender: gender,
               birthday: birthday,
-              profileImage: profileImage,
               mobile: mobile,
             ),
           ),
@@ -85,22 +84,22 @@ class SignUpCheckUserDataScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Gaps.v10,
-            UserDataBox(
-              name: "이름",
-              data: name.replaceRange(1, 2, "*"),
-            ),
             // UserDataBox(
-            //   name: "이메일",
-            //   data: email,
+            //   name: "이름",
+            //   data: name.replaceRange(1, 2, "*"),
             // ),
-            UserDataBox(
-              name: "성별",
-              data: gender == "M" ? "남" : "여",
-            ),
-            UserDataBox(
-              name: "생년월일",
-              data: birthday,
-            ),
+            // // UserDataBox(
+            // //   name: "이메일",
+            // //   data: email,
+            // // ),
+            // UserDataBox(
+            //   name: "성별",
+            //   data: gender == "M" ? "남" : "여",
+            // ),
+            // UserDataBox(
+            //   name: "생년월일",
+            //   data: birthday,
+            // ),
             // UserDataBox(
             //   name: "전화번호",
             //   data: mobile,
@@ -128,56 +127,6 @@ class SignUpCheckUserDataScreen extends StatelessWidget {
             child: Text("확인완료"),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class UserDataBox extends StatelessWidget {
-  const UserDataBox({
-    super.key,
-    required this.data,
-    required this.name,
-  });
-
-  final String name;
-  final String data;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Sizes.size5),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: Text(
-              name,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-          ),
-          Gaps.h10,
-          Expanded(
-            flex: 4,
-            child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 14,
-                vertical: 14,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  width: 1,
-                  color: const Color(0xFFDBDBDB),
-                ),
-              ),
-              child: Text(
-                data,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

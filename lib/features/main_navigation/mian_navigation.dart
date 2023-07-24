@@ -71,7 +71,6 @@ class _MainNavigationState extends State<MainNavigation> {
       });
     } else if ((index == 2 || index == 3) &&
         !context.read<UserProvider>().isLogined) {
-      // LoginStorage.loginCheckIsNone(context, mounted);
       final loginType = context.read<UserProvider>().isLogined;
 
       if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
