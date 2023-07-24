@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/page_test/uesr_profile_test_screen.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
 class UserProfileCard extends StatelessWidget {
   final String userDid; // 유저 did
@@ -27,6 +24,20 @@ class UserProfileCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      onTap: () {
+        // context.pushNamed(
+        //   UserInformUpdate.routeName,
+        //   extra: UserInformArgs(
+        //     userDid: userDid,
+        //     userId: userId,
+        //     userPw: userPw,
+        //     userName: userName,
+        //     userDef: userDef,
+        //     userType: userType,
+        //     birth: birth,
+        //   ),
+        // );
+      },
       leading: const CircleAvatar(
         radius: 40,
         backgroundImage: NetworkImage(
@@ -46,22 +57,9 @@ class UserProfileCard extends StatelessWidget {
           fontSize: Sizes.size14,
         ),
       ),
-      trailing: IconButton(
-        onPressed: () {
-          context.pushNamed(UserInformUpdate.routeName,
-              extra: UserInformArgs(
-                  userDid: userDid,
-                  userId: userId,
-                  userPw: userPw,
-                  userName: userName,
-                  userDef: userDef,
-                  userType: userType,
-                  birth: birth));
-        },
-        icon: const Icon(
-          Icons.chevron_right_rounded,
-          size: Sizes.size40,
-        ),
+      trailing: const Icon(
+        Icons.chevron_right_rounded,
+        size: Sizes.size40,
       ),
     );
   }
