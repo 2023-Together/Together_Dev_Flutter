@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/secure_storage_login.dart';
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -40,7 +38,7 @@ class VolPostCard extends StatefulWidget {
 }
 
 class _VolPostCardState extends State<VolPostCard> {
-  bool _isLogined = false;
+  final bool _isLogined = false;
 
   @override
   void initState() {
@@ -69,7 +67,7 @@ class _VolPostCardState extends State<VolPostCard> {
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
         width: constraints.maxWidth,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Colors.white,
         ),
         child: SingleChildScrollView(
@@ -80,7 +78,8 @@ class _VolPostCardState extends State<VolPostCard> {
                   if (!context.read<UserProvider>().isLogined) {
                     final loginType = context.read<UserProvider>().isLogined;
 
-                    if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
+                    if (loginType.toString() != "naver" &&
+                        loginType.toString() != "kakao") {
                       swagPlatformDialog(
                         context: context,
                         title: "로그인 알림",
@@ -99,19 +98,19 @@ class _VolPostCardState extends State<VolPostCard> {
                       );
                     }
                   } else {
-                  context.pushNamed(
-                    VolDetailScreen.routeName,
-                    extra: VolDetailScreenArgs(
-                      id: widget.id,
-                      title: widget.title,
-                      contnet: widget.contnet,
-                      host: widget.host,
-                      locationStr: widget.locationStr,
-                      startTime: widget.startTime,
-                      endTime: widget.endTime,
-                      tabBarSelected: 0,
-                    ),
-                  );
+                    context.pushNamed(
+                      VolDetailScreen.routeName,
+                      extra: VolDetailScreenArgs(
+                        id: widget.id,
+                        title: widget.title,
+                        contnet: widget.contnet,
+                        host: widget.host,
+                        locationStr: widget.locationStr,
+                        startTime: widget.startTime,
+                        endTime: widget.endTime,
+                        tabBarSelected: 0,
+                      ),
+                    );
                   }
                 },
                 child: Container(
@@ -123,8 +122,8 @@ class _VolPostCardState extends State<VolPostCard> {
                     ),
                   ),
                   child: ListView(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 12.0),
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,15 +161,12 @@ class _VolPostCardState extends State<VolPostCard> {
                           ),
                           Text(
                             widget.contnet,
-                            style: TextStyle(fontSize: 12.0, height: 2.0),
+                            style: const TextStyle(fontSize: 12.0, height: 2.0),
                           ),
                           Text(
-                            "모집기간 : " +
-                                widget.startTime +
-                                " ~ " +
-                                widget.endTime,
-                            style: TextStyle(
-                              color: const Color.fromARGB(255, 124, 123, 123),
+                            "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
+                            style: const TextStyle(
+                              color: Color.fromARGB(255, 124, 123, 123),
                               fontSize: 12.0,
                               height: 2.8,
                             ),
@@ -185,14 +181,14 @@ class _VolPostCardState extends State<VolPostCard> {
                             children: [
                               Text(
                                 widget.host,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Color.fromARGB(255, 124, 123, 123),
                                     fontSize: 12.0,
                                     height: 2.5),
                               ),
                               Text(
                                 widget.locationStr,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Color.fromARGB(255, 124, 123, 123),
                                     fontSize: 12.0,
                                     height: 2.5),

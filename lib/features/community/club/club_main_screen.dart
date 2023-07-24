@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
-import 'package:swag_cross_app/features/community/club/club_search_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/club_search_screen.dart';
 
 class ClubMainScreen extends StatefulWidget {
   const ClubMainScreen({super.key});

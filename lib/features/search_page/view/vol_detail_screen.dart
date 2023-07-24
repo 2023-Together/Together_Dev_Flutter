@@ -72,7 +72,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     );
   }
 
-  static final LatLng schoolLatlng = LatLng(
+  static const LatLng schoolLatlng = LatLng(
     // 위도와 경도 값 지정
     35.165992,
     128.096785,
@@ -84,11 +84,12 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     int id = Random().nextInt(100);
 
     setState(() {
-      markers.add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
+      markers
+          .add(Marker(position: cordinate, markerId: MarkerId(id.toString())));
     });
   }
 
-  static final CameraPosition initialPosition = CameraPosition(
+  static CameraPosition initialPosition = CameraPosition(
     target: schoolLatlng, // 카메라 위치
     zoom: 15, // 확대 정도
   );
@@ -114,12 +115,12 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             children: [
               Row(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 187,
                     height: 80,
                     child: Card(
                       child: ListTile(
-                        leading: Icon(Icons.place),
+                        leading: const Icon(Icons.place),
                         title: const Text(
                           "위치",
                           style: TextStyle(
@@ -128,14 +129,14 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                         ),
                         subtitle: Text(
                           widget.locationStr,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Container(
+                  const SizedBox(
                     width: 187,
                     height: 80,
                     child: Card(
@@ -160,13 +161,13 @@ class _VolDetailScreenState extends State<VolDetailScreen>
               ),
               Row(
                 children: [
-                  Container(
+                  SizedBox(
                     width: 187,
                     height: 80,
                     child: Card(
                       child: ListTile(
-                        leading: Icon(Icons.start),
-                        title: Text(
+                        leading: const Icon(Icons.start),
+                        title: const Text(
                           "모집 시작",
                           style: TextStyle(
                             fontSize: 14.0,
@@ -174,20 +175,20 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                         ),
                         subtitle: Text(
                           widget.startTime,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 187,
                     height: 80,
                     child: Card(
                       child: ListTile(
-                        leading: Icon(Icons.done),
-                        title: Text(
+                        leading: const Icon(Icons.done),
+                        title: const Text(
                           "모집 마감",
                           style: TextStyle(
                             fontSize: 14.0,
@@ -195,7 +196,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                         ),
                         subtitle: Text(
                           widget.endTime,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14.0,
                           ),
                         ),
@@ -206,17 +207,19 @@ class _VolDetailScreenState extends State<VolDetailScreen>
               ),
               _title(title: "상세"),
               Container(
-                child: Text(widget.contnet,),
+                child: Text(
+                  widget.contnet,
+                ),
               ),
               _title(title: "활동 위치"),
-               Container(
+              SizedBox(
                 width: 450,
                 height: 320,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                  vertical: 16.0,
-                  horizontal: 16.0,
-                ),
+                    vertical: 16.0,
+                    horizontal: 16.0,
+                  ),
                   child: GoogleMap(
                     initialCameraPosition: initialPosition,
                     mapType: MapType.hybrid,
@@ -233,7 +236,6 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                     },
                   ),
                 ),
-
               ),
             ],
           ),
@@ -323,13 +325,13 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                         ListTile(
                           title: Text(
                             widget.title,
-                            style: TextStyle(
+                            style: const TextStyle(
                               height: 3,
                             ),
                           ),
                           subtitle: Text(
                             widget.contnet,
-                            style: TextStyle(
+                            style: const TextStyle(
                               height: 1.5,
                             ),
                           ),
@@ -397,7 +399,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
-                child: Container(
+                child: SizedBox(
                   width: 375.0,
                   height: 40.0,
                   child: ElevatedButton(
