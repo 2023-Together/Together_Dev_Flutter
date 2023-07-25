@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
@@ -144,7 +143,6 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.home,
                 onTap: () => _onTap(0),
                 selectedIndex: _selectedIndex,
-                imgURI: "",
                 isLogined: isLogined,
               ),
               NavTab(
@@ -154,7 +152,6 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.manage_search,
                 onTap: () => _onTap(1),
                 selectedIndex: _selectedIndex,
-                imgURI: "",
                 isLogined: isLogined,
               ),
               // NavTab(
@@ -174,17 +171,15 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.groups_2,
                 onTap: () => _onTap(2),
                 selectedIndex: _selectedIndex,
-                imgURI: "",
                 isLogined: isLogined,
               ),
               NavTab(
                 text: "프로필",
                 isSelected: _selectedIndex == 3,
-                unSelectedIcon: FontAwesomeIcons.circleUser,
-                selectedIcon: FontAwesomeIcons.solidCircleUser,
+                unSelectedIcon: Icons.account_circle_outlined,
+                selectedIcon: Icons.account_circle,
                 onTap: () => _onTap(3),
                 selectedIndex: _selectedIndex,
-                imgURI: "https://avatars.githubusercontent.com/u/77985708?v=4",
                 isLogined: isLogined,
               ),
             ],

@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_community_images.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
 
 class PostCard extends StatefulWidget {
@@ -14,7 +13,7 @@ class PostCard extends StatefulWidget {
     required this.postId,
     required this.category,
     this.title,
-    this.images,
+    // this.images,
     required this.initCheckGood,
     this.content,
     required this.date,
@@ -25,7 +24,7 @@ class PostCard extends StatefulWidget {
   final String category;
   final String? title;
   final String? content;
-  final List<String>? images;
+  // final List<String>? images;
   final bool initCheckGood;
   final String date;
   final String user;
@@ -63,7 +62,7 @@ class _PostCard extends State<PostCard> {
         category: widget.category,
         title: widget.title,
         content: widget.content,
-        images: widget.images,
+        // images: widget.images,
         date: widget.date,
         user: widget.user,
         tabBarSelected: page,
@@ -93,26 +92,6 @@ class _PostCard extends State<PostCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size14,
-                ),
-                leading: const CircleAvatar(
-                  radius: 20,
-                  backgroundImage: NetworkImage(
-                    "https://avatars.githubusercontent.com/u/77985708?v=4",
-                  ),
-                  backgroundColor: Colors.transparent,
-                ),
-                title: Text(
-                  widget.user,
-                  maxLines: 1,
-                ),
-                subtitle: const Text(
-                  "2개월전",
-                  maxLines: 1,
-                ),
-              ),
               Column(
                 children: [
                   Container(
@@ -141,22 +120,36 @@ class _PostCard extends State<PostCard> {
                     ),
                   ),
                   Gaps.v20,
-                  if (widget.images != null)
-                    if (widget.images!.isNotEmpty)
-                      SWAGCommunityImages(images: widget.images!),
+                  // if (widget.images != null)
+                  //   if (widget.images!.isNotEmpty)
+                  //     SWAGCommunityImages(images: widget.images!),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: Sizes.size20,
-                  right: Sizes.size20,
-                  bottom: Sizes.size10,
+              ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: Sizes.size14,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                // leading: CircleAvatar(
+                //   radius: 20,
+                //   backgroundColor: Colors.blue,
+                //   child: Text(
+                //     widget.user * 3,
+                //     style: const TextStyle(color: Colors.white),
+                //   ),
+                // ),
+                title: Text(
+                  widget.user,
+                  maxLines: 1,
+                ),
+                subtitle: const Text(
+                  "2개월전",
+                  maxLines: 1,
+                ),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: _onGoodTap,
+                      onPressed: isLogined ? _onGoodTap : () {},
                       icon: FaIcon(
                         isLogined
                             ? _checkGood
@@ -182,6 +175,42 @@ class _PostCard extends State<PostCard> {
                   ],
                 ),
               ),
+              // Padding(
+              //   padding: const EdgeInsets.only(
+              //     left: Sizes.size20,
+              //     right: Sizes.size20,
+              //     bottom: Sizes.size10,
+              //   ),
+              //   child: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: [
+              //       IconButton(
+              //         onPressed: _onGoodTap,
+              //         icon: FaIcon(
+              //           isLogined
+              //               ? _checkGood
+              //                   ? FontAwesomeIcons.solidThumbsUp
+              //                   : FontAwesomeIcons.thumbsUp
+              //               : FontAwesomeIcons.thumbsUp,
+              //           color: isLogined
+              //               ? _checkGood
+              //                   ? Colors.blue.shade600
+              //                   : Colors.black
+              //               : Colors.black,
+              //         ),
+              //       ),
+              //       Gaps.h6,
+              //       IconButton(
+              //         onPressed: () => _goDetailScreen(1),
+              //         icon: const FaIcon(
+              //           FontAwesomeIcons.comment,
+              //           color: Colors.black,
+              //           size: 30,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),

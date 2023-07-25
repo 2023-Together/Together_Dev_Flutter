@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -43,15 +42,8 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     end: 1.0,
   ).animate(_animationController);
 
-  // late final Animation<Color?> _barrierAnimation = ColorTween(
-  //   begin: Colors.transparent,
-  //   end: Colors.black12,
-  // ).animate(_animationController);
-
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
   final ScrollController _scrollController = ScrollController();
-  // 공지사항 슬라이드 제어를 위한 컨트롤러
-  final CarouselController _carouselController = CarouselController();
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
   // 포커스 검사
@@ -60,21 +52,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   bool _isFocused = false;
 
   bool _showJumpUpButton = false;
-  // final int _currentNoticeIndex = 0;
-
-  // String _option1 = "";
-  // final List<String> _optionList1 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option2 = "";
-  // final List<String> _optionList2 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // String _option3 = "";
-  // final List<String> _optionList3 = ["", "옵션 1", "옵션 2", "옵션 3", "옵션 4"];
-
-  // // 카테고리의 공통 스타일
-  // final double _optionsFontSize = 16;
-  // final _optionsPadding =
-  //     const EdgeInsets.symmetric(vertical: 6, horizontal: 8);
 
   @override
   void initState() {
@@ -195,24 +172,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     }
   }
 
-  // void _onChangeOption1(String option) {
-  //   setState(() {
-  //     _option1 = option;
-  //   });
-  // }
-
-  // void _onChangeOption2(String option) {
-  //   setState(() {
-  //     _option2 = option;
-  //   });
-  // }
-
-  // void _onChangeOption3(String option) {
-  //   setState(() {
-  //     _option3 = option;
-  //   });
-  // }
-
   @override
   void dispose() {
     _scrollController.dispose();
@@ -225,7 +184,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final isLogined = context.watch<UserProvider>().isLogined;
     return SafeArea(
       child: Scaffold(
@@ -348,84 +306,82 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         // CustomScrollView : 스크롤 가능한 구역
         body: Stack(
           children: [
-            Container(
-              child: RefreshIndicator.adaptive(
-                onRefresh: _refreshComunityList,
-                child: CustomScrollView(
-                  controller: _scrollController,
-                  // CustomScrollView 안에 들어갈 element들
-                  // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ListTile(
-                          onTap: () {
-                            context.pushNamed(
-                              NoticeScreen.routeName,
-                            );
-                          },
-                          shape: const BeveledRectangleBorder(
-                            side: BorderSide(
-                              width: 0.1,
-                            ),
+            RefreshIndicator.adaptive(
+              onRefresh: _refreshComunityList,
+              child: CustomScrollView(
+                controller: _scrollController,
+                // CustomScrollView 안에 들어갈 element들
+                // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ListTile(
+                        onTap: () {
+                          context.pushNamed(
+                            NoticeScreen.routeName,
+                          );
+                        },
+                        shape: const BeveledRectangleBorder(
+                          side: BorderSide(
+                            width: 0.1,
                           ),
-                          title: const Text(
-                            "공지사항",
-                            maxLines: 1,
-                          ),
-                          subtitle: const Text(
-                            "최근 등록일 : 5일전",
-                            maxLines: 1,
-                          ),
-                          trailing: const Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 30,
-                          ),
+                        ),
+                        title: const Text(
+                          "공지사항",
+                          maxLines: 1,
+                        ),
+                        subtitle: const Text(
+                          "최근 등록일 : 5일전",
+                          maxLines: 1,
+                        ),
+                        trailing: const Icon(
+                          Icons.keyboard_arrow_right,
+                          size: 30,
                         ),
                       ),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        childCount: comunityList.length,
-                        (context, index) {
-                          final item = comunityList[index];
-                          if (item["type"] != "ad") {
-                            return PostCard(
-                              key: Key(item["title"]),
-                              postId: index,
-                              category: item["category"],
-                              title: item["title"],
-                              images: List<String>.from(item["imgUrl"]),
-                              initCheckGood: item["checkGood"],
-                              content: item["content"],
-                              date: item["date"],
-                              user: item["user"],
-                            );
-                          } else {
-                            return StatefulBuilder(
-                              builder: (context, setState) => Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: AdWidget(
-                                  ad: BannerAd(
-                                    listener: BannerAdListener(
-                                      onAdFailedToLoad: failedAdsLoading,
-                                      onAdLoaded: (_) {},
-                                    ),
-                                    size: AdSize.fullBanner,
-                                    adUnitId: AdHelper.bannerAdUnitId,
-                                    request: const AdRequest(),
-                                  )..load(),
-                                ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: comunityList.length,
+                      (context, index) {
+                        final item = comunityList[index];
+                        if (item["type"] != "ad") {
+                          return PostCard(
+                            key: Key(item["title"]),
+                            postId: index,
+                            category: item["category"],
+                            title: item["title"],
+                            // images: List<String>.from(item["imgUrl"]),
+                            initCheckGood: item["checkGood"],
+                            content: item["content"],
+                            date: item["date"],
+                            user: item["user"],
+                          );
+                        } else {
+                          return StatefulBuilder(
+                            builder: (context, setState) => Container(
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: AdWidget(
+                                ad: BannerAd(
+                                  listener: BannerAdListener(
+                                    onAdFailedToLoad: failedAdsLoading,
+                                    onAdLoaded: (_) {},
+                                  ),
+                                  size: AdSize.fullBanner,
+                                  adUnitId: AdHelper.bannerAdUnitId,
+                                  request: const AdRequest(),
+                                )..load(),
                               ),
-                            );
-                          }
-                        },
-                      ),
+                            ),
+                          );
+                        }
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             if (_isFocused)
@@ -454,9 +410,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                       _searchController.text = "";
                       _focusNode.unfocus();
                       _toggleAnimations();
-                    },
-                    onChanged: (String? value) {
-                      print(_searchController.text);
                     },
                     buttonText: "검색",
                     focusNode: _focusNode,

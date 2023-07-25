@@ -53,10 +53,25 @@ class _CommentCardState extends State<CommentCard> {
                       padding: const EdgeInsets.only(
                         bottom: Sizes.size8,
                       ),
-                      child: Text(
-                        "${widget.username} ㆍ ${widget.date}",
-                        maxLines: 1,
-                        style: Theme.of(context).textTheme.labelMedium,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "${widget.username} ㆍ ${widget.date}",
+                            maxLines: 1,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                child: Text(
+                                  "삭제",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                     Text(

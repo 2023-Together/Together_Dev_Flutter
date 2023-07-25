@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
-import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -35,9 +34,6 @@ class ClubCommunityScreen extends StatefulWidget {
 
 class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     with SingleTickerProviderStateMixin {
-
-  
-
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
@@ -332,49 +328,49 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
               // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
               slivers: [
                 // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-                SliverToBoxAdapter(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size4,
-                            horizontal: Sizes.size20,
-                          ),
-                          child: Image.asset(
-                            "assets/images/volImg.jpg",
-                            width: size.width,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Gaps.v8,
-                        ListTile(
-                          onTap: () => context.pushNamed(
-                            ClubNoticeScreen.routeName,
-                          ),
-                          shape: const BeveledRectangleBorder(
-                            side: BorderSide(
-                              width: 0.1,
-                            ),
-                          ),
-                          title: const Text(
-                            "동아리 공지사항",
-                            maxLines: 1,
-                          ),
-                          subtitle: const Text(
-                            "마지막 등록일 : 5일전",
-                            maxLines: 1,
-                          ),
-                          trailing: const Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 30,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // SliverToBoxAdapter(
+                //   child: Center(
+                //     child: Column(
+                //       children: [
+                //         Padding(
+                //           padding: const EdgeInsets.symmetric(
+                //             vertical: Sizes.size4,
+                //             horizontal: Sizes.size20,
+                //           ),
+                //           child: Image.asset(
+                //             "assets/images/volImg.jpg",
+                //             width: size.width,
+                //             height: 160,
+                //             fit: BoxFit.cover,
+                //           ),
+                //         ),
+                //         Gaps.v8,
+                //         ListTile(
+                //           onTap: () => context.pushNamed(
+                //             ClubNoticeScreen.routeName,
+                //           ),
+                //           shape: const BeveledRectangleBorder(
+                //             side: BorderSide(
+                //               width: 0.1,
+                //             ),
+                //           ),
+                //           title: const Text(
+                //             "동아리 공지사항",
+                //             maxLines: 1,
+                //           ),
+                //           subtitle: const Text(
+                //             "마지막 등록일 : 5일전",
+                //             maxLines: 1,
+                //           ),
+                //           trailing: const Icon(
+                //             Icons.keyboard_arrow_right,
+                //             size: 30,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 // SliverFixedExtentList : item들의 리스트를 만들어 냄
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
@@ -387,7 +383,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                           category: item["category"],
                           postId: index,
                           title: item["title"],
-                          images: List<String>.from(item["imgUrl"]),
+                          // images: List<String>.from(item["imgUrl"]),
                           initCheckGood: item["checkGood"],
                           content: item["content"],
                           date: item["date"],

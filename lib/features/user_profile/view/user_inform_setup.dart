@@ -18,10 +18,11 @@ class UserInformSetup extends StatelessWidget {
     return Text(
       title,
       style: const TextStyle(
-          color: Color.fromARGB(255, 152, 152, 152),
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          height: 3),
+        color: Color.fromARGB(255, 152, 152, 152),
+        fontSize: 15,
+        fontWeight: FontWeight.w700,
+        height: 3,
+      ),
     );
   }
 
@@ -46,188 +47,200 @@ class UserInformSetup extends StatelessWidget {
       appBar: AppBar(
         title: const Text("설정"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
-        child: ListView(
-          children: [
-            _title(title: "회원 정보"),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                title: const Text(
-                  "회원 정보 수정",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.chevron_right_rounded,
-                    size: Sizes.size24,
-                  ),
-                  onPressed: () {
-                    // context.pushNamed(
-                    //   UserInformUpdate.routeName,
-                    //   extra: UserInformArgs(
-                    //       userDid: userDid,
-                    //       userId: userId,
-                    //       userPw: userPw,
-                    //       userName: userName,
-                    //       userDef: userDef,
-                    //       userType: userType,
-                    //       birth: birth),
-                    // );
-                  },
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        children: [
+          _title(title: "회원 정보"),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              title: const Text(
+                "회원 정보 수정",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
                 ),
               ),
-            ),
-            _title(title: "서비스"),
-            const Card(
-              elevation: 0,
-              child: ListTile(
-                title: Text(
-                  "앱 정보",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: Icon(
+              trailing: IconButton(
+                icon: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
+                onPressed: () {
+                  // context.pushNamed(
+                  //   UserInformUpdate.routeName,
+                  //   extra: UserInformArgs(
+                  //       userDid: userDid,
+                  //       userId: userId,
+                  //       userPw: userPw,
+                  //       userName: userName,
+                  //       userDef: userDef,
+                  //       userType: userType,
+                  //       birth: birth),
+                  // );
+                },
               ),
             ),
-            const Card(
-              elevation: 0,
-              child: ListTile(
-                title: Text(
-                  "이용 약관",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
+          ),
+          _title(title: "서비스"),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const LicensePage(),
                 ),
-                trailing: Icon(
+              ),
+              title: const Text(
+                "앱 정보(라이센스)",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                size: Sizes.size24,
+              ),
+            ),
+          ),
+          const Card(
+            elevation: 0,
+            child: ListTile(
+              title: Text(
+                "이용 약관",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right_rounded,
+                size: Sizes.size24,
+              ),
+            ),
+          ),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => context.pushNamed(NoticeScreen.routeName),
+              title: const Text(
+                "공지사항",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
+              ),
+              trailing: IconButton(
+                icon: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
+                onPressed: () {
+                  context.pushNamed(
+                    NoticeScreen.routeName,
+                  );
+                },
               ),
             ),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                title: const Text(
-                  "공지사항",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.chevron_right_rounded,
-                    size: Sizes.size24,
-                  ),
-                  onPressed: () {
-                    context.pushNamed(
-                      NoticeScreen.routeName,
-                    );
-                  },
+          ),
+          _title(title: "고객 센터"),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => context.pushNamed(
+                CustomerServiceScreen.routeName,
+                extra: CustomerServiceScreenArgs(initSelectedIndex: 0),
+              ),
+              title: const Text(
+                "자주 묻는 질문 (FnQ)",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
                 ),
               ),
-            ),
-            _title(title: "고객 센터"),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                title: const Text(
-                  "자주 묻는 질문 (FnQ)",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.chevron_right_rounded,
-                    size: Sizes.size24,
-                  ),
-                  onPressed: () {
-                    context.pushNamed(
-                      CustomerServiceScreen.routeName,
-                      extra: CustomerServiceScreenArgs(
-                        initSelectedIndex: 0,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                title: const Text(
-                  "1:1 문의하기",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: const Icon(
-                    Icons.chevron_right_rounded,
-                    size: Sizes.size24,
-                  ),
-                  onPressed: () {
-                    context.pushNamed(
-                      CustomerServiceScreen.routeName,
-                      extra: CustomerServiceScreenArgs(
-                        initSelectedIndex: 1,
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            _title(title: "로그아웃"),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                onTap: () => onLogoutTap(context),
-                title: const Text(
-                  "로그아웃",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
-                ),
-                trailing: const Icon(
+              trailing: IconButton(
+                icon: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
+                onPressed: () {
+                  context.pushNamed(
+                    CustomerServiceScreen.routeName,
+                    extra: CustomerServiceScreenArgs(
+                      initSelectedIndex: 0,
+                    ),
+                  );
+                },
               ),
             ),
-            Card(
-              elevation: 0,
-              child: ListTile(
-                onTap: () => onLogoutAllTap(context),
-                title: const Text(
-                  "회원 탈퇴",
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 15.0,
-                  ),
+          ),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => context.pushNamed(
+                CustomerServiceScreen.routeName,
+                extra: CustomerServiceScreenArgs(initSelectedIndex: 1),
+              ),
+              title: const Text(
+                "건의하기",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
                 ),
-                trailing: const Icon(
+              ),
+              trailing: IconButton(
+                icon: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
+                onPressed: () {
+                  context.pushNamed(
+                    CustomerServiceScreen.routeName,
+                    extra: CustomerServiceScreenArgs(
+                      initSelectedIndex: 1,
+                    ),
+                  );
+                },
               ),
             ),
-          ],
-        ),
+          ),
+          _title(title: "로그아웃"),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => onLogoutTap(context),
+              title: const Text(
+                "로그아웃",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                size: Sizes.size24,
+              ),
+            ),
+          ),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              onTap: () => onLogoutAllTap(context),
+              title: const Text(
+                "회원 탈퇴",
+                style: TextStyle(
+                  fontWeight: FontWeight.normal,
+                  fontSize: 15.0,
+                ),
+              ),
+              trailing: const Icon(
+                Icons.chevron_right_rounded,
+                size: Sizes.size24,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
