@@ -80,7 +80,7 @@ class PostDetailScreen extends StatelessWidget {
                               PostEditScreen.routeName,
                               extra: PostEditScreenArgs(
                                 pageTitle: "게시글 수정",
-                                editType: "post_update",
+                                editType: PostEditType.postUpdate,
                                 id: postId,
                                 category: category,
                                 title: title,
@@ -119,13 +119,13 @@ class PostDetailScreen extends StatelessWidget {
                       ListTile(
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 30),
-                        leading: const CircleAvatar(
-                          radius: 24,
-                          backgroundImage: NetworkImage(
-                            "https://avatars.githubusercontent.com/u/77985708?v=4",
-                          ),
-                          backgroundColor: Colors.transparent,
-                        ),
+                        // leading: const CircleAvatar(
+                        //   radius: 24,
+                        //   backgroundImage: NetworkImage(
+                        //     "https://avatars.githubusercontent.com/u/77985708?v=4",
+                        //   ),
+                        //   backgroundColor: Colors.transparent,
+                        // ),
                         title: Text(
                           user,
                         ),

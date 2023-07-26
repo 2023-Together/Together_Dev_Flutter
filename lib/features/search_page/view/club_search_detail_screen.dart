@@ -8,7 +8,7 @@ class ClubSearchDetailScreenArgs {
   final int clubId;
   final String clubDef;
   final String clubName;
-  final String clubMaster;
+  final int clubMaster;
 
   ClubSearchDetailScreenArgs({
     required this.clubId,
@@ -33,7 +33,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
   final int clubId;
   final String clubDef;
   final String clubName;
-  final String clubMaster;
+  final int clubMaster;
 
   void _onSubmit(BuildContext context) {
     swagPlatformDialog(
@@ -102,6 +102,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                   _title(title: clubName),
                   Gaps.v10,
                   Container(
+                    width: MediaQuery.of(context).size.width,
                     height: 180,
                     decoration: const BoxDecoration(
                       border: Border.symmetric(
@@ -130,7 +131,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
-                              text: clubMaster,
+                              text: "$clubMaster",
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),

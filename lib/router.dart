@@ -5,12 +5,11 @@ import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
 import 'package:swag_cross_app/features/community/club/request_club_apply.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
+import 'package:swag_cross_app/features/customer_service/faq/faq_edit_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/logo_loading_screen.dart';
 import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
-import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
-import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
@@ -190,35 +189,48 @@ final router = GoRouter(
       },
       routes: [
         GoRoute(
-          name: QnAEditScreen.routeName,
-          path: QnAEditScreen.routeURL,
+          path: FaqEditScreen.routeURL,
+          name: FaqEditScreen.routeName,
           builder: (context, state) {
-            if (state.extra != null) {
-              final args = state.extra as QnAEditScreenArgs;
-              return QnAEditScreen(
-                id: args.id,
-                title: args.title,
-                content: args.content,
-                images: args.images,
-              );
-            }
-            return const QnAEditScreen();
-          },
-        ),
-        GoRoute(
-          path: QnADetailScreen.routeURL,
-          name: QnADetailScreen.routeName,
-          builder: (context, state) {
-            final args = state.extra as QnADetailScreenArgs;
-            return QnADetailScreen(
-              qnaId: args.qnaId,
-              qnaUser: args.qnaUser,
-              qnaContent: args.qnaContent,
-              qnaDate: args.qnaDate,
-              answerText: args.answerText,
+            final args = state.extra as FaqEditScreenArgs;
+            return FaqEditScreen(
+              pageName: args.pageName,
+              id: args.id,
+              title: args.title,
+              content: args.content,
             );
           },
-        ),
+        )
+        // GoRoute(
+        //   name: QnAEditScreen.routeName,
+        //   path: QnAEditScreen.routeURL,
+        //   builder: (context, state) {
+        //     if (state.extra != null) {
+        //       final args = state.extra as QnAEditScreenArgs;
+        //       return QnAEditScreen(
+        //         id: args.id,
+        //         title: args.title,
+        //         content: args.content,
+        //         images: args.images,
+        //       );
+        //     }
+        //     return const QnAEditScreen();
+        //   },
+        // ),
+        // GoRoute(
+        //   path: QnADetailScreen.routeURL,
+        //   name: QnADetailScreen.routeName,
+        //   builder: (context, state) {
+        //     final args = state.extra as QnADetailScreenArgs;
+        //     return QnADetailScreen(
+        //       qnaId: args.qnaId,
+        //       qnaUser: args.qnaUser,
+        //       qnaContent: args.qnaContent,
+        //       qnaDate: args.qnaDate,
+        //       answerText: args.answerText,
+        //     );
+        //   },
+        // ),
       ],
     ),
     GoRoute(
@@ -236,12 +248,15 @@ final router = GoRouter(
               final args = state.extra as NoticeEditScreenArgs;
               return NoticeEditScreen(
                 id: args.id,
+                pageName: args.pageName,
                 title: args.title,
                 content: args.content,
                 images: args.images,
               );
             }
-            return const NoticeEditScreen();
+            return const NoticeEditScreen(
+              pageName: "공지사항 등록",
+            );
           },
         ),
       ],

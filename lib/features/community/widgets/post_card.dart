@@ -6,6 +6,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/utils/time_parse.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
@@ -78,14 +79,15 @@ class _PostCard extends State<PostCard> {
       builder: (context, constraints) => GestureDetector(
         onTap: () => _goDetailScreen(0),
         child: Container(
+          padding: const EdgeInsets.only(top: 6),
           clipBehavior: Clip.hardEdge,
           width: constraints.maxWidth,
           decoration: const BoxDecoration(
             color: Colors.white,
             border: Border(
               bottom: BorderSide(
-                width: 0.5,
-                color: Colors.black12,
+                width: 1,
+                color: Colors.black38,
               ),
             ),
           ),
@@ -141,8 +143,8 @@ class _PostCard extends State<PostCard> {
                   widget.user,
                   maxLines: 1,
                 ),
-                subtitle: const Text(
-                  "2개월전",
+                subtitle: Text(
+                  TimeParse.getTimeAgo(DateTime.parse(widget.date)),
                   maxLines: 1,
                 ),
                 trailing: Row(

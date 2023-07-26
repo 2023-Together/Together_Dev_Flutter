@@ -94,6 +94,7 @@ class _MainNavigationState extends State<MainNavigation> {
         _selectedIndex = index;
       });
     }
+    print(_selectedIndex);
   }
 
   @override
@@ -123,9 +124,7 @@ class _MainNavigationState extends State<MainNavigation> {
           ),
           Offstage(
             offstage: _selectedIndex != 3,
-            //child: const UserProfileScreen(),
             child: const UserProfileScreen(),
-            //child: const UserProfileTestScreen(),
           ),
         ],
       ),

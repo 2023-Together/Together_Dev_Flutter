@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
@@ -7,6 +8,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/club_search_model.dart';
 
 class ClubSearchScreen extends StatefulWidget {
   // 필드
@@ -46,12 +48,11 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
+  List<ClubSearchModel> _clubList = [];
+  List<ClubSearchModel> _filteredList = [];
+
   bool _isFocused = false;
-  bool _showJumpUpButton = false;
   bool _isOnlyRequest = false;
-  List<Map<String, dynamic>> filteredList = clubSearchPostList
-      .where((element) => element["isRequest"] == true)
-      .toList();
 
   List<ClubDataModel> clubList = [];
 
@@ -64,7 +65,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
-      _onScroll();
       _scrollEnd();
 
       // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
@@ -74,52 +74,27 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     });
   }
 
-  Future<void> _httpClub() async {
-    final url = Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
-    final response = await http.get(url);
-    print('Response status: ${response.statusCode}');
-    print('Response body: ${response.body}');
-
-    // 응답 처리
-    if (response.statusCode == 200) {
-      // 성공적인 응답 처리
-      print('Response body: ${response.body}');
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-    }
-  }
-
-  // 스크롤 할때마다 호출
-  void _onScroll() {
-    if (_scrollController.offset > 260) {
-      // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-      // 리턴처리 필요
-      if (_showJumpUpButton) return;
-      setState(() {
-        _showJumpUpButton = true;
-      });
-    } else {
-      // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-      // 리턴처리 필요
-      if (!_showJumpUpButton) return;
-      setState(() {
-        _showJumpUpButton = false;
-      });
-    }
-  }
-
   // 동아리 리스트를 가져오는 통신
-  void _clubGetDispatch() async {
+  Future<List<ClubSearchModel>> _clubGetDispatch() async {
     final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      print('Response body: ${response.body}');
-      // clubList = response.body
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      _clubList =
+          jsonResponse.map((data) => ClubSearchModel.fromJson(data)).toList();
+
+      // _filteredList를 사용하는 코드도 적절하게 수정해야 할 수도 있습니다.
+      _filteredList =
+          _clubList.where((element) => element.clubRecruiting == 1).toList();
+
+      return _clubList;
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
+      throw Exception('동아리 데이터를 불러오는데 실패하였습니다.');
     }
   }
 
@@ -128,10 +103,8 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     if (_scrollController.offset ==
         _scrollController.position.maxScrollExtent) {
       setState(() {
-        clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
-        filteredList = clubSearchPostList
-            .where((element) => element["isRequest"] == true)
-            .toList();
+        _filteredList =
+            _clubList.where((element) => element.clubRecruiting == 1).toList();
       });
     }
   }
@@ -180,9 +153,8 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   void _toggleOnlyRequest() {
     _scrollToTop();
     clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
-    filteredList = clubSearchPostList
-        .where((element) => element["isRequest"] == true)
-        .toList();
+    _filteredList =
+        _clubList.where((element) => element.clubRecruiting == 1).toList();
     setState(() {
       _isOnlyRequest = !_isOnlyRequest;
     });
@@ -192,28 +164,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          AnimatedOpacity(
-            opacity: _showJumpUpButton
-                ? !_isFocused
-                    ? 1
-                    : 0
-                : 0,
-            duration: const Duration(milliseconds: 200),
-            child: FloatingActionButton(
-              heroTag: "comunity",
-              onPressed: _scrollToTop,
-              backgroundColor: Colors.purpleAccent.shade100,
-              child: const FaIcon(
-                FontAwesomeIcons.arrowUp,
-                color: Colors.black,
-              ),
-            ),
-          ),
-        ],
-      ),
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: const Text("동아리"),
@@ -259,81 +209,104 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          RefreshIndicator.adaptive(
-            onRefresh: _refreshClubList,
-            child: ListView.separated(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              itemBuilder: (context, index) {
-                if (_isOnlyRequest) {
-                  final item = filteredList[index];
-                  return ClubRequestCard(
-                    clubId: item["clubId"],
-                    clubDef: item["clubDef"],
-                    clubName: item["clubName"],
-                    clubMaster: item["clubMaster"],
-                    clubNum: item["clubNum"],
-                    isRequest: item["isRequest"],
-                  );
-                } else {
-                  final item = clubSearchPostList[index];
-                  return ClubRequestCard(
-                    clubId: item["clubId"],
-                    clubDef: item["clubDef"],
-                    clubName: item["clubName"],
-                    clubMaster: item["clubMaster"],
-                    clubNum: item["clubNum"],
-                    isRequest: item["isRequest"],
-                  );
-                }
-              },
-              separatorBuilder: (context, index) {
-                return Gaps.v14;
-              },
-              itemCount: _isOnlyRequest
-                  ? filteredList.length
-                  : clubSearchPostList.length,
-            ),
-          ),
-          if (_isFocused)
-            // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            ModalBarrier(
-              // color: _barrierAnimation,
-              color: Colors.transparent,
-              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-              dismissible: true,
-              // 자신을 클릭하면 실행되는 함수
-              onDismiss: () => _focusNode.unfocus(),
-            ),
-          // 검색 화면
-          FadeTransition(
-            opacity: _panelOpacityAnimation,
-            child: SlideTransition(
-              position: _panelSlideAnimation,
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(6),
-                child: SWAGTextField(
-                  hintText: "검색어를 입력하세요.",
-                  maxLine: 1,
-                  controller: _searchController,
-                  onSubmitted: () {
-                    _searchController.text = "";
-                    _focusNode.unfocus();
-                    _toggleAnimations();
-                  },
-                  onChanged: (String? value) {
-                    print(_searchController.text);
-                  },
-                  buttonText: "검색",
-                  focusNode: _focusNode,
+      body: FutureBuilder<List<ClubSearchModel>>(
+        future: _clubGetDispatch(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            // 데이터를 기다리는 동안 로딩 인디케이터 표시
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError) {
+            // 에러가 발생한 경우 에러 메시지 표시
+            return Center(
+              child: Text('오류 발생: ${snapshot.error}'),
+            );
+          } else {
+            // 데이터를 성공적으로 가져왔을 때 ListView 표시
+            _clubList = snapshot.data!;
+            _filteredList = _clubList
+                .where((element) => element.clubRecruiting == 1)
+                .toList();
+
+            return Stack(
+              children: [
+                RefreshIndicator.adaptive(
+                  onRefresh: _refreshClubList,
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    itemBuilder: (context, index) {
+                      if (_isOnlyRequest) {
+                        final item = _filteredList[index];
+                        return ClubRequestCard(
+                          clubId: item.clubId,
+                          clubDef: item.clubDescription,
+                          clubName: item.clubName,
+                          clubMaster: item.clubLeaderId,
+                          clubNum: 0,
+                          isRequest: item.clubRecruiting,
+                        );
+                      } else {
+                        final item = _clubList[index];
+                        return ClubRequestCard(
+                          clubId: item.clubId,
+                          clubDef: item.clubDescription,
+                          clubName: item.clubName,
+                          clubMaster: item.clubLeaderId,
+                          clubNum: 0,
+                          isRequest: item.clubRecruiting,
+                        );
+                      }
+                    },
+                    separatorBuilder: (context, index) {
+                      return Gaps.v14;
+                    },
+                    itemCount: _isOnlyRequest
+                        ? _filteredList.length
+                        : _clubList.length,
+                  ),
                 ),
-              ),
-            ),
-          ),
-        ],
+                if (_isFocused)
+                  // 슬라이드 화면 뒤쪽의 검은 화면 구현
+                  ModalBarrier(
+                    // color: _barrierAnimation,
+                    color: Colors.transparent,
+                    // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                    dismissible: true,
+                    // 자신을 클릭하면 실행되는 함수
+                    onDismiss: () => _focusNode.unfocus(),
+                  ),
+                // 검색 화면
+                FadeTransition(
+                  opacity: _panelOpacityAnimation,
+                  child: SlideTransition(
+                    position: _panelSlideAnimation,
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(6),
+                      child: SWAGTextField(
+                        hintText: "검색어를 입력하세요.",
+                        maxLine: 1,
+                        controller: _searchController,
+                        onSubmitted: () {
+                          _searchController.text = "";
+                          _focusNode.unfocus();
+                          _toggleAnimations();
+                        },
+                        onChanged: (String? value) {
+                          print(_searchController.text);
+                        },
+                        buttonText: "검색",
+                        focusNode: _focusNode,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+        },
       ),
     );
   }

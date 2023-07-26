@@ -8,7 +8,6 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
-import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -214,38 +213,19 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                           onTap: _toggleAnimations,
                           child: const Icon(Icons.search),
                         ),
-                        Gaps.h2,
-                        GestureDetector(
-                          onTap: () => context.pushNamed(
-                            CustomerServiceScreen.routeName,
-                            extra: CustomerServiceScreenArgs(
-                              initSelectedIndex: 0,
-                            ),
-                          ),
-                          child: const Icon(Icons.settings),
-                        ),
                       ]
                     : [
-                        GestureDetector(
-                          onTap: () => context.pushNamed(
-                            CustomerServiceScreen.routeName,
-                            extra: CustomerServiceScreenArgs(
-                              initSelectedIndex: 0,
-                            ),
-                          ),
-                          child: const Icon(Icons.settings),
-                        ),
-                        GestureDetector(
-                          onTap: _toggleAnimations,
-                          child: const Icon(
-                            Icons.search,
-                          ),
-                        ),
-                        Gaps.h4,
                         GestureDetector(
                           onTap: _onLoginTap,
                           child: const Icon(
                             Icons.account_circle_outlined,
+                          ),
+                        ),
+                        Gaps.h6,
+                        GestureDetector(
+                          onTap: _toggleAnimations,
+                          child: const Icon(
+                            Icons.search,
                           ),
                         ),
                       ],
@@ -290,7 +270,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                       PostEditScreen.routeName,
                       extra: PostEditScreenArgs(
                         pageTitle: "게시글 등록",
-                        editType: "post_make",
+                        editType: PostEditType.mainInsert,
                       ),
                     );
                   },
@@ -315,7 +295,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                 slivers: [
                   SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.only(top: 8),
                       child: ListTile(
                         onTap: () {
                           context.pushNamed(
@@ -439,7 +419,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-1",
+    "date": "2023-06-01",
     "user": "유저1",
     "category": "옵션 1",
   },
@@ -449,7 +429,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-2",
+    "date": "2023-05-02",
     "user": "유저2",
     "category": "옵션 4",
   },
@@ -472,7 +452,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-3",
+    "date": "2023-07-04",
     "user": "유저3",
     "category": "옵션 2",
   },
@@ -482,7 +462,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-4",
+    "date": "2023-05-04",
     "user": "유저4",
     "category": "옵션 5",
   },
@@ -494,7 +474,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-5",
+    "date": "2023-02-17",
     "user": "유저5",
     "category": "옵션 3",
   },
@@ -507,7 +487,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-6",
+    "date": "2023-05-06",
     "user": "유저6",
     "category": "옵션 5",
   },
@@ -521,7 +501,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-7",
+    "date": "2023-05-07",
     "user": "유저7",
     "category": "옵션 2",
   },
@@ -531,7 +511,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-8",
+    "date": "2023-05-08",
     "user": "유저8",
     "category": "옵션 1",
   },
@@ -547,7 +527,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-9",
+    "date": "2023-05-09",
     "user": "유저9",
     "category": "옵션 2",
   },
@@ -565,38 +545,5 @@ List<Map<String, dynamic>> initComunityList = [
     "date": "2023-05-10",
     "user": "유저10",
     "category": "옵션 4",
-  },
-];
-
-List<Map<String, dynamic>> noticeList = [
-  {
-    "id": 1,
-    "title": "제목1",
-    "content": "내용1",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 2,
-    "title": "제목2",
-    "content": "내용2",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 3,
-    "title": "제목3",
-    "content": "내용3",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 4,
-    "title": "제목4",
-    "content": "내용4",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 5,
-    "title": "제목5",
-    "content": "내용5",
-    "date": "2023-07-10 16:43",
   },
 ];
