@@ -80,9 +80,6 @@ dependencies:
   # 구글 맵 라이브러리
   google_maps_flutter: ^2.3.1
 
-  # XML을 Json으로 변환시켜주는 라이브러리
-  xml2json: ^6.1.0
-
   # 한국어 적용 라이브러리
   flutter_localization: ^0.1.13
 
