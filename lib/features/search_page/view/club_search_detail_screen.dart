@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 
 class ClubSearchDetailScreenArgs {
   final int clubId;
@@ -46,10 +48,10 @@ class ClubSearchDetailScreen extends StatelessWidget {
           child: const Text("아니오"),
         ),
         TextButton(
-          onPressed: () => context.goNamed(
-            MainNavigation.routeName,
-            extra: MainNavigationArgs(initSelectedIndex: 2),
-          ),
+          onPressed: () {
+            context.read<MainNavigationProvider>().changeIndex(2);
+            context.goNamed(MainNavigation.routeName);
+          },
           child: const Text("예"),
         ),
       ],

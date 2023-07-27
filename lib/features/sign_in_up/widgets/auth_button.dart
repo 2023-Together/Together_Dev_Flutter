@@ -7,7 +7,8 @@ import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class AuthButton extends StatefulWidget {
   const AuthButton({
@@ -97,8 +98,9 @@ class _AuthButtonState extends State<AuthButton> {
     // print('Response status: ${response.statusCode}');
     // print('Response body: ${response.body}');
 
-    if (!mounted) return;
     context.read<UserProvider>().login("naver");
+
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 
@@ -145,7 +147,7 @@ class _AuthButtonState extends State<AuthButton> {
   void _signInForKakao(BuildContext context) async {
     // await LoginStorage.saveLoginType("kakao");
 
-    if (!mounted) return;
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 
@@ -161,6 +163,8 @@ class _AuthButtonState extends State<AuthButton> {
     //     return true;
     //   },
     // );
+
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 

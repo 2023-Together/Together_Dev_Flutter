@@ -8,7 +8,8 @@ import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -50,6 +51,7 @@ class _SignInScreenState extends State<SignInScreen> {
       if (!mounted) return;
       context.read<UserProvider>().login("naver");
 
+      context.read<MainNavigationProvider>().changeIndex(0);
       context.goNamed(MainNavigation.routeName);
     }
   }
@@ -100,10 +102,12 @@ class _SignInScreenState extends State<SignInScreen> {
       );
       context.read<UserProvider>().login("naver");
 
+      context.read<MainNavigationProvider>().changeIndex(0);
       context.goNamed(MainNavigation.routeName);
     } else {
       context.read<UserProvider>().login("naver");
 
+      context.read<MainNavigationProvider>().changeIndex(0);
       context.goNamed(MainNavigation.routeName);
     }
   }
@@ -123,6 +127,9 @@ class _SignInScreenState extends State<SignInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          automaticallyImplyLeading: true,
+        ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
           child: Column(

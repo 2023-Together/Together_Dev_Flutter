@@ -78,10 +78,6 @@ final router = GoRouter(
       name: MainNavigation.routeName,
       path: MainNavigation.routeURL,
       builder: (context, state) {
-        if (state.extra != null) {
-          final args = state.extra as MainNavigationArgs;
-          return MainNavigation(initSelectedIndex: args.initSelectedIndex);
-        }
         return const MainNavigation();
       },
     ),

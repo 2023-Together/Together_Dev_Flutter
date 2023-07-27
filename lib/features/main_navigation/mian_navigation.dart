@@ -9,38 +9,24 @@ import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart'
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-
-class MainNavigationArgs {
-  final int initSelectedIndex;
-
-  MainNavigationArgs({
-    this.initSelectedIndex = 0,
-  });
-}
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class MainNavigation extends StatefulWidget {
   static const routeName = "main";
   static const routeURL = "/main";
   const MainNavigation({
     super.key,
-    this.initSelectedIndex = 0,
   });
-
-  final int initSelectedIndex;
 
   @override
   State<MainNavigation> createState() => _MainNavigationState();
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  late int _selectedIndex;
-
   @override
   void initState() {
     super.initState();
-
-    _selectedIndex = widget.initSelectedIndex;
 
     // _checkAutoLogined();
   }
@@ -65,9 +51,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   void _onTap(int index) {
     if (index == 0) {
-      setState(() {
-        _selectedIndex = index;
-      });
+      context.read<MainNavigationProvider>().changeIndex(index);
     } else if ((index == 2 || index == 3) &&
         !context.read<UserProvider>().isLogined) {
       final loginType = context.read<UserProvider>().isLogined;
@@ -83,47 +67,50 @@ class _MainNavigationState extends State<MainNavigation> {
               child: const Text("아니오"),
             ),
             TextButton(
-              onPressed: () => context.goNamed(SignInScreen.routeName),
+              onPressed: () {
+                context.pop();
+                context.pushNamed(SignInScreen.routeName);
+              },
               child: const Text("예"),
             ),
           ],
         );
       }
     } else {
-      setState(() {
-        _selectedIndex = index;
-      });
+      context.read<MainNavigationProvider>().changeIndex(index);
     }
-    print(_selectedIndex);
   }
 
   @override
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
+    final selectedIndex =
+        context.watch<MainNavigationProvider>().navigationIndex;
+    print(selectedIndex);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
           // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
           Offstage(
-            offstage: _selectedIndex != 0,
+            offstage: selectedIndex != 0,
             child: const MainCommunityScreen(),
           ),
           Offstage(
-            offstage: _selectedIndex != 1,
+            offstage: selectedIndex != 1,
             //child: const SearchVolScreen(),
             child: const VolSearchScreen(),
           ),
           // Offstage(
-          //   offstage: _selectedIndex != 1,
+          //   offstage: selectedIndex != 1,
           //   child: const OrgSearchScreen(),
           // ),
           Offstage(
-            offstage: _selectedIndex != 2,
+            offstage: selectedIndex != 2,
             child: const ClubMainScreen(),
           ),
           Offstage(
-            offstage: _selectedIndex != 3,
+            offstage: selectedIndex != 3,
             child: const UserProfileScreen(),
           ),
         ],
@@ -137,25 +124,25 @@ class _MainNavigationState extends State<MainNavigation> {
             children: [
               NavTab(
                 text: "홈",
-                isSelected: _selectedIndex == 0,
+                isSelected: selectedIndex == 0,
                 unSelectedIcon: Icons.home_outlined,
                 selectedIcon: Icons.home,
                 onTap: () => _onTap(0),
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 isLogined: isLogined,
               ),
               NavTab(
                 text: "봉사",
-                isSelected: _selectedIndex == 1,
+                isSelected: selectedIndex == 1,
                 unSelectedIcon: Icons.manage_search_outlined,
                 selectedIcon: Icons.manage_search,
                 onTap: () => _onTap(1),
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 isLogined: isLogined,
               ),
               // NavTab(
               //   text: "기관",
-              //   isSelected: _selectedIndex == 1,
+              //   isSelected: selectedIndex == 1,
               //   unSelectedIcon: Icons.content_paste_search,
               //   selectedIcon: Icons.content_paste_search_outlined,
               //   onTap: () => _onTap(1),
@@ -165,20 +152,22 @@ class _MainNavigationState extends State<MainNavigation> {
               // ),
               NavTab(
                 text: "동아리",
-                isSelected: _selectedIndex == 2,
+                isSelected: selectedIndex == 2,
                 unSelectedIcon: Icons.groups_2_outlined,
                 selectedIcon: Icons.groups_2,
                 onTap: () => _onTap(2),
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 isLogined: isLogined,
               ),
               NavTab(
-                text: "프로필",
-                isSelected: _selectedIndex == 3,
-                unSelectedIcon: Icons.account_circle_outlined,
+                text: isLogined ? "프로필" : "로그인",
+                isSelected: selectedIndex == 3,
+                unSelectedIcon: isLogined
+                    ? Icons.account_circle_outlined
+                    : Icons.no_accounts_outlined,
                 selectedIcon: Icons.account_circle,
                 onTap: () => _onTap(3),
-                selectedIndex: _selectedIndex,
+                selectedIndex: selectedIndex,
                 isLogined: isLogined,
               ),
             ],

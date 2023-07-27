@@ -11,7 +11,7 @@ import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
 class MainCommunityScreen extends StatefulWidget {
@@ -98,21 +98,28 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 스크롤 할때마다 호출
   void _onScroll() {
-    if (_scrollController.offset > 260) {
-      // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-      // 리턴처리 필요
-      if (_showJumpUpButton) return;
+    final showJumpButton = _scrollController.offset > 260;
+    if (_showJumpUpButton != showJumpButton) {
       setState(() {
-        _showJumpUpButton = true;
-      });
-    } else {
-      // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-      // 리턴처리 필요
-      if (!_showJumpUpButton) return;
-      setState(() {
-        _showJumpUpButton = false;
+        _showJumpUpButton = showJumpButton;
       });
     }
+
+    // if (_scrollController.offset > 260) {
+    //   // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
+    //   // 리턴처리 필요
+    //   if (_showJumpUpButton) return;
+    //   setState(() {
+    //     _showJumpUpButton = true;
+    //   });
+    // } else {
+    //   // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
+    //   // 리턴처리 필요
+    //   if (!_showJumpUpButton) return;
+    //   setState(() {
+    //     _showJumpUpButton = false;
+    //   });
+    // }
   }
 
   // 스크롤이 맨아래로 내려가면 새로운 리스트 추가
@@ -233,55 +240,50 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
             ),
           ],
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            AnimatedOpacity(
-              opacity: _showJumpUpButton
-                  ? !_isFocused
-                      ? 1
-                      : 0
-                  : 0,
-              duration: const Duration(milliseconds: 200),
-              child: FloatingActionButton(
-                heroTag: "comunity",
-                onPressed: _scrollToTop,
-                backgroundColor: Colors.purpleAccent.shade100,
-                child: const FaIcon(
-                  FontAwesomeIcons.arrowUp,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            Gaps.v6,
-            if (isLogined && !_isFocused)
+        floatingActionButton: Visibility(
+          visible: !_isFocused,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
               AnimatedOpacity(
-                opacity: isLogined
-                    ? !_isFocused
-                        ? 1
-                        : 0
-                    : 0,
+                opacity: _showJumpUpButton ? 1 : 0,
                 duration: const Duration(milliseconds: 200),
                 child: FloatingActionButton(
-                  heroTag: "community_edit",
-                  onPressed: () {
-                    // 동아리 게시글 작성
-                    context.pushNamed(
-                      PostEditScreen.routeName,
-                      extra: PostEditScreenArgs(
-                        pageTitle: "게시글 등록",
-                        editType: PostEditType.mainInsert,
-                      ),
-                    );
-                  },
-                  backgroundColor: Colors.blue.shade300,
+                  heroTag: "comunity",
+                  onPressed: _scrollToTop,
+                  backgroundColor: Colors.purpleAccent.shade100,
                   child: const FaIcon(
-                    FontAwesomeIcons.penToSquare,
+                    FontAwesomeIcons.arrowUp,
                     color: Colors.black,
                   ),
                 ),
               ),
-          ],
+              Gaps.v6,
+              if (isLogined)
+                AnimatedOpacity(
+                  opacity: isLogined ? 1 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: FloatingActionButton(
+                    heroTag: "community_edit",
+                    onPressed: () {
+                      // 동아리 게시글 작성
+                      context.pushNamed(
+                        PostEditScreen.routeName,
+                        extra: PostEditScreenArgs(
+                          pageTitle: "게시글 등록",
+                          editType: PostEditType.mainInsert,
+                        ),
+                      );
+                    },
+                    backgroundColor: Colors.blue.shade300,
+                    child: const FaIcon(
+                      FontAwesomeIcons.penToSquare,
+                      color: Colors.black,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
         // CustomScrollView : 스크롤 가능한 구역
         body: Stack(

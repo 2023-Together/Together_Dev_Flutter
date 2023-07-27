@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -35,17 +31,6 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  void onLogoutAllTap(BuildContext context) {
-    LoginStorage.resetLoginData();
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
-  void onLogoutTap(BuildContext context) {
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
@@ -110,7 +95,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           GestureDetector(
                             onTap: _userSetupTap,
-                            // () => onLogoutTap(context),
                             child: const Icon(Icons.settings_outlined),
                           ),
                         ],

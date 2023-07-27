@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
 class PostCard extends StatefulWidget {
@@ -142,6 +142,11 @@ class _PostCard extends State<PostCard> {
                 title: Text(
                   widget.user,
                   maxLines: 1,
+                ),
+                titleTextStyle: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.normal,
                 ),
                 subtitle: Text(
                   TimeParse.getTimeAgo(DateTime.parse(widget.date)),

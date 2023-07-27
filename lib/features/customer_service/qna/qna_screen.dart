@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_detail_screen.dart';
 import 'package:swag_cross_app/features/customer_service/qna/qna_edit_screen.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class QnAScreen extends StatelessWidget {
   const QnAScreen({

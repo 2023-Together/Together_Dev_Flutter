@@ -5,7 +5,8 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
 class UserInformSetup extends StatelessWidget {
@@ -30,6 +31,7 @@ class UserInformSetup extends StatelessWidget {
   void onLogoutAllTap(BuildContext context) {
     LoginStorage.resetLoginData();
     context.read<UserProvider>().logout();
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.pushReplacementNamed(MainNavigation.routeName);
   }
 
@@ -37,7 +39,8 @@ class UserInformSetup extends StatelessWidget {
   void onLogoutTap(BuildContext context) {
     context.read<UserProvider>().logout();
     LoginStorage.resetLoginData();
-    context.pushReplacementNamed(MainNavigation.routeName);
+    context.read<MainNavigationProvider>().changeIndex(0);
+    context.goNamed(MainNavigation.routeName);
   }
 
   // // 회원 정보 수정
