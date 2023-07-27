@@ -57,4 +57,4 @@ samples, guidance on mobile development, and a full API reference.
 - image_picker: ^1.0.0 (갤러리, 카메라 라이브러리)
 - google_maps_flutter: ^2.3.1 (구글 맵 라이브러리)
 - geolocator: ^9.0.2 (위도, 경도를 불러오는 라이브러리)
-- xml2json: ^6.1.0(xml을 json형태로 변환시켜주는 라이브러리)
+- flutter_localization: ^0.1.13 (한국어 적용 라이브러리)
