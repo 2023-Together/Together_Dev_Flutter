@@ -18,8 +18,6 @@ import 'package:swag_cross_app/features/search_page/view/club_search_screen.dart
 import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
@@ -35,39 +33,6 @@ final router = GoRouter(
       name: SignUpFormScreen.routeName,
       path: SignUpFormScreen.routeURL,
       builder: (context, state) => const SignUpFormScreen(),
-      routes: [
-        GoRoute(
-          path: SignUpCheckUserDataScreen.routeURL,
-          name: SignUpCheckUserDataScreen.routeName,
-          builder: (context, state) {
-            final args = state.extra as SignUpCheckUserDataScreenArgs;
-            return SignUpCheckUserDataScreen(
-              name: args.name,
-              email: args.email,
-              gender: args.gender,
-              birthday: args.birthday,
-              profileImage: args.profileImage,
-              mobile: args.mobile,
-            );
-          },
-          routes: [
-            GoRoute(
-              name: SignUpIdPwScreen.routeName,
-              path: SignUpIdPwScreen.routeURL,
-              builder: (context, state) {
-                final args = state.extra as SignUpIdPwScreenArgs;
-                return SignUpIdPwScreen(
-                  name: args.name,
-                  email: args.email,
-                  gender: args.gender,
-                  birthday: args.birthday,
-                  mobile: args.mobile,
-                );
-              },
-            ),
-          ],
-        ),
-      ],
     ),
     GoRoute(
       path: LogoLoadingScreen.routeURL,
