@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -115,19 +114,6 @@ class _AuthButtonState extends State<AuthButton> {
 
       final userData = result.account;
       print(userData);
-
-      // await SecureStorageLogin.saveLoginType("naver");
-      context.pushNamed(
-        SignUpCheckUserDataScreen.routeName,
-        extra: SignUpCheckUserDataScreenArgs(
-          name: userData.name,
-          email: userData.email,
-          gender: userData.gender,
-          birthday: "${userData.birthyear}-${userData.birthday}",
-          profileImage: userData.profileImage,
-          mobile: userData.mobile,
-        ),
-      );
     } else {
       swagPlatformDialog(
         context: context,
