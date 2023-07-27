@@ -1,38 +1,61 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 class UserModel {
-  final int userDid; // 유저 did
-  final String userId; // 유저 아이디
-  final String userPw; // 유저 비밀번호
-  final String userName; // 유저 이름
-  final String userProfile; // 유저 프로필(base64)
-  final String userProfileDescription; // 유저 프로필 설명
-  final String userType; // 봉사자, 기관 구분용
-  final Map<String, dynamic>
-      userSns; // sns연동 데이터 저장 {""naver"":null, ""kakao"": {}}
+  int userId;
+  String userEmail;
+  String userPhoneNumber;
+  String userName;
+  String userNickname;
+  int userGender;
+  DateTime userBirthdate;
+  String? userProfileImage;
+  String? userDef;
+  String userType;
+  Map<String, dynamic>? userSns;
 
   UserModel({
-    required this.userDid,
     required this.userId,
-    required this.userPw,
+    required this.userEmail,
+    required this.userPhoneNumber,
     required this.userName,
-    required this.userProfile,
-    required this.userProfileDescription,
+    required this.userNickname,
+    required this.userGender,
+    required this.userBirthdate,
+    this.userProfileImage,
+    this.userDef,
     required this.userType,
-    required this.userSns,
+    this.userSns,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      userDid: json['user_did'],
-      userId: json['user_id'] ?? '',
-      userPw: json['user_pw'] ?? '',
-      userName: json['user_name'] ?? '',
-      userProfile: json['user_pf'] ?? '',
-      userProfileDescription: json['user_def'] ?? '',
-      userType: json['user_type'] ?? '',
-      userSns: json['user_sns'] != null
-          ? Map<String, dynamic>.from(json['user_sns'])
-          : {},
+      userId: json['user_id'],
+      userEmail: json['user_email'],
+      userPhoneNumber: json['user_phonenumber'],
+      userName: json['user_name'],
+      userNickname: json['user_nickname'],
+      userGender: json['user_gender'],
+      userBirthdate: DateTime.parse(json['user_birthdate']),
+      userProfileImage: json['user_profile_image'],
+      userDef: json['user_def'],
+      userType: json['user_type'],
+      userSns: json['user_sns'] != null ? jsonDecode(json['user_sns']) : null,
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'user_email': userEmail,
+      'user_phonenumber': userPhoneNumber,
+      'user_name': userName,
+      'user_nickname': userNickname,
+      'user_gender': userGender,
+      'user_birthdate': userBirthdate.toIso8601String(),
+      'user_profile_image': userProfileImage,
+      'user_def': userDef,
+      'user_type': userType,
+      'user_sns': userSns != null ? jsonEncode(userSns) : null,
+    };
   }
 }
