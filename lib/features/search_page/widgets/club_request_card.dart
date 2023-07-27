@@ -18,9 +18,9 @@ class ClubRequestCard extends StatelessWidget {
   final int clubId;
   final String clubDef;
   final String clubName;
-  final String clubMaster;
+  final int clubMaster;
   final int clubNum;
-  final bool isRequest;
+  final int isRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +78,7 @@ class ClubRequestCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      isRequest
+                      isRequest == 1
                           ? Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 4),

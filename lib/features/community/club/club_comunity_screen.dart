@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
-import 'package:swag_cross_app/features/notice/club_notice_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -35,9 +34,6 @@ class ClubCommunityScreen extends StatefulWidget {
 
 class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     with SingleTickerProviderStateMixin {
-
-  
-
   // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
@@ -306,8 +302,8 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                 context.pushNamed(
                   PostEditScreen.routeName,
                   extra: PostEditScreenArgs(
-                    pageTitle: "동아리 게시물 등록",
-                    editType: "club_post_make",
+                    pageTitle: "동아리 게시글 등록",
+                    editType: PostEditType.clubInsert,
                   ),
                 );
               },
@@ -332,49 +328,49 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
               // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
               slivers: [
                 // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-                SliverToBoxAdapter(
-                  child: Center(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: Sizes.size4,
-                            horizontal: Sizes.size20,
-                          ),
-                          child: Image.asset(
-                            "assets/images/volImg.jpg",
-                            width: size.width,
-                            height: 160,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Gaps.v8,
-                        ListTile(
-                          onTap: () => context.pushNamed(
-                            ClubNoticeScreen.routeName,
-                          ),
-                          shape: const BeveledRectangleBorder(
-                            side: BorderSide(
-                              width: 0.1,
-                            ),
-                          ),
-                          title: const Text(
-                            "동아리 공지사항",
-                            maxLines: 1,
-                          ),
-                          subtitle: const Text(
-                            "마지막 등록일 : 5일전",
-                            maxLines: 1,
-                          ),
-                          trailing: const Icon(
-                            Icons.keyboard_arrow_right,
-                            size: 30,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                // SliverToBoxAdapter(
+                //   child: Center(
+                //     child: Column(
+                //       children: [
+                //         Padding(
+                //           padding: const EdgeInsets.symmetric(
+                //             vertical: Sizes.size4,
+                //             horizontal: Sizes.size20,
+                //           ),
+                //           child: Image.asset(
+                //             "assets/images/volImg.jpg",
+                //             width: size.width,
+                //             height: 160,
+                //             fit: BoxFit.cover,
+                //           ),
+                //         ),
+                //         Gaps.v8,
+                //         ListTile(
+                //           onTap: () => context.pushNamed(
+                //             ClubNoticeScreen.routeName,
+                //           ),
+                //           shape: const BeveledRectangleBorder(
+                //             side: BorderSide(
+                //               width: 0.1,
+                //             ),
+                //           ),
+                //           title: const Text(
+                //             "동아리 공지사항",
+                //             maxLines: 1,
+                //           ),
+                //           subtitle: const Text(
+                //             "마지막 등록일 : 5일전",
+                //             maxLines: 1,
+                //           ),
+                //           trailing: const Icon(
+                //             Icons.keyboard_arrow_right,
+                //             size: 30,
+                //           ),
+                //         ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
                 // SliverFixedExtentList : item들의 리스트를 만들어 냄
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
@@ -387,7 +383,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                           category: item["category"],
                           postId: index,
                           title: item["title"],
-                          images: List<String>.from(item["imgUrl"]),
+                          // images: List<String>.from(item["imgUrl"]),
                           initCheckGood: item["checkGood"],
                           content: item["content"],
                           date: item["date"],
@@ -475,7 +471,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-1",
+    "date": "2023-05-01",
     "user": "유저1",
     "category": "옵션 1",
   },
@@ -485,7 +481,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": false,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-2",
+    "date": "2023-05-02",
     "user": "유저2",
     "category": "옵션 4",
   },
@@ -497,7 +493,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/70836_50981_2758.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-3",
+    "date": "2023-05-03",
     "user": "유저3",
     "category": "옵션 2",
   },
@@ -507,7 +503,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-4",
+    "date": "2023-05-04",
     "user": "유저4",
     "category": "옵션 5",
   },
@@ -520,7 +516,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/70836_50981_2758.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-5",
+    "date": "2023-05-05",
     "user": "유저5",
     "category": "옵션 3",
   },
@@ -533,7 +529,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-6",
+    "date": "2023-05-06",
     "user": "유저6",
     "category": "옵션 5",
   },
@@ -547,7 +543,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/dog.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-7",
+    "date": "2023-05-07",
     "user": "유저7",
     "category": "옵션 2",
   },
@@ -557,7 +553,7 @@ List<Map<String, dynamic>> initComunityList = [
     "checkGood": true,
     "imgUrl": [],
     "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-8",
+    "date": "2023-05-08",
     "user": "유저8",
     "category": "옵션 1",
   },
@@ -572,7 +568,7 @@ List<Map<String, dynamic>> initComunityList = [
       "assets/images/70836_50981_2758.jpg",
     ],
     "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-9",
+    "date": "2023-05-09",
     "user": "유저9",
     "category": "옵션 2",
   },
@@ -590,38 +586,5 @@ List<Map<String, dynamic>> initComunityList = [
     "date": "2023-05-10",
     "user": "유저10",
     "category": "옵션 4",
-  },
-];
-
-List<Map<String, dynamic>> noticeList = [
-  {
-    "id": 1,
-    "title": "제목1",
-    "content": "내용1",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 2,
-    "title": "제목2",
-    "content": "내용2",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 3,
-    "title": "제목3",
-    "content": "내용3",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 4,
-    "title": "제목4",
-    "content": "내용4",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 5,
-    "title": "제목5",
-    "content": "내용5",
-    "date": "2023-07-10 16:43",
   },
 ];

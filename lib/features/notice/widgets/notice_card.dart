@@ -3,8 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 
-class SWAGExpansionTileCard extends StatefulWidget {
-  const SWAGExpansionTileCard({
+class NoticeCard extends StatefulWidget {
+  const NoticeCard({
     super.key,
     required this.id,
     required this.title,
@@ -24,10 +24,10 @@ class SWAGExpansionTileCard extends StatefulWidget {
   final bool isFAQ;
 
   @override
-  State<SWAGExpansionTileCard> createState() => _SWAGExpansionTileCardState();
+  State<NoticeCard> createState() => _NoticeCardState();
 }
 
-class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
+class _NoticeCardState extends State<NoticeCard> {
   final bool _isExpanded = false;
 
   @override
@@ -62,24 +62,24 @@ class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
-        Gaps.v20,
-        if (widget.images != null)
-          GridView(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
-            ),
-            children: [
-              for (var img in widget.images!)
-                Image.asset(
-                  img,
-                  fit: BoxFit.cover,
-                ),
-            ],
-          ),
+        // Gaps.v20,
+        // if (widget.images != null)
+        //   GridView(
+        //     shrinkWrap: true,
+        //     physics: const NeverScrollableScrollPhysics(),
+        //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        //       crossAxisCount: 2,
+        //       crossAxisSpacing: 4,
+        //       mainAxisSpacing: 4,
+        //     ),
+        //     children: [
+        //       for (var img in widget.images!)
+        //         Image.asset(
+        //           img,
+        //           fit: BoxFit.cover,
+        //         ),
+        //     ],
+        //   ),
         Gaps.v10,
         if (widget.isLogined && !widget.isFAQ)
           Padding(
@@ -92,6 +92,7 @@ class _SWAGExpansionTileCardState extends State<SWAGExpansionTileCard> {
                     NoticeEditScreen.routeName,
                     extra: NoticeEditScreenArgs(
                       id: widget.id,
+                      pageName: "공지사항 수정",
                       title: widget.title,
                       content: widget.content,
                       images: widget.images,

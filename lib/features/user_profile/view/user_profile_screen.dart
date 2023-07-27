@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -35,17 +31,6 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  void onLogoutAllTap(BuildContext context) {
-    LoginStorage.resetLoginData();
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
-  void onLogoutTap(BuildContext context) {
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
@@ -81,7 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: SafeArea(
         child: DefaultTabController(
           initialIndex: 0,
-          length: 3,
+          length: 2,
           // NestedScrollView : SliverAppBar와 TabBar를 같이 쓰는 경우 처럼 여러개의 스크롤 함께쓸때 유용한 위젯
           child: NestedScrollView(
             // CustomScrollView 안에 들어갈 element들
@@ -110,7 +95,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           GestureDetector(
                             onTap: _userSetupTap,
-                            // () => onLogoutTap(context),
                             child: const Icon(Icons.settings_outlined),
                           ),
                         ],
@@ -130,24 +114,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         userType: userDatas[0]['userType'],
                         birth: userDatas[0]['birth'],
                       ),
-                      Gaps.v10,
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 신청"), Text("2건")],
-                            ),
-                          ),
-                          Container(height: 50, width: 2, color: Colors.grey),
-                          const Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 완료"), Text("6건")],
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Gaps.v10,
+                      // Row(
+                      //   children: [
+                      //     const Expanded(
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [Text("봉사 신청"), Text("2건")],
+                      //       ),
+                      //     ),
+                      //     Container(height: 50, width: 2, color: Colors.grey),
+                      //     const Expanded(
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [Text("봉사 완료"), Text("6건")],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       Gaps.v20,
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -251,9 +235,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 const Center(
                   child: Text("동아리에 올린 게시글"),
                 ),
-                const Center(
-                  child: Text("좋아요한 게시글"),
-                ),
+                // const Center(
+                //   child: Text("좋아요한 게시글"),
+                // ),
               ],
             ),
           ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_expansionTile_card.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/features/customer_service/faq/faq_edit_screen.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class FAQScreen extends StatelessWidget {
   const FAQScreen({
@@ -11,6 +12,7 @@ class FAQScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade50,
@@ -21,13 +23,57 @@ class FAQScreen extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           final item = faqList[index];
-          return SWAGExpansionTileCard(
-            id: item["id"],
-            title: item["title"],
-            content: item["content"],
-            date: item["date"],
-            isLogined: context.watch<UserProvider>().isLogined,
-            isFAQ: true,
+          return ExpansionTile(
+            title: Text(
+              item["title"],
+            ),
+            subtitle: Text(
+              item["date"],
+              style: TextStyle(
+                color: Colors.grey.shade600,
+              ),
+            ),
+            // trailing: Icon(
+            //   _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+            //   size: 30,
+            // ),
+            childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: Text(
+                  item["content"],
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
+              Gaps.v20,
+              if (isLogined)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () => context.pushNamed(
+                          FaqEditScreen.routeName,
+                          extra: FaqEditScreenArgs(
+                            id: item["id"],
+                            pageName: "자주묻는 질문 수정",
+                            title: item["title"],
+                            content: item["content"],
+                          ),
+                        ),
+                        child: const Text("수정"),
+                      ),
+                      Gaps.h10,
+                      ElevatedButton(
+                        onPressed: () {},
+                        child: const Text("삭제"),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
           );
         },
         separatorBuilder: (context, index) => Gaps.v6,

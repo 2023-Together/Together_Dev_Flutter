@@ -5,14 +5,14 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
-class NoticeEditScreenArgs {
+class FaqEditScreenArgs {
   final int id;
   final String pageName;
   final String title;
   final String content;
   final List<String>? images;
 
-  NoticeEditScreenArgs({
+  FaqEditScreenArgs({
     required this.id,
     required this.pageName,
     required this.title,
@@ -21,11 +21,11 @@ class NoticeEditScreenArgs {
   });
 }
 
-class NoticeEditScreen extends StatefulWidget {
-  static const routeName = "notice_edit";
-  static const routeURL = "notice_edit";
+class FaqEditScreen extends StatefulWidget {
+  static const routeName = "faq_edit";
+  static const routeURL = "faq_edit";
 
-  const NoticeEditScreen({
+  const FaqEditScreen({
     super.key,
     this.id,
     this.title,
@@ -41,10 +41,10 @@ class NoticeEditScreen extends StatefulWidget {
   final List<String>? images;
 
   @override
-  State<NoticeEditScreen> createState() => _NoticeEditScreenState();
+  State<FaqEditScreen> createState() => _FaqEditScreenState();
 }
 
-class _NoticeEditScreenState extends State<NoticeEditScreen> {
+class _FaqEditScreenState extends State<FaqEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 

@@ -49,6 +49,8 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
   final TextEditingController _pwConfirmController = TextEditingController();
 
   bool _isEditFinished = false;
+  final bool _isNickNameAuth = false;
+  final bool _isIdAuth = false;
   String? _nickNameError;
   String? _idError;
   String? _pwError;
@@ -65,16 +67,23 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
 
   bool _onChangeNickName(String? value) {
     if (value == null) return false;
-    // 비밀번호 정규식 패턴
-    RegExp nickNameRegex = RegExp('[^a-zA-Z0-9\\s]');
+    // 닉네임 정규식 패턴
+    RegExp nickNameRegex = RegExp(
+        r"^(?!^\d)(?=^.{3,20}$)[a-zA-Z0-9_-\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3]+$");
     if (value.isEmpty) {
       setState(() {
         _nickNameError = '닉네임을 입력해주세요!';
       });
       return false;
+    } else if (!(_nickNameController.text.length > 3 &&
+        _nickNameController.text.length <= 20)) {
+      setState(() {
+        _nickNameError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
+      });
+      return false;
     } else if (!nickNameRegex.hasMatch(value)) {
       setState(() {
-        _nickNameError = '특수문자는 입력할수 없습니다!';
+        _nickNameError = '유효하지 않은 닉네임입니다!';
       });
       return false;
     }
@@ -85,10 +94,32 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
     return true;
   }
 
-  void _onChangeId(String? value) {
-    if (value == null) return;
-    _onChangeAllText();
-    setState(() {});
+  bool _onChangeId(String? value) {
+    if (value == null) return false;
+    // 닉네임 정규식 패턴
+    RegExp idRegex = RegExp(r"^[a-z0-9]{4,12}$");
+    if (value.isEmpty) {
+      setState(() {
+        _idError = '아이디를 입력해주세요!';
+      });
+      return false;
+    } else if (!(_idController.text.length > 3 &&
+        _idController.text.length <= 20)) {
+      setState(() {
+        _idError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
+      });
+      return false;
+    } else if (!idRegex.hasMatch(value)) {
+      setState(() {
+        _idError = '유효하지 않은 id 입니다!';
+      });
+      return false;
+    }
+    setState(() {
+      _idError = null;
+      _onChangeAllText();
+    });
+    return true;
   }
 
   bool _onChangePw(String? value) {
@@ -137,8 +168,6 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
   void _onSignUpSubmitted() {
     context.pop();
     context.pop();
-    context.pop();
-    context.pop();
   }
 
   @override
@@ -161,7 +190,6 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
           leading: BackButton(
             onPressed: () {
               context.pop();
-              context.pop();
             },
           ),
           title: const Text("회원가입(로그인정보)"),
@@ -171,6 +199,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Gaps.v10,
               Text(
                 "닉네임(SNS)",
                 style: Theme.of(context).textTheme.titleMedium,
@@ -182,6 +211,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
                 controller: _nickNameController,
                 onChanged: _onChangeNickName,
                 buttonText: "중복확인",
+                errorText: _nickNameError,
               ),
               Gaps.v20,
               Text(
@@ -195,6 +225,7 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
                 controller: _idController,
                 onChanged: _onChangeId,
                 buttonText: "중복확인",
+                errorText: _idError,
               ),
               Gaps.v20,
               Text(
@@ -231,7 +262,8 @@ class _SignUpIdPwScreenState extends State<SignUpIdPwScreen> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(Sizes.size10),
           child: ElevatedButton(
-            onPressed: _isEditFinished ? _onSignUpSubmitted : null,
+            // onPressed: _isEditFinished ? _onSignUpSubmitted : null,
+            onPressed: _onSignUpSubmitted,
             child: const Padding(
               padding: EdgeInsets.symmetric(vertical: Sizes.size16),
               child: Text("회원가입"),

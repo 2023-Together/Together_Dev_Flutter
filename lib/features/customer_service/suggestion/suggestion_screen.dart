@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class SuggestionScreen extends StatefulWidget {
   const SuggestionScreen({
