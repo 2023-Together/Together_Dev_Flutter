@@ -77,30 +77,25 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   // 동아리 리스트를 가져오는 통신
   Future<List<ClubSearchModel>> _clubGetDispatch() async {
-    try {
-      final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
-      final response = await http.get(url);
+    final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
+    final response = await http.get(url);
 
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
-        // 응답 데이터를 ClubSearchModel 리스트로 파싱
-        _clubList =
-            jsonResponse.map((data) => ClubSearchModel.fromJson(data)).toList();
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      _clubList =
+          jsonResponse.map((data) => ClubSearchModel.fromJson(data)).toList();
 
-        // _filteredList를 사용하는 코드도 적절하게 수정해야 할 수도 있습니다.
-        _filteredList =
-            _clubList.where((element) => element.clubRecruiting == 1).toList();
+      // _filteredList를 사용하는 코드도 적절하게 수정해야 할 수도 있습니다.
+      _filteredList =
+          _clubList.where((element) => element.clubRecruiting == 1).toList();
 
-        return _clubList;
-      } else {
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
-      }
-    } catch (e) {
-      // 통신 중에 예외가 발생한 경우
-      throw Exception("에러가 발생 : $e");
+      return _clubList;
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
     }
   }
 

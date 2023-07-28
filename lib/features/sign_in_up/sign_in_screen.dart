@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/main_navigation_provider.dart';
-import 'package:swag_cross_app/providers/user_provider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = "login";
@@ -34,27 +29,27 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     super.initState();
 
-    _checkAutoLogined();
+    // _checkAutoLogined();
   }
 
-  void _checkAutoLogined() async {
-    final String? loginData = await LoginStorage.getLoginData();
-    print(loginData);
+  // void _checkAutoLogined() async {
+  //   final String? loginData = await LoginStorage.getLoginData();
+  //   print(loginData);
 
-    if (loginData == null) return;
-    if (loginData.trim().isNotEmpty) {
-      List<String> userData = loginData.split(",");
+  //   if (loginData == null) return;
+  //   if (loginData.trim().isNotEmpty) {
+  //     List<String> userData = loginData.split(",");
 
-      // final id = userData[0];
-      // final pw = userData[1];
+  //     // final id = userData[0];
+  //     // final pw = userData[1];
 
-      if (!mounted) return;
-      context.read<UserProvider>().login("naver");
+  //     if (!mounted) return;
+  //     context.read<UserProvider>().login("naver");
 
-      context.read<MainNavigationProvider>().changeIndex(0);
-      context.goNamed(MainNavigation.routeName);
-    }
-  }
+  //     context.read<MainNavigationProvider>().changeIndex(0);
+  //     context.goNamed(MainNavigation.routeName);
+  //   }
+  // }
 
   void _onChangeAllText(String? value) {
     if (value == null) return;
@@ -92,24 +87,6 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ],
     );
-  }
-
-  void _onSignInSubmitted() async {
-    if (_onSaveCheck) {
-      LoginStorage.saveLoginData(
-        id: _idController.text.trim(),
-        pw: _pwController.text.trim(),
-      );
-      context.read<UserProvider>().login("naver");
-
-      context.read<MainNavigationProvider>().changeIndex(0);
-      context.goNamed(MainNavigation.routeName);
-    } else {
-      context.read<UserProvider>().login("naver");
-
-      context.read<MainNavigationProvider>().changeIndex(0);
-      context.goNamed(MainNavigation.routeName);
-    }
   }
 
   @override
