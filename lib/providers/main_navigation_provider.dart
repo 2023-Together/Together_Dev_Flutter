@@ -6,6 +6,7 @@ class MainNavigationProvider extends ChangeNotifier {
   int get navigationIndex => _navigationIndex;
 
   void changeIndex(int index) {
+    if (_navigationIndex == index) return;
     _navigationIndex = index;
     notifyListeners();
   }

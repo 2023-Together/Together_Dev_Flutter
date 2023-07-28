@@ -5,6 +5,7 @@ import 'package:swag_cross_app/features/community/posts/post_detail_comment_scre
 import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
+import 'package:swag_cross_app/utils/time_parse.dart';
 
 // postId 전송
 
@@ -30,10 +31,10 @@ class PostDetailScreenArgs {
   });
 }
 
-class PostDetailScreen extends StatelessWidget {
+class PostDetailScreen extends StatefulWidget {
   static const routeName = "post_detail";
   static const routeURL = "/post_detail";
-  PostDetailScreen({
+  const PostDetailScreen({
     super.key,
     required this.postId,
     required this.category,
@@ -54,6 +55,11 @@ class PostDetailScreen extends StatelessWidget {
   final String user;
   final int tabBarSelected;
 
+  @override
+  State<PostDetailScreen> createState() => _PostDetailScreenState();
+}
+
+class _PostDetailScreenState extends State<PostDetailScreen> {
   List<String> imgs = [];
 
   @override
@@ -63,7 +69,7 @@ class PostDetailScreen extends StatelessWidget {
       body: SafeArea(
         child: DefaultTabController(
           length: 2,
-          initialIndex: tabBarSelected,
+          initialIndex: widget.tabBarSelected,
           child: NestedScrollView(
             physics: const NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -81,11 +87,11 @@ class PostDetailScreen extends StatelessWidget {
                               extra: PostEditScreenArgs(
                                 pageTitle: "게시글 수정",
                                 editType: PostEditType.postUpdate,
-                                id: postId,
-                                category: category,
-                                title: title,
-                                content: content,
-                                images: images,
+                                id: widget.postId,
+                                category: widget.category,
+                                title: widget.title,
+                                content: widget.content,
+                                images: widget.images,
                                 isCategory: true,
                               ),
                             );
@@ -127,23 +133,28 @@ class PostDetailScreen extends StatelessWidget {
                         //   backgroundColor: Colors.transparent,
                         // ),
                         title: Text(
-                          user,
+                          widget.user,
                         ),
                         subtitle: Text(
-                          date,
+                          TimeParse.getTimeAgo(DateTime.parse(widget.date)),
                         ),
-                        trailing: Column(
-                          children: [
-                            const FaIcon(
-                              FontAwesomeIcons.thumbsUp,
-                              color: Colors.blue,
-                            ),
-                            const SizedBox(width: 1),
-                            Text(
-                              "120",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
+                        trailing: InkWell(
+                          onTap: () {
+                            // 버튼을 눌렀을 때 수행할 작업
+                          },
+                          child: Column(
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.thumbsUp,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                              Text(
+                                "120",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -159,9 +170,9 @@ class PostDetailScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 PostDetailIntroScreen(
-                  title: title,
-                  content: content,
-                  images: images,
+                  title: widget.title,
+                  content: widget.content,
+                  images: widget.images,
                 ),
                 const PostDetailCommentscreen(),
               ],
