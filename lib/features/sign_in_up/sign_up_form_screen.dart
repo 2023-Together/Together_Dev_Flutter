@@ -242,6 +242,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     _mobileController.dispose();
     _mobileCheckController.dispose();
     _nameController.dispose();
+    _nickNameController.dispose();
 
     super.dispose();
   }
