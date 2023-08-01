@@ -35,7 +35,7 @@ class _CommentCardState extends State<CommentCard> {
 
   void _checkTextOverflow() {
     TextSpan text = TextSpan(
-      text: widget.comment * 10,
+      text: widget.comment,
       style: Theme.of(context).textTheme.bodyMedium,
     );
     TextPainter textPainter = TextPainter(
@@ -97,7 +97,7 @@ class _CommentCardState extends State<CommentCard> {
                       ],
                     ),
                     Text(
-                      widget.comment * 10,
+                      widget.comment,
                       maxLines: _isExpanded ? null : 4,
                       overflow: _isExpanded ? null : TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium,

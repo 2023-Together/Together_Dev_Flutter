@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -5,14 +8,16 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/alert/alert_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
+
+import 'package:http/http.dart' as http;
 
 class MainCommunityScreen extends StatefulWidget {
   const MainCommunityScreen({
@@ -49,8 +54,9 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   final FocusNode _focusNode = FocusNode();
 
   bool _isFocused = false;
+  // final bool _showJumpUpButton = false;
 
-  bool _showJumpUpButton = false;
+  List<PostCardModel>? _postList;
 
   @override
   void initState() {
@@ -61,18 +67,12 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     // 스크롤 이벤트 처리
     _scrollController.addListener(
       () {
-        _onScroll();
-        _scrollEnd();
-
         // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
         if (_animationController.isCompleted) {
           _toggleAnimations();
         }
       },
     );
-
-    // 이미 리스트안에 광고가 삽입되어 있으면 더이상 삽입하지 않음
-    comunityList = checkAds(initComunityList);
   }
 
   void _handleFocusChange() {
@@ -83,79 +83,15 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     }
   }
 
-  // 리스트 체크
-  // 광고가 없음 : 광고 삽입
-  // 광고가 있음 : 그냥 리턴
-  List<Map<String, dynamic>> checkAds(List<Map<String, dynamic>> list) {
-    if (!list.any((item) => item["type"] == "ad")) {
-      // 리스트 사이에 광고 넣기
-      for (int i = initComunityList.length; i >= 1; i -= 5) {
-        list.insert(i, {"type": "ad"});
-      }
-    }
-    return list;
-  }
-
-  // 스크롤 할때마다 호출
-  void _onScroll() {
-    final showJumpButton = _scrollController.offset > 260;
-    if (_showJumpUpButton != showJumpButton) {
-      setState(() {
-        _showJumpUpButton = showJumpButton;
-      });
-    }
-
-    // if (_scrollController.offset > 260) {
-    //   // 이미 true인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-    //   // 리턴처리 필요
-    //   if (_showJumpUpButton) return;
-    //   setState(() {
-    //     _showJumpUpButton = true;
-    //   });
-    // } else {
-    //   // 이미 false인데도 매번 스크롤 할때마다 setState를 호출하면 작업이 너무 많아지기 때문에
-    //   // 리턴처리 필요
-    //   if (!_showJumpUpButton) return;
-    //   setState(() {
-    //     _showJumpUpButton = false;
-    //   });
-    // }
-  }
-
-  // 스크롤이 맨아래로 내려가면 새로운 리스트 추가
-  void _scrollEnd() {
-    if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent) {
-      setState(() {
-        // 새로 추가한 리스트에 광고 넣기
-        comunityList = [...comunityList] + checkAds(initComunityList);
-      });
-    }
-  }
-
-  void _alertIconTap() {
-    context.pushNamed(AlertScreen.routeName);
-  }
-
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
     context.pushNamed(SignInScreen.routeName);
   }
 
-  // 스크롤 위치를 맨위로 이동시킵니다.
-  void _scrollToTop() {
-    _scrollController.animateTo(
-      _scrollController.position.minScrollExtent,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-    );
-  }
-
   // 리스트 새로고침
-  Future _refreshComunityList() async {
-    setState(() {
-      comunityList = checkAds(initComunityList);
-    });
+  Future<void> _refreshComunityList() async {
+    _postGetDispatch();
+    setState(() {});
   }
 
   // 광고 로딩 실패일때 실행
@@ -178,6 +114,66 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     }
   }
 
+  Future<List<PostCardModel>> _postGetDispatch() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse);
+
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      _postList =
+          jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
+
+      return await _insertAds(_postList!, 5);
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+    }
+  }
+
+  // 리스트에 광고 삽입하는 함수
+  Future<List<PostCardModel>> _insertAds(
+      List<PostCardModel> originalList, int adInterval) async {
+    List<PostCardModel> resultList = [];
+
+    for (int i = 0; i < originalList.length; i++) {
+      // 광고를 삽입할 위치인지 확인
+      if (i > 0 && i % adInterval == 0) {
+        // 광고를 삽입할 위치라면 광고 모델을 생성하여 리스트에 추가
+        resultList.add(_createAdModel());
+      }
+
+      // 원본 리스트의 요소를 리스트에 추가
+      resultList.add(originalList[i]);
+    }
+
+    return resultList;
+  }
+
+  // 가상의 광고 모델 생성 함수
+  PostCardModel _createAdModel() {
+    // 광고 모델을 생성하여 반환하는 로직 구현
+    // 여기서는 가상의 광고 모델을 생성하여 반환하도록 가정
+    // 필요에 따라 광고 모델을 별도로 정의하고 초기화해야 합니다.
+    return PostCardModel(
+      postId: 0,
+      postBoardId: 0,
+      postUserId: 0,
+      userName: "",
+      postTitle: "",
+      postContent: "",
+      postTag: [],
+      postCreationDate: DateTime.now(),
+      postLikeCount: 0,
+      postCommentCount: 0,
+      isAd: true,
+    );
+  }
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -197,13 +193,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         // backgroundColor: Colors.blue.shade100,
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          shape: !_showJumpUpButton
-              ? const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    bottom: Radius.circular(20.0),
-                  ),
-                )
-              : null,
           centerTitle: false,
           title: const Text("Together(로고)"),
           actions: [
@@ -245,20 +234,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              AnimatedOpacity(
-                opacity: _showJumpUpButton ? 1 : 0,
-                duration: const Duration(milliseconds: 200),
-                child: FloatingActionButton(
-                  heroTag: "comunity",
-                  onPressed: _scrollToTop,
-                  backgroundColor: Colors.purpleAccent.shade100,
-                  child: const FaIcon(
-                    FontAwesomeIcons.arrowUp,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              Gaps.v6,
               if (isLogined)
                 AnimatedOpacity(
                   opacity: isLogined ? 1 : 0,
@@ -288,83 +263,102 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         // CustomScrollView : 스크롤 가능한 구역
         body: Stack(
           children: [
-            RefreshIndicator.adaptive(
-              onRefresh: _refreshComunityList,
-              child: CustomScrollView(
-                controller: _scrollController,
-                // CustomScrollView 안에 들어갈 element들
-                // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8),
-                      child: ListTile(
-                        onTap: () {
-                          context.pushNamed(
-                            NoticeScreen.routeName,
-                          );
-                        },
-                        shape: const BeveledRectangleBorder(
-                          side: BorderSide(
-                            width: 0.1,
-                          ),
-                        ),
-                        title: const Text(
-                          "공지사항",
-                          maxLines: 1,
-                        ),
-                        subtitle: const Text(
-                          "최근 등록일 : 5일전",
-                          maxLines: 1,
-                        ),
-                        trailing: const Icon(
-                          Icons.keyboard_arrow_right,
-                          size: 30,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      childCount: comunityList.length,
-                      (context, index) {
-                        final item = comunityList[index];
-                        if (item["type"] != "ad") {
-                          return PostCard(
-                            key: Key(item["title"]),
-                            postId: index,
-                            category: item["category"],
-                            title: item["title"],
-                            // images: List<String>.from(item["imgUrl"]),
-                            initCheckGood: item["checkGood"],
-                            content: item["content"],
-                            date: item["date"],
-                            user: item["user"],
-                          );
-                        } else {
-                          return StatefulBuilder(
-                            builder: (context, setState) => Container(
-                              height: 50,
-                              alignment: Alignment.center,
-                              child: AdWidget(
-                                ad: BannerAd(
-                                  listener: BannerAdListener(
-                                    onAdFailedToLoad: failedAdsLoading,
-                                    onAdLoaded: (_) {},
-                                  ),
-                                  size: AdSize.fullBanner,
-                                  adUnitId: AdHelper.bannerAdUnitId,
-                                  request: const AdRequest(),
-                                )..load(),
+            FutureBuilder<List<PostCardModel>>(
+              future: _postGetDispatch(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // 데이터를 기다리는 동안 로딩 인디케이터 표시
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  // 에러가 발생한 경우 에러 메시지 표시
+                  if (snapshot.error is TimeoutException) {
+                    return const Center(
+                      child: Text('통신 연결 실패!'),
+                    );
+                  } else {
+                    return Center(
+                      child: Text('오류 발생: ${snapshot.error}'),
+                    );
+                  }
+                } else {
+                  // 데이터를 성공적으로 가져왔을 때 ListView 표시
+                  _postList = snapshot.data!;
+
+                  return RefreshIndicator.adaptive(
+                    onRefresh: _refreshComunityList,
+                    child: CustomScrollView(
+                      controller: _scrollController,
+                      // CustomScrollView 안에 들어갈 element들
+                      // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: ListTile(
+                              onTap: () {
+                                context.pushNamed(
+                                  NoticeScreen.routeName,
+                                );
+                              },
+                              shape: const BeveledRectangleBorder(
+                                side: BorderSide(
+                                  width: 0.1,
+                                ),
+                              ),
+                              title: const Text(
+                                "공지사항",
+                                maxLines: 1,
+                              ),
+                              subtitle: const Text(
+                                "최근 등록일 : 5일전",
+                                maxLines: 1,
+                              ),
+                              trailing: const Icon(
+                                Icons.keyboard_arrow_right,
+                                size: 30,
                               ),
                             ),
-                          );
-                        }
-                      },
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            childCount: _postList!.length,
+                            (context, index) {
+                              final item = _postList![index];
+                              if (!item.isAd) {
+                                return PostCard(
+                                  postData: item,
+                                );
+                              } else {
+                                return StatefulBuilder(
+                                  builder: (context, setState) => Container(
+                                    height: 50,
+                                    alignment: Alignment.center,
+                                    child: AdWidget(
+                                      ad: BannerAd(
+                                        listener: BannerAdListener(
+                                          onAdFailedToLoad: failedAdsLoading,
+                                          onAdLoaded: (_) {},
+                                          onAdClosed: (ad) => ad.dispose(),
+                                        ),
+                                        size: AdSize.fullBanner,
+                                        adUnitId: AdHelper.bannerAdUnitId,
+                                        request: const AdRequest(),
+                                      )..load(),
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
+                  );
+                }
+              },
             ),
             if (_isFocused)
               // 슬라이드 화면 뒤쪽의 검은 화면 구현
@@ -405,147 +399,3 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     );
   }
 }
-
-List<Map<String, dynamic>> comunityList = [];
-
-List<Map<String, dynamic>> initComunityList = [
-  {
-    "type": "default",
-    "title": "제목1",
-    "checkGood": true,
-    "imgUrl": [
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-06-01",
-    "user": "유저1",
-    "category": "옵션 1",
-  },
-  {
-    "type": "default",
-    "title": "제목2",
-    "checkGood": false,
-    "imgUrl": [],
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-02",
-    "user": "유저2",
-    "category": "옵션 4",
-  },
-  {
-    "type": "default",
-    "title": "제목3",
-    "checkGood": false,
-    "imgUrl": [
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-07-04",
-    "user": "유저3",
-    "category": "옵션 2",
-  },
-  {
-    "type": "default",
-    "title": "제목4",
-    "checkGood": true,
-    "imgUrl": [],
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-04",
-    "user": "유저4",
-    "category": "옵션 5",
-  },
-  {
-    "type": "default",
-    "title": "제목5",
-    "checkGood": false,
-    "imgUrl": [
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-02-17",
-    "user": "유저5",
-    "category": "옵션 3",
-  },
-  {
-    "type": "default",
-    "title": "제목6",
-    "checkGood": false,
-    "imgUrl": [
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-06",
-    "user": "유저6",
-    "category": "옵션 5",
-  },
-  {
-    "type": "default",
-    "title": "제목7",
-    "checkGood": true,
-    "imgUrl": [
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-07",
-    "user": "유저7",
-    "category": "옵션 2",
-  },
-  {
-    "type": "default",
-    "title": "제목8",
-    "checkGood": true,
-    "imgUrl": [],
-    "content": "이곳은 내용만 있습니다.",
-    "date": "2023-05-08",
-    "user": "유저8",
-    "category": "옵션 1",
-  },
-  {
-    "type": "default",
-    "id": 9,
-    "title": "제목9",
-    "checkGood": false,
-    "imgUrl": [
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-09",
-    "user": "유저9",
-    "category": "옵션 2",
-  },
-  {
-    "type": "default",
-    "id": 10,
-    "title": "제목10",
-    "checkGood": false,
-    "imgUrl": [
-      "assets/images/70836_50981_2758.jpg",
-      "assets/images/dog.jpg",
-      "assets/images/70836_50981_2758.jpg",
-    ],
-    "content": "이것은 내용과 사진입니다.",
-    "date": "2023-05-10",
-    "user": "유저10",
-    "category": "옵션 4",
-  },
-];

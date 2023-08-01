@@ -52,13 +52,7 @@ final router = GoRouter(
       builder: (context, state) {
         final args = state.extra as PostDetailScreenArgs;
         return PostDetailScreen(
-          postId: args.postId,
-          category: args.category,
-          title: args.title,
-          content: args.content,
-          images: args.images,
-          user: args.user,
-          date: args.date,
+          postData: args.postData,
           tabBarSelected: args.tabBarSelected,
         );
       },
@@ -71,13 +65,8 @@ final router = GoRouter(
         return PostEditScreen(
           pageTitle: args.pageTitle,
           editType: args.editType,
-          id: args.id,
-          category: args.category,
-          title: args.title,
-          content: args.content,
-          images: args.images,
-          isCategory: args.isCategory,
           maxImages: args.maxImages,
+          postData: args.postData,
         );
       },
     ),

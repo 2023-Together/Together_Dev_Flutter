@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
@@ -8,10 +6,8 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
-import 'package:http/http.dart' as http;
 
 class AuthButton extends StatefulWidget {
   const AuthButton({
@@ -70,52 +66,52 @@ class _AuthButtonState extends State<AuthButton> {
   // 네이버 로그인
   void _signInForNaver(BuildContext context) async {
     // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
-    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+    // final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
-    if (!mounted) return;
-    if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
+    // if (!mounted) return;
+    // if (result.status == NaverLoginStatus.loggedIn) {
+    //   print('accessToken = ${result.accessToken}');
 
-      final userData = result.account;
-      print(userData);
+    //   final userData = result.account;
+    //   print(userData);
 
-      final url = Uri.parse("http://218.157.74.17:80/together/login");
-      final headers = {'Content-Type': 'application/json'};
-      final data = {"user_email": userData.email};
+    //   final url = Uri.parse("http://218.157.74.17:80/together/login");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {"user_email": userData.email};
 
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(data));
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        final jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     final jsonResponse = jsonDecode(response.body);
+    //     print(jsonResponse);
 
-        if (!mounted) return;
-        context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
-        context.read<MainNavigationProvider>().changeIndex(0);
-        context.goNamed(MainNavigation.routeName);
-      } else {
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-      }
-    } else {
-      swagPlatformDialog(
-        context: context,
-        title: "오류!",
-        message: result.errorMessage,
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text("알겠습니다"),
-          ),
-        ],
-      );
-    }
+    //     if (!mounted) return;
+    //     context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+    //     context.read<MainNavigationProvider>().changeIndex(0);
+    //     context.goNamed(MainNavigation.routeName);
+    //   } else {
+    //     print('Response status: ${response.statusCode}');
+    //     print('Response body: ${response.body}');
+    //   }
+    // } else {
+    //   swagPlatformDialog(
+    //     context: context,
+    //     title: "오류!",
+    //     message: result.errorMessage,
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () => context.pop(),
+    //         child: const Text("알겠습니다"),
+    //       ),
+    //     ],
+    //   );
+    // }
 
-    // context.read<UserProvider>().testLogin();
+    context.read<UserProvider>().testLogin();
 
-    // context.read<MainNavigationProvider>().changeIndex(0);
-    // context.goNamed(MainNavigation.routeName);
+    context.read<MainNavigationProvider>().changeIndex(0);
+    context.goNamed(MainNavigation.routeName);
   }
 
   // 네이버 회원가입
