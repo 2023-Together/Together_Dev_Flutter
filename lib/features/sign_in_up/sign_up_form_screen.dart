@@ -341,7 +341,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
                 ),
                 Gaps.v10,
                 Text(
-                  "이름(실명) - 봉사 신청 기능에 사용됩니다.",
+                  "이름(실명)",
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Gaps.v6,

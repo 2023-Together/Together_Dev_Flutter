@@ -66,8 +66,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
-      _scrollEnd();
-
       // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
       if (_animationController.isCompleted) {
         _toggleAnimations();
@@ -82,6 +80,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse);
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _clubList =
@@ -96,17 +95,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
-    }
-  }
-
-  // 스크롤이 맨아래로 내려가면 새로운 리스트 추가
-  void _scrollEnd() {
-    if (_scrollController.offset ==
-        _scrollController.position.maxScrollExtent) {
-      setState(() {
-        _filteredList =
-            _clubList.where((element) => element.clubRecruiting == 1).toList();
-      });
     }
   }
 

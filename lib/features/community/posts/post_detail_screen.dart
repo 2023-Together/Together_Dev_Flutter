@@ -5,28 +5,17 @@ import 'package:swag_cross_app/features/community/posts/post_detail_comment_scre
 import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
 // postId 전송
 
 class PostDetailScreenArgs {
-  final int postId;
-  final String category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final String date;
-  final String user;
+  final PostCardModel postData;
   final int tabBarSelected;
 
   PostDetailScreenArgs({
-    required this.postId,
-    required this.category,
-    this.title,
-    this.content,
-    this.images,
-    required this.date,
-    required this.user,
+    required this.postData,
     required this.tabBarSelected,
   });
 }
@@ -36,23 +25,11 @@ class PostDetailScreen extends StatefulWidget {
   static const routeURL = "/post_detail";
   const PostDetailScreen({
     super.key,
-    required this.postId,
-    required this.category,
-    this.images,
-    this.title,
-    this.content,
-    required this.date,
-    required this.user,
+    required this.postData,
     required this.tabBarSelected,
   });
 
-  final int postId;
-  final String category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final String date;
-  final String user;
+  final PostCardModel postData;
   final int tabBarSelected;
 
   @override
@@ -87,12 +64,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                               extra: PostEditScreenArgs(
                                 pageTitle: "게시글 수정",
                                 editType: PostEditType.postUpdate,
-                                id: widget.postId,
-                                category: widget.category,
-                                title: widget.title,
-                                content: widget.content,
-                                images: widget.images,
-                                isCategory: true,
+                                postData: widget.postData,
                               ),
                             );
                           },
@@ -133,10 +105,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         //   backgroundColor: Colors.transparent,
                         // ),
                         title: Text(
-                          widget.user,
+                          widget.postData.userName,
                         ),
                         subtitle: Text(
-                          TimeParse.getTimeAgo(DateTime.parse(widget.date)),
+                          TimeParse.getTimeAgo(
+                              widget.postData.postCreationDate),
                         ),
                         trailing: InkWell(
                           onTap: () {
@@ -170,9 +143,8 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 PostDetailIntroScreen(
-                  title: widget.title,
-                  content: widget.content,
-                  images: widget.images,
+                  title: widget.postData.postTitle,
+                  content: widget.postData.postContent,
                 ),
                 const PostDetailCommentscreen(),
               ],

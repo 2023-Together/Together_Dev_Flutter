@@ -5,30 +5,17 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
-    required this.postId,
-    required this.category,
-    this.title,
-    // this.images,
-    required this.initCheckGood,
-    this.content,
-    required this.date,
-    required this.user,
+    required this.postData,
   });
 
-  final int postId;
-  final String category;
-  final String? title;
-  final String? content;
-  // final List<String>? images;
-  final bool initCheckGood;
-  final String date;
-  final String user;
+  final PostCardModel postData;
 
   @override
   State<PostCard> createState() => _PostCard();
@@ -42,7 +29,7 @@ class _PostCard extends State<PostCard> {
   void initState() {
     super.initState();
 
-    _checkGood = widget.initCheckGood;
+    _checkGood = false;
   }
 
   void _onGoodTap() {
@@ -59,13 +46,7 @@ class _PostCard extends State<PostCard> {
     context.pushNamed(
       PostDetailScreen.routeName,
       extra: PostDetailScreenArgs(
-        postId: widget.postId,
-        category: widget.category,
-        title: widget.title,
-        content: widget.content,
-        // images: widget.images,
-        date: widget.date,
-        user: widget.user,
+        postData: widget.postData,
         tabBarSelected: page,
       ),
     );
@@ -103,17 +84,17 @@ class _PostCard extends State<PostCard> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (widget.title != null)
+                        if (widget.postData.postTitle.isNotEmpty)
                           Text(
-                            widget.title!,
+                            widget.postData.postTitle,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         Gaps.v4,
-                        if (widget.content != null)
+                        if (widget.postData.postContent.isNotEmpty)
                           Text(
-                            widget.content!,
+                            widget.postData.postContent,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.bodyMedium,
@@ -140,7 +121,7 @@ class _PostCard extends State<PostCard> {
                 //   ),
                 // ),
                 title: Text(
-                  widget.user,
+                  widget.postData.userName,
                   maxLines: 1,
                 ),
                 titleTextStyle: const TextStyle(
@@ -149,7 +130,7 @@ class _PostCard extends State<PostCard> {
                   fontWeight: FontWeight.normal,
                 ),
                 subtitle: Text(
-                  TimeParse.getTimeAgo(DateTime.parse(widget.date)),
+                  TimeParse.getTimeAgo(widget.postData.postCreationDate),
                   maxLines: 1,
                 ),
                 trailing: Row(

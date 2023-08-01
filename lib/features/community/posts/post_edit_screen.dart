@@ -6,10 +6,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/post_card_model.dart';
 
 enum PostEditType {
   mainInsert,
@@ -20,24 +20,14 @@ enum PostEditType {
 class PostEditScreenArgs {
   final String pageTitle;
   final PostEditType editType;
-  final int? id;
-  final String? title;
-  final String? category;
-  final String? content;
-  final List<String>? images;
-  final bool? isCategory;
   final int? maxImages;
+  final PostCardModel? postData;
 
   PostEditScreenArgs({
     required this.pageTitle,
     required this.editType,
-    this.id,
-    this.category,
-    this.title,
-    this.content,
-    this.images,
-    this.isCategory,
     this.maxImages,
+    this.postData,
   });
 }
 
@@ -45,27 +35,18 @@ class PostEditScreen extends StatefulWidget {
   static const routeName = "post_edit";
   static const routeURL = "/post_edit";
 
-  const PostEditScreen(
-      {super.key,
-      required this.pageTitle,
-      required this.editType,
-      this.id,
-      this.category,
-      this.title,
-      this.content,
-      this.images,
-      this.isCategory,
-      this.maxImages});
+  const PostEditScreen({
+    super.key,
+    required this.pageTitle,
+    required this.editType,
+    this.maxImages,
+    this.postData,
+  });
 
   final String pageTitle;
   final PostEditType editType;
-  final int? id;
-  final String? category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final bool? isCategory;
   final int? maxImages;
+  final PostCardModel? postData;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -79,15 +60,15 @@ class _PostEditScreenState extends State<PostEditScreen> {
   // final List<XFile> _imgList = [];
   final List<String> _removeImgList = [];
 
-  late String _category = widget.category ?? "";
-  final List<String> _categoryList = [
-    "",
-    "옵션 1",
-    "옵션 2",
-    "옵션 3",
-    "옵션 4",
-    "옵션 5",
-  ];
+  // late String _postTag = widget.category ?? "";
+  // final List<String> _categoryList = [
+  //   "",
+  //   "옵션 1",
+  //   "옵션 2",
+  //   "옵션 3",
+  //   "옵션 4",
+  //   "옵션 5",
+  // ];
 
   late bool _isThereSearchValue =
       _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
@@ -95,8 +76,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.title ?? "");
-    _contentController = TextEditingController(text: widget.content ?? "");
+    _titleController =
+        TextEditingController(text: widget.postData?.postTitle ?? "");
+    _contentController =
+        TextEditingController(text: widget.postData?.postContent ?? "");
 
     // _imgList.addAll(widget.images ?? []);
   }
@@ -205,11 +188,11 @@ class _PostEditScreenState extends State<PostEditScreen> {
     setState(() {});
   }
 
-  void _onChangeOption(String option) {
-    setState(() {
-      _category = option;
-    });
-  }
+  // void _onChangeOption(String option) {
+  //   setState(() {
+  //     _category = option;
+  //   });
+  // }
 
   Future<void> _onSubmitFinishButton() async {
     // Iterable<String> base64Images = _imgList.isNotEmpty
@@ -294,29 +277,29 @@ class _PostEditScreenState extends State<PostEditScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!(widget.isCategory ?? true))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Gaps.v20,
-                          Text(
-                            "카테고리",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          Gaps.v10,
-                          SWAGStateDropDownButton(
-                            initOption: _category,
-                            onChangeOption: _onChangeOption,
-                            title: "카테고리를 선택해주세요.",
-                            options: _categoryList,
-                            isExpanded: true,
-                            width: double.infinity,
-                            height: 60,
-                            fontSize: 18,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                        ],
-                      ),
+                    // if (!(widget.postData!.postTag!.isNotEmpty))
+                    //   Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Gaps.v20,
+                    //       Text(
+                    //         "카테고리",
+                    //         style: Theme.of(context).textTheme.titleSmall,
+                    //       ),
+                    //       Gaps.v10,
+                    //       SWAGStateDropDownButton(
+                    //         initOption: _category,
+                    //         onChangeOption: _onChangeOption,
+                    //         title: "카테고리를 선택해주세요.",
+                    //         options: _categoryList,
+                    //         isExpanded: true,
+                    //         width: double.infinity,
+                    //         height: 60,
+                    //         fontSize: 18,
+                    //         padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //       ),
+                    //     ],
+                    //   ),
                     Gaps.v20,
                     Text(
                       "제목",
