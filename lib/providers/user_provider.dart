@@ -2,28 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
 
 class UserProvider extends ChangeNotifier {
   bool _isLogined = false;
-  String? _snsType;
+  UserModel? _userData;
 
   bool get isLogined => _isLogined;
-  String get snsType => _snsType!;
+  UserModel? get userData => _userData;
 
-  void login(String type) {
+  void login(UserModel userData) {
     _isLogined = true;
-    _snsType = type;
+    _userData = userData;
+    notifyListeners();
+  }
+
+  void testLogin() {
+    _isLogined = true;
     notifyListeners();
   }
 
   void logout() {
     _isLogined = false;
-    _snsType = null;
+    _userData = null;
     notifyListeners();
   }
 
   void loginCheckIsNone(BuildContext context) {
-    if (_snsType != "naver" || _snsType != "kakao") {
+    if (_isLogined) {
       _isLogined = false;
 
       swagPlatformDialog(

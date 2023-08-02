@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 
 class LogoLoadingScreen extends StatefulWidget {
   static const routeName = "loading";
@@ -23,12 +22,13 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
   void initState() {
     super.initState();
 
-    _checkAutoLogined();
+    // _checkAutoLogined();
 
     if (_timer != null) {
       _timer!.cancel(); // 이전 타이머 취소
     }
     _timer = Timer(const Duration(milliseconds: 500), () {
+      context.read<MainNavigationProvider>().changeIndex(0);
       context.goNamed(MainNavigation.routeName);
     });
   }
@@ -39,23 +39,24 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
     super.dispose();
   }
 
-  void _checkAutoLogined() async {
-    final String? loginData = await LoginStorage.getLoginData();
-    print(loginData);
+  // void _checkAutoLogined() async {
+  //   final String? loginData = await LoginStorage.getLoginData();
+  //   print(loginData);
 
-    if (loginData == null) return;
-    if (loginData.trim().isNotEmpty) {
-      List<String> userData = loginData.split(",");
+  //   if (loginData == null) return;
+  //   if (loginData.trim().isNotEmpty) {
+  //     List<String> userData = loginData.split(",");
 
-      final id = userData[0];
-      final pw = userData[1];
+  //     final id = userData[0];
+  //     final pw = userData[1];
 
-      if (!mounted) return;
-      context.read<UserProvider>().login("naver");
+  //     if (!mounted) return;
+  //     context.read<UserProvider>().login("naver");
 
-      context.goNamed(MainNavigation.routeName);
-    }
-  }
+  //     context.read<MainNavigationProvider>().changeIndex(0);
+  //     context.goNamed(MainNavigation.routeName);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {

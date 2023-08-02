@@ -5,55 +5,38 @@ import 'package:swag_cross_app/features/community/posts/post_detail_comment_scre
 import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/utils/time_parse.dart';
 
 // postId 전송
 
 class PostDetailScreenArgs {
-  final int postId;
-  final String category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final String date;
-  final String user;
+  final PostCardModel postData;
   final int tabBarSelected;
 
   PostDetailScreenArgs({
-    required this.postId,
-    required this.category,
-    this.title,
-    this.content,
-    this.images,
-    required this.date,
-    required this.user,
+    required this.postData,
     required this.tabBarSelected,
   });
 }
 
-class PostDetailScreen extends StatelessWidget {
+class PostDetailScreen extends StatefulWidget {
   static const routeName = "post_detail";
   static const routeURL = "/post_detail";
-  PostDetailScreen({
+  const PostDetailScreen({
     super.key,
-    required this.postId,
-    required this.category,
-    this.images,
-    this.title,
-    this.content,
-    required this.date,
-    required this.user,
+    required this.postData,
     required this.tabBarSelected,
   });
 
-  final int postId;
-  final String category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final String date;
-  final String user;
+  final PostCardModel postData;
   final int tabBarSelected;
 
+  @override
+  State<PostDetailScreen> createState() => _PostDetailScreenState();
+}
+
+class _PostDetailScreenState extends State<PostDetailScreen> {
   List<String> imgs = [];
 
   @override
@@ -63,7 +46,7 @@ class PostDetailScreen extends StatelessWidget {
       body: SafeArea(
         child: DefaultTabController(
           length: 2,
-          initialIndex: tabBarSelected,
+          initialIndex: widget.tabBarSelected,
           child: NestedScrollView(
             physics: const NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
@@ -80,13 +63,8 @@ class PostDetailScreen extends StatelessWidget {
                               PostEditScreen.routeName,
                               extra: PostEditScreenArgs(
                                 pageTitle: "게시글 수정",
-                                editType: "post_update",
-                                id: postId,
-                                category: category,
-                                title: title,
-                                content: content,
-                                images: images,
-                                isCategory: true,
+                                editType: PostEditType.postUpdate,
+                                postData: widget.postData,
                               ),
                             );
                           },
@@ -119,31 +97,37 @@ class PostDetailScreen extends StatelessWidget {
                       ListTile(
                         contentPadding:
                             const EdgeInsets.symmetric(horizontal: 30),
-                        leading: const CircleAvatar(
-                          radius: 24,
-                          backgroundImage: NetworkImage(
-                            "https://avatars.githubusercontent.com/u/77985708?v=4",
-                          ),
-                          backgroundColor: Colors.transparent,
-                        ),
+                        // leading: const CircleAvatar(
+                        //   radius: 24,
+                        //   backgroundImage: NetworkImage(
+                        //     "https://avatars.githubusercontent.com/u/77985708?v=4",
+                        //   ),
+                        //   backgroundColor: Colors.transparent,
+                        // ),
                         title: Text(
-                          user,
+                          widget.postData.userName,
                         ),
                         subtitle: Text(
-                          date,
+                          TimeParse.getTimeAgo(
+                              widget.postData.postCreationDate),
                         ),
-                        trailing: Column(
-                          children: [
-                            const FaIcon(
-                              FontAwesomeIcons.thumbsUp,
-                              color: Colors.blue,
-                            ),
-                            const SizedBox(width: 1),
-                            Text(
-                              "120",
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                          ],
+                        trailing: InkWell(
+                          onTap: () {
+                            // 버튼을 눌렀을 때 수행할 작업
+                          },
+                          child: Column(
+                            children: [
+                              const FaIcon(
+                                FontAwesomeIcons.thumbsUp,
+                                color: Colors.blue,
+                                size: 30,
+                              ),
+                              Text(
+                                "120",
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
@@ -159,9 +143,8 @@ class PostDetailScreen extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               children: [
                 PostDetailIntroScreen(
-                  title: title,
-                  content: content,
-                  images: images,
+                  title: widget.postData.postTitle,
+                  content: widget.postData.postContent,
                 ),
                 const PostDetailCommentscreen(),
               ],

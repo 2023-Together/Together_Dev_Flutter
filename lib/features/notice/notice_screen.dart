@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_expansionTile_card.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class NoticeScreen extends StatelessWidget {
   static const routeName = "main_notice";

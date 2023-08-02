@@ -1,76 +1,112 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/features/page_test/widgets/persistent_tab_bar.dart';
+import 'package:swag_cross_app/features/community/widgets/post_card.dart';
+import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/post_card_model.dart';
 
 final List<Map<String, dynamic>> userDatas = [
   {
-    "userDid": "1",
-    "userId": "thdusrkd01@naver.com",
+    "userId": "1",
+    "userEmail": "thdusrkd01@naver.com",
     "userPw": "000000",
     "userName": "강소연",
+    "userNickName": "망고012",
     "userDef": "hello!",
+    "userGender": "여자",
     "userType": "봉사자",
-    "birth": "2001-09-28"
+    // "userProfileImage": "",
+    "userBirthDate": "2001-09-28",
+    "userPhoneNumber": "010-0000-0000",
   },
 ];
 
+// class UserProfileScreenArgs {
+//   final int userId1;
+
+//   UserProfileScreenArgs({required this.userId1});
+// }
+
 class UserProfileScreen extends StatefulWidget {
+  // final int userId1;
+
   static const routeName = "user_profile";
   static const routeURL = "/user_profile";
 
-  const UserProfileScreen({super.key});
+  const UserProfileScreen({
+    super.key,
+    // required this.userId1,
+  });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  void onLogoutAllTap(BuildContext context) {
-    LoginStorage.resetLoginData();
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
-  void onLogoutTap(BuildContext context) {
-    context.read<UserProvider>().logout();
-    context.pushReplacementNamed(MainNavigation.routeName);
-  }
-
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
 
-  void httpTest() async {
-    try {
-      final url =
-          Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
-      final response = await http.get(url);
+  List<PostCardModel>? _postList;
 
+  // 스크롤 제어를 위한 컨트롤러를 선언합니다.
+  final ScrollController _scrollController = ScrollController();
+
+  Future<List<PostCardModel>> _postGetDispatch() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse);
+
+      // 응답 데이터를 PostCardModel 리스트로 파싱하여 반환
+      return jsonResponse
+          .map<PostCardModel>((data) => PostCardModel.fromJson(data))
+          .toList();
+    } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-
-      // 응답 처리
-      if (response.statusCode == 200) {
-        // 성공적인 응답 처리
-      } else {
-        // 응답 오류 처리
-      }
-    } catch (e) {
-      // 예외 처리
-      print('예외 발생: $e');
-      // 예외에 따른 추가 처리 수행
+      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
     }
   }
+
+  // 리스트 새로고침
+  Future _refreshComunityList() async {
+    _postGetDispatch();
+    setState(() {});
+  }
+
+  // void httpTest() async {
+  //   try {
+  //     final url =
+  //         Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
+  //     final response = await http.get(url);
+
+  //     print('Response status: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+
+  //     // 응답 처리
+  //     if (response.statusCode == 200) {
+  //       // 성공적인 응답 처리
+  //     } else {
+  //       // 응답 오류 처리
+  //     }
+  //   } catch (e) {
+  //     // 예외 처리
+  //     print('예외 발생: $e');
+  //     // 예외에 따른 추가 처리 수행
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +117,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: SafeArea(
         child: DefaultTabController(
           initialIndex: 0,
-          length: 3,
+          length: 2,
           // NestedScrollView : SliverAppBar와 TabBar를 같이 쓰는 경우 처럼 여러개의 스크롤 함께쓸때 유용한 위젯
           child: NestedScrollView(
             // CustomScrollView 안에 들어갈 element들
@@ -110,7 +146,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         children: [
                           GestureDetector(
                             onTap: _userSetupTap,
-                            // () => onLogoutTap(context),
                             child: const Icon(Icons.settings_outlined),
                           ),
                         ],
@@ -122,32 +157,35 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Column(
                     children: [
                       UserProfileCard(
-                        userDid: userDatas[0]['userDid'],
                         userId: userDatas[0]['userId'],
+                        userEmail: userDatas[0]['userEmail'],
                         userPw: userDatas[0]['userPw'],
                         userName: userDatas[0]['userName'],
+                        userNickName: userDatas[0]['userNickName'],
+                        userGender: userDatas[0]['userGender'],
                         userDef: userDatas[0]['userDef'],
                         userType: userDatas[0]['userType'],
-                        birth: userDatas[0]['birth'],
+                        userBirthDate: userDatas[0]['userBirthDate'],
+                        userPhoneNumber: userDatas[0]['userPhoneNumber'],
                       ),
-                      Gaps.v10,
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 신청"), Text("2건")],
-                            ),
-                          ),
-                          Container(height: 50, width: 2, color: Colors.grey),
-                          const Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [Text("봉사 완료"), Text("6건")],
-                            ),
-                          ),
-                        ],
-                      ),
+                      // Gaps.v10,
+                      // Row(
+                      //   children: [
+                      //     const Expanded(
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [Text("봉사 신청"), Text("2건")],
+                      //       ),
+                      //     ),
+                      //     Container(height: 50, width: 2, color: Colors.grey),
+                      //     const Expanded(
+                      //       child: Column(
+                      //         mainAxisAlignment: MainAxisAlignment.center,
+                      //         children: [Text("봉사 완료"), Text("6건")],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       Gaps.v20,
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -175,85 +213,58 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             },
             body: TabBarView(
               children: [
-                GridView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  // 나와있는 키보드에서 스크롤하면 키보드를 없애는 기능
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.onDrag,
-                  itemCount: 20,
-                  padding: EdgeInsets.zero,
-                  // controller는 아니지만 비슷한 도우미
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    // 한 줄당 몇개를 넣을건지 지정
-                    crossAxisCount: 3,
-                    // 좌우 간격
-                    crossAxisSpacing: Sizes.size2,
-                    // 위아래 간격
-                    mainAxisSpacing: Sizes.size2,
-                    // 한 블럭당 비율 지정 (가로 / 세로)
-                    childAspectRatio: 9 / 12,
-                  ),
-                  // FadeInImage : 실제 사진이 로드 되기 전까지 지정한 이미지를 보여줌
-                  itemBuilder: (context, index) => LayoutBuilder(
-                    builder: (context, constraints) => SizedBox(
-                      child: Stack(
-                        children: [
-                          AspectRatio(
-                            aspectRatio: 9 / 12,
-                            child: index % 2 == 0
-                                ? index % 3 == 0
-                                    ? const FadeInImage(
-                                        fit: BoxFit.cover,
-                                        placeholder:
-                                            AssetImage("assets/images/dog.jpg"),
-                                        image:
-                                            AssetImage("assets/images/dog.jpg"),
-                                      )
-                                    : FadeInImage.assetNetwork(
-                                        // 부모 요소에 맞춰서 크기 조절
-                                        fit: BoxFit.cover,
-                                        // 로딩 되기전에 보여줄 이미지 지정
-                                        placeholder: "assets/images/dog.jpg",
-                                        // 로딩 이미지 지정
-                                        image:
-                                            "https://images.pexels.com/photos/462118/pexels-photo-462118.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-                                      )
-                                : const FadeInImage(
-                                    fit: BoxFit.cover,
-                                    placeholder:
-                                        AssetImage("assets/images/dog.jpg"),
-                                    image: AssetImage(
-                                        "assets/images/70836_50981_2758.jpg"),
-                                  ),
-                          ),
-                          const Positioned(
-                            bottom: Sizes.size10,
-                            left: Sizes.size10,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "제목",
-                                  style: TextStyle(
-                                    fontSize: Sizes.size16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  child: FutureBuilder<List<PostCardModel>>(
+                    future: _postGetDispatch(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        if (snapshot.error is TimeoutException) {
+                          return const Center(
+                            child: Text('통신 연결 실패!'),
+                          );
+                        } else {
+                          return Center(
+                            child: Text('오류 발생: ${snapshot.error}'),
+                          );
+                        }
+                      } else {
+                        final postListWithoutAds =
+                            snapshot.data!.where((item) => !item.isAd).toList();
+                
+                        return RefreshIndicator.adaptive(
+                          onRefresh: _refreshComunityList,
+                          child: CustomScrollView(
+                            controller: _scrollController,
+                            slivers: [
+                              SliverList(
+                                delegate: SliverChildBuilderDelegate(
+                                  childCount: postListWithoutAds.length,
+                                  (context, index) {
+                                    final item = postListWithoutAds[index];
+                                    return PostCard(
+                                      postData: item,
+                                    );
+                                  },
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        );
+                      }
+                    },
                   ),
                 ),
                 const Center(
                   child: Text("동아리에 올린 게시글"),
                 ),
-                const Center(
-                  child: Text("좋아요한 게시글"),
-                ),
+                // const Center(
+                //   child: Text("좋아요한 게시글"),
+                // ),
               ],
             ),
           ),

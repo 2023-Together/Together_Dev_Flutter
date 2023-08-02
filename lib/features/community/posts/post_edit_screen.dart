@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -7,31 +6,28 @@ import 'package:image_picker/image_picker.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/post_card_model.dart';
+
+enum PostEditType {
+  mainInsert,
+  clubInsert,
+  postUpdate,
+}
 
 class PostEditScreenArgs {
   final String pageTitle;
-  final String editType;
-  final int? id;
-  final String? title;
-  final String? category;
-  final String? content;
-  final List<String>? images;
-  final bool? isCategory;
+  final PostEditType editType;
   final int? maxImages;
+  final PostCardModel? postData;
 
   PostEditScreenArgs({
     required this.pageTitle,
     required this.editType,
-    this.id,
-    this.category,
-    this.title,
-    this.content,
-    this.images,
-    this.isCategory,
     this.maxImages,
+    this.postData,
   });
 }
 
@@ -39,27 +35,18 @@ class PostEditScreen extends StatefulWidget {
   static const routeName = "post_edit";
   static const routeURL = "/post_edit";
 
-  const PostEditScreen(
-      {super.key,
-      required this.pageTitle,
-      required this.editType,
-      this.id,
-      this.category,
-      this.title,
-      this.content,
-      this.images,
-      this.isCategory,
-      this.maxImages});
+  const PostEditScreen({
+    super.key,
+    required this.pageTitle,
+    required this.editType,
+    this.maxImages,
+    this.postData,
+  });
 
   final String pageTitle;
-  final String editType;
-  final int? id;
-  final String? category;
-  final String? title;
-  final String? content;
-  final List<String>? images;
-  final bool? isCategory;
+  final PostEditType editType;
   final int? maxImages;
+  final PostCardModel? postData;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -73,15 +60,15 @@ class _PostEditScreenState extends State<PostEditScreen> {
   // final List<XFile> _imgList = [];
   final List<String> _removeImgList = [];
 
-  late String _category = widget.category ?? "";
-  final List<String> _categoryList = [
-    "",
-    "옵션 1",
-    "옵션 2",
-    "옵션 3",
-    "옵션 4",
-    "옵션 5",
-  ];
+  // late String _postTag = widget.category ?? "";
+  // final List<String> _categoryList = [
+  //   "",
+  //   "옵션 1",
+  //   "옵션 2",
+  //   "옵션 3",
+  //   "옵션 4",
+  //   "옵션 5",
+  // ];
 
   late bool _isThereSearchValue =
       _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
@@ -89,8 +76,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.title ?? "");
-    _contentController = TextEditingController(text: widget.content ?? "");
+    _titleController =
+        TextEditingController(text: widget.postData?.postTitle ?? "");
+    _contentController =
+        TextEditingController(text: widget.postData?.postContent ?? "");
 
     // _imgList.addAll(widget.images ?? []);
   }
@@ -134,6 +123,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
           // 갤러리
           List<XFile> pickedFiles = await picker.pickMultiImage();
           if (_imgList.length + pickedFiles.length > widget.maxImages!) {
+            if (!mounted) return;
             swagPlatformDialog(
               context: context,
               title: "사진 개수 오류",
@@ -198,25 +188,53 @@ class _PostEditScreenState extends State<PostEditScreen> {
     setState(() {});
   }
 
-  void _onChangeOption(String option) {
-    setState(() {
-      _category = option;
-    });
-  }
+  // void _onChangeOption(String option) {
+  //   setState(() {
+  //     _category = option;
+  //   });
+  // }
 
   Future<void> _onSubmitFinishButton() async {
-    Iterable<String> base64Images = _imgList.isNotEmpty
-        ? _imgList.map(
-            (e) => base64Encode(File(e).readAsBytesSync()),
-          )
-        : [];
+    // Iterable<String> base64Images = _imgList.isNotEmpty
+    //     ? _imgList.map(
+    //         (e) => base64Encode(File(e).readAsBytesSync()),
+    //       )
+    //     : [];
 
-    if (widget.isCategory != null) {
-      print("카테고리 : $_category");
+    if (widget.editType == PostEditType.mainInsert) {
+      final url = Uri.parse("http://58.150.133.91:80/together/post/createPost");
+      final headers = {'Content-Type': 'application/json'};
+      final data = {
+        "postBoardId": "11",
+        "postUserId": "1",
+        "postTitle": _titleController.text,
+        "postContent": _contentController.text,
+      };
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(data));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('생성 성공!');
+      } else {
+        if (!mounted) return;
+        swagPlatformDialog(
+          context: context,
+          title: "${response.statusCode} 오류",
+          message: "게시글 생성에 오류가 발생하였습니다! \n ${response.body}",
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text("알겠습니다"),
+            ),
+          ],
+        );
+      }
+    } else if (widget.editType == PostEditType.clubInsert) {
+    } else if (widget.editType == PostEditType.postUpdate) {
+    } else {
+      print("오류!");
     }
-    print("제목 : ${_titleController.text}");
-    print("내용 : ${_contentController.text}");
-    print("이미지 : $base64Images");
   }
 
   @override
@@ -259,37 +277,37 @@ class _PostEditScreenState extends State<PostEditScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (!(widget.isCategory ?? true))
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Gaps.v20,
-                          Text(
-                            "카테고리",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          Gaps.v10,
-                          SWAGStateDropDownButton(
-                            initOption: _category,
-                            onChangeOption: _onChangeOption,
-                            title: "카테고리를 선택해주세요.",
-                            options: _categoryList,
-                            isExpanded: true,
-                            width: double.infinity,
-                            height: 60,
-                            fontSize: 18,
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                          ),
-                        ],
-                      ),
+                    // if (!(widget.postData!.postTag!.isNotEmpty))
+                    //   Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Gaps.v20,
+                    //       Text(
+                    //         "카테고리",
+                    //         style: Theme.of(context).textTheme.titleSmall,
+                    //       ),
+                    //       Gaps.v10,
+                    //       SWAGStateDropDownButton(
+                    //         initOption: _category,
+                    //         onChangeOption: _onChangeOption,
+                    //         title: "카테고리를 선택해주세요.",
+                    //         options: _categoryList,
+                    //         isExpanded: true,
+                    //         width: double.infinity,
+                    //         height: 60,
+                    //         fontSize: 18,
+                    //         padding: const EdgeInsets.symmetric(horizontal: 16),
+                    //       ),
+                    //     ],
+                    //   ),
                     Gaps.v20,
                     Text(
-                      "동아리명",
+                      "제목",
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                     Gaps.v10,
                     SWAGTextField(
-                      hintText: "동아리명을 입력해주세요.",
+                      hintText: "제목을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
                       onSubmitted: () {
@@ -304,7 +322,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                     ),
                     Gaps.v10,
                     SWAGTextField(
-                      hintText: "어떤 동아리인지 설명해주세요. (가입 규칙 또는 인사말 등)",
+                      hintText: "내용을 입력해주세요.",
                       maxLine: 6,
                       controller: _contentController,
                       onSubmitted: () {
@@ -312,42 +330,42 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       },
                       onChanged: _textOnChange,
                     ),
-                    Gaps.v40,
-                    Text(
-                      "이미지",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    Gaps.v10,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _getImage(ImageSource
-                                    .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
-                              },
-                              child: const Text("카메라"),
-                            ),
-                            Gaps.h20,
-                            ElevatedButton(
-                              onPressed: () {
-                                _getImage(ImageSource
-                                    .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
-                              },
-                              child: const Text("갤러리"),
-                            ),
-                          ],
-                        ),
-                        ElevatedButton.icon(
-                          onPressed: _removeImg,
-                          label: const Text("삭제"),
-                          icon: const Icon(Icons.delete),
-                        ),
-                      ],
-                    ),
-                    Gaps.v10,
+                    // Gaps.v40,
+                    // Text(
+                    //   "이미지",
+                    //   style: Theme.of(context).textTheme.titleSmall,
+                    // ),
+                    // Gaps.v10,
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Row(
+                    //       children: [
+                    //         ElevatedButton(
+                    //           onPressed: () {
+                    //             _getImage(ImageSource
+                    //                 .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
+                    //           },
+                    //           child: const Text("카메라"),
+                    //         ),
+                    //         Gaps.h20,
+                    //         ElevatedButton(
+                    //           onPressed: () {
+                    //             _getImage(ImageSource
+                    //                 .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
+                    //           },
+                    //           child: const Text("갤러리"),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //     ElevatedButton.icon(
+                    //       onPressed: _removeImg,
+                    //       label: const Text("삭제"),
+                    //       icon: const Icon(Icons.delete),
+                    //     ),
+                    //   ],
+                    // ),
+                    // Gaps.v10,
                   ],
                 ),
               ),

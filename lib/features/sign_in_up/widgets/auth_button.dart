@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
-import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class AuthButton extends StatefulWidget {
   const AuthButton({
@@ -75,8 +75,25 @@ class _AuthButtonState extends State<AuthButton> {
     //   final userData = result.account;
     //   print(userData);
 
-    //   context.read<UserProvider>().login("naver");
-    //   context.goNamed(MainNavigation.routeName);
+    //   final url = Uri.parse("http://218.157.74.17:80/together/login");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {"user_email": userData.email};
+
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
+
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     final jsonResponse = jsonDecode(response.body);
+    //     print(jsonResponse);
+
+    //     if (!mounted) return;
+    //     context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+    //     context.read<MainNavigationProvider>().changeIndex(0);
+    //     context.goNamed(MainNavigation.routeName);
+    //   } else {
+    //     print('Response status: ${response.statusCode}');
+    //     print('Response body: ${response.body}');
+    //   }
     // } else {
     //   swagPlatformDialog(
     //     context: context,
@@ -91,14 +108,9 @@ class _AuthButtonState extends State<AuthButton> {
     //   );
     // }
 
-    // final url = Uri.parse("http://112.164.125.246:80/together/selectAllUser");
-    // final response = await http.post(url);
+    context.read<UserProvider>().testLogin();
 
-    // print('Response status: ${response.statusCode}');
-    // print('Response body: ${response.body}');
-
-    if (!mounted) return;
-    context.read<UserProvider>().login("naver");
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 
@@ -113,19 +125,6 @@ class _AuthButtonState extends State<AuthButton> {
 
       final userData = result.account;
       print(userData);
-
-      // await SecureStorageLogin.saveLoginType("naver");
-      context.pushNamed(
-        SignUpCheckUserDataScreen.routeName,
-        extra: SignUpCheckUserDataScreenArgs(
-          name: userData.name,
-          email: userData.email,
-          gender: userData.gender,
-          birthday: "${userData.birthyear}-${userData.birthday}",
-          profileImage: userData.profileImage,
-          mobile: userData.mobile,
-        ),
-      );
     } else {
       swagPlatformDialog(
         context: context,
@@ -145,7 +144,7 @@ class _AuthButtonState extends State<AuthButton> {
   void _signInForKakao(BuildContext context) async {
     // await LoginStorage.saveLoginType("kakao");
 
-    if (!mounted) return;
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 
@@ -161,6 +160,8 @@ class _AuthButtonState extends State<AuthButton> {
     //     return true;
     //   },
     // );
+
+    context.read<MainNavigationProvider>().changeIndex(0);
     context.goNamed(MainNavigation.routeName);
   }
 

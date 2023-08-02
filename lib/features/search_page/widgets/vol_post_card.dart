@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -17,9 +18,12 @@ class VolPostCard extends StatefulWidget {
   final String host;
   // 봉사활동 위치
   final String locationStr;
-  // 봉사활동 모집 마감일
-  final String startTime;
-  final String endTime;
+  // 봉사 활동 장소
+  final String actPlace;
+  // 청소년 가능 여부
+  final String teenager;
+  // api type
+  final String listApiType;
 
   const VolPostCard({
     super.key,
@@ -29,8 +33,9 @@ class VolPostCard extends StatefulWidget {
     required this.contnet,
     required this.host,
     required this.locationStr,
-    required this.startTime,
-    required this.endTime,
+    required this.actPlace,
+    required this.teenager,
+    required this.listApiType,
   });
 
   @override
@@ -62,146 +67,225 @@ class _VolPostCardState extends State<VolPostCard> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
     return LayoutBuilder(
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
         width: constraints.maxWidth,
+        height: 150,
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (!context.read<UserProvider>().isLogined) {
-                    final loginType = context.read<UserProvider>().isLogined;
+        child: GestureDetector(
+          onTap: () {
+            if (!context.read<UserProvider>().isLogined) {
+              final loginType = context.read<UserProvider>().isLogined;
 
-                    if (loginType.toString() != "naver" &&
-                        loginType.toString() != "kakao") {
-                      swagPlatformDialog(
-                        context: context,
-                        title: "로그인 알림",
-                        message:
-                            "로그인이 되어 있지 않습니다! \n해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
-                        actions: [
-                          TextButton(
-                            onPressed: () => context.pop(),
-                            child: const Text("아니오"),
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: const Text("예"),
-                          ),
-                        ],
-                      );
-                    }
-                  } else {
-                    context.pushNamed(
-                      VolDetailScreen.routeName,
-                      extra: VolDetailScreenArgs(
-                        id: widget.id,
-                        title: widget.title,
-                        contnet: widget.contnet,
-                        host: widget.host,
-                        locationStr: widget.locationStr,
-                        startTime: widget.startTime,
-                        endTime: widget.endTime,
-                        tabBarSelected: 0,
-                      ),
-                    );
-                  }
-                },
-                child: Container(
-                  height: 150,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(Sizes.size12),
+              if (loginType.toString() != "naver" &&
+                  loginType.toString() != "kakao") {
+                swagPlatformDialog(
+                  context: context,
+                  title: "로그인 알림",
+                  message:
+                      "로그인이 되어 있지 않습니다! \n해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+                  actions: [
+                    TextButton(
+                      onPressed: () => context.pop(),
+                      child: const Text("아니오"),
                     ),
-                  ),
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 12.0),
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0),
-                              ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text("예"),
+                    ),
+                  ],
+                );
+              }
+            } else {
+              context.pushNamed(
+                VolDetailScreen.routeName,
+                extra: VolDetailScreenArgs(
+                  id: widget.id,
+                  title: widget.title,
+                  contnet: widget.contnet,
+                  host: widget.host,
+                  locationStr: widget.locationStr,
+                  actPlace: widget.actPlace,
+                  teenager: widget.teenager,
+                  listApiType: widget.listApiType,
+                  tabBarSelected: 0,
+                ),
+              );
+            }
+          },
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            child: Column(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14.0),
+                        ),
+                        Row(
+                          children: [
+                            if (widget.teenager.isNotEmpty)
                               Container(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 7, vertical: 3),
+                                  horizontal: 7,
+                                  vertical: 2,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: Colors.purple.shade300,
-                                  // border: Border.all(
-                                  //   width: 1,
-                                  // ),
+                                  border: Border.all(
+                                    color: Colors.black,
+                                  ),
+                                  color: Colors.white,
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(5),
                                   ),
                                 ),
-                                child: const Text(
-                                  "모집 중",
+                                child: Text(
+                                  widget.teenager,
                                   style: TextStyle(
-                                    fontSize: 12.0,
+                                    fontSize: 10.0,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            else
+                              SizedBox(
+                                width: 0,
+                                height: 0,
+                              ),
+                              Gaps.h8,
+                            if (widget.listApiType == '1365')
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.listApiType,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            else if (widget.listApiType == 'vms')
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 59, 88, 255),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.listApiType,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
                                     color: Colors.white,
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
-                          Text(
-                            widget.contnet,
-                            style: const TextStyle(fontSize: 12.0, height: 2.0),
-                          ),
-                          Text(
-                            "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
-                            style: const TextStyle(
+                            if (widget.listApiType != '1365' &&
+                                widget.listApiType != 'vms')
+                              SizedBox(width: 0, height: 0),
+                            Gaps.h8,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: Colors.purple.shade300,
+                                // border: Border.all(
+                                //   width: 1,
+                                // ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                "모집 중",
+                                style: TextStyle(
+                                  fontSize: 10.0,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Text(
+                      widget.contnet,
+                      style: const TextStyle(fontSize: 12.0, height: 2.0),
+                    ),
+                    // Text(
+                    //   "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
+                    //   style: const TextStyle(
+                    //     color: Color.fromARGB(255, 124, 123, 123),
+                    //     fontSize: 12.0,
+                    //     height: 2.8,
+                    //   ),
+                    // ),
+                    Text(
+                      "활동 장소: ${widget.actPlace}",
+                      style: const TextStyle(
+                          color: Color.fromARGB(255, 124, 123, 123),
+                          fontSize: 12.0,
+                          height: 2.8),
+                    ),
+                    // Text(
+                    //   "청소년 가능 여부: ${widget.teenager}",
+                    //   style: const TextStyle(
+                    //     color: Color.fromARGB(255, 124, 123, 123),
+                    //     fontSize: 12.0,
+                    //     height: 2.8
+                    //   ),
+                    // ),
+                    Container(
+                      height: 1,
+                      width: 400,
+                      color: const Color.fromARGB(255, 203, 203, 203),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          widget.host,
+                          style: const TextStyle(
                               color: Color.fromARGB(255, 124, 123, 123),
                               fontSize: 12.0,
-                              height: 2.8,
-                            ),
-                          ),
-                          Container(
-                            height: 1,
-                            width: 400,
-                            color: const Color.fromARGB(255, 203, 203, 203),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.host,
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 124, 123, 123),
-                                    fontSize: 12.0,
-                                    height: 2.5),
-                              ),
-                              Text(
-                                widget.locationStr,
-                                style: const TextStyle(
-                                    color: Color.fromARGB(255, 124, 123, 123),
-                                    fontSize: 12.0,
-                                    height: 2.5),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                              height: 2.5),
+                        ),
+                        Text(
+                          widget.locationStr,
+                          style: const TextStyle(
+                              color: Color.fromARGB(255, 124, 123, 123),
+                              fontSize: 12.0,
+                              height: 2.5),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

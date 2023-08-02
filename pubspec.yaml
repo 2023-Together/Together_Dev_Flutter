@@ -80,6 +80,9 @@ dependencies:
 
   # XML을 Json으로 변환시켜주는 라이브러리
   xml2json: ^6.1.0
+  
+  # 날짜 선택(생년월일) 라이브러리
+  bottom_picker: ^2.0.4
 
 dev_dependencies:
   flutter_test:

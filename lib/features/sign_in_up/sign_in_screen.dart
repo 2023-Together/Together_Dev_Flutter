@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
-import 'package:swag_cross_app/storages/login_storage.dart';
 
 class SignInScreen extends StatefulWidget {
   static const routeName = "login";
@@ -34,26 +29,27 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     super.initState();
 
-    _checkAutoLogined();
+    // _checkAutoLogined();
   }
 
-  void _checkAutoLogined() async {
-    final String? loginData = await LoginStorage.getLoginData();
-    print(loginData);
+  // void _checkAutoLogined() async {
+  //   final String? loginData = await LoginStorage.getLoginData();
+  //   print(loginData);
 
-    if (loginData == null) return;
-    if (loginData.trim().isNotEmpty) {
-      List<String> userData = loginData.split(",");
+  //   if (loginData == null) return;
+  //   if (loginData.trim().isNotEmpty) {
+  //     List<String> userData = loginData.split(",");
 
-      // final id = userData[0];
-      // final pw = userData[1];
+  //     // final id = userData[0];
+  //     // final pw = userData[1];
 
-      if (!mounted) return;
-      context.read<UserProvider>().login("naver");
+  //     if (!mounted) return;
+  //     context.read<UserProvider>().login("naver");
 
-      context.goNamed(MainNavigation.routeName);
-    }
-  }
+  //     context.read<MainNavigationProvider>().changeIndex(0);
+  //     context.goNamed(MainNavigation.routeName);
+  //   }
+  // }
 
   void _onChangeAllText(String? value) {
     if (value == null) return;
@@ -93,22 +89,6 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void _onSignInSubmitted() async {
-    if (_onSaveCheck) {
-      LoginStorage.saveLoginData(
-        id: _idController.text.trim(),
-        pw: _pwController.text.trim(),
-      );
-      context.read<UserProvider>().login("naver");
-
-      context.goNamed(MainNavigation.routeName);
-    } else {
-      context.read<UserProvider>().login("naver");
-
-      context.goNamed(MainNavigation.routeName);
-    }
-  }
-
   @override
   void dispose() {
     _idController.dispose();
@@ -125,9 +105,7 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          leading: BackButton(
-            onPressed: () => context.goNamed(MainNavigation.routeName),
-          ),
+          automaticallyImplyLeading: true,
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
@@ -143,67 +121,67 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "아이디",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "아이디를 입력해주세요.",
-                      maxLine: 1,
-                      controller: _idController,
-                      onChanged: _onChangeAllText,
-                    ),
-                    Gaps.v20,
-                    Text(
-                      "비밀번호",
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "비밀번호를 입력해주세요.",
-                      maxLine: 1,
-                      controller: _pwController,
-                      onChanged: _onChangeAllText,
-                      isPassword: true,
-                    ),
-                    Gaps.v20,
-                    Row(
-                      children: [
-                        Transform.scale(
-                          scale: 1.25,
-                          child: Checkbox.adaptive(
-                            shape: const CircleBorder(),
-                            value: _onSaveCheck,
-                            onChanged: _onChangeUserSaveCheck,
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => _onChangeUserSaveCheck(!_onSaveCheck),
-                          child: const Text("자동 로그인"),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.all(Sizes.size10),
-                      margin: const EdgeInsets.only(top: Sizes.size10),
-                      child: ElevatedButton(
-                        onPressed: _isEditFinished ? _onSignInSubmitted : null,
-                        child: const Padding(
-                          padding: EdgeInsets.symmetric(vertical: Sizes.size16),
-                          child: Text("로그인"),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              // Expanded(
+              //   flex: 3,
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Text(
+              //         "아이디",
+              //         style: Theme.of(context).textTheme.titleMedium,
+              //       ),
+              //       Gaps.v10,
+              //       SWAGTextField(
+              //         hintText: "아이디를 입력해주세요.",
+              //         maxLine: 1,
+              //         controller: _idController,
+              //         onChanged: _onChangeAllText,
+              //       ),
+              //       Gaps.v20,
+              //       Text(
+              //         "비밀번호",
+              //         style: Theme.of(context).textTheme.titleMedium,
+              //       ),
+              //       Gaps.v10,
+              //       SWAGTextField(
+              //         hintText: "비밀번호를 입력해주세요.",
+              //         maxLine: 1,
+              //         controller: _pwController,
+              //         onChanged: _onChangeAllText,
+              //         isPassword: true,
+              //       ),
+              //       Gaps.v20,
+              //       Row(
+              //         children: [
+              //           Transform.scale(
+              //             scale: 1.25,
+              //             child: Checkbox.adaptive(
+              //               shape: const CircleBorder(),
+              //               value: _onSaveCheck,
+              //               onChanged: _onChangeUserSaveCheck,
+              //             ),
+              //           ),
+              //           GestureDetector(
+              //             onTap: () => _onChangeUserSaveCheck(!_onSaveCheck),
+              //             child: const Text("자동 로그인"),
+              //           ),
+              //         ],
+              //       ),
+              //       Container(
+              //         width: MediaQuery.of(context).size.width,
+              //         padding: const EdgeInsets.all(Sizes.size10),
+              //         margin: const EdgeInsets.only(top: Sizes.size10),
+              //         child: ElevatedButton(
+              //           onPressed: _isEditFinished ? _onSignInSubmitted : null,
+              //           child: const Padding(
+              //             padding: EdgeInsets.symmetric(vertical: Sizes.size16),
+              //             child: Text("로그인"),
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               const Expanded(
                 flex: 1,
                 child: AuthButton(

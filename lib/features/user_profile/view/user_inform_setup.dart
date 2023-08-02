@@ -5,7 +5,8 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/providers/UserProvider.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
 class UserInformSetup extends StatelessWidget {
@@ -67,33 +68,28 @@ class UserInformSetup extends StatelessWidget {
                     size: Sizes.size24,
                   ),
                   onPressed: () {
-                    // context.pushNamed(
-                    //   UserInformUpdate.routeName,
-                    //   extra: UserInformArgs(
-                    //       userDid: userDid,
-                    //       userId: userId,
-                    //       userPw: userPw,
-                    //       userName: userName,
-                    //       userDef: userDef,
-                    //       userType: userType,
-                    //       birth: birth),
-                    // );
+                    
                   },
                 ),
               ),
             ),
             _title(title: "서비스"),
-            const Card(
+            Card(
               elevation: 0,
               child: ListTile(
-                title: Text(
-                  "앱 정보",
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const LicensePage(),
+                  ),
+                ),
+                title: const Text(
+                  "앱 정보(라이센스)",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,
                   ),
                 ),
-                trailing: Icon(
+                trailing: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
@@ -169,7 +165,7 @@ class UserInformSetup extends StatelessWidget {
               elevation: 0,
               child: ListTile(
                 title: const Text(
-                  "1:1 문의하기",
+                  "건의하기",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,

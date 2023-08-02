@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 
 class ClubSearchDetailScreenArgs {
   final int clubId;
   final String clubDef;
   final String clubName;
-  final String clubMaster;
+  final int clubMaster;
 
   ClubSearchDetailScreenArgs({
     required this.clubId,
@@ -33,7 +35,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
   final int clubId;
   final String clubDef;
   final String clubName;
-  final String clubMaster;
+  final int clubMaster;
 
   void _onSubmit(BuildContext context) {
     swagPlatformDialog(
@@ -46,10 +48,10 @@ class ClubSearchDetailScreen extends StatelessWidget {
           child: const Text("아니오"),
         ),
         TextButton(
-          onPressed: () => context.goNamed(
-            MainNavigation.routeName,
-            extra: MainNavigationArgs(initSelectedIndex: 2),
-          ),
+          onPressed: () {
+            context.read<MainNavigationProvider>().changeIndex(2);
+            context.goNamed(MainNavigation.routeName);
+          },
           child: const Text("예"),
         ),
       ],
@@ -102,6 +104,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                   _title(title: clubName),
                   Gaps.v10,
                   Container(
+                    width: MediaQuery.of(context).size.width,
                     height: 180,
                     decoration: const BoxDecoration(
                       border: Border.symmetric(
@@ -130,7 +133,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
-                              text: clubMaster,
+                              text: "$clubMaster",
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),

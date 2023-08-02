@@ -22,8 +22,10 @@ import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_check_userData_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_id_pw_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/change_user_pw.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -75,14 +77,21 @@ final router = GoRouter(
       name: LogoLoadingScreen.routeName,
       builder: (context, state) => const LogoLoadingScreen(),
     ),
+    // GoRoute(
+    //   name: MainNavigation.routeName,
+    //   path: MainNavigation.routeURL,
+    //   builder: (context, state) {
+    //     if (state.extra != null) {
+    //       final args = state.extra as MainNavigationArgs;
+    //       return MainNavigation(initSelectedIndex: args.initSelectedIndex);
+    //     }
+    //     return const MainNavigation();
+    //   },
+    // ),
     GoRoute(
       name: MainNavigation.routeName,
       path: MainNavigation.routeURL,
       builder: (context, state) {
-        if (state.extra != null) {
-          final args = state.extra as MainNavigationArgs;
-          return MainNavigation(initSelectedIndex: args.initSelectedIndex);
-        }
         return const MainNavigation();
       },
     ),
@@ -92,13 +101,7 @@ final router = GoRouter(
       builder: (context, state) {
         final args = state.extra as PostDetailScreenArgs;
         return PostDetailScreen(
-          postId: args.postId,
-          category: args.category,
-          title: args.title,
-          content: args.content,
-          images: args.images,
-          user: args.user,
-          date: args.date,
+          postData: args.postData,
           tabBarSelected: args.tabBarSelected,
         );
       },
@@ -111,13 +114,8 @@ final router = GoRouter(
         return PostEditScreen(
           pageTitle: args.pageTitle,
           editType: args.editType,
-          id: args.id,
-          category: args.category,
-          title: args.title,
-          content: args.content,
-          images: args.images,
-          isCategory: args.isCategory,
           maxImages: args.maxImages,
+          postData: args.postData,
         );
       },
     ),
@@ -267,8 +265,9 @@ final router = GoRouter(
           contnet: args.contnet,
           host: args.host,
           locationStr: args.locationStr,
-          startTime: args.startTime,
-          endTime: args.endTime,
+          actPlace: args.actPlace,
+          teenager: args.teenager,
+          listApiType: args.listApiType,
           tabBarSelected: args.tabBarSelected,
         );
       },
@@ -289,48 +288,72 @@ final router = GoRouter(
         );
       },
     ),
-    GoRoute(
-      path: UserInformUpdate.routeURL,
-      name: UserInformUpdate.routeName,
-      builder: (context, state) {
-        final args = state.extra as UserInformArgs;
-        return UserInformUpdate(
-          userDid: args.userDid,
-          userId: args.userId,
-          userPw: args.userPw,
-          userName: args.userName,
-          userDef: args.userDef,
-          userType: args.userType,
-          birth: args.birth,
-        );
-      },
-    ),
     // GoRoute(
-    //   name: UserInformSetup.routeName,
-    //   path: UserInformSetup.routeURL,
-    //   builder: (context, state) => const UserInformSetup(),
-    //   routes: [
-    //     GoRoute(
-    //       path: UserInformUpdate.routeURL,
-    //       name: UserInformUpdate.routeName,
-    //       builder: (context, state) {
-    //         final args = state.extra as UserInformArgs;
-    //         return UserInformUpdate(
-    //           userDid: args.userDid,
-    //           userId: args.userId,
-    //           userPw: args.userPw,
-    //           userName: args.userName,
-    //           userDef: args.userDef,
-    //           userType: args.userType,
-    //           birth: args.birth,
-    //         );
-    //       },
-    //     ),
-    //   ],
+    //   path: UserProfileScreen.routeURL,
+    //   name: UserProfileScreen.routeName,
+    //   builder: (context, state) {
+    //     final args = state.extra as UserProfileScreenArgs;
+    //     return UserProfileScreen(
+    //       userId1: args.userId1,
+    //     );
+    //   },
+    // ),
+    GoRoute(
+        path: UserInformUpdate.routeURL,
+        name: UserInformUpdate.routeName,
+        builder: (context, state) {
+          final args = state.extra as UserInformArgs;
+          return UserInformUpdate(
+            userId: args.userId,
+            userEmail: args.userEmail,
+            userPw: args.userPw,
+            userName: args.userName,
+            userNickName: args.userNickName,
+            userDef: args.userDef,
+            userGender: args.userGender,
+            userType: args.userType,
+            userBirthDate: args.userBirthDate,
+            userPhoneNumber: args.userPhoneNumber,
+          );
+        },
+        routes: [
+          GoRoute(
+            path: "userPw",
+            name: ChangeUserPw.routeName,
+            builder: (context, state) {
+              final args = state.extra as ChangeUserPwArgs;
+              return ChangeUserPw(
+                userPw: args.userPw,
+              );
+            },
+          ),
+        ]),
     GoRoute(
       name: UserInformSetup.routeName,
       path: UserInformSetup.routeURL,
       builder: (context, state) => const UserInformSetup(),
+      // routes: [
+      //   GoRoute(
+      //     path: UserInformUpdate.routeURL,
+      //     name: UserInformUpdate.routeName,
+      //     builder: (context, state) {
+      //       final args = state.extra as UserInformArgs;
+      //       return UserInformUpdate(
+      //         userId: args.userId,
+      //         userEmail: args.userEmail,
+      //         userPw: args.userPw,
+      //         userName: args.userName,
+      //         userNickName: args.userNickName,
+      //         userDef: args.userDef,
+      //         userGender: args.userGender,
+      //         userType: args.userType,
+      //         userSnS: args.userSnS,
+      //         userBirthDate: args.userBirthDate,
+      //         userPhoneNumber: args.userPhoneNumber,
+      //       );
+      //     },
+      //   ),
+      // ],
     ),
   ],
 );
