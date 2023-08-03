@@ -119,7 +119,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱

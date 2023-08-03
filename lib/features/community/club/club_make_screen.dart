@@ -46,7 +46,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       if (!mounted) return;
       context.read<MainNavigationProvider>().changeIndex(2);
       context.goNamed(MainNavigation.routeName);
