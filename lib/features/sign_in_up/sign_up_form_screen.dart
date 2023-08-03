@@ -7,6 +7,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
+import 'package:http/http.dart' as http;
+
 class SignUpFormScreen extends StatefulWidget {
   static const routeName = "sign_up";
   static const routeURL = "/sign_up";
@@ -24,6 +26,9 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
 
   bool _isEditFinished = false;
   bool _isAuthMobile = false;
+  bool _isAuthNickName = false;
+
+  String? _mobileAuthCode;
 
   String _gender = "";
   DateTime? _birthday = DateTime.now();
@@ -32,6 +37,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   String? _mobileError;
   String? _mobileHelper;
   String? _nickNameError;
+  String? _nickNameHelper;
 
   final List<String> _genderCategory = ["", "남", "여"];
 
@@ -48,8 +54,6 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
 
     if (!mounted) return;
     if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
-
       final userData = result.account;
       print(userData);
 
@@ -85,7 +89,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     }
   }
 
-  void _onSignUpSubmitted() {
+  void _onSignUpSubmitted() async {
     print(_nickNameController.text);
     print(_nameController.text);
     print(
@@ -93,29 +97,31 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     print(_gender);
     print(_mobileController.text);
     print(_email);
-    swagPlatformDialog(
-      context: context,
-      title: "주의!",
-      message: "이정보가 당신의 정보가 맞습니까?",
-      actions: [
-        TextButton(
-          onPressed: () => context.pop(),
-          child: const Text("아니오"),
-        ),
-        TextButton(
-          onPressed: () {
-            context.pop();
-            context.pop();
-          },
-          child: const Text("예"),
-        ),
-      ],
-    );
+
+    final url = Uri.parse("http://59.4.3.198:80/together/register");
+    final data = {
+      "userEmail": _email,
+      "user_phonenumber": _mobileController.text,
+      "userName": _nameController.text,
+      "userNickname": _nickNameController.text,
+      "userGender": _gender == "남" ? 1 : 2,
+      "userBirthdate": _birthday,
+      "userType": "user",
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (!mounted) return;
+      context.pop();
+      context.pop();
+    } else {
+      context.pop();
+    }
   }
 
   void _onChangeAllText() {
-    _isEditFinished = (_nickNameError == null &&
-            _nickNameController.text.trim().isNotEmpty) &&
+    _isEditFinished = (_isAuthNickName && _nickNameError == null) &&
         (_nameError == null && _nameController.text.trim().isNotEmpty) &&
         _gender.trim().isNotEmpty &&
         _birthday != null &&
@@ -124,7 +130,80 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     setState(() {});
   }
 
-  void _callMobileCheckCode() {}
+  Future<void> _onCheckNickName() async {
+    // final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
+    // final data = {
+    //   "user_nickname": _nickNameController.text,
+    // };
+
+    // final response = await http.post(url, body: data);
+
+    // if (response.statusCode >= 200 && response.statusCode < 300) {
+    //   if (response.body == 0) {
+
+    //     setState(() {
+    //       _isAuthNickName = true;
+    //       _nickNameHelper = "인증이 완료되었습니다!";
+    //       _onChangeAllText();
+    //     });
+    //   } else {
+    //     _nickNameError = "인증에 실패했습니다. 다시 시도해 주세요!";
+    //   }
+    // } else {
+    //   _nickNameError = "통신 실패!";
+    // }
+
+    setState(() {
+      _isAuthNickName = true;
+      _nickNameHelper = "인증이 완료되었습니다!";
+      _onChangeAllText();
+    });
+  }
+
+  Future<void> _callMobileCheckCode() async {
+    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final data = {
+      "user_phonenumber": _mobileController.text,
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      _mobileAuthCode = response.body;
+    } else {
+      _mobileError = "통신 실패!";
+    }
+  }
+
+  Future<void> _callAuthMobile() async {
+    // final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
+    // final data = {
+    //   "sendNum": _mobileCheckController.text,
+    //   "getNum": _mobileAuthCode,
+    // };
+
+    // final response = await http.post(url, body: data);
+
+    // if (response.statusCode >= 200 && response.statusCode < 300) {
+    //   if (response.body == 0) {
+    //     setState(() {
+    //       _isAuthMobile = true;
+    //       _mobileHelper = "인증이 완료되었습니다!";
+    //       _onChangeAllText();
+    //     });
+    //   } else {
+    //     _mobileError = "인증에 실패했습니다. 다시 시도해 주세요!";
+    //   }
+    // } else {
+    //   _mobileError = "통신 실패!";
+    // }
+
+    setState(() {
+      _isAuthMobile = true;
+      _mobileHelper = "인증이 완료되었습니다!";
+      _onChangeAllText();
+    });
+  }
 
   bool _onChangeMobile(String? value) {
     if (value == null) return false;
@@ -132,17 +211,23 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     RegExp mobileRegex = RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$');
     if (value.isEmpty) {
       setState(() {
+        _isAuthMobile = false;
+        _mobileHelper = null;
         _mobileError = '전화번호를 입력해 주세요!';
       });
       return false;
     } else if (!mobileRegex.hasMatch(value)) {
       setState(() {
+        _isAuthMobile = false;
+        _mobileHelper = null;
         _mobileError = '전화번호 양식에 맞게 입력해주세요.';
       });
       return false;
     }
     setState(() {
+      _mobileHelper = null;
       _mobileError = null;
+      _isAuthMobile = false;
       _onChangeAllText();
     });
 
@@ -180,37 +265,31 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
         r"^(?!^\d)(?=^.{3,20}$)[a-zA-Z0-9_-\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3]+$");
     if (value.isEmpty) {
       setState(() {
+        _isAuthNickName = false;
         _nickNameError = '닉네임을 입력해주세요!';
       });
       return false;
     } else if (!(_nickNameController.text.length > 3 &&
         _nickNameController.text.length <= 20)) {
       setState(() {
+        _isAuthNickName = false;
         _nickNameError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
       });
       return false;
     } else if (!nickNameRegex.hasMatch(value)) {
       setState(() {
+        _isAuthNickName = false;
         _nickNameError = '유효하지 않은 닉네임입니다!';
       });
       return false;
     }
     setState(() {
+      _nickNameHelper = null;
       _nickNameError = null;
+      _isAuthNickName = false;
       _onChangeAllText();
     });
     return true;
-  }
-
-  void _callAuthMobile() {
-    if (_mobileError == null) {
-      setState(() {
-        _isAuthMobile = true;
-        _mobileError = null;
-        _mobileHelper = "인증이 완료되었습니다!";
-        _onChangeAllText();
-      });
-    }
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -338,6 +417,8 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
                   onChanged: _onChangeNickName,
                   buttonText: "중복확인",
                   errorText: _nickNameError,
+                  onSubmitted: _onCheckNickName,
+                  helperText: _nickNameHelper,
                 ),
                 Gaps.v10,
                 Text(
@@ -426,8 +507,13 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
                 Gaps.v20,
+                Text(
+                  "전화번호",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
                 SWAGTextField(
-                  hintText: "전화번호",
+                  hintText: "'-'없이 입력해주세요.",
                   maxLine: 1,
                   controller: _mobileController,
                   errorText: _mobileError,
@@ -435,7 +521,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
                   buttonText: "인증번호 요청",
                   onSubmitted: _callMobileCheckCode,
                   onChanged: _onChangeMobile,
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
                 ),
                 Gaps.v10,
                 SWAGTextField(

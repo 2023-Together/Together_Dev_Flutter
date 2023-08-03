@@ -121,7 +121,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
