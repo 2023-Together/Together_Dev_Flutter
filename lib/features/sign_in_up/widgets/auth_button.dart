@@ -75,12 +75,11 @@ class _AuthButtonState extends State<AuthButton> {
     //   final userData = result.account;
     //   print(userData);
 
-    //   final url = Uri.parse("http://218.157.74.17:80/together/login");
-    //   final headers = {'Content-Type': 'application/json'};
+    //   final url = Uri.parse("http://59.4.3.198:80/together/login");
+    //   // final headers = {'Content-Type': 'application/json'};
     //   final data = {"user_email": userData.email};
 
-    //   final response =
-    //       await http.post(url, headers: headers, body: jsonEncode(data));
+    //   final response = await http.post(url, body: data);
 
     //   if (response.statusCode == 200 || response.statusCode == 201) {
     //     final jsonResponse = jsonDecode(response.body);

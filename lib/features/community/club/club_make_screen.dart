@@ -1,7 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 
 class ClubMakeScreen extends StatefulWidget {
   static const routeName = "club_edit";
@@ -13,41 +21,56 @@ class ClubMakeScreen extends StatefulWidget {
 }
 
 class _ClubMakeScreenState extends State<ClubMakeScreen> {
-  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
   bool _isThereSearchValue = false;
-  bool _isRequest = false;
-  bool _clubApply = false;
+  // bool _clubApply = true;
 
   void _textOnChange(String? value) {
     setState(() {
-      _isThereSearchValue = _titleController.text.trim().isNotEmpty &&
+      _isThereSearchValue = _nameController.text.trim().isNotEmpty &&
           _contentController.text.trim().isNotEmpty;
     });
   }
 
   Future<void> _onSubmitFinishButton() async {
-    print("제목 : ${_titleController.text}");
-    print("내용 : ${_contentController.text}");
+    final url = Uri.parse("http://58.150.133.91:80/together/club/createClub");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "clubLeaderId": "1",
+      "clubName": _nameController.text,
+      "clubDescription": _contentController.text,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (!mounted) return;
+      context.read<MainNavigationProvider>().changeIndex(2);
+      context.goNamed(MainNavigation.routeName);
+    } else {
+      if (!mounted) return;
+      swagPlatformDialog(
+        context: context,
+        title: "오류",
+        message: "동아리 생성에 오류가 발생하였습니다!",
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
+    }
   }
 
-  void _onChangeCheckBox(bool? value) {
-    if (value == null) return;
-    setState(() {
-      _isRequest = value;
-    });
-  }
-
-  void _onTapCheckBoxText() {
-    setState(() {
-      _isRequest = !_isRequest;
-    });
-  }
+  void _checkClubName() {}
 
   @override
   void dispose() {
-    _titleController.dispose();
+    _nameController.dispose();
     _contentController.dispose();
 
     super.dispose();
@@ -91,11 +114,10 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
               SWAGTextField(
                 hintText: "동아리 이름을 입력해주세요.",
                 maxLine: 1,
-                controller: _titleController,
-                onSubmitted: () {
-                  print(_titleController.text);
-                },
+                controller: _nameController,
                 onChanged: _textOnChange,
+                buttonText: "중복확인",
+                onSubmitted: _checkClubName,
               ),
               Gaps.v40,
               Text(
@@ -112,19 +134,19 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
                 },
                 onChanged: _textOnChange,
               ),
-              Gaps.v20,
-              SwitchListTile.adaptive(
-                tileColor: Colors.white,
-                value: _clubApply,
-                onChanged: (value) => setState(() {
-                  _clubApply = !_clubApply;
-                }),
-                title: const Text("동아리 신청 받기 여부"),
-                subtitle: const Text(
-                  "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
-                  maxLines: 2,
-                ),
-              ),
+              // Gaps.v20,
+              // SwitchListTile.adaptive(
+              //   tileColor: Colors.white,
+              //   value: _clubApply,
+              //   onChanged: (value) => setState(() {
+              //     _clubApply = !_clubApply;
+              //   }),
+              //   title: const Text("동아리 신청 받기 여부"),
+              //   subtitle: const Text(
+              //     "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
+              //     maxLines: 2,
+              //   ),
+              // ),
             ],
           ),
         ),
