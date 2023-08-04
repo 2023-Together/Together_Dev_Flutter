@@ -73,7 +73,8 @@ class UserInformUpdate extends StatefulWidget {
 class _UserInformUpdateState extends State<UserInformUpdate> {
   String _newUserName = '';
   String _newUserDef = '';
-  String _newUserBirthDate = '';
+  DateTime? _newUserBirthDate = DateTime.now();
+
   String _newUserType = '';
   String _newUserEmail = '';
   String _newUserPw = '';
@@ -81,11 +82,12 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   String _newUserGender = '';
   String _newUserPhoneNumber = '';
 
-  DateTime? _selectedDate;
 
   String? _mobileError;
   String? _mobileHelper;
   String? _nickNameError;
+  String? _nickNameHelper;
+
 
   final TextEditingController _emailController =
       TextEditingController(text: userDatas[0]['userEmail']);
@@ -111,6 +113,8 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
 
   bool _isEditFinished = false;
   bool _isAuthMobile = false;
+    bool _isAuthNickName = false;
+
 
   // void _updateUserInfo() {
   //   Navigator.pop(context);
@@ -130,21 +134,71 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   void _onChangeAllText() {
     _isEditFinished = _newUserName.trim().isNotEmpty &&
         _newUserGender.trim().isNotEmpty &&
-        _newUserBirthDate.trim().isNotEmpty &&
         _newUserEmail.trim().isNotEmpty &&
         (_mobileError == null && _mobileController.text.trim().isNotEmpty);
     setState(() {});
   }
 
-  void _callAuthMobile() {
-    if (_mobileError == null) {
-      setState(() {
-        _isAuthMobile = true;
-        _mobileError = null;
-        _mobileHelper = "인증이 완료되었습니다!";
-        _onChangeAllText();
-      });
+  Future<void> _onCheckNickName() async {
+    final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
+    final data = {
+      "userNickname": _userNickNameController.text,
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          _isAuthNickName = true;
+          _nickNameHelper = "인증이 완료되었습니다!";
+          _onChangeAllText();
+        });
+      } else {
+        setState(() {
+          _nickNameError = "중복된 닉네임이 존재합니다!";
+        });
+      }
+    } else {
+      _nickNameError = "통신 실패!";
+      print(response.statusCode);
+      print(response.body);
     }
+  }
+
+  bool _onChangeNickName(String? value) {
+    if (value == null) return false;
+    // 닉네임 정규식 패턴
+    RegExp nickNameRegex = RegExp(
+        r"^(?!^\d)(?=^.{3,20}$)[a-zA-Z0-9_-\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3]+$");
+    if (value.isEmpty) {
+      setState(() {
+        _isAuthNickName = false;
+        _nickNameError = '닉네임을 입력해주세요!';
+      });
+      return false;
+    } else if (!(_userNickNameController.text.length > 3 &&
+        _userNickNameController.text.length <= 20)) {
+      setState(() {
+        _isAuthNickName = false;
+        _nickNameError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
+      });
+      return false;
+    } else if (!nickNameRegex.hasMatch(value)) {
+      setState(() {
+        _isAuthNickName = false;
+        _nickNameError = '유효하지 않은 닉네임입니다!';
+      });
+      return false;
+    }
+    setState(() {
+      _nickNameHelper = null;
+      _nickNameError = null;
+      _isAuthNickName = false;
+      _onChangeAllText();
+    });
+    return true;
   }
 
   @override
@@ -154,56 +208,47 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     super.dispose();
   }
 
-  
-
-  
-
   @override
   void initState() {
     super.initState();
   }
 
-  void _openDatePicker(BuildContext context) {
-    BottomPicker.date(
-      title: "생년월일을 입력해주세요.",
-      dateOrder: DatePickerDateOrder.ymd,
-      pickerTextStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 14,
-      ),
-      titleStyle: const TextStyle(
-        color: Colors.black,
-        fontSize: 15.0,
-      ),
-      onSubmit: (value) {
-        setState(() {
-          _selectedDate = value;
-        });
-      },
-      bottomPickerTheme: BottomPickerTheme.plumPlate,
-    ).show(context);
-  }
+  // void _openDatePicker(BuildContext context) {
+  //   BottomPicker.date(
+  //     title: "생년월일을 입력해주세요.",
+  //     dateOrder: DatePickerDateOrder.ymd,
+  //     pickerTextStyle: const TextStyle(
+  //       color: Colors.black,
+  //       fontSize: 14,
+  //     ),
+  //     titleStyle: const TextStyle(
+  //       color: Colors.black,
+  //       fontSize: 15.0,
+  //     ),
+  //     onSubmit: (value) {
+  //       setState(() {
+  //         _selectedDate = value;
+  //       });
+  //     },
+  //     bottomPickerTheme: BottomPickerTheme.plumPlate,
+  //   ).show(context);
+  // }
 
-  bool _onChangeNickName(String? value) {
-    if (value == null) return false;
-    // 비밀번호 정규식 패턴
-    RegExp nickNameRegex = RegExp('[^a-zA-Z0-9\\s]');
-    if (value.isEmpty) {
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null && picked != _newUserBirthDate) {
       setState(() {
-        _nickNameError = '닉네임을 입력해주세요!';
+        _newUserBirthDate = picked;
       });
-      return false;
-    } else if (!nickNameRegex.hasMatch(value)) {
-      setState(() {
-        _nickNameError = '특수문자는 입력할수 없습니다!';
-      });
-      return false;
+      print(
+          '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}');
     }
-    setState(() {
-      _nickNameError = null;
-      _onChangeAllText();
-    });
-    return true;
   }
 
   // // 유저 정보를 수정하는 통신
@@ -342,11 +387,14 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
                 Gaps.v12,
                 _title(title: "닉네임(SNS)"),
                 SWAGTextField(
-                  hintText: "SNS에서 사용할 닉네임을 입력해주세요.",
+                  hintText: "SNS에서 사용할 닉네임",
                   maxLine: 1,
                   controller: _userNickNameController,
                   onChanged: _onChangeNickName,
                   buttonText: "중복확인",
+                  errorText: _nickNameError,
+                  onSubmitted: _onCheckNickName,
+                  helperText: _nickNameHelper,
                 ),
                 //  _title(title: "비밀번호"),
                 // SWAGTextField(
@@ -403,18 +451,35 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
                 ),
                 Gaps.v12,
                 _title(title: "생년월일"),
-                SWAGTextField(
-                  hintText: "생년월일을 선택하세요",
-                  maxLine: 1,
-                  controller: _userBirthDateController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserBirthDate = value!;
-                    });
+                InkWell(
+                  onTap: () {
+                    _selectDate(context);
                   },
-                  onSubmitted: () {
-                    _openDatePicker(context);
-                  },
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      hintText: 'YYYY-MM-DD',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: const BorderSide(
+                          width: 1,
+                          color: Color(0xFFDBDBDB),
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 14,
+                      ),
+                    ),
+                    child: Text(
+                      _newUserBirthDate != null
+                          ? '${_newUserBirthDate!.year}-${_newUserBirthDate!.month.toString().padLeft(2, '0')}-${_newUserBirthDate!.day.toString().padLeft(2, '0')}'
+                          : '선택하지 않음',
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
                 ),
                 Gaps.v12,
                 _title(title: "전화번호"),
@@ -429,11 +494,11 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
                   },
                   onSubmitted: () {
                     context.pushNamed(
-                          ChangePhoneNum.routeName,
-                          extra: ChangePhoneNumArgs(
-                            userPhoneNumber: _newUserPhoneNumber,
-                          ),
-                        );
+                      ChangePhoneNum.routeName,
+                      extra: ChangePhoneNumArgs(
+                        userPhoneNumber: _newUserPhoneNumber,
+                      ),
+                    );
                   },
                 ),
                 Gaps.v12,

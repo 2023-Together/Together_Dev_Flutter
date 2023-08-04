@@ -25,8 +25,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   final TextEditingController _contentController = TextEditingController();
 
   bool _isThereSearchValue = false;
-  bool _isRequest = false;
-  bool _clubApply = false;
+  // bool _clubApply = true;
 
   void _textOnChange(String? value) {
     setState(() {
@@ -36,15 +35,35 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   }
 
   Future<void> _onSubmitFinishButton() async {
-    print("제목 : ${_titleController.text}");
-    print("내용 : ${_contentController.text}");
-  }
+    final url = Uri.parse("http://58.150.133.91:80/together/club/createClub");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "clubLeaderId": "1",
+      "clubName": _nameController.text,
+      "clubDescription": _contentController.text,
+    };
 
-  void _onChangeCheckBox(bool? value) {
-    if (value == null) return;
-    setState(() {
-      _isRequest = value;
-    });
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      if (!mounted) return;
+      context.read<MainNavigationProvider>().changeIndex(2);
+      context.goNamed(MainNavigation.routeName);
+    } else {
+      if (!mounted) return;
+      swagPlatformDialog(
+        context: context,
+        title: "오류",
+        message: "동아리 생성에 오류가 발생하였습니다!",
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
+    }
   }
 
   void _checkClubName() {}

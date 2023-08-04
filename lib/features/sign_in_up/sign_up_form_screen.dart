@@ -38,6 +38,11 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   String? _nameError;
   String? _mobileError;
   String? _mobileHelper;
+  String? _mobileCheckError;
+  String? _nickNameError;
+  String? _nickNameHelper;
+
+  final List<String> _genderCategory = ["", "남", "여"];
 
   @override
   void initState() {
@@ -87,40 +92,13 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     }
   }
 
-  void _onDataCheckSubmitted() {
-    swagPlatformDialog(
-      context: context,
-      title: "주의!",
-      message:
-          "이후에 개인정보를 수정하려면 NAVER에서 정보를 수정하고 다시 요청해야 합니다!\n이정보가 당신의 정보가 맞습니까?",
-      actions: [
-        TextButton(
-          onPressed: () => context.pop(),
-          child: const Text("아니오"),
-        ),
-        TextButton(
-          onPressed: () => context.pushNamed(
-            SignUpIdPwScreen.routeName,
-            extra: SignUpIdPwScreenArgs(
-              name: _name,
-              email: _email,
-              gender: _gender,
-              birthday: _birthday,
-              mobile: _mobileController.text,
-            ),
-          ),
-          child: const Text("예"),
-        ),
-      ],
-    );
-  }
-
   void _onChangeAllText() {
-    _isEditFinished = _name.trim().isNotEmpty &&
-        _gender.trim().isNotEmpty &&
-        _birthday.trim().isNotEmpty &&
-        _email.trim().isNotEmpty &&
-        (_mobileError == null && _mobileController.text.trim().isNotEmpty);
+    _isEditFinished =
+        (_nameError == null && _nameController.text.trim().isNotEmpty) &&
+            _gender.trim().isNotEmpty &&
+            _birthday != null &&
+            _email.trim().isNotEmpty &&
+            _isAuthMobile;
     setState(() {});
   }
 
@@ -257,7 +235,9 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     RegExp mobileRegex = RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$');
     if (value.isEmpty) {
       setState(() {
-        _mobileError = '전화번호는 필수입니다!';
+        _isAuthMobile = false;
+        _mobileHelper = null;
+        _mobileError = '전화번호를 입력해 주세요!';
       });
       return false;
     } else if (!mobileRegex.hasMatch(value)) {
@@ -299,59 +279,6 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
       _onChangeAllText();
     });
 
-    return true;
-  }
-
-  bool _onChangeName(String? value) {
-    if (value == null) return false;
-    // 비밀번호 정규식 패턴
-    RegExp nameRegex = RegExp(
-        r'^[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3a-zA-Z]+$');
-    if (value.isEmpty) {
-      setState(() {
-        _nameError = '실명을 입력해 주세요!';
-      });
-      return false;
-    } else if (!nameRegex.hasMatch(value)) {
-      setState(() {
-        _nameError = '이름양식에 맞지 않습니다!';
-      });
-      return false;
-    }
-    setState(() {
-      _nameError = null;
-      _onChangeAllText();
-    });
-
-    return true;
-  }
-
-  bool _onChangeNickName(String? value) {
-    if (value == null) return false;
-    // 닉네임 정규식 패턴
-    RegExp nickNameRegex = RegExp(
-        r"^(?!^\d)(?=^.{3,20}$)[a-zA-Z0-9_-\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3]+$");
-    if (value.isEmpty) {
-      setState(() {
-        _nickNameError = '닉네임을 입력해주세요!';
-      });
-      return false;
-    } else if (!(_nickNameController.text.length > 3 &&
-        _nickNameController.text.length <= 20)) {
-      setState(() {
-        _nickNameError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
-      });
-      return false;
-    } else if (!nickNameRegex.hasMatch(value)) {
-      setState(() {
-        _nickNameError = '유효하지 않은 닉네임입니다!';
-      });
-      return false;
-    }
-    setState(() {
-      _nickNameError = null;
-      _onChangeAllText();
-    });
     return true;
   }
 
@@ -406,6 +333,13 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     }
   }
 
+  void _onChangeGender(String value) {
+    setState(() {
+      _gender = value;
+      _onChangeAllText();
+    });
+  }
+
   @override
   void dispose() {
     _mobileController.dispose();
@@ -431,8 +365,9 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
             horizontal: Sizes.size10,
           ),
           child: ElevatedButton(
-            onPressed:
-                _isEditFinished && _isAuthMobile ? _onDataCheckSubmitted : null,
+            onPressed: _isEditFinished && _isAuthMobile && _isAuthNickName
+                ? _onSignUpSubmitted
+                : null,
             child: const Padding(
               padding: EdgeInsets.symmetric(
                 vertical: Sizes.size16,
@@ -441,105 +376,204 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Gaps.v20,
-              UserDataBox(
-                name: "이름",
-                data: _name,
-              ),
-              UserDataBox(
-                name: "성별",
-                data: _gender,
-              ),
-              UserDataBox(
-                name: "생년월일",
-                data: _birthday,
-              ),
-              UserDataBox(
-                name: "이메일",
-                data: _email,
-              ),
-              Gaps.v10,
-              Text(
-                "주의사항 : 현재의 데이터 중에서 틀린 부분이 있으면 네이버계정 정보를 수정후 다시 회원가입을 시도하시기 바랍니다!",
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-              Gaps.v20,
-              GestureDetector(
-                onTap: _callNaverProfile,
-                child: FractionallySizedBox(
-                  widthFactor: 1,
-                  child: Column(
-                    children: [
-                      Container(
-                        height: Sizes.size64,
-                        // Container 안에 있는 padding의 타입은 EdgeInsets 이다.
-                        padding: const EdgeInsets.all(Sizes.size14),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey.shade300,
-                            width: Sizes.size1,
+        body: Scrollbar(
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Gaps.v20,
+                GestureDetector(
+                  onTap: _callNaverProfile,
+                  child: FractionallySizedBox(
+                    widthFactor: 1,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: Sizes.size64,
+                          // Container 안에 있는 padding의 타입은 EdgeInsets 이다.
+                          padding: const EdgeInsets.all(Sizes.size14),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 1,
+                            ),
+                          ),
+                          // Column : 위젯을 세로로 차례대로 배치
+                          // Row : 위젯을 가로로 차례대로 배치
+                          // Stack : 위젯을 위에다가 겹쳐서 배치(레이어 같은 개념)
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Image.asset(
+                                  'assets/images/naver.png',
+                                  width: Sizes.size40,
+                                ),
+                              ),
+                              const Text(
+                                "네이버정보 가져오기",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: Sizes.size18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        // Column : 위젯을 세로로 차례대로 배치
-                        // Row : 위젯을 가로로 차례대로 배치
-                        // Stack : 위젯을 위에다가 겹쳐서 배치(레이어 같은 개념)
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Image.asset(
-                                'assets/images/naver.png',
-                                width: Sizes.size40,
-                              ),
-                            ),
-                            const Text(
-                              "네이버정보 가져오기",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: Sizes.size18,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Gaps.v28,
-              SWAGTextField(
-                hintText: "전화번호",
-                maxLine: 1,
-                controller: _mobileController,
-                errorText: _mobileError,
-                helperText: _mobileHelper,
-                buttonText: "인증번호 요청",
-                onSubmitted: _callMobileCheckCode,
-                onChanged: _onChangeMobile,
-                keyboardType: TextInputType.phone,
-              ),
-              Gaps.v10,
-              SWAGTextField(
-                hintText: "인증번호",
-                maxLine: 1,
-                controller: _mobileCheckController,
-                buttonText: "인증하기",
-                onSubmitted: _callAuthMobile,
-                keyboardType: TextInputType.number,
-              ),
-              Gaps.v10,
-              Text(
-                "주의사항 : 하나의 핸드폰 번호를 여러개의 계정에 중복으로 등록할 수 없습니다!",
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
+                Gaps.v20,
+                Text(
+                  "닉네임(SNS)",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
+                SWAGTextField(
+                  hintText: "SNS에서 사용할 닉네임",
+                  maxLine: 1,
+                  controller: _nickNameController,
+                  onChanged: _onChangeNickName,
+                  buttonText: "중복확인",
+                  errorText: _nickNameError,
+                  onSubmitted: _onCheckNickName,
+                  helperText: _nickNameHelper,
+                ),
+                Gaps.v10,
+                Text(
+                  "이름(실명)",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
+                SWAGTextField(
+                  hintText: "봉사 신청 기능에 사용될 실명",
+                  maxLine: 1,
+                  controller: _nameController,
+                  errorText: _nameError,
+                  onChanged: _onChangeName,
+                ),
+                Gaps.v10,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "생년월일",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    Gaps.h10,
+                    Expanded(
+                      flex: 3,
+                      child: InkWell(
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            hintText: 'YYYY-MM-DD',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Color(0xFFDBDBDB),
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 14,
+                            ),
+                          ),
+                          child: Text(
+                            _birthday != null
+                                ? '${_birthday!.year}-${_birthday!.month.toString().padLeft(2, '0')}-${_birthday!.day.toString().padLeft(2, '0')}'
+                                : '선택하지 않음',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Gaps.v20,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "성별",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    Gaps.h10,
+                    Expanded(
+                      flex: 3,
+                      child: SWAGStateDropDownButton(
+                        initOption: _gender,
+                        onChangeOption: _onChangeGender,
+                        title: "성별",
+                        options: _genderCategory,
+                      ),
+                    ),
+                  ],
+                ),
+                Gaps.v6,
+                Text(
+                  "＃ 봉사를 신청했을때 해당 개인 정보로 기관에 데이터가 전달되기 때문에 꼭 본인의 정보를 정확하게 기입하셔야 합니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Gaps.v20,
+                Text(
+                  "전화번호",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
+                SWAGTextField(
+                  hintText: "'-'없이 입력해주세요.",
+                  maxLine: 1,
+                  controller: _mobileController,
+                  errorText: _mobileError,
+                  helperText: _mobileHelper,
+                  buttonText: "인증번호 요청",
+                  onSubmitted: _callMobileCheckCode,
+                  onChanged: _onChangeMobile,
+                  keyboardType: TextInputType.number,
+                ),
+                Gaps.v10,
+                SWAGTextField(
+                  hintText: "인증번호",
+                  maxLine: 1,
+                  controller: _mobileCheckController,
+                  buttonText: "인증하기",
+                  onSubmitted: _callAuthMobile,
+                  keyboardType: TextInputType.number,
+                  errorText: _mobileCheckError,
+                ),
+                Gaps.v10,
+                Text(
+                  "＃ 하나의 핸드폰 번호를 여러개의 계정에 중복으로 등록할 수 없습니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Gaps.v10,
+                UserDataBox(
+                  name: "이메일",
+                  data: _email,
+                  hint: "네이버에서 정보를 가져와주세요!",
+                ),
+                Text(
+                  "＃ 이메일을 통해 SNS 로그인이 진행되어 임의로 변경을 할 수 없습니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
           ),
         ),
       ),
