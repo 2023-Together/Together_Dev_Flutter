@@ -31,6 +31,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations: # 다국어 패키지
+    sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -83,6 +85,9 @@ dependencies:
   
   # 날짜 선택(생년월일) 라이브러리
   bottom_picker: ^2.0.4
+  
+  # 한국어 적용 라이브러리
+  flutter_localization: ^0.1.13
 
 dev_dependencies:
   flutter_test:
@@ -104,6 +109,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  generate: true
 
   # To add assets to your application, add an assets section, like this:
   assets:

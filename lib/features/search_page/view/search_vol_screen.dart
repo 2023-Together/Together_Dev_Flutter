@@ -424,7 +424,7 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                               .toString()
                               .toLowerCase()
                               .contains(searchText.toLowerCase())) {
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       }
 
                       // 검색어가 없을 경우, 모든 항목 표시

@@ -12,7 +12,6 @@ class NavTab extends StatelessWidget {
     required this.selectedIcon,
     required this.onTap,
     required this.selectedIndex,
-    required this.imgURI,
     required this.isLogined,
   });
 
@@ -22,7 +21,6 @@ class NavTab extends StatelessWidget {
   final IconData selectedIcon;
   final Function onTap;
   final int selectedIndex;
-  final String imgURI;
   final bool isLogined;
 
   @override
@@ -49,28 +47,15 @@ class NavTab extends StatelessWidget {
               // 사이즈 조절
               mainAxisSize: MainAxisSize.min,
               children: [
-                imgURI.isEmpty
-                    ? FaIcon(
-                        isSelected ? selectedIcon : unSelectedIcon,
-                        size: 28,
-                      )
-                    : isLogined
-                        ? CircleAvatar(
-                            radius: Sizes.size12,
-                            foregroundImage: NetworkImage(
-                              imgURI,
-                            ),
-                            child: const Text("재현"),
-                          )
-                        : const FaIcon(
-                            FontAwesomeIcons.circleUser,
-                            size: 26,
-                          ),
+                FaIcon(
+                  isSelected ? selectedIcon : unSelectedIcon,
+                  size: 28,
+                ),
                 Gaps.v5,
                 Text(
                   text,
                   style: const TextStyle(
-                    fontSize: Sizes.size12,
+                    fontSize: 13,
                   ),
                 ),
               ],
