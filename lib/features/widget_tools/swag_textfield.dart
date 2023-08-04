@@ -43,6 +43,12 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
           flex: 4,
           child: TextField(
             focusNode: widget.focusNode,
+            onSubmitted: (value) {
+              if (widget.onSubmitted != null) {
+                widget.onSubmitted!();
+              }
+            },
+            // onChanged: widget.onChanged,
             onChanged: (value) {
               if (widget.onChanged != null) {
                 widget.onChanged!(value);

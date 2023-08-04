@@ -8,6 +8,7 @@ import 'package:swag_cross_app/providers/current_post_provider.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   await initializeDateFormatting(); // 달력 언어 한국어 쓰기 위함 local 설정
@@ -35,15 +36,23 @@ class SWAGCrossApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent, // 투명색
-        systemNavigationBarColor: Colors.grey.shade200,
+        systemNavigationBarColor: Colors.transparent,
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
     return MaterialApp.router(
       routerConfig: router,
       title: 'Swag Cross App',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko', 'KR'), // 한국어
+        Locale('en', 'US'), // 영어
+      ],
       theme: ThemeData(
         // 모든 하위 Scaffold에 배경색을 지정해 준다.
         scaffoldBackgroundColor: Colors.white,
