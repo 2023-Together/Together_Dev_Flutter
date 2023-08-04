@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -16,9 +18,12 @@ class VolPostCard extends StatefulWidget {
   final String host;
   // 봉사활동 위치
   final String locationStr;
-  // 봉사활동 모집 마감일
-  final String startTime;
-  final String endTime;
+  // 봉사 활동 장소
+  final String actPlace;
+  // 청소년 가능 여부
+  final String teenager;
+  // api type
+  final String listApiType;
 
   const VolPostCard({
     super.key,
@@ -28,8 +33,9 @@ class VolPostCard extends StatefulWidget {
     required this.contnet,
     required this.host,
     required this.locationStr,
-    required this.startTime,
-    required this.endTime,
+    required this.actPlace,
+    required this.teenager,
+    required this.listApiType,
   });
 
   @override
@@ -65,6 +71,7 @@ class _VolPostCardState extends State<VolPostCard> {
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
         width: constraints.maxWidth,
+        height: 150,
         decoration: const BoxDecoration(
           color: Colors.white,
         ),
@@ -101,8 +108,9 @@ class _VolPostCardState extends State<VolPostCard> {
                   contnet: widget.contnet,
                   host: widget.host,
                   locationStr: widget.locationStr,
-                  startTime: widget.startTime,
-                  endTime: widget.endTime,
+                  actPlace: widget.actPlace,
+                  teenager: widget.teenager,
+                  listApiType: widget.listApiType,
                   tabBarSelected: 0,
                 ),
               );
@@ -110,7 +118,7 @@ class _VolPostCardState extends State<VolPostCard> {
           },
           child: Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               children: [
                 Column(
@@ -122,31 +130,104 @@ class _VolPostCardState extends State<VolPostCard> {
                         Text(
                           widget.title,
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14.0,
-                          ),
+                              fontWeight: FontWeight.bold, fontSize: 14.0),
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 7,
-                            vertical: 3,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.purple.shade300,
-                            // border: Border.all(
-                            //   width: 1,
-                            // ),
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
+                        Row(
+                          children: [
+                            if (widget.teenager.isNotEmpty)
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.black,
+                                  ),
+                                  color: Colors.white,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.teenager,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            else
+                              SizedBox(
+                                width: 0,
+                                height: 0,
+                              ),
+                              Gaps.h8,
+                            if (widget.listApiType == '1365')
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.yellow,
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.listApiType,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              )
+                            else if (widget.listApiType == 'vms')
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 7,
+                                  vertical: 3,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 59, 88, 255),
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                child: Text(
+                                  widget.listApiType,
+                                  style: TextStyle(
+                                    fontSize: 10.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            if (widget.listApiType != '1365' &&
+                                widget.listApiType != 'vms')
+                              SizedBox(width: 0, height: 0),
+                            Gaps.h8,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 7, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: Colors.purple.shade300,
+                                // border: Border.all(
+                                //   width: 1,
+                                // ),
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                              ),
+                              child: const Text(
+                                "모집 중",
+                                style: TextStyle(
+                                  fontSize: 10.0,
+                                  color: Colors.white,
+                                ),
+                              ),
                             ),
-                          ),
-                          child: const Text(
-                            "모집 중",
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: Colors.white,
-                            ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
@@ -154,14 +235,29 @@ class _VolPostCardState extends State<VolPostCard> {
                       widget.contnet,
                       style: const TextStyle(fontSize: 12.0, height: 2.0),
                     ),
+                    // Text(
+                    //   "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
+                    //   style: const TextStyle(
+                    //     color: Color.fromARGB(255, 124, 123, 123),
+                    //     fontSize: 12.0,
+                    //     height: 2.8,
+                    //   ),
+                    // ),
                     Text(
-                      "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
+                      "활동 장소: ${widget.actPlace}",
                       style: const TextStyle(
-                        color: Color.fromARGB(255, 124, 123, 123),
-                        fontSize: 12.0,
-                        height: 2.8,
-                      ),
+                          color: Color.fromARGB(255, 124, 123, 123),
+                          fontSize: 12.0,
+                          height: 2.8),
                     ),
+                    // Text(
+                    //   "청소년 가능 여부: ${widget.teenager}",
+                    //   style: const TextStyle(
+                    //     color: Color.fromARGB(255, 124, 123, 123),
+                    //     fontSize: 12.0,
+                    //     height: 2.8
+                    //   ),
+                    // ),
                     Container(
                       height: 1,
                       width: 400,

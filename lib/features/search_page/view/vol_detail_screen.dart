@@ -12,8 +12,9 @@ class VolDetailScreenArgs {
   final String contnet;
   final String host;
   final String locationStr;
-  final String startTime;
-  final String endTime;
+  final String actPlace;
+  final String teenager;
+  final String listApiType;
   final int tabBarSelected;
 
   VolDetailScreenArgs({
@@ -22,8 +23,9 @@ class VolDetailScreenArgs {
     required this.contnet,
     required this.host,
     required this.locationStr,
-    required this.startTime,
-    required this.endTime,
+    required this.actPlace,
+    required this.teenager,
+    required this.listApiType,
     required this.tabBarSelected,
   });
 }
@@ -37,8 +39,9 @@ class VolDetailScreen extends StatefulWidget {
   final String contnet;
   final String host;
   final String locationStr;
-  final String startTime;
-  final String endTime;
+  final String actPlace;
+  final String teenager;
+  final String listApiType;
   final int tabBarSelected;
 
   const VolDetailScreen({
@@ -48,8 +51,9 @@ class VolDetailScreen extends StatefulWidget {
     required this.contnet,
     required this.host,
     required this.locationStr,
-    required this.startTime,
-    required this.endTime,
+    required this.teenager,
+    required this.listApiType,
+    required this.actPlace,
     required this.tabBarSelected,
   });
 
@@ -159,52 +163,52 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 187,
-                    height: 80,
-                    child: Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.start),
-                        title: const Text(
-                          "모집 시작",
-                          style: TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                        subtitle: Text(
-                          widget.startTime,
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 187,
-                    height: 80,
-                    child: Card(
-                      child: ListTile(
-                        leading: const Icon(Icons.done),
-                        title: const Text(
-                          "모집 마감",
-                          style: TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                        subtitle: Text(
-                          widget.endTime,
-                          style: const TextStyle(
-                            fontSize: 14.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     SizedBox(
+              //       width: 187,
+              //       height: 80,
+              //       child: Card(
+              //         child: ListTile(
+              //           leading: const Icon(Icons.start),
+              //           title: const Text(
+              //             "모집 시작",
+              //             style: TextStyle(
+              //               fontSize: 14.0,
+              //             ),
+              //           ),
+              //           subtitle: Text(
+              //             widget.startTime,
+              //             style: const TextStyle(
+              //               fontSize: 14.0,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //     SizedBox(
+              //       width: 187,
+              //       height: 80,
+              //       child: Card(
+              //         child: ListTile(
+              //           leading: const Icon(Icons.done),
+              //           title: const Text(
+              //             "모집 마감",
+              //             style: TextStyle(
+              //               fontSize: 14.0,
+              //             ),
+              //           ),
+              //           subtitle: Text(
+              //             widget.endTime,
+              //             style: const TextStyle(
+              //               fontSize: 14.0,
+              //             ),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
               _title(title: "상세"),
               Container(
                 child: Text(
