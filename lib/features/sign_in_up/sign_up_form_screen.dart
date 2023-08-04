@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +38,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   String? _nameError;
   String? _mobileError;
   String? _mobileHelper;
+  String? _mobileCheckError;
   String? _nickNameError;
   String? _nickNameHelper;
 
@@ -89,120 +92,141 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
     }
   }
 
-  void _onSignUpSubmitted() async {
-    print(_nickNameController.text);
-    print(_nameController.text);
-    print(
-        '${_birthday?.year}-${_birthday?.month.toString().padLeft(2, '0')}-${_birthday?.day.toString().padLeft(2, '0')}');
-    print(_gender);
-    print(_mobileController.text);
-    print(_email);
+  void _onChangeAllText() {
+    _isEditFinished =
+        (_nameError == null && _nameController.text.trim().isNotEmpty) &&
+            _gender.trim().isNotEmpty &&
+            _birthday != null &&
+            _email.trim().isNotEmpty &&
+            _isAuthMobile;
+    setState(() {});
+  }
 
+  void _onSignUpSubmitted() async {
     final url = Uri.parse("http://59.4.3.198:80/together/register");
+    final headers = {'Content-Type': 'application/json'};
     final data = {
       "userEmail": _email,
-      "user_phonenumber": _mobileController.text,
+      "userPhonenumber": _mobileController.text,
       "userName": _nameController.text,
       "userNickname": _nickNameController.text,
-      "userGender": _gender == "남" ? 1 : 2,
-      "userBirthdate": _birthday,
+      "userGender": _gender == "남" ? 0 : 1,
+      "userBirthdate":
+          '${_birthday?.year}-${_birthday?.month.toString().padLeft(2, '0')}-${_birthday?.day.toString().padLeft(2, '0')}',
       "userType": "user",
+      "userDef": "",
     };
 
-    final response = await http.post(url, body: data);
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (!mounted) return;
       context.pop();
-      context.pop();
     } else {
-      context.pop();
+      print("회원가입 에러!");
+      print(response.statusCode);
+      print(response.body);
     }
   }
 
-  void _onChangeAllText() {
-    _isEditFinished = (_isAuthNickName && _nickNameError == null) &&
-        (_nameError == null && _nameController.text.trim().isNotEmpty) &&
-        _gender.trim().isNotEmpty &&
-        _birthday != null &&
-        _email.trim().isNotEmpty &&
-        _isAuthMobile;
-    setState(() {});
-  }
-
   Future<void> _onCheckNickName() async {
-    // final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
-    // final data = {
-    //   "user_nickname": _nickNameController.text,
-    // };
-
-    // final response = await http.post(url, body: data);
-
-    // if (response.statusCode >= 200 && response.statusCode < 300) {
-    //   if (response.body == 0) {
-
-    //     setState(() {
-    //       _isAuthNickName = true;
-    //       _nickNameHelper = "인증이 완료되었습니다!";
-    //       _onChangeAllText();
-    //     });
-    //   } else {
-    //     _nickNameError = "인증에 실패했습니다. 다시 시도해 주세요!";
-    //   }
-    // } else {
-    //   _nickNameError = "통신 실패!";
-    // }
-
-    setState(() {
-      _isAuthNickName = true;
-      _nickNameHelper = "인증이 완료되었습니다!";
-      _onChangeAllText();
-    });
-  }
-
-  Future<void> _callMobileCheckCode() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
     final data = {
-      "user_phonenumber": _mobileController.text,
+      "userNickname": _nickNameController.text,
     };
 
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      _mobileAuthCode = response.body;
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          _isAuthNickName = true;
+          _nickNameHelper = "인증이 완료되었습니다!";
+          _onChangeAllText();
+        });
+      } else {
+        setState(() {
+          _nickNameError = "중복된 닉네임이 존재합니다!";
+        });
+      }
     } else {
-      _mobileError = "통신 실패!";
+      _nickNameError = "통신 실패!";
+      print(response.statusCode);
+      print(response.body);
+    }
+
+    // setState(() {
+    //   _isAuthNickName = true;
+    //   _nickNameHelper = "인증이 완료되었습니다!";
+    //   _onChangeAllText();
+    // });
+  }
+
+  Future<void> _callMobileCheckCode() async {
+    _mobileCheckError = null;
+    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final data = {
+      "userPhonenumber": _mobileController.text,
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 1) {
+        setState(() {
+          _mobileError = "다른 계정에 등록된 전화번호 입니다!";
+        });
+      } else {
+        print(result);
+        setState(() {
+          _mobileAuthCode = response.body;
+        });
+      }
+    } else {
+      setState(() {
+        _mobileError = "통신 실패!";
+      });
+      print(response.statusCode);
+      print(response.body);
     }
   }
 
   Future<void> _callAuthMobile() async {
-    // final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
-    // final data = {
-    //   "sendNum": _mobileCheckController.text,
-    //   "getNum": _mobileAuthCode,
-    // };
+    final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
+    final data = {
+      "sendNum": _mobileCheckController.text,
+      "getNum": _mobileAuthCode,
+    };
 
-    // final response = await http.post(url, body: data);
+    final response = await http.post(url, body: data);
 
-    // if (response.statusCode >= 200 && response.statusCode < 300) {
-    //   if (response.body == 0) {
-    //     setState(() {
-    //       _isAuthMobile = true;
-    //       _mobileHelper = "인증이 완료되었습니다!";
-    //       _onChangeAllText();
-    //     });
-    //   } else {
-    //     _mobileError = "인증에 실패했습니다. 다시 시도해 주세요!";
-    //   }
-    // } else {
-    //   _mobileError = "통신 실패!";
-    // }
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          _isAuthMobile = true;
+          _mobileHelper = "인증이 완료되었습니다!";
+          _onChangeAllText();
+        });
+      } else {
+        setState(() {
+          _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
+        });
+      }
+    } else {
+      setState(() {
+        _mobileCheckError = "통신 실패!";
+      });
+    }
 
-    setState(() {
-      _isAuthMobile = true;
-      _mobileHelper = "인증이 완료되었습니다!";
-      _onChangeAllText();
-    });
+    // setState(() {
+    //   _isAuthMobile = true;
+    //   _mobileHelper = "인증이 완료되었습니다!";
+    //   _onChangeAllText();
+    // });
   }
 
   bool _onChangeMobile(String? value) {
@@ -341,9 +365,9 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
             horizontal: Sizes.size10,
           ),
           child: ElevatedButton(
-            onPressed:
-                _isEditFinished && _isAuthMobile ? _onSignUpSubmitted : null,
-            // onPressed: _onDataCheckSubmitted,
+            onPressed: _isEditFinished && _isAuthMobile && _isAuthNickName
+                ? _onSignUpSubmitted
+                : null,
             child: const Padding(
               padding: EdgeInsets.symmetric(
                 vertical: Sizes.size16,
@@ -531,6 +555,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
                   buttonText: "인증하기",
                   onSubmitted: _callAuthMobile,
                   keyboardType: TextInputType.number,
+                  errorText: _mobileCheckError,
                 ),
                 Gaps.v10,
                 Text(

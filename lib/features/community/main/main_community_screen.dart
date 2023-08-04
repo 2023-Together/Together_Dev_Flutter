@@ -272,15 +272,9 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   );
                 } else if (snapshot.hasError) {
                   // 에러가 발생한 경우 에러 메시지 표시
-                  if (snapshot.error is TimeoutException) {
-                    return const Center(
-                      child: Text('통신 연결 실패!'),
-                    );
-                  } else {
-                    return Center(
-                      child: Text('오류 발생: ${snapshot.error}'),
-                    );
-                  }
+                  return Center(
+                    child: Text('오류 발생: ${snapshot.error}'),
+                  );
                 } else {
                   // 데이터를 성공적으로 가져왔을 때 ListView 표시
                   _postList = snapshot.data!;

@@ -24,8 +24,8 @@ class SWAGTextField extends StatefulWidget {
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
-  final String? errorText;
-  final String? helperText;
+  final String? errorText; // 에러 텍스트
+  final String? helperText; //
   final bool isPassword;
   final TextInputType? keyboardType;
 

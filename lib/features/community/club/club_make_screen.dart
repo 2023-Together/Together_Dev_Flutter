@@ -40,7 +40,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
     final data = {
       "clubLeaderId": "1",
       "clubName": _nameController.text,
-      "clubDescription": _contentController.text
+      "clubDescription": _contentController.text,
     };
 
     final response =
