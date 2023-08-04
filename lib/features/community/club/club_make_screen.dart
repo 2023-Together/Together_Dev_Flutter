@@ -25,7 +25,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   final TextEditingController _contentController = TextEditingController();
 
   bool _isThereSearchValue = false;
-  bool _clubApply = true;
+  // bool _clubApply = true;
 
   void _textOnChange(String? value) {
     setState(() {
@@ -40,13 +40,13 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
     final data = {
       "clubLeaderId": "1",
       "clubName": _nameController.text,
-      "clubDescription": _contentController.text
+      "clubDescription": _contentController.text,
     };
 
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       if (!mounted) return;
       context.read<MainNavigationProvider>().changeIndex(2);
       context.goNamed(MainNavigation.routeName);
@@ -134,19 +134,19 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
                 },
                 onChanged: _textOnChange,
               ),
-              Gaps.v20,
-              SwitchListTile.adaptive(
-                tileColor: Colors.white,
-                value: _clubApply,
-                onChanged: (value) => setState(() {
-                  _clubApply = !_clubApply;
-                }),
-                title: const Text("동아리 신청 받기 여부"),
-                subtitle: const Text(
-                  "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
-                  maxLines: 2,
-                ),
-              ),
+              // Gaps.v20,
+              // SwitchListTile.adaptive(
+              //   tileColor: Colors.white,
+              //   value: _clubApply,
+              //   onChanged: (value) => setState(() {
+              //     _clubApply = !_clubApply;
+              //   }),
+              //   title: const Text("동아리 신청 받기 여부"),
+              //   subtitle: const Text(
+              //     "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
+              //     maxLines: 2,
+              //   ),
+              // ),
             ],
           ),
         ),

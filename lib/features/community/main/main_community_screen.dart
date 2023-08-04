@@ -119,9 +119,8 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -273,15 +272,9 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   );
                 } else if (snapshot.hasError) {
                   // 에러가 발생한 경우 에러 메시지 표시
-                  if (snapshot.error is TimeoutException) {
-                    return const Center(
-                      child: Text('통신 연결 실패!'),
-                    );
-                  } else {
-                    return Center(
-                      child: Text('오류 발생: ${snapshot.error}'),
-                    );
-                  }
+                  return Center(
+                    child: Text('오류 발생: ${snapshot.error}'),
+                  );
                 } else {
                   // 데이터를 성공적으로 가져왔을 때 ListView 표시
                   _postList = snapshot.data!;

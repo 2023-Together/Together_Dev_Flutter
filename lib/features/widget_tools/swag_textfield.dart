@@ -24,8 +24,8 @@ class SWAGTextField extends StatefulWidget {
   final Function? onSubmitted; // 확인 버튼 누를때 실행될 함수
   final String? buttonText; // 버튼의 텍스트
   final FocusNode? focusNode;
-  final String? errorText;
-  final String? helperText;
+  final String? errorText; // 에러 텍스트
+  final String? helperText; //
   final bool isPassword;
   final TextInputType? keyboardType;
 
@@ -34,13 +34,6 @@ class SWAGTextField extends StatefulWidget {
 }
 
 class _SWAGTextFieldState extends State<SWAGTextField> {
-  bool _isEditing = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -50,16 +43,7 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
           flex: 4,
           child: TextField(
             focusNode: widget.focusNode,
-            onSubmitted: _isEditing && widget.onSubmitted != null
-                ? (value) {
-                    if (widget.onSubmitted != null) {
-                      widget.onSubmitted!();
-                    }
-                  }
-                : null,
-            // onChanged: widget.onChanged,
             onChanged: (value) {
-              _isEditing = value.trim().isEmpty ? false : true;
               if (widget.onChanged != null) {
                 widget.onChanged!(value);
               }
@@ -127,7 +111,9 @@ class _SWAGTextFieldState extends State<SWAGTextField> {
         Gaps.h6,
         if (widget.buttonText != null)
           ElevatedButton(
-            onPressed: _isEditing && widget.onSubmitted != null
+            onPressed: widget.controller.text.trim().isNotEmpty &&
+                    widget.onSubmitted != null &&
+                    widget.errorText == null
                 ? () {
                     widget.onSubmitted!();
                   }
