@@ -133,7 +133,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
       throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
     }
   }
-
+  
   // 리스트에 광고 삽입하는 함수
   Future<List<PostCardModel>> _insertAds(
       List<PostCardModel> originalList, int adInterval) async {

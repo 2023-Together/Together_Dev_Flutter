@@ -5,6 +5,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
@@ -50,22 +51,49 @@ class UserInformSetup extends StatelessWidget {
       appBar: AppBar(
         title: const Text("설정"),
       ),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-        children: [
-          _title(title: "회원 정보"),
-          Card(
-            elevation: 0,
-            child: ListTile(
-              title: const Text(
-                "회원 정보 수정",
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 15.0,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
+        child: ListView(
+          children: [
+            _title(title: "회원 정보"),
+            Card(
+              elevation: 0,
+              child: ListTile(
+                title: const Text(
+                  "회원 정보 수정",
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 15.0,
+                  ),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(
+                    Icons.chevron_right_rounded,
+                    size: Sizes.size24,
+                  ),
+                  onPressed: () {
+                    
+                  },
                 ),
               ),
-              trailing: IconButton(
-                icon: const Icon(
+            ),
+            _title(title: "서비스"),
+            Card(
+              elevation: 0,
+              child: ListTile(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const LicensePage(),
+                  ),
+                ),
+                title: const Text(
+                  "앱 정보(라이센스)",
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 15.0,
+                  ),
+                ),
+                trailing: const Icon(
                   Icons.chevron_right_rounded,
                   size: Sizes.size24,
                 ),
@@ -146,20 +174,15 @@ class UserInformSetup extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          _title(title: "고객 센터"),
-          Card(
-            elevation: 0,
-            child: ListTile(
-              onTap: () => context.pushNamed(
-                CustomerServiceScreen.routeName,
-                extra: CustomerServiceScreenArgs(initSelectedIndex: 0),
-              ),
-              title: const Text(
-                "자주 묻는 질문 (FnQ)",
-                style: TextStyle(
-                  fontWeight: FontWeight.normal,
-                  fontSize: 15.0,
+            Card(
+              elevation: 0,
+              child: ListTile(
+                title: const Text(
+                  "건의하기",
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                    fontSize: 15.0,
+                  ),
                 ),
               ),
               trailing: IconButton(

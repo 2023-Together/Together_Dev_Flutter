@@ -129,7 +129,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.home,
                 onTap: () => _onTap(0),
                 selectedIndex: selectedIndex,
-                isLogined: isLogined,
+                isLogined: isLogined, imgURI: '',
               ),
               NavTab(
                 text: "봉사",
@@ -138,7 +138,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.manage_search,
                 onTap: () => _onTap(1),
                 selectedIndex: selectedIndex,
-                isLogined: isLogined,
+                isLogined: isLogined, imgURI: '',
               ),
               // NavTab(
               //   text: "기관",
@@ -157,7 +157,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.groups_2,
                 onTap: () => _onTap(2),
                 selectedIndex: selectedIndex,
-                isLogined: isLogined,
+                isLogined: isLogined, imgURI: '',
               ),
               NavTab(
                 text: isLogined ? "프로필" : "로그인",
@@ -168,7 +168,7 @@ class _MainNavigationState extends State<MainNavigation> {
                 selectedIcon: Icons.account_circle,
                 onTap: () => _onTap(3),
                 selectedIndex: selectedIndex,
-                isLogined: isLogined,
+                isLogined: isLogined, imgURI: '',
               ),
             ],
           ),

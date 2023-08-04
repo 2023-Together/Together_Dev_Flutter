@@ -7,6 +7,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
+import 'package:http/http.dart' as http;
+
 final List<String> volCategories = [
   "카테고리1",
   "카테고리2",
@@ -25,6 +27,9 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 상평동",
     "host": "진주 생활체육관",
+    "actPlace": "진주 생활 체육관1",
+    "teenager": "청소년",
+    "listApiType": "1365"
   },
   {
     "title": "도서관 자원봉사자 모집",
@@ -33,6 +38,8 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "경상대학교 중앙도서관",
+    "actPlace": "진주 생활 체육관1",
+    "listApiType": "vms"
   },
   {
     "title": "자원봉사자 모집",
@@ -41,6 +48,9 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1",
+    "teenager": "청소년",
+    "listApiType": "1365"
   },
   {
     "title": "전시회 보조 자원봉사자 모집",
@@ -49,6 +59,8 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1",
+    "listApiType": "vms"
   },
   {
     "title": "봉사5",
@@ -57,6 +69,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
   {
     "title": "봉사6",
@@ -65,6 +78,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
   {
     "title": "봉사7",
@@ -73,6 +87,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
   {
     "title": "봉사8",
@@ -81,6 +96,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
   {
     "title": "봉사9",
@@ -89,6 +105,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
   {
     "title": "봉사10",
@@ -97,6 +114,7 @@ final List<Map<String, dynamic>> volDatas = [
     "endTime": "2023.07.30 18:00",
     "locationStr": "진주시 가좌동",
     "host": "연암공과대학교",
+    "actPlace": "진주 생활 체육관1"
   },
 ];
 
@@ -138,6 +156,7 @@ class _VolSearchScreenState extends State<VolSearchScreen>
   String selectedDropdown1 = '';
   String selectedDropdown2 = '';
   String selectedDropdown3 = '';
+  String selectedDropdown4 = '';
 
   List<String> dropdownList1 = [
     '',
@@ -213,10 +232,16 @@ class _VolSearchScreenState extends State<VolSearchScreen>
     '모집 중',
     '모집 완료',
   ];
+   List<String> dropdownList4 = [
+    '',
+    '가능',
+    '불가능',
+  ];
 
   @override
   void initState() {
     super.initState();
+    // _apiGetDispatch();
     _focusNode.addListener(_handleFocusChange);
     // 검색 창이 내려와있을 때 스크롤 하면 검색창 다시 사라짐
     if (_animationController.isCompleted) {
@@ -256,6 +281,21 @@ class _VolSearchScreenState extends State<VolSearchScreen>
 
     super.dispose();
   }
+
+  // // 1365, vms API를 가져오는 통신
+  // void _apiGetDispatch() async {
+  //   final url = Uri.parse("http://218.157.74.17:80/together/readVMS1365Api");
+  //   final response = await http.get(url);
+
+  //   // 응답 처리
+  //   if (response.statusCode == 200) {
+  //     print("Response body: ${response.body}");
+  //   } else {
+  //     print('Response status: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+  //   }
+    
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -340,6 +380,17 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                         title: "모집 여부",
                         options: dropdownList3,
                       ),
+                      Gaps.h8,
+                      SWAGStateDropDownButton(
+                        initOption: selectedDropdown3,
+                        onChangeOption: (dynamic value) {
+                          setState(() {
+                            selectedDropdown3 = value;
+                          });
+                        },
+                        title: "청소년 가능 여부",
+                        options: dropdownList4,
+                      ),
                     ],
                   ),
                 ),
@@ -389,8 +440,9 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                             contnet: item["contnet"] ?? "",
                             host: item["host"] ?? "",
                             locationStr: item["locationStr"] ?? "",
-                            startTime: item["startTime"] ?? "",
-                            endTime: item["endTime"] ?? "",
+                            actPlace: item["actPlace"] ?? "",
+                            teenager: item["teenager"] ?? "",
+                            listApiType: item["listApiType"] ?? "",
                           ),
                         );
                       }
