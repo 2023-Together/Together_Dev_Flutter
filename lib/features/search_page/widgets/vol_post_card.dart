@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
-import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/user_provider.dart';
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -69,39 +66,53 @@ class _VolPostCardState extends State<VolPostCard> {
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
         onTap: () {
-          if (!context.read<UserProvider>().isLogined) {
-            swagPlatformDialog(
-              context: context,
-              title: "로그인 알림",
-              message:
-                  "로그인이 되어 있지 않습니다! \n해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
-              actions: [
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text("아니오"),
-                ),
-                TextButton(
-                  onPressed: () {},
-                  child: const Text("예"),
-                ),
-              ],
-            );
-          } else {
-            context.pushNamed(
-              VolDetailScreen.routeName,
-              extra: VolDetailScreenArgs(
-                id: widget.id,
-                title: widget.title,
-                contnet: widget.contnet,
-                host: widget.host,
-                locationStr: widget.locationStr,
-                actPlace: widget.actPlace,
-                teenager: widget.teenager,
-                listApiType: widget.listApiType,
-                tabBarSelected: 0,
+          // if (!context.read<UserProvider>().isLogined) {
+          //   swagPlatformDialog(
+          //     context: context,
+          //     title: "로그인 알림",
+          //     message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+          //     actions: [
+          //       TextButton(
+          //         onPressed: () => context.pop(),
+          //         child: const Text("아니오"),
+          //       ),
+          //       TextButton(
+          //         onPressed: () {},
+          //         child: const Text("예"),
+          //       ),
+          //     ],
+          //   );
+          // } else {
+          //   context.pushNamed(
+          //     VolDetailScreen.routeName,
+          //     extra: VolDetailScreenArgs(
+          //       id: widget.id,
+          //       title: widget.title,
+          //       contnet: widget.contnet,
+          //       host: widget.host,
+          //       locationStr: widget.locationStr,
+          //       actPlace: widget.actPlace,
+          //       teenager: widget.teenager,
+          //       listApiType: widget.listApiType,
+          //       tabBarSelected: 0,
+          //     ),
+          //   );
+          // }
+          swagPlatformDialog(
+            context: context,
+            title: "로그인 알림",
+            message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text("아니오"),
               ),
-            );
-          }
+              TextButton(
+                onPressed: () {},
+                child: const Text("예"),
+              ),
+            ],
+          );
         },
         child: Container(
           clipBehavior: Clip.hardEdge,

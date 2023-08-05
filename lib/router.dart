@@ -281,19 +281,7 @@ final router = GoRouter(
         path: UserInformUpdate.routeURL,
         name: UserInformUpdate.routeName,
         builder: (context, state) {
-          final args = state.extra as UserInformArgs;
-          return UserInformUpdate(
-            userId: args.userId,
-            userEmail: args.userEmail,
-            userPw: args.userPw,
-            userName: args.userName,
-            userNickName: args.userNickName,
-            userDef: args.userDef,
-            userGender: args.userGender,
-            userType: args.userType,
-            userBirthDate: args.userBirthDate,
-            userPhoneNumber: args.userPhoneNumber,
-          );
+          return const UserInformUpdate();
         },
         routes: [
           GoRoute(

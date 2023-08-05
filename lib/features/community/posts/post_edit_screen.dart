@@ -315,7 +315,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
                       },
                       onChanged: _textOnChange,
                     ),
-                    Gaps.v40,
+                    Gaps.v28,
                     Text(
                       "내용",
                       style: Theme.of(context).textTheme.titleSmall,
@@ -329,6 +329,44 @@ class _PostEditScreenState extends State<PostEditScreen> {
                         print(_contentController.text);
                       },
                       onChanged: _textOnChange,
+                    ),
+                    Gaps.v8,
+                    Text(
+                      "# 본 커뮤니티는 봉사와 관련된 정보를 교환하기 위해 만들어진 어플리케이션입니다. 아래의 규칙을 지켜주시기 바랍니다.",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Gaps.v8,
+                    Text(
+                      "- 존중과 예의",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 정확한 정보 공유",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 긍정적인 분위기 조성",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 불건전한 콘텐츠 금지",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 개인정보 보호",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 홍보 및 광고 금지",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 불법 콘텐츠 및 저작권",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      "- 커뮤니티 활동 적극 참여",
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
                     // Gaps.v40,
                     // Text(
