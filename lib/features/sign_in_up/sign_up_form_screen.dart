@@ -231,8 +231,8 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
 
   bool _onChangeMobile(String? value) {
     if (value == null) return false;
-    // 비밀번호 정규식 패턴
-    RegExp mobileRegex = RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$');
+    // 전화번호 정규식 패턴
+    RegExp mobileRegex = RegExp(r'^010([0-9]{4})([0-9]{4})$');
     if (value.isEmpty) {
       setState(() {
         _isAuthMobile = false;

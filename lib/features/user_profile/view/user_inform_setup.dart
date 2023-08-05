@@ -3,7 +3,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -39,7 +38,7 @@ class UserInformSetup extends StatelessWidget {
     context.read<UserProvider>().logout();
     LoginStorage.resetLoginData();
     context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pop();
   }
 
   // // 회원 정보 수정
