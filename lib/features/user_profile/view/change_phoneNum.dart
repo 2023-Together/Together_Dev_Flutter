@@ -3,45 +3,50 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
-class ChangeUserPwArgs {
-  final String userPw;
+class ChangePhoneNumArgs {
+  final String userPhoneNumber;
 
-  ChangeUserPwArgs({
-    required this.userPw,
+  ChangePhoneNumArgs({
+    required this.userPhoneNumber,
   });
 }
 
-class ChangeUserPw extends StatefulWidget {
-  static const routeName = "user_pw";
-  static const routeURL = "/user_pw";
+class ChangePhoneNum extends StatefulWidget {
+  static const routeName = "user_phoneNum";
+  static const routeURL = "/user_phoneNum";
 
-  final String userPw;
+  final String userPhoneNumber;
 
-  const ChangeUserPw({
+  const ChangePhoneNum({
     super.key,
-    required this.userPw,
+    required this.userPhoneNumber,
   });
 
   @override
-  State<ChangeUserPw> createState() => _ChangeUserPwState();
+  State<ChangePhoneNum> createState() => _ChangePhoneNumState();
 }
 
-class _ChangeUserPwState extends State<ChangeUserPw> {
+class _ChangePhoneNumState extends State<ChangePhoneNum> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _pwConfirmController = TextEditingController();
+  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _mobileCheckController = TextEditingController();
 
   bool _isEditFinished = false;
   String? _idError;
   String? _pwError;
   String? _pwConfirmError;
+  String? _mobileError;
+  String? _mobileHelper;
+  bool _isAuthMobile = false;
 
   late TextEditingController _passwordController;
 
   @override
   void initState() {
     super.initState();
-    _passwordController = TextEditingController(text: widget.userPw);
+    _onChangeAllText();
   }
 
   @override
@@ -70,48 +75,43 @@ class _ChangeUserPwState extends State<ChangeUserPw> {
     setState(() {});
   }
 
-  bool _onChangePw(String? value) {
+  bool _onChangeMobile(String? value) {
     if (value == null) return false;
-    // 비밀번호 정규식 패턴
-    RegExp emailRegex = RegExp(
-        r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$");
+    // 전화번호 정규식 패턴
+    RegExp mobileRegex = RegExp(r'^010-?([0-9]{4})-?([0-9]{4})$');
     if (value.isEmpty) {
       setState(() {
-        _pwError = '비밀번호를 입력해주세요.';
+        _mobileError = '전화번호는 필수입니다!';
       });
       return false;
-    } else if (!emailRegex.hasMatch(value)) {
+    } else if (!mobileRegex.hasMatch(value)) {
       setState(() {
-        _pwError = '특수문자, 대소문자, 숫자 포함 8자 이상으로 입력하세요.';
+        _mobileError = '전화번호 양식에 맞게 입력해주세요.';
       });
       return false;
     }
+    _mobileController.text.replaceAllMapped(
+        RegExp(r'(\d{3})(\d{3,4})(\d{4})'), (m) => '${m[1]}-${m[2]}-${m[3]}');
     setState(() {
-      _pwError = null;
+      _mobileError = null;
       _onChangeAllText();
     });
+
     return true;
   }
 
-  bool _onChangePwConfirm(String? value) {
-    if (value == null) return false;
-    if (value.isEmpty) {
+  void _callAuthMobile() {
+    if (_mobileError == null) {
       setState(() {
-        _pwConfirmError = '비밀번호 확인을 입력해주세요.';
+        _isAuthMobile = true;
+        _mobileError = null;
+        _mobileHelper = "인증이 완료되었습니다!";
+        _onChangeAllText();
       });
-      return false;
-    } else if (_pwController.text != _pwConfirmController.text) {
-      setState(() {
-        _pwConfirmError = "비밀번호와 일치하지 않습니다!";
-      });
-      return false;
     }
-    setState(() {
-      _pwConfirmError = null;
-      _onChangeAllText();
-    });
-    return true;
   }
+
+  void _callMobileCheckCode() {}
 
   Future<void> _showAlertDialog() async {
     // 비밀번호 수정여부 모달창
@@ -151,63 +151,39 @@ class _ChangeUserPwState extends State<ChangeUserPw> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("비밀번호 변경"),
+        title: const Text("전화번호 변경"),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // TextFormField(
-            //   initialValue: userDatas[0]['userPw'],
-            //   obscureText: false,
-            //   decoration: InputDecoration(
-            //     labelText: "기존 비밀번호",
-            //   ),
-            // ),
-            // TextFormField(
-            //   controller: _passwordController,
-            //   obscureText: true,
-            //   decoration: InputDecoration(
-            //     labelText: "새 비밀번호",
-            //   ),
-            // ),
-            // TextFormField(
-            //   controller: _passwordController,
-            //   obscureText: true,
-            //   decoration: InputDecoration(
-            //     labelText: "비밀번호 확인",
-            //   ),
-            // ),
-           _title(title: "기존 비밀번호"),
+            _title(title: "전화번호"),
             SWAGTextField(
-              hintText: userDatas[0]['userPw'],
+              hintText: "전화번호",
               maxLine: 1,
-              controller: _pwController,
-              isPassword: true,
-              onChanged: _onChangePw,
-              errorText: _pwError,
+              controller: _mobileController,
+              errorText: _mobileError,
+              helperText: _mobileHelper,
+              buttonText: "인증번호 요청",
+              onSubmitted: _callMobileCheckCode,
+              onChanged: _onChangeMobile,
+              keyboardType: TextInputType.phone,
             ),
             Gaps.v20,
-            _title(title: "새 비밀번호"),
             SWAGTextField(
-              hintText: "비밀번호를 입력해주세요.",
+              hintText: "인증번호",
               maxLine: 1,
-              controller: _pwController,
-              isPassword: true,
-              onChanged: _onChangePw,
-              errorText: _pwError,
+              controller: _mobileCheckController,
+              buttonText: "인증하기",
+              onSubmitted: _callAuthMobile,
+              keyboardType: TextInputType.number,
             ),
             Gaps.v20,
-            _title(title: "비밀번호 확인"),
-            Gaps.v10,
-            SWAGTextField(
-              hintText: "비밀번호를 다시 입력해주세요.",
-              maxLine: 1,
-              controller: _pwConfirmController,
-              isPassword: true,
-              onChanged: _onChangePwConfirm,
-              errorText: _pwConfirmError,
+
+            Text(
+              "주의사항 : 하나의 핸드폰 번호를 여러개의 계정에 중복으로 등록할 수 없습니다!",
+              style: Theme.of(context).textTheme.labelMedium,
             ),
             Gaps.v20,
             ElevatedButton(
@@ -217,7 +193,7 @@ class _ChangeUserPwState extends State<ChangeUserPw> {
                 _showAlertDialog();
                 // (비밀번호 변경 로직 처리)
               },
-              child: const Text("비밀번호 변경"),
+              child: const Text("전화번호 변경"),
             ),
           ],
         ),
