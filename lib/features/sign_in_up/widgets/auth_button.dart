@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
 class AuthButton extends StatefulWidget {
@@ -87,8 +86,7 @@ class _AuthButtonState extends State<AuthButton> {
 
     //     if (!mounted) return;
     //     context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
-    //     context.read<MainNavigationProvider>().changeIndex(0);
-    //     context.goNamed(MainNavigation.routeName);
+    //     context.pushReplacementNamed(MainNavigation.routeName);
     //   } else {
     //     print('Response status: ${response.statusCode}');
     //     print('Response body: ${response.body}');
@@ -109,8 +107,7 @@ class _AuthButtonState extends State<AuthButton> {
 
     context.read<UserProvider>().testLogin();
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pushReplacementNamed(MainNavigation.routeName);
   }
 
   // 네이버 회원가입
@@ -143,8 +140,7 @@ class _AuthButtonState extends State<AuthButton> {
   void _signInForKakao(BuildContext context) async {
     // await LoginStorage.saveLoginType("kakao");
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pushReplacementNamed(MainNavigation.routeName);
   }
 
   // 카카오 회원가입
@@ -160,8 +156,7 @@ class _AuthButtonState extends State<AuthButton> {
     //   },
     // );
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pushReplacementNamed(MainNavigation.routeName);
   }
 
   @override

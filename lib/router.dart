@@ -22,7 +22,6 @@ import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 final router = GoRouter(
   routes: [

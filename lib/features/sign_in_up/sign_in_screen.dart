@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
@@ -20,8 +21,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
-  bool _onSaveCheck = false;
-  bool _isEditFinished = false;
+  // bool _onSaveCheck = false;
+  // bool _isEditFinished = false;
 
   late Map<String, dynamic>? userData;
 
@@ -46,25 +47,24 @@ class _SignInScreenState extends State<SignInScreen> {
   //     if (!mounted) return;
   //     context.read<UserProvider>().login("naver");
 
-  //     context.read<MainNavigationProvider>().changeIndex(0);
-  //     context.goNamed(MainNavigation.routeName);
+  //     context.pop();
   //   }
   // }
 
-  void _onChangeAllText(String? value) {
-    if (value == null) return;
-    _isEditFinished = _idController.text.trim().isNotEmpty &&
-        _pwController.text.trim().isNotEmpty;
-    setState(() {});
-  }
+  // void _onChangeAllText(String? value) {
+  //   if (value == null) return;
+  //   _isEditFinished = _idController.text.trim().isNotEmpty &&
+  //       _pwController.text.trim().isNotEmpty;
+  //   setState(() {});
+  // }
 
-  void _onChangeUserSaveCheck(bool? value) {
-    if (value != null) {
-      setState(() {
-        _onSaveCheck = value;
-      });
-    }
-  }
+  // void _onChangeUserSaveCheck(bool? value) {
+  //   if (value != null) {
+  //     setState(() {
+  //       _onSaveCheck = value;
+  //     });
+  //   }
+  // }
 
   void _onSignUpTap() {
     // context.pushNamed(SignUpFormScreen.routeName);
@@ -105,7 +105,10 @@ class _SignInScreenState extends State<SignInScreen> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          automaticallyImplyLeading: true,
+          leading: BackButton(
+            onPressed: () =>
+                context.pushReplacementNamed(MainNavigation.routeName),
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),

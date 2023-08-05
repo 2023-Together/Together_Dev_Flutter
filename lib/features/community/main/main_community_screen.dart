@@ -64,7 +64,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     _focusNode.addListener(_handleFocusChange);
 
-    // 스크롤 이벤트 처리
     _scrollController.addListener(
       () {
         // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
@@ -85,7 +84,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    context.pushNamed(SignInScreen.routeName);
+    context.pushReplacementNamed(SignInScreen.routeName);
   }
 
   // 리스트 새로고침
@@ -121,6 +120,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("메인 커뮤니티 : $jsonResponse");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -130,10 +130,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
-  
+
   // 리스트에 광고 삽입하는 함수
   Future<List<PostCardModel>> _insertAds(
       List<PostCardModel> originalList, int adInterval) async {
@@ -186,9 +186,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   @override
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
+
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         // backgroundColor: Colors.blue.shade100,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -263,7 +264,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         body: Stack(
           children: [
             FutureBuilder<List<PostCardModel>>(
-              future: _postGetDispatch(),
+              future: _postList != null
+                  ? Future.value(
+                      _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                  : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // 데이터를 기다리는 동안 로딩 인디케이터 표시

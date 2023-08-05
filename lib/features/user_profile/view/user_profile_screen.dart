@@ -55,10 +55,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     context.pushNamed(UserInformSetup.routeName);
   }
 
-  List<PostCardModel>? _postList;
+  List<PostCardModel>? _postListWithoutAds;
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
-  final ScrollController _scrollController = ScrollController();
 
   Future<List<PostCardModel>> _postGetDispatch() async {
     final url =
@@ -67,7 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
+      print("내 정보 : $jsonResponse");
 
       // 응답 데이터를 PostCardModel 리스트로 파싱하여 반환
       return jsonResponse
@@ -81,32 +80,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   // 리스트 새로고침
-  Future _refreshComunityList() async {
-    _postGetDispatch();
-    setState(() {});
-  }
-
-  // void httpTest() async {
-  //   try {
-  //     final url =
-  //         Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
-  //     final response = await http.get(url);
-
-  //     print('Response status: ${response.statusCode}');
-  //     print('Response body: ${response.body}');
-
-  //     // 응답 처리
-  //     if (response.statusCode == 200) {
-  //       // 성공적인 응답 처리
-  //     } else {
-  //       // 응답 오류 처리
-  //     }
-  //   } catch (e) {
-  //     // 예외 처리
-  //     print('예외 발생: $e');
-  //     // 예외에 따른 추가 처리 수행
-  //   }
+  // Future _refreshComunityList() async {
+  //   _postGetDispatch();
+  //   setState(() {});
   // }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -214,9 +196,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             body: TabBarView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 12.0),
                   child: FutureBuilder<List<PostCardModel>>(
-                    future: _postGetDispatch(),
+                    // future: _postGetDispatch(),
+                    future: _postListWithoutAds != null
+                        ? Future.value(
+                            _postListWithoutAds!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                        : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
@@ -233,26 +220,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           );
                         }
                       } else {
-                        final postListWithoutAds =
+                        _postListWithoutAds =
                             snapshot.data!.where((item) => !item.isAd).toList();
-                
-                        return RefreshIndicator.adaptive(
-                          onRefresh: _refreshComunityList,
-                          child: CustomScrollView(
-                            controller: _scrollController,
-                            slivers: [
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  childCount: postListWithoutAds.length,
-                                  (context, index) {
-                                    final item = postListWithoutAds[index];
-                                    return PostCard(
-                                      postData: item,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+
+                        return ListView.builder(
+                          itemCount: _postListWithoutAds!.length,
+                          itemBuilder: (context, index) => PostCard(
+                            postData: _postListWithoutAds![index],
                           ),
                         );
                       }

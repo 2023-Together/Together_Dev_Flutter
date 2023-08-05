@@ -2,9 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
-import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 
 class LogoLoadingScreen extends StatefulWidget {
   static const routeName = "loading";
@@ -28,7 +26,6 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
       _timer!.cancel(); // 이전 타이머 취소
     }
     _timer = Timer(const Duration(milliseconds: 500), () {
-      context.read<MainNavigationProvider>().changeIndex(0);
       context.goNamed(MainNavigation.routeName);
     });
   }
@@ -53,7 +50,6 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
   //     if (!mounted) return;
   //     context.read<UserProvider>().login("naver");
 
-  //     context.read<MainNavigationProvider>().changeIndex(0);
   //     context.goNamed(MainNavigation.routeName);
   //   }
   // }

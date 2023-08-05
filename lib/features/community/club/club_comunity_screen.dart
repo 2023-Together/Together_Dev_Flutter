@@ -138,6 +138,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("동아리 커뮤니티 : $jsonResponse");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -267,7 +268,10 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         children: [
           // 메인 화면
           FutureBuilder(
-            future: _postGetDispatch(),
+            future: _postList != null
+                ? Future.value(
+                    _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // 데이터를 기다리는 동안 로딩 인디케이터 표시

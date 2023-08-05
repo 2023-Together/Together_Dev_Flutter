@@ -61,8 +61,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   void initState() {
     super.initState();
 
-    _clubGetDispatch();
-
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
@@ -80,7 +78,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
+      print("동아리 리스트 : $jsonResponse");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _clubList =
