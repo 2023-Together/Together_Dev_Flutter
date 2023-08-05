@@ -148,7 +148,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
 
@@ -280,15 +280,9 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                 );
               } else if (snapshot.hasError) {
                 // 에러가 발생한 경우 에러 메시지 표시
-                if (snapshot.error is TimeoutException) {
-                  return const Center(
-                    child: Text('통신 연결 실패!'),
-                  );
-                } else {
-                  return Center(
-                    child: Text('오류 발생: ${snapshot.error}'),
-                  );
-                }
+                return Center(
+                  child: Text('오류 발생: ${snapshot.error}'),
+                );
               } else {
                 // 데이터를 성공적으로 가져왔을 때 ListView 표시
                 _postList = snapshot.data!;

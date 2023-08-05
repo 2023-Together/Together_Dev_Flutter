@@ -352,6 +352,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                           delegate: SliverChildBuilderDelegate(
                             childCount: _postList!.length,
                             (context, index) {
+                              // print("$index / ${_postList!.length}");
                               final item = _postList![index];
                               if (!item.isAd) {
                                 return PostCard(

@@ -1,69 +1,25 @@
-import 'package:bottom_picker/bottom_picker.dart';
-import 'package:bottom_picker/resources/arrays.dart';
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
-
-import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
-class UserInformArgs {
-  final String userId; // 유저 아이디
-  final String userEmail; // 유저 이메일
-  final String userPw; // 유저 비밀번호
-  final String userName; // 유저 이름
-  final String userNickName; // 유저 닉네임
-  final String userGender; // 유저 성별
-  final String userPhoneNumber; // 유저 전화번호
-  final String userDef; // 유저 프로필 설명
-  final String userType; // 봉사자, 기관 구분용
-  final String userBirthDate; // 유저 생일
-
-  UserInformArgs({
-    required this.userId,
-    required this.userPw,
-    required this.userName,
-    required this.userNickName,
-    required this.userEmail,
-    required this.userDef,
-    required this.userType,
-    required this.userBirthDate,
-    required this.userGender,
-    required this.userPhoneNumber,
-  });
-}
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class UserInformUpdate extends StatefulWidget {
   static const routeName = "user_inform_update";
   static const routeURL = "/user_inform_update";
 
-  final String userId; // 유저 아이디
-  final String userEmail; // 유저 이메일
-  final String userPw; // 유저 비밀번호
-  final String userName; // 유저 이름
-  final String userNickName; // 유저 닉네임
-  final String userGender; // 유저 성별
-  final String userPhoneNumber; // 유저 전화번호
-  final String userDef; // 유저 프로필 설명
-  final String userType; // 봉사자, 기관 구분용
-  final String userBirthDate; // 유저 생일
-
   const UserInformUpdate({
     Key? key,
-    required this.userId,
-    required this.userPw,
-    required this.userName,
-    required this.userNickName,
-    required this.userEmail,
-    required this.userDef,
-    required this.userType,
-    required this.userBirthDate,
-    required this.userGender,
-    required this.userPhoneNumber,
   }) : super(key: key);
 
   @override
@@ -71,78 +27,146 @@ class UserInformUpdate extends StatefulWidget {
 }
 
 class _UserInformUpdateState extends State<UserInformUpdate> {
-  String _newUserName = '';
-  String _newUserDef = '';
-  DateTime? _newUserBirthDate = DateTime.now();
-
-  String _newUserType = '';
-  String _newUserEmail = '';
-  String _newUserPw = '';
-  String _newUserNickName = '';
-  String _newUserGender = '';
-  String _newUserPhoneNumber = '';
-
-
-  String? _mobileError;
-  String? _mobileHelper;
-  String? _nickNameError;
-  String? _nickNameHelper;
-
-
-  final TextEditingController _emailController =
-      TextEditingController(text: userDatas[0]['userEmail']);
-  final TextEditingController _userNameController =
-      TextEditingController(text: userDatas[0]['userName']);
-  final TextEditingController _userBirthDateController =
-      TextEditingController(text: userDatas[0]['userBirthDate']);
-  final TextEditingController _userDefController =
-      TextEditingController(text: userDatas[0]['userDef']);
-  final TextEditingController _userTypeController =
-      TextEditingController(text: userDatas[0]['userType']);
-  final TextEditingController _userPwController =
-      TextEditingController(text: userDatas[0]['userPw']);
-  final TextEditingController _userNickNameController =
-      TextEditingController(text: userDatas[0]['userNickName']);
-  final TextEditingController _userPhoneNumberController =
-      TextEditingController(text: userDatas[0]['userPhoneNumber']);
-  final TextEditingController _userGenderController =
-      TextEditingController(text: userDatas[0]['userGender']);
+  late UserModel? userData;
 
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _mobileCheckController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _nickNameController = TextEditingController();
 
   bool _isEditFinished = false;
   bool _isAuthMobile = false;
-    bool _isAuthNickName = false;
+  bool _isAuthNickName = false;
 
+  String? _mobileAuthCode;
 
-  // void _updateUserInfo() {
-  //   Navigator.pop(context);
-  // }
+  String _gender = "";
+  DateTime? _birthday = DateTime.now();
+  String _email = "";
+  String? _nameError;
+  String? _mobileError;
+  String? _mobileHelper;
+  String? _mobileCheckError;
+  String? _nickNameError;
+  String? _nickNameHelper;
 
-  Widget _title({required String title}) {
-    return Text(
-      title,
-      style: const TextStyle(
-          color: Color.fromARGB(255, 152, 152, 152),
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          height: 3),
-    );
+  final List<String> _genderCategory = ["", "남", "여"];
+
+  @override
+  void initState() {
+    super.initState();
+
+    userData = context.read<UserProvider>().userData;
+
+    _nickNameController.text = userData!.userNickname;
+    _isAuthNickName = true;
+    _nickNameHelper = "인증이 완료되었습니다!";
+    _nameController.text = userData!.userName;
+    _birthday = userData!.userBirthdate;
+    _gender = userData!.userGender == 0 ? "남" : "여";
+    _mobileController.text = userData!.userPhoneNumber;
+    _isAuthMobile = true;
+    _mobileHelper = "인증이 완료되었습니다!";
+    _email = userData!.userEmail;
+
+    _onChangeAllText();
+  }
+
+  void _callNaverProfile() async {
+    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
+    final NaverLoginResult result = await FlutterNaverLogin.logIn();
+
+    if (!mounted) return;
+    if (result.status == NaverLoginStatus.loggedIn) {
+      final userData = result.account;
+      print(userData);
+
+      _nameController.text = userData.name;
+      _nameError == null;
+      _gender = userData.gender == "M" ? "남" : "여";
+      final birthday = userData.birthday.split("-");
+      _birthday = DateTime(
+        int.parse(userData.birthyear),
+        int.parse(birthday[0]),
+        int.parse(birthday[1]),
+      );
+      _email = userData.email;
+      if (!_isAuthMobile) {
+        _mobileController.text = userData.mobile.replaceAll(RegExp(r'-'), '');
+        _mobileError = null;
+      }
+      _onChangeAllText();
+
+      setState(() {});
+    } else {
+      swagPlatformDialog(
+        context: context,
+        title: "오류!",
+        message: result.errorMessage,
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
+    }
   }
 
   void _onChangeAllText() {
-    _isEditFinished = _newUserName.trim().isNotEmpty &&
-        _newUserGender.trim().isNotEmpty &&
-        _newUserEmail.trim().isNotEmpty &&
-        (_mobileError == null && _mobileController.text.trim().isNotEmpty);
+    _isEditFinished =
+        (_nameError == null && _nameController.text.trim().isNotEmpty) &&
+            _gender.trim().isNotEmpty &&
+            _birthday != null &&
+            _email.trim().isNotEmpty &&
+            _isAuthMobile;
     setState(() {});
+  }
+
+  void _onUpdateSubmitted() async {
+    final userData = context.read<UserProvider>().userData;
+
+    final url = Uri.parse("http://59.4.3.198:80/together/update");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "userEmail": _email,
+      "userPhonenumber": _mobileController.text,
+      "userName": _nameController.text,
+      "userNickname": _nickNameController.text,
+      "userGender": _gender == "남" ? 0 : 1,
+      "userBirthdate":
+          '${_birthday?.year}-${_birthday?.month.toString().padLeft(2, '0')}-${_birthday?.day.toString().padLeft(2, '0')}',
+      "userType": "user",
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final UserModel updateData = UserModel(
+        userId: userData!.userId,
+        userEmail: _email,
+        userPhoneNumber: _mobileController.text,
+        userName: _nameController.text,
+        userNickname: _nickNameController.text,
+        userGender: _gender == "남" ? 0 : 1,
+        userBirthdate: _birthday!,
+        userType: userData.userType,
+      );
+      if (!mounted) return;
+      context.read<UserProvider>().updateUserData(updateData);
+      context.pop();
+    } else {
+      print("회원가입 에러!");
+      print(response.statusCode);
+      print(response.body);
+    }
   }
 
   Future<void> _onCheckNickName() async {
     final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
     final data = {
-      "userNickname": _userNickNameController.text,
+      "userNickname": _nickNameController.text,
     };
 
     final response = await http.post(url, body: data);
@@ -165,6 +189,130 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
       print(response.statusCode);
       print(response.body);
     }
+
+    // setState(() {
+    //   _isAuthNickName = true;
+    //   _nickNameHelper = "인증이 완료되었습니다!";
+    //   _onChangeAllText();
+    // });
+  }
+
+  Future<void> _callMobileCheckCode() async {
+    _mobileCheckError = null;
+    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final data = {
+      "userPhonenumber": _mobileController.text,
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 1) {
+        setState(() {
+          _mobileError = "다른 계정에 등록된 전화번호 입니다!";
+        });
+      } else {
+        print(result);
+        setState(() {
+          _mobileAuthCode = response.body;
+        });
+      }
+    } else {
+      setState(() {
+        _mobileError = "통신 실패!";
+      });
+      print(response.statusCode);
+      print(response.body);
+    }
+  }
+
+  Future<void> _callAuthMobile() async {
+    final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
+    final data = {
+      "sendNum": _mobileCheckController.text,
+      "getNum": _mobileAuthCode,
+    };
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          _isAuthMobile = true;
+          _mobileHelper = "인증이 완료되었습니다!";
+          _onChangeAllText();
+        });
+      } else {
+        setState(() {
+          _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
+        });
+      }
+    } else {
+      setState(() {
+        _mobileCheckError = "통신 실패!";
+      });
+    }
+
+    // setState(() {
+    //   _isAuthMobile = true;
+    //   _mobileHelper = "인증이 완료되었습니다!";
+    //   _onChangeAllText();
+    // });
+  }
+
+  bool _onChangeMobile(String? value) {
+    if (value == null) return false;
+    // 전화번호 정규식 패턴
+    RegExp mobileRegex = RegExp(r'^010([0-9]{4})([0-9]{4})$');
+    if (value.isEmpty) {
+      setState(() {
+        _isAuthMobile = false;
+        _mobileHelper = null;
+        _mobileError = '전화번호를 입력해 주세요!';
+      });
+      return false;
+    } else if (!mobileRegex.hasMatch(value)) {
+      setState(() {
+        _isAuthMobile = false;
+        _mobileHelper = null;
+        _mobileError = '전화번호 양식에 맞게 입력해주세요.';
+      });
+      return false;
+    }
+    setState(() {
+      _mobileHelper = null;
+      _mobileError = null;
+      _isAuthMobile = false;
+      _onChangeAllText();
+    });
+
+    return true;
+  }
+
+  bool _onChangeName(String? value) {
+    if (value == null) return false;
+    // 비밀번호 정규식 패턴
+    RegExp nameRegex = RegExp(
+        r'^[\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uAC00-\uD7A3a-zA-Z]+$');
+    if (value.isEmpty) {
+      setState(() {
+        _nameError = '실명을 입력해 주세요!';
+      });
+      return false;
+    } else if (!nameRegex.hasMatch(value)) {
+      setState(() {
+        _nameError = '이름양식에 맞지 않습니다!';
+      });
+      return false;
+    }
+    setState(() {
+      _nameError = null;
+      _onChangeAllText();
+    });
+
+    return true;
   }
 
   bool _onChangeNickName(String? value) {
@@ -178,8 +326,8 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
         _nickNameError = '닉네임을 입력해주세요!';
       });
       return false;
-    } else if (!(_userNickNameController.text.length > 3 &&
-        _userNickNameController.text.length <= 20)) {
+    } else if (!(_nickNameController.text.length > 3 &&
+        _nickNameController.text.length <= 20)) {
       setState(() {
         _isAuthNickName = false;
         _nickNameError = '길이가 4글자 이상 20글자 이하로 맞춰야 합니다!';
@@ -201,39 +349,6 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     return true;
   }
 
-  @override
-  void dispose() {
-    _mobileController.dispose();
-
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  // void _openDatePicker(BuildContext context) {
-  //   BottomPicker.date(
-  //     title: "생년월일을 입력해주세요.",
-  //     dateOrder: DatePickerDateOrder.ymd,
-  //     pickerTextStyle: const TextStyle(
-  //       color: Colors.black,
-  //       fontSize: 14,
-  //     ),
-  //     titleStyle: const TextStyle(
-  //       color: Colors.black,
-  //       fontSize: 15.0,
-  //     ),
-  //     onSubmit: (value) {
-  //       setState(() {
-  //         _selectedDate = value;
-  //       });
-  //     },
-  //     bottomPickerTheme: BottomPickerTheme.plumPlate,
-  //   ).show(context);
-  // }
-
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -242,65 +357,30 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
       lastDate: DateTime.now(),
     );
 
-    if (picked != null && picked != _newUserBirthDate) {
+    if (picked != null && picked != _birthday) {
       setState(() {
-        _newUserBirthDate = picked;
+        _birthday = picked;
       });
       print(
           '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}');
     }
   }
 
-  // // 유저 정보를 수정하는 통신
-  // Future<void> _userUpdateDispatch() async {
-  //   final url = Uri.parse("http://175.201.78.168:80/together/update");
-  //   final response = await http.post(url);
-  //   print('Response status: ${response.statusCode}');
-  //   print('Response body: ${response.body}');
+  void _onChangeGender(String value) {
+    setState(() {
+      _gender = value;
+      _onChangeAllText();
+    });
+  }
 
-  //   // 응답 처리
-  //   if (response.statusCode == 200) {
-  //     print("Response body: ${response.body}");
-  //   } else {
-  //     print('Response status: ${response.statusCode}');
-  //     print('Response body: ${response.body}');
-  //   }
-  // }
+  @override
+  void dispose() {
+    _mobileController.dispose();
+    _mobileCheckController.dispose();
+    _nameController.dispose();
+    _nickNameController.dispose();
 
-  Future<void> _showAlertDialog() async {
-    // 개인정보 수정여부 모달창
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('개인정보 수정'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('해당 정보를 수정하시겠습니까?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              // 취소 버튼
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('아니오'),
-            ),
-            TextButton(
-              // 수정 버튼
-              onPressed: () {
-                // _userUpdateDispatch();
-              },
-              child: const Text('예'),
-            ),
-          ],
-        );
-      },
-    );
+    super.dispose();
   }
 
   @override
@@ -308,224 +388,281 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
-          title: const Text("회원 정보 수정"),
-          // actions: [
-          //   IconButton(
-          //     onPressed: _updateUserInfo,
-          //     icon: const Icon(Icons.done),
-          //   ),
-          // ],
+          title: const Text("내 정보 수정"),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 30.0),
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: Sizes.size16,
+            horizontal: Sizes.size10,
+          ),
+          child: ElevatedButton(
+            onPressed: _isEditFinished && _isAuthMobile && _isAuthNickName
+                ? _onUpdateSubmitted
+                : null,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: Sizes.size16,
+              ),
+              child: Text("수정완료"),
+            ),
+          ),
+        ),
+        body: Scrollbar(
+          thumbVisibility: true,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Padding(
-                //   padding: const EdgeInsets.all(8.0),
-                //   child: Expanded(
-                //     child: GestureDetector(
-                //       child: CircleAvatar(
-                //         radius: 38.0,
-                //         foregroundImage: NetworkImage(
-                //           "https://avatars.githubusercontent.com/u/77985708?v=4",
-                //         ),
-                //         child: Text("재현"),
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                // TextFormField(
-                //   initialValue: userDatas[0]['userName'],
-                //   onChanged: (value) {
-                //     setState(() {
-                //       _newUserName = value;
-                //     });
-                //   },
-                //   decoration: InputDecoration(
-                //     labelText: "이름",
-                //   ),
-                // ),
-                _title(title: "이메일"),
-                SWAGTextField(
-                  hintText: "이메일을 입력하세요",
-                  maxLine: 1,
-                  controller: _emailController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserEmail = value!;
-                    });
-                  },
+                Gaps.v20,
+                GestureDetector(
+                  onTap: _callNaverProfile,
+                  child: FractionallySizedBox(
+                    widthFactor: 1,
+                    child: Column(
+                      children: [
+                        Container(
+                          height: Sizes.size64,
+                          // Container 안에 있는 padding의 타입은 EdgeInsets 이다.
+                          padding: const EdgeInsets.all(Sizes.size14),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.shade400,
+                              width: 1,
+                            ),
+                          ),
+                          // Column : 위젯을 세로로 차례대로 배치
+                          // Row : 위젯을 가로로 차례대로 배치
+                          // Stack : 위젯을 위에다가 겹쳐서 배치(레이어 같은 개념)
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Image.asset(
+                                  'assets/images/naver.png',
+                                  width: Sizes.size40,
+                                ),
+                              ),
+                              const Text(
+                                "네이버정보 가져오기",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: Sizes.size18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-                Gaps.v12,
-                _title(title: "이름"),
-                SWAGTextField(
-                  hintText: "이름을 입력하세요",
-                  maxLine: 1,
-                  controller: _userNameController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserName = value!;
-                    });
-                  },
+                Gaps.v20,
+                UserDataBox(
+                  name: "이메일",
+                  data: _email,
+                  hint: "네이버에서 정보를 가져와주세요!",
                 ),
-                Gaps.v12,
-                _title(title: "인사말"),
-                SWAGTextField(
-                  hintText: "인사말을 간단하게 입력하세요",
-                  maxLine: 1,
-                  controller: _userDefController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserDef = value!;
-                    });
-                  },
+                Text(
+                  "＃ 이메일을 통해 SNS 로그인이 진행되어 임의로 변경을 할 수 없습니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
-                Gaps.v12,
-                _title(title: "닉네임(SNS)"),
+                Gaps.v10,
+                Text(
+                  "닉네임(SNS)",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
                 SWAGTextField(
                   hintText: "SNS에서 사용할 닉네임",
                   maxLine: 1,
-                  controller: _userNickNameController,
+                  controller: _nickNameController,
                   onChanged: _onChangeNickName,
                   buttonText: "중복확인",
                   errorText: _nickNameError,
                   onSubmitted: _onCheckNickName,
                   helperText: _nickNameHelper,
                 ),
-                //  _title(title: "비밀번호"),
-                // SWAGTextField(
-                //   hintText: "비밀번호를 입력하세요",
-                //   maxLine: 1,
-                //   controller: _userPwController,
-                //   isPassword: true,
-                //   onSubmitted: () {
-                //     context.pushNamed(
-                //         ChangeUserPw.routeName,
-                //         extra: ChangeUserPwArgs(
-                //           userPw: _newUserPw,
-                //         ),
-                //       );
-                //   },
-                // ),
-                Gaps.v12,
-                // TextFormField(
-                //   initialValue: userDatas[0]['userPw'],
-                //   obscureText: true,
-                //   onChanged: (value) {
-                //     setState(() {
-                //       _newUserPw = value;
-                //     });
-                //   },
-                //   decoration: InputDecoration(
-                //     labelText: "비밀번호",
-                //     suffixIcon: IconButton(
-                //       onPressed: () {
-                //         context.pushNamed(
-                //           ChangeUserPw.routeName,
-                //           extra: ChangeUserPwArgs(
-                //             userPw: _newUserPw,
-                //           ),
-                //         );
-                //       },
-                //       icon: Icon(
-                //         Icons.chevron_right_rounded,
-                //         size: Sizes.size24,
-                //       ),
-                //     ),
-                //   ),
-                // ),
-                _title(title: "성별"),
-                SWAGTextField(
-                  hintText: "성별을 입력하세요",
-                  maxLine: 1,
-                  controller: _userGenderController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserGender = value!;
-                    });
-                  },
+                Gaps.v10,
+                Text(
+                  "이름(실명)",
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
-                Gaps.v12,
-                _title(title: "생년월일"),
-                InkWell(
-                  onTap: () {
-                    _selectDate(context);
-                  },
-                  child: InputDecorator(
-                    decoration: InputDecoration(
-                      hintText: 'YYYY-MM-DD',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          width: 1,
-                          color: Color(0xFFDBDBDB),
+                Gaps.v6,
+                SWAGTextField(
+                  hintText: "봉사 신청 기능에 사용될 실명",
+                  maxLine: 1,
+                  controller: _nameController,
+                  errorText: _nameError,
+                  onChanged: _onChangeName,
+                ),
+                Gaps.v10,
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "생년월일",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    Gaps.h10,
+                    Expanded(
+                      flex: 3,
+                      child: InkWell(
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        child: InputDecorator(
+                          decoration: InputDecoration(
+                            hintText: 'YYYY-MM-DD',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: const BorderSide(
+                                width: 1,
+                                color: Color(0xFFDBDBDB),
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 14,
+                            ),
+                          ),
+                          child: Text(
+                            _birthday != null
+                                ? '${_birthday!.year}-${_birthday!.month.toString().padLeft(2, '0')}-${_birthday!.day.toString().padLeft(2, '0')}'
+                                : '선택하지 않음',
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
                         ),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 14,
-                      ),
                     ),
-                    child: Text(
-                      _newUserBirthDate != null
-                          ? '${_newUserBirthDate!.year}-${_newUserBirthDate!.month.toString().padLeft(2, '0')}-${_newUserBirthDate!.day.toString().padLeft(2, '0')}'
-                          : '선택하지 않음',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                ),
-                Gaps.v12,
-                _title(title: "전화번호"),
-                SWAGTextField(
-                  hintText: "전화번호를 입력하세요",
-                  maxLine: 1,
-                  controller: _userPhoneNumberController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserPhoneNumber = value!;
-                    });
-                  },
-                  onSubmitted: () {
-                    context.pushNamed(
-                      ChangePhoneNum.routeName,
-                      extra: ChangePhoneNumArgs(
-                        userPhoneNumber: _newUserPhoneNumber,
-                      ),
-                    );
-                  },
-                ),
-                Gaps.v12,
-                _title(title: "사용자 구분"),
-                SWAGTextField(
-                  hintText: "사용자 유형을 선택하세요",
-                  maxLine: 1,
-                  controller: _userTypeController,
-                  onChanged: (value) {
-                    setState(() {
-                      _newUserType = value!;
-                    });
-                  },
+                  ],
                 ),
                 Gaps.v20,
-
-                ElevatedButton(
-                  // 수정하기 버튼
-                  onPressed: () {
-                    _showAlertDialog();
-                  },
-                  child: const Text("수정하기"),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        "성별",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                    ),
+                    Gaps.h10,
+                    Expanded(
+                      flex: 3,
+                      child: SWAGStateDropDownButton(
+                        initOption: _gender,
+                        onChangeOption: _onChangeGender,
+                        title: "성별",
+                        options: _genderCategory,
+                      ),
+                    ),
+                  ],
+                ),
+                Gaps.v6,
+                Text(
+                  "＃ 봉사를 신청했을때 해당 개인 정보로 기관에 데이터가 전달되기 때문에 꼭 본인의 정보를 정확하게 기입하셔야 합니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+                Gaps.v20,
+                Text(
+                  "전화번호",
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                Gaps.v6,
+                SWAGTextField(
+                  hintText: "'-'없이 입력해주세요.",
+                  maxLine: 1,
+                  controller: _mobileController,
+                  errorText: _mobileError,
+                  helperText: _mobileHelper,
+                  buttonText: "인증번호 요청",
+                  onSubmitted: _callMobileCheckCode,
+                  onChanged: _onChangeMobile,
+                  keyboardType: TextInputType.number,
+                ),
+                Gaps.v10,
+                SWAGTextField(
+                  hintText: "인증번호",
+                  maxLine: 1,
+                  controller: _mobileCheckController,
+                  buttonText: "인증하기",
+                  onSubmitted: _callAuthMobile,
+                  keyboardType: TextInputType.number,
+                  errorText: _mobileCheckError,
+                ),
+                Gaps.v10,
+                Text(
+                  "＃ 하나의 핸드폰 번호를 여러개의 계정에 중복으로 등록할 수 없습니다!",
+                  style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class UserDataBox extends StatelessWidget {
+  const UserDataBox({
+    super.key,
+    required this.data,
+    required this.name,
+    required this.hint,
+  });
+
+  final String name;
+  final String data;
+  final String hint;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Sizes.size5),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 1,
+            child: Text(
+              name,
+              style: Theme.of(context).textTheme.titleSmall,
+            ),
+          ),
+          Gaps.h10,
+          Expanded(
+            flex: 3,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 14,
+                vertical: 14,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  width: 1,
+                  color: const Color(0xFFDBDBDB),
+                ),
+              ),
+              child: Text(
+                data.trim().isEmpty ? hint : data,
+                style: data.trim().isEmpty
+                    ? Theme.of(context).textTheme.labelLarge
+                    : Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

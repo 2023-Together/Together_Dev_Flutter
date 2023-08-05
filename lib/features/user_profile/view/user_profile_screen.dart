@@ -3,31 +3,33 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/post_card_model.dart';
 
-final List<Map<String, dynamic>> userDatas = [
-  {
-    "userId": "1",
-    "userEmail": "thdusrkd01@naver.com",
-    "userPw": "000000",
-    "userName": "강소연",
-    "userNickName": "망고012",
-    "userDef": "hello!",
-    "userGender": "여자",
-    "userType": "봉사자",
-    // "userProfileImage": "",
-    "userBirthDate": "2001-09-28",
-    "userPhoneNumber": "010-0000-0000",
-  },
-];
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/user_provider.dart';
+
+// final List<Map<String, dynamic>> userDatas = [
+//   {
+//     "userId": "1",
+//     "userEmail": "thdusrkd01@naver.com",
+//     "userPw": "000000",
+//     "userName": "강소연",
+//     "userNickName": "망고012",
+//     "userDef": "hello!",
+//     "userGender": "여자",
+//     "userType": "봉사자",
+//     // "userProfileImage": "",
+//     "userBirthDate": "2001-09-28",
+//     "userPhoneNumber": "010-0000-0000",
+//   },
+// ];
 
 // class UserProfileScreenArgs {
 //   final int userId1;
@@ -75,7 +77,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
 
@@ -92,8 +94,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    // CustomScrollView : 스크롤 가능한 구역
+    final userData = context.watch<UserProvider>().userData;
+
     return Scaffold(
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       body: SafeArea(
@@ -139,16 +141,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Column(
                     children: [
                       UserProfileCard(
-                        userId: userDatas[0]['userId'],
-                        userEmail: userDatas[0]['userEmail'],
-                        userPw: userDatas[0]['userPw'],
-                        userName: userDatas[0]['userName'],
-                        userNickName: userDatas[0]['userNickName'],
-                        userGender: userDatas[0]['userGender'],
-                        userDef: userDatas[0]['userDef'],
-                        userType: userDatas[0]['userType'],
-                        userBirthDate: userDatas[0]['userBirthDate'],
-                        userPhoneNumber: userDatas[0]['userPhoneNumber'],
+                        userData: userData,
                       ),
                       // Gaps.v10,
                       // Row(
@@ -196,8 +189,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             body: TabBarView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: FutureBuilder<List<PostCardModel>>(
                     // future: _postGetDispatch(),
                     future: _postListWithoutAds != null
@@ -210,15 +202,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: CircularProgressIndicator(),
                         );
                       } else if (snapshot.hasError) {
-                        if (snapshot.error is TimeoutException) {
-                          return const Center(
-                            child: Text('통신 연결 실패!'),
-                          );
-                        } else {
-                          return Center(
-                            child: Text('오류 발생: ${snapshot.error}'),
-                          );
-                        }
+                        return Center(
+                          child: Text('오류 발생: ${snapshot.error}'),
+                        );
                       } else {
                         _postListWithoutAds =
                             snapshot.data!.where((item) => !item.isAd).toList();
