@@ -19,7 +19,7 @@ import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart'
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
-import 'package:swag_cross_app/features/user_profile/view/change_user_pw.dart';
+import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
@@ -298,12 +298,12 @@ final router = GoRouter(
         },
         routes: [
           GoRoute(
-            path: "userPw",
-            name: ChangeUserPw.routeName,
+            path: "userPhoneNum",
+            name: ChangePhoneNum.routeName,
             builder: (context, state) {
-              final args = state.extra as ChangeUserPwArgs;
-              return ChangeUserPw(
-                userPw: args.userPw,
+              final args = state.extra as ChangePhoneNumArgs;
+              return ChangePhoneNum(
+                userPhoneNumber: args.userPhoneNumber,
               );
             },
           ),
