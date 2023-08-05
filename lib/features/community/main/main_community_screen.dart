@@ -84,13 +84,21 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 로그인 상태가 아닐때 아이콘 클릭 하면 실행
   void _onLoginTap() {
-    context.pushReplacementNamed(SignInScreen.routeName);
+    context.pushNamed(SignInScreen.routeName);
   }
 
   // 리스트 새로고침
-  Future<void> _refreshComunityList() async {
+  Future<void> _refreshPostList() async {
     _postGetDispatch();
     setState(() {});
+  }
+
+  Future<void> _searchPostList() async {
+    _searchController.text = "";
+    _focusNode.unfocus();
+    _toggleAnimations();
+    _postList = await _postGetDispatch();
+    // _postList = await _searchPostGetDispatch();
   }
 
   // 광고 로딩 실패일때 실행
@@ -120,7 +128,28 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 : $jsonResponse");
+      print("메인 커뮤니티 : 성공");
+
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      _postList =
+          jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
+
+      return await _insertAds(_postList!, 5);
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+    }
+  }
+
+  Future<List<PostCardModel>> _searchPostGetDispatch() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+    final response = await http.get(url);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("메인 커뮤니티 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -284,7 +313,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   _postList = snapshot.data!;
 
                   return RefreshIndicator.adaptive(
-                    onRefresh: _refreshComunityList,
+                    onRefresh: _refreshPostList,
                     child: CustomScrollView(
                       controller: _scrollController,
                       // CustomScrollView 안에 들어갈 element들
@@ -379,11 +408,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     hintText: "검색어를 입력하세요.",
                     maxLine: 1,
                     controller: _searchController,
-                    onSubmitted: () {
-                      _searchController.text = "";
-                      _focusNode.unfocus();
-                      _toggleAnimations();
-                    },
+                    onSubmitted: _searchPostList,
                     buttonText: "검색",
                     focusNode: _focusNode,
                   ),

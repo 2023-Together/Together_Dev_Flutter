@@ -138,7 +138,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 커뮤니티 : $jsonResponse");
+      print("동아리 커뮤니티 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =

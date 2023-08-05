@@ -66,7 +66,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("내 정보 : $jsonResponse");
+      print("내 정보 : 성공");
 
       // 응답 데이터를 PostCardModel 리스트로 파싱하여 반환
       return jsonResponse

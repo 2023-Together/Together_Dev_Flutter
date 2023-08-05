@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/widgets/auth_button.dart';
@@ -104,12 +103,7 @@ class _SignInScreenState extends State<SignInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          leading: BackButton(
-            onPressed: () =>
-                context.pushReplacementNamed(MainNavigation.routeName),
-          ),
-        ),
+        appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
           child: Column(

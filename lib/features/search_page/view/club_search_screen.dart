@@ -78,7 +78,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 리스트 : $jsonResponse");
+      print("동아리 리스트 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _clubList =
