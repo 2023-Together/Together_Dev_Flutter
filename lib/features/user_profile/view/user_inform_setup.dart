@@ -49,9 +49,10 @@ class UserInformSetup extends StatelessWidget {
       appBar: AppBar(
         title: const Text("설정"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 18.0, horizontal: 30.0),
-        child: ListView(
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 26),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _title(title: "회원 정보"),
             Card(
