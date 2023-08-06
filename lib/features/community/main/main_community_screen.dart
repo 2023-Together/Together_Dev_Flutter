@@ -93,14 +93,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     setState(() {});
   }
 
-  Future<void> _searchPostList() async {
-    _searchController.text = "";
-    _focusNode.unfocus();
-    _toggleAnimations();
-    _postList = await _postGetDispatch();
-    // _postList = await _searchPostGetDispatch();
-  }
-
   // 광고 로딩 실패일때 실행
   void failedAdsLoading(Ad ad, LoadAdError error) {
     ad.dispose();
@@ -142,24 +134,31 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     }
   }
 
-  Future<List<PostCardModel>> _searchPostGetDispatch() async {
+  Future<void> _searchPostList() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
-    final response = await http.get(url);
+        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"keyword": _searchController.text};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 : 성공");
+      print("메인 커뮤니티 검색 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
-      _postList =
+      final jsonPostList =
           jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
 
-      return await _insertAds(_postList!, 5);
+      _postList = await _insertAds(jsonPostList, 5);
+      _searchController.text = "";
+      _focusNode.unfocus();
+      _toggleAnimations();
+      setState(() {});
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
     }
   }
 
