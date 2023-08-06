@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/club_search_model.dart';
@@ -49,13 +48,11 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
-  List<ClubSearchModel> _clubList = [];
-  List<ClubSearchModel> _filteredList = [];
+  List<ClubSearchModel>? _clubList;
+  List<ClubSearchModel>? _filteredList;
 
   bool _isFocused = false;
   bool _isOnlyRequest = false;
-
-  List<ClubDataModel> clubList = [];
 
   @override
   void initState() {
@@ -84,15 +81,39 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       _clubList =
           jsonResponse.map((data) => ClubSearchModel.fromJson(data)).toList();
 
-      // _filteredList를 사용하는 코드도 적절하게 수정해야 할 수도 있습니다.
-      _filteredList =
-          _clubList.where((element) => element.clubRecruiting == 1).toList();
-
-      return _clubList;
+      return _clubList!;
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+    }
+  }
+
+  Future<void> _searchClubList() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/club/getClubForKeyword");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"keyword": _searchController.text};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse.length);
+      print("동아리 검색 : 성공");
+
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      _clubList =
+          jsonResponse.map((data) => ClubSearchModel.fromJson(data)).toList();
+
+      _searchController.text = "";
+      _focusNode.unfocus();
+      _toggleAnimations();
+      setState(() {});
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
     }
   }
 
@@ -107,9 +128,8 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   // 리스트 새로고침
   Future _refreshClubList() async {
-    setState(() {
-      clubSearchPostList = initClubSearchPostList;
-    });
+    _clubList = await _clubGetDispatch();
+    setState(() {});
   }
 
   void _handleFocusChange() {
@@ -133,18 +153,22 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       // 애니메이션을 실행
       _animationController.forward();
     }
-
-    setState(() {});
   }
 
   void _toggleOnlyRequest() {
     _scrollToTop();
-    clubSearchPostList = [...clubSearchPostList] + initClubSearchPostList;
-    _filteredList =
-        _clubList.where((element) => element.clubRecruiting == 1).toList();
     setState(() {
       _isOnlyRequest = !_isOnlyRequest;
     });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _scrollController.dispose();
+    _searchController.dispose();
+
+    super.dispose();
   }
 
   // void onChangeOption1(String? value) {
@@ -196,53 +220,43 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
           ),
         ),
       ),
-      body: FutureBuilder<List<ClubSearchModel>>(
-        future: _clubGetDispatch(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // 데이터를 기다리는 동안 로딩 인디케이터 표시
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            // 에러가 발생한 경우 에러 메시지 표시
-            return Center(
-              child: Text('오류 발생: ${snapshot.error}'),
-            );
-          } else {
-            // 데이터를 성공적으로 가져왔을 때 ListView 표시
-            _clubList = snapshot.data!;
-            _filteredList = _clubList
-                .where((element) => element.clubRecruiting == 1)
-                .toList();
+      body: Stack(
+        children: [
+          FutureBuilder<List<ClubSearchModel>>(
+            future: _clubList != null
+                ? Future.value(_clubList!)
+                : _clubGetDispatch(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // 데이터를 기다리는 동안 로딩 인디케이터 표시
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                // 에러가 발생한 경우 에러 메시지 표시
+                return Center(
+                  child: Text('오류 발생: ${snapshot.error}'),
+                );
+              } else {
+                // 데이터를 성공적으로 가져왔을 때 ListView 표시
+                _clubList = snapshot.data!;
+                _filteredList = _clubList!
+                    .where((element) => element.clubRecruiting == 1)
+                    .toList();
 
-            return Stack(
-              children: [
-                RefreshIndicator.adaptive(
+                return RefreshIndicator.adaptive(
                   onRefresh: _refreshClubList,
                   child: ListView.separated(
                     controller: _scrollController,
                     padding: const EdgeInsets.symmetric(vertical: 6),
                     itemBuilder: (context, index) {
                       if (_isOnlyRequest) {
-                        final item = _filteredList[index];
                         return ClubRequestCard(
-                          clubId: item.clubId,
-                          clubDef: item.clubDescription,
-                          clubName: item.clubName,
-                          clubMaster: item.clubLeaderId,
-                          clubNum: 0,
-                          isRequest: item.clubRecruiting,
+                          clubData: _filteredList![index],
                         );
                       } else {
-                        final item = _clubList[index];
                         return ClubRequestCard(
-                          clubId: item.clubId,
-                          clubDef: item.clubDescription,
-                          clubName: item.clubName,
-                          clubMaster: item.clubLeaderId,
-                          clubNum: 0,
-                          isRequest: item.clubRecruiting,
+                          clubData: _clubList![index],
                         );
                       }
                     },
@@ -250,153 +264,44 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                       return Gaps.v14;
                     },
                     itemCount: _isOnlyRequest
-                        ? _filteredList.length
-                        : _clubList.length,
+                        ? _filteredList!.length
+                        : _clubList!.length,
                   ),
+                );
+              }
+            },
+          ),
+          if (_isFocused)
+            // 슬라이드 화면 뒤쪽의 검은 화면 구현
+            ModalBarrier(
+              // color: _barrierAnimation,
+              color: Colors.transparent,
+              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+              dismissible: true,
+              // 자신을 클릭하면 실행되는 함수
+              onDismiss: () => _focusNode.unfocus(),
+            ),
+          // 검색 화면
+          FadeTransition(
+            opacity: _panelOpacityAnimation,
+            child: SlideTransition(
+              position: _panelSlideAnimation,
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(6),
+                child: SWAGTextField(
+                  hintText: "검색어를 입력하세요.",
+                  maxLine: 1,
+                  controller: _searchController,
+                  onSubmitted: _searchClubList,
+                  buttonText: "검색",
+                  focusNode: _focusNode,
                 ),
-                if (_isFocused)
-                  // 슬라이드 화면 뒤쪽의 검은 화면 구현
-                  ModalBarrier(
-                    // color: _barrierAnimation,
-                    color: Colors.transparent,
-                    // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-                    dismissible: true,
-                    // 자신을 클릭하면 실행되는 함수
-                    onDismiss: () => _focusNode.unfocus(),
-                  ),
-                // 검색 화면
-                FadeTransition(
-                  opacity: _panelOpacityAnimation,
-                  child: SlideTransition(
-                    position: _panelSlideAnimation,
-                    child: Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.all(6),
-                      child: SWAGTextField(
-                        hintText: "검색어를 입력하세요.",
-                        maxLine: 1,
-                        controller: _searchController,
-                        onSubmitted: () {
-                          _searchController.text = "";
-                          _focusNode.unfocus();
-                          _toggleAnimations();
-                        },
-                        onChanged: (String? value) {
-                          print(_searchController.text);
-                        },
-                        buttonText: "검색",
-                        focusNode: _focusNode,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }
-        },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-
-List<Map<String, dynamic>> clubSearchPostList = [
-  {
-    "clubId": 1,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 22,
-    "isRequest": true,
-  },
-  {
-    "clubId": 2,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 64,
-    "isRequest": true,
-  },
-  {
-    "clubId": 3,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 21,
-    "isRequest": false,
-  },
-  {
-    "clubId": 4,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 18,
-    "isRequest": true,
-  },
-  {
-    "clubId": 5,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 8,
-    "isRequest": false,
-  },
-  {
-    "clubId": 6,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 37,
-    "isRequest": false,
-  },
-];
-
-List<Map<String, dynamic>> initClubSearchPostList = [
-  {
-    "clubId": 1,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 22,
-    "isRequest": true,
-  },
-  {
-    "clubId": 2,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 64,
-    "isRequest": true,
-  },
-  {
-    "clubId": 3,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 21,
-    "isRequest": false,
-  },
-  {
-    "clubId": 4,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 18,
-    "isRequest": true,
-  },
-  {
-    "clubId": 5,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 8,
-    "isRequest": false,
-  },
-  {
-    "clubId": 6,
-    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
-    "clubName": "SWAG 동아리",
-    "clubMaster": "이재현",
-    "clubNum": 37,
-    "isRequest": false,
-  },
-];

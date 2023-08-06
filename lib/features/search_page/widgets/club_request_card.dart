@@ -3,24 +3,15 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/view/club_search_detail_screen.dart';
+import 'package:swag_cross_app/models/club_search_model.dart';
 
 class ClubRequestCard extends StatelessWidget {
   const ClubRequestCard({
     super.key,
-    required this.clubDef,
-    required this.clubName,
-    required this.clubMaster,
-    required this.isRequest,
-    required this.clubId,
-    required this.clubNum,
+    required this.clubData,
   });
 
-  final int clubId;
-  final String clubDef;
-  final String clubName;
-  final int clubMaster;
-  final int clubNum;
-  final int isRequest;
+  final ClubSearchModel clubData;
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +20,7 @@ class ClubRequestCard extends StatelessWidget {
         context.pushNamed(
           ClubSearchDetailScreen.routeName,
           extra: ClubSearchDetailScreenArgs(
-            clubId: clubId,
-            clubDef: clubDef,
-            clubName: clubName,
-            clubMaster: clubMaster,
+            clubData: clubData,
           ),
         );
       },
@@ -73,12 +61,12 @@ class ClubRequestCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        clubName,
+                        clubData.clubName,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      isRequest == 1
+                      clubData.clubRecruiting == 1
                           ? Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 4),
@@ -123,7 +111,7 @@ class ClubRequestCard extends StatelessWidget {
                   ),
                   const Divider(),
                   Text(
-                    clubDef,
+                    clubData.clubDescription,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -132,8 +120,8 @@ class ClubRequestCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("인원 : $clubNum명"),
-                      Text("동아리장 : $clubMaster"),
+                      const Text("인원 : 0명"),
+                      Text("동아리장 : ${clubData.clubLeaderId}"),
                     ],
                   ),
                 ],

@@ -107,11 +107,11 @@ class _MainNavigationState extends State<MainNavigation> {
           // ),
           Offstage(
             offstage: selectedIndex != 2,
-            child: const ClubMainScreen(),
+            child: isLogined ? const ClubMainScreen() : null,
           ),
           Offstage(
             offstage: selectedIndex != 3,
-            child: const UserProfileScreen(),
+            child: isLogined ? const UserProfileScreen() : null,
           ),
         ],
       ),

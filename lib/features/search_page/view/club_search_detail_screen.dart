@@ -1,19 +1,18 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/club_search_model.dart';
+
 class ClubSearchDetailScreenArgs {
-  final int clubId;
-  final String clubDef;
-  final String clubName;
-  final int clubMaster;
+  final ClubSearchModel clubData;
 
   ClubSearchDetailScreenArgs({
-    required this.clubId,
-    required this.clubDef,
-    required this.clubName,
-    required this.clubMaster,
+    required this.clubData,
   });
 }
 
@@ -23,32 +22,43 @@ class ClubSearchDetailScreen extends StatelessWidget {
 
   const ClubSearchDetailScreen({
     super.key,
-    required this.clubId,
-    required this.clubDef,
-    required this.clubName,
-    required this.clubMaster,
+    required this.clubData,
   });
 
-  final int clubId;
-  final String clubDef;
-  final String clubName;
-  final int clubMaster;
+  final ClubSearchModel clubData;
 
   void _onSubmit(BuildContext context) {
     swagPlatformDialog(
       context: context,
       title: "신청 알림",
-      message: "정말로 $clubName에 신청하실건가요?",
+      message: "정말로 ${clubData.clubName}에 신청하실건가요?",
       actions: [
         TextButton(
           onPressed: () => context.pop(),
           child: const Text("아니오"),
         ),
         TextButton(
-          onPressed: () {
-            context.pop();
-            context.pop();
-            context.pop();
+          onPressed: () async {
+            final url =
+                Uri.parse("http://58.150.133.91:80/together/club/joinClub");
+            final headers = {'Content-Type': 'application/json'};
+            final data = {
+              "joinUserId": "5",
+              "joinClubId": clubData.clubId,
+            };
+
+            final response =
+                await http.post(url, headers: headers, body: jsonEncode(data));
+
+            if (response.statusCode >= 200 && response.statusCode < 300) {
+              if (!context.mounted) return;
+              context.pop();
+              context.pop();
+              context.pop();
+            } else {
+              print("${response.statusCode} : ${response.body}");
+              throw Exception("통신 실패!");
+            }
           },
           child: const Text("예"),
         ),
@@ -69,6 +79,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(clubData.clubRecruiting == 1);
     return Scaffold(
       appBar: AppBar(
         title: const Text("동아리 신청"),
@@ -76,14 +87,15 @@ class ClubSearchDetailScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed: () => _onSubmit(context),
+          onPressed:
+              clubData.clubRecruiting == 1 ? () => _onSubmit(context) : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          child: const Text("신청"),
+          child: Text(clubData.clubRecruiting == 1 ? "신청" : "신청 불가능"),
         ),
       ),
       body: SingleChildScrollView(
@@ -99,7 +111,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Gaps.v10,
-                  _title(title: clubName),
+                  _title(title: clubData.clubName),
                   Gaps.v10,
                   Container(
                     width: MediaQuery.of(context).size.width,
@@ -114,7 +126,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                     child: Scrollbar(
                       child: SingleChildScrollView(
                         child: Text(
-                          clubDef,
+                          clubData.clubDescription,
                           style: Theme.of(context).textTheme.bodyMedium,
                           maxLines: null,
                         ),
@@ -131,7 +143,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
-                              text: "$clubMaster",
+                              text: "${clubData.clubLeaderId}",
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
