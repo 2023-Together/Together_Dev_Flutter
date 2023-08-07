@@ -3,31 +3,34 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
-
-import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 
-final List<Map<String, dynamic>> userDatas = [
-  {
-    "userId": "1",
-    "userEmail": "thdusrkd01@naver.com",
-    "userPw": "000000",
-    "userName": "강소연",
-    "userNickName": "망고012",
-    "userDef": "hello!",
-    "userGender": "여자",
-    "userType": "봉사자",
-    // "userProfileImage": "",
-    "userBirthDate": "2001-09-28",
-    "userPhoneNumber": "010-0000-0000",
-  },
-];
+import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/user_provider.dart';
+
+// final List<Map<String, dynamic>> userDatas = [
+//   {
+//     "userId": "1",
+//     "userEmail": "thdusrkd01@naver.com",
+//     "userPw": "000000",
+//     "userName": "강소연",
+//     "userNickName": "망고012",
+//     "userDef": "hello!",
+//     "userGender": "여자",
+//     "userType": "봉사자",
+//     // "userProfileImage": "",
+//     "userBirthDate": "2001-09-28",
+//     "userPhoneNumber": "010-0000-0000",
+//   },
+// ];
 
 // class UserProfileScreenArgs {
 //   final int userId1;
@@ -51,14 +54,19 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  late UserModel? userData;
+
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
 
-  List<PostCardModel>? _postList;
+  List<PostCardModel>? _postListWithoutAds;
+
+  final TextEditingController _DefController = TextEditingController();
+
+  String? _DefError;
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
-  final ScrollController _scrollController = ScrollController();
 
   Future<List<PostCardModel>> _postGetDispatch() async {
     final url =
@@ -67,7 +75,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
+      print("내 정보 : 성공");
 
       // 응답 데이터를 PostCardModel 리스트로 파싱하여 반환
       return jsonResponse
@@ -76,42 +84,67 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+    }
+  }
+
+  void _onUpdateDef() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://59.4.3.198:80/together/updateUserDef");
+
+    final data = {
+      "userId": userData!.userId,
+      "userDef": userData.userDef,
+    };
+    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
+    final body = jsonEncode(data); // 데이터를 JSON 문자열로 변환
+
+    final response =
+        await http.post(url, headers: headers, body: body); // 헤더와 JSON 문자열 전송
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          context.read<UserProvider>().userData?.userDef = userData.userDef;
+        });
+        print("통신 성공");
+      } else {
+        print("통신 실패!");
+        print(response.statusCode);
+        print(response.body);
+      }
+    } else {
+      print("수정 에러!");
+      print(response.statusCode);
+      print(response.body);
     }
   }
 
   // 리스트 새로고침
-  Future _refreshComunityList() async {
-    _postGetDispatch();
-    setState(() {});
-  }
-
-  // void httpTest() async {
-  //   try {
-  //     final url =
-  //         Uri.parse('http://58.150.133.91:8080/together/club/getAllClub');
-  //     final response = await http.get(url);
-
-  //     print('Response status: ${response.statusCode}');
-  //     print('Response body: ${response.body}');
-
-  //     // 응답 처리
-  //     if (response.statusCode == 200) {
-  //       // 성공적인 응답 처리
-  //     } else {
-  //       // 응답 오류 처리
-  //     }
-  //   } catch (e) {
-  //     // 예외 처리
-  //     print('예외 발생: $e');
-  //     // 예외에 따른 추가 처리 수행
-  //   }
+  // Future _refreshComunityList() async {
+  //   _postGetDispatch();
+  //   setState(() {});
   // }
 
   @override
+  void initState() {
+    super.initState();
+
+    // userData = context.read<UserProvider>().userData;
+
+    // _DefController.text = userData!.userDef ?? '';
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    // CustomScrollView : 스크롤 가능한 구역
+    final userData = context.watch<UserProvider>().userData;
+
     return Scaffold(
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       body: SafeArea(
@@ -157,34 +190,157 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Column(
                     children: [
                       UserProfileCard(
-                        userId: userDatas[0]['userId'],
-                        userEmail: userDatas[0]['userEmail'],
-                        userPw: userDatas[0]['userPw'],
-                        userName: userDatas[0]['userName'],
-                        userNickName: userDatas[0]['userNickName'],
-                        userGender: userDatas[0]['userGender'],
-                        userDef: userDatas[0]['userDef'],
-                        userType: userDatas[0]['userType'],
-                        userBirthDate: userDatas[0]['userBirthDate'],
-                        userPhoneNumber: userDatas[0]['userPhoneNumber'],
+                        userData: userData,
                       ),
-                      // Gaps.v10,
-                      // Row(
+                      Gaps.v20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Gaps.h20,
+                          Text(
+                            "상태 메세지",
+                            style: TextStyle(
+                              fontSize: Sizes.size20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gaps.v10,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(
+                            Sizes.size12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(Sizes.size8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Expanded(
+                              //   child: Row(
+                              //     children: [
+                              //       Icon(
+                              //         Icons.groups_2_outlined,
+                              //       ),
+                              //       Gaps.h10,
+                              //       // 기존 상태 메세지 표시
+                              //       Text("동아리: ${userData!.userDef}"),
+                              //     ],
+                              //   ),
+                              // ),
+                              Gaps.h5,
+                              GestureDetector(
+                                onTap: () {
+                                  // 상태 메세지 수정 버튼을 눌렀을 때의 동작
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      String? newStatus =
+                                          userData!.userDef; // 현재 상태 메세지를 보관
+
+                                      return AlertDialog(
+                                        title: Text("상태 메세지 수정"),
+                                        content: TextField(
+                                          onChanged: (value) {
+                                            newStatus =
+                                                value; // 새로운 상태 메세지를 업데이트
+                                          },
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(
+                                                  context); // 다이얼로그 닫기
+                                            },
+                                            child: Text("취소"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // setState(() {
+                                              //   userData.userDef = newStatus; // 상태 메세지 업데이트
+                                              // });
+                                              _onUpdateDef();
+                                              Navigator.pop(
+                                                  context); // 다이얼로그 닫기
+                                            },
+                                            child: Text("저장"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Icon(Icons.edit), // 상태 메세지 수정 아이콘
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // const Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
                       //   children: [
-                      //     const Expanded(
-                      //       child: Column(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [Text("봉사 신청"), Text("2건")],
-                      //       ),
-                      //     ),
-                      //     Container(height: 50, width: 2, color: Colors.grey),
-                      //     const Expanded(
-                      //       child: Column(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [Text("봉사 완료"), Text("6건")],
+                      //     Gaps.h20,
+                      //     Text(
+                      //       "상태 메세지",
+                      //       style: TextStyle(
+                      //         fontSize: Sizes.size20,
+                      //         fontWeight: FontWeight.bold,
                       //       ),
                       //     ),
                       //   ],
+                      // ),
+                      // Gaps.v10,
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      //   child: Container(
+                      //     padding: const EdgeInsets.all(
+                      //       Sizes.size12,
+                      //     ),
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.circular(Sizes.size8),
+                      //       boxShadow: [
+                      //         BoxShadow(
+                      //           color: Colors.grey.withOpacity(0.5),
+                      //           spreadRadius: 2,
+                      //           blurRadius: 3,
+                      //           offset: const Offset(0, 2),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     child: GestureDetector(
+                      //       onTap: () {},
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.groups_2_outlined,
+                      //               ),
+                      //               Gaps.h10,
+                      //               Text("동아리"),
+                      //             ],
+                      //           ),
+                      //           Gaps.h5,
+                      //           Icon(Icons.chevron_right), // Right arrow icon
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
                       // ),
                       Gaps.v20,
                       const Row(
@@ -214,45 +370,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             body: TabBarView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: FutureBuilder<List<PostCardModel>>(
-                    future: _postGetDispatch(),
+                    // future: _postGetDispatch(),
+                    future: _postListWithoutAds != null
+                        ? Future.value(
+                            _postListWithoutAds!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                        : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
                       } else if (snapshot.hasError) {
-                        if (snapshot.error is TimeoutException) {
-                          return const Center(
-                            child: Text('통신 연결 실패!'),
-                          );
-                        } else {
-                          return Center(
-                            child: Text('오류 발생: ${snapshot.error}'),
-                          );
-                        }
+                        return Center(
+                          child: Text('오류 발생: ${snapshot.error}'),
+                        );
                       } else {
-                        final postListWithoutAds =
+                        _postListWithoutAds =
                             snapshot.data!.where((item) => !item.isAd).toList();
-                
-                        return RefreshIndicator.adaptive(
-                          onRefresh: _refreshComunityList,
-                          child: CustomScrollView(
-                            controller: _scrollController,
-                            slivers: [
-                              SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  childCount: postListWithoutAds.length,
-                                  (context, index) {
-                                    final item = postListWithoutAds[index];
-                                    return PostCard(
-                                      postData: item,
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+
+                        return ListView.builder(
+                          itemCount: _postListWithoutAds!.length,
+                          itemBuilder: (context, index) => PostCard(
+                            postData: _postListWithoutAds![index],
                           ),
                         );
                       }

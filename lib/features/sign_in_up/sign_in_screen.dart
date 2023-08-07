@@ -20,8 +20,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
 
-  bool _onSaveCheck = false;
-  bool _isEditFinished = false;
+  // bool _onSaveCheck = false;
+  // bool _isEditFinished = false;
 
   late Map<String, dynamic>? userData;
 
@@ -46,25 +46,24 @@ class _SignInScreenState extends State<SignInScreen> {
   //     if (!mounted) return;
   //     context.read<UserProvider>().login("naver");
 
-  //     context.read<MainNavigationProvider>().changeIndex(0);
-  //     context.goNamed(MainNavigation.routeName);
+  //     context.pop();
   //   }
   // }
 
-  void _onChangeAllText(String? value) {
-    if (value == null) return;
-    _isEditFinished = _idController.text.trim().isNotEmpty &&
-        _pwController.text.trim().isNotEmpty;
-    setState(() {});
-  }
+  // void _onChangeAllText(String? value) {
+  //   if (value == null) return;
+  //   _isEditFinished = _idController.text.trim().isNotEmpty &&
+  //       _pwController.text.trim().isNotEmpty;
+  //   setState(() {});
+  // }
 
-  void _onChangeUserSaveCheck(bool? value) {
-    if (value != null) {
-      setState(() {
-        _onSaveCheck = value;
-      });
-    }
-  }
+  // void _onChangeUserSaveCheck(bool? value) {
+  //   if (value != null) {
+  //     setState(() {
+  //       _onSaveCheck = value;
+  //     });
+  //   }
+  // }
 
   void _onSignUpTap() {
     // context.pushNamed(SignUpFormScreen.routeName);
@@ -104,9 +103,7 @@ class _SignInScreenState extends State<SignInScreen> {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          automaticallyImplyLeading: true,
-        ),
+        appBar: AppBar(),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Sizes.size24),
           child: Column(

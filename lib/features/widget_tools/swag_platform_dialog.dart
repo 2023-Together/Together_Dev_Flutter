@@ -21,11 +21,13 @@ void swagPlatformDialog({
             color: Colors.black,
           ),
         ),
-        content: Text(
-          message,
-          style: const TextStyle(
-            fontSize: Sizes.size16,
-            fontWeight: FontWeight.normal,
+        content: SingleChildScrollView(
+          child: Text(
+            message,
+            style: const TextStyle(
+              fontSize: Sizes.size16,
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
         actions: actions,

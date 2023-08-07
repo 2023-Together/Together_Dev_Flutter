@@ -136,9 +136,9 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
     final response = await http.get(url);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
+      print("동아리 커뮤니티 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -148,7 +148,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
 
@@ -268,7 +268,10 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         children: [
           // 메인 화면
           FutureBuilder(
-            future: _postGetDispatch(),
+            future: _postList != null
+                ? Future.value(
+                    _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 // 데이터를 기다리는 동안 로딩 인디케이터 표시
@@ -277,15 +280,9 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                 );
               } else if (snapshot.hasError) {
                 // 에러가 발생한 경우 에러 메시지 표시
-                if (snapshot.error is TimeoutException) {
-                  return const Center(
-                    child: Text('통신 연결 실패!'),
-                  );
-                } else {
-                  return Center(
-                    child: Text('오류 발생: ${snapshot.error}'),
-                  );
-                }
+                return Center(
+                  child: Text('오류 발생: ${snapshot.error}'),
+                );
               } else {
                 // 데이터를 성공적으로 가져왔을 때 ListView 표시
                 _postList = snapshot.data!;

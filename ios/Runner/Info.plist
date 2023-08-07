@@ -270,6 +270,11 @@
          </dict>
       </array>
 
+      <key>LSApplicationQueriesSchemes</key>
+<array>
+	<string>https</string>
+</array>
+
       <!-- 카메라 / 갤러리로 이미지 불러오는 권한 -->
       <key>NSPhotoLibraryUsageDescription</key>
       <string></string>

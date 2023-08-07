@@ -22,7 +22,6 @@ import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 
 final router = GoRouter(
   routes: [
@@ -282,19 +281,7 @@ final router = GoRouter(
         path: UserInformUpdate.routeURL,
         name: UserInformUpdate.routeName,
         builder: (context, state) {
-          final args = state.extra as UserInformArgs;
-          return UserInformUpdate(
-            userId: args.userId,
-            userEmail: args.userEmail,
-            userPw: args.userPw,
-            userName: args.userName,
-            userNickName: args.userNickName,
-            userDef: args.userDef,
-            userGender: args.userGender,
-            userType: args.userType,
-            userBirthDate: args.userBirthDate,
-            userPhoneNumber: args.userPhoneNumber,
-          );
+          return const UserInformUpdate();
         },
         routes: [
           GoRoute(

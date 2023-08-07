@@ -28,6 +28,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUserData(UserModel userData) {
+    _userData = userData;
+    notifyListeners();
+  }
+
   void loginCheckIsNone(BuildContext context) {
     if (_isLogined) {
       _isLogined = false;

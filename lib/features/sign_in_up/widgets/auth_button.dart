@@ -3,10 +3,9 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
 class AuthButton extends StatefulWidget {
@@ -68,7 +67,6 @@ class _AuthButtonState extends State<AuthButton> {
     // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
     // final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
-    // if (!mounted) return;
     // if (result.status == NaverLoginStatus.loggedIn) {
     //   print('accessToken = ${result.accessToken}');
 
@@ -77,21 +75,46 @@ class _AuthButtonState extends State<AuthButton> {
 
     //   final url = Uri.parse("http://59.4.3.198:80/together/login");
     //   // final headers = {'Content-Type': 'application/json'};
-    //   final data = {"user_email": userData.email};
+    //   final data = {"userEmail": userData.email};
 
     //   final response = await http.post(url, body: data);
 
     //   if (response.statusCode == 200 || response.statusCode == 201) {
     //     final jsonResponse = jsonDecode(response.body);
     //     print(jsonResponse);
-
-    //     if (!mounted) return;
-    //     context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
-    //     context.read<MainNavigationProvider>().changeIndex(0);
-    //     context.goNamed(MainNavigation.routeName);
+    //     if (jsonResponse.isEmpty) {
+    //       print("로그인 실패");
+    //       if (!mounted) return;
+    //       swagPlatformDialog(
+    //         context: context,
+    //         title: "로그인 실패!",
+    //         message: "로그인이 실패하였습니다!",
+    //         actions: [
+    //           TextButton(
+    //             onPressed: () => context.pop(),
+    //             child: const Text("알겠습니다"),
+    //           ),
+    //         ],
+    //       );
+    //     } else {
+    //       if (!mounted) return;
+    //       context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+    //       context.pop();
+    //     }
     //   } else {
-    //     print('Response status: ${response.statusCode}');
-    //     print('Response body: ${response.body}');
+    //     print("로그인 실패");
+    //     if (!mounted) return;
+    //     swagPlatformDialog(
+    //       context: context,
+    //       title: "로그인 실패!",
+    //       message: "${response.statusCode} : ${response.body}",
+    //       actions: [
+    //         TextButton(
+    //           onPressed: () => context.pop(),
+    //           child: const Text("알겠습니다"),
+    //         ),
+    //       ],
+    //     );
     //   }
     // } else {
     //   swagPlatformDialog(
@@ -107,10 +130,20 @@ class _AuthButtonState extends State<AuthButton> {
     //   );
     // }
 
-    context.read<UserProvider>().testLogin();
+    if (!mounted) return;
+    final UserModel updateData = UserModel(
+      userId: 1,
+      userEmail: "dlwogus1027@naver.com",
+      userPhoneNumber: "01049049193",
+      userName: "이재현",
+      userNickname: "푸른함대앤디",
+      userGender: 0,
+      userBirthdate: DateTime.parse("1999-10-27"),
+      userType: "user",
+    );
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.read<UserProvider>().login(updateData);
+    context.pop();
   }
 
   // 네이버 회원가입
@@ -143,8 +176,7 @@ class _AuthButtonState extends State<AuthButton> {
   void _signInForKakao(BuildContext context) async {
     // await LoginStorage.saveLoginType("kakao");
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pop();
   }
 
   // 카카오 회원가입
@@ -160,8 +192,7 @@ class _AuthButtonState extends State<AuthButton> {
     //   },
     // );
 
-    context.read<MainNavigationProvider>().changeIndex(0);
-    context.goNamed(MainNavigation.routeName);
+    context.pop();
   }
 
   @override

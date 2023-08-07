@@ -54,9 +54,9 @@ class _MainNavigationState extends State<MainNavigation> {
       context.read<MainNavigationProvider>().changeIndex(index);
     } else if ((index == 2 || index == 3) &&
         !context.read<UserProvider>().isLogined) {
-      final loginType = context.read<UserProvider>().isLogined;
+      final isLogined = context.read<UserProvider>().isLogined;
 
-      if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
+      if (!isLogined) {
         swagPlatformDialog(
           context: context,
           title: "로그인 알림",
@@ -88,7 +88,7 @@ class _MainNavigationState extends State<MainNavigation> {
         context.watch<MainNavigationProvider>().navigationIndex;
     print(selectedIndex);
     return Scaffold(
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: Stack(
         children: [
           // 실제로 그 화면을 보고 있지 않더라도 랜더링 시켜주는 위젯
@@ -107,11 +107,11 @@ class _MainNavigationState extends State<MainNavigation> {
           // ),
           Offstage(
             offstage: selectedIndex != 2,
-            child: const ClubMainScreen(),
+            child: isLogined ? const ClubMainScreen() : null,
           ),
           Offstage(
             offstage: selectedIndex != 3,
-            child: const UserProfileScreen(),
+            child: isLogined ? const UserProfileScreen() : null,
           ),
         ],
       ),

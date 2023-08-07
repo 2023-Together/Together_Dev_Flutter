@@ -61,8 +61,6 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
   void initState() {
     super.initState();
 
-    _clubGetDispatch();
-
     _focusNode.addListener(_handleFocusChange);
 
     _scrollController.addListener(() {
@@ -80,7 +78,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
+      print("동아리 리스트 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _clubList =
@@ -208,15 +206,9 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
             );
           } else if (snapshot.hasError) {
             // 에러가 발생한 경우 에러 메시지 표시
-            if (snapshot.error is TimeoutException) {
-              return const Center(
-                child: Text('통신 연결 실패!'),
-              );
-            } else {
-              return Center(
-                child: Text('오류 발생: ${snapshot.error}'),
-              );
-            }
+            return Center(
+              child: Text('오류 발생: ${snapshot.error}'),
+            );
           } else {
             // 데이터를 성공적으로 가져왔을 때 ListView 표시
             _clubList = snapshot.data!;
