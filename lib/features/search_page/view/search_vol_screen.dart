@@ -10,9 +10,9 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
+import 'package:http/http.dart' as http;
 
 final List<String> volCategories = [
   "카테고리1",
@@ -156,9 +156,9 @@ class _VolSearchScreenState extends State<VolSearchScreen>
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
-  bool _isFocused = false;
-
   List<VolunteerModel>? _volList;
+
+  bool _isFocused = false;
 
   String selectedDropdown1 = '';
   String selectedDropdown2 = '';
@@ -234,11 +234,13 @@ class _VolSearchScreenState extends State<VolSearchScreen>
     '멘토링',
     '기타',
   ];
+
   List<String> dropdownList3 = [
     '',
     '모집 중',
     '모집 완료',
   ];
+
   List<String> dropdownList4 = [
     '',
     '가능',
@@ -255,7 +257,8 @@ class _VolSearchScreenState extends State<VolSearchScreen>
     if (_animationController.isCompleted) {
       _toggleAnimations();
     }
-    
+
+    // _apiGetDispatch();
   }
 
   // 애니메이션 동작
@@ -291,19 +294,27 @@ class _VolSearchScreenState extends State<VolSearchScreen>
     super.dispose();
   }
 
-  // // 1365, vms API를 가져오는 통신
+  // 1365, vms API를 가져오는 통신
   // void _apiGetDispatch() async {
-  //   final url = Uri.parse("http://218.157.74.17:80/together/readVMS1365Api");
-  //   final response = await http.get(url);
+  //   final url = Uri.parse("http://59.4.3.198:80/together/getVMS1365Api");
+  //   final response = await http.post(url);
 
   //   // 응답 처리
-  //   if (response.statusCode == 200) {
-  //     print("Response body: ${response.body}");
-  //   } else {
-  //     print('Response status: ${response.statusCode}');
-  //     print('Response body: ${response.body}');
-  //   }
+  //   if (response.statusCode >= 200 && response.statusCode < 300) {
+  //     final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  //     print(jsonResponse);
+  //     print("봉사 리스트 : 성공");
 
+  //     // 응답 데이터를 ClubSearchModel 리스트로 파싱
+  //     _volList =
+  //         jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+
+  //     print(_volList!.length);
+  //     print(_volList!);
+  //   } else {
+  //     print("${response.statusCode} : ${response.body}");
+  //     throw Exception("통신 실패!");
+  //   }
   // }
 
   Future<void> _postGetApiDispatch() async {
@@ -315,9 +326,9 @@ class _VolSearchScreenState extends State<VolSearchScreen>
       print(jsonResponse);
       print("성공");
 
-      _volList = jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+      _volList =
+          jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
-
 
       print(_volList!.length);
       print(_volList!);
@@ -460,23 +471,22 @@ class _VolSearchScreenState extends State<VolSearchScreen>
 
                       // 검색어가 없을 경우, 모든 항목 표시
                       else {
-                        return
-                            Container(
-                              height: 140,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                              ),
-                              child: VolPostCard(
-                                id: item["item"] ?? "",
-                                title: item["title"] ?? "",
-                                contnet: item["contnet"] ?? "",
-                                host: item["host"] ?? "",
-                                locationStr: item["locationStr"] ?? "",
-                                actPlace: item["actPlace"] ?? "",
-                                teenager: item["teenager"] ?? "",
-                                listApiType: item["listApiType"] ?? "",
-                              ),
-                            );
+                        return Container(
+                          height: 140,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: VolPostCard(
+                            id: item["item"] ?? "",
+                            title: item["title"] ?? "",
+                            contnet: item["contnet"] ?? "",
+                            host: item["host"] ?? "",
+                            locationStr: item["locationStr"] ?? "",
+                            actPlace: item["actPlace"] ?? "",
+                            teenager: item["teenager"] ?? "",
+                            listApiType: item["listApiType"] ?? "",
+                          ),
+                        );
 
                         //     FutureBuilder(
                         //   future: _postGetApiDispatch(),

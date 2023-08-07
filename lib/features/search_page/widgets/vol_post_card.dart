@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -102,30 +100,29 @@ class _VolPostCardState extends State<VolPostCard> {
           //   );
           // }
           swagPlatformDialog(
-                  context: context,
-                  title: "로그인 알림",
-                  message:
-                      "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
-                  actions: [
-                    TextButton(
-                      onPressed: () => context.pop(),
-                      child: const Text("아니오"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        if (widget.listApiType == "1365") {
-                          launchUrl(Uri.parse(
-                              'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${120}'));
-                        } else if (widget.listApiType == "vms") {
-                          launchUrl(Uri.parse(
-                              'https://www.vms.or.kr/partspace/recruitView.do?seq=${120}'));
-                        }
-                        Navigator.pop(context);
-                      },
-                      child: const Text("예"),
-                    ),
-                  ],
-                );
+            context: context,
+            title: "로그인 알림",
+            message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text("아니오"),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (widget.listApiType == "1365") {
+                    launchUrl(Uri.parse(
+                        'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${120}'));
+                  } else if (widget.listApiType == "vms") {
+                    launchUrl(Uri.parse(
+                        'https://www.vms.or.kr/partspace/recruitView.do?seq=${120}'));
+                  }
+                  Navigator.pop(context);
+                },
+                child: const Text("예"),
+              ),
+            ],
+          );
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
@@ -199,24 +196,24 @@ class _VolPostCardState extends State<VolPostCard> {
                                   color: Colors.black,
                                 ),
                               ),
-                            if (widget.listApiType != '1365' &&
-                                widget.listApiType != 'vms')
-                              SizedBox(width: 0, height: 0),
-                          ],
-                        ),
+                              // if (widget.listApiType != '1365' &&
+                              //     widget.listApiType != 'vms')
+                              //   const SizedBox(width: 0, height: 0),
+                            ),
 
-                        // Text(
-                        //   widget.locationStr,
-                        //   style: const TextStyle(
-                        //       color: Color.fromARGB(255, 124, 123, 123),
-                        //       fontSize: 12.0,
-                        //       height: 2.5),
-                        // ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
+                          // Text(
+                          //   widget.locationStr,
+                          //   style: const TextStyle(
+                          //       color: Color.fromARGB(255, 124, 123, 123),
+                          //       fontSize: 12.0,
+                          //       height: 2.5),
+                          // ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
