@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
@@ -8,6 +11,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/state_dropDown_button.dart';
 
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
+
+import 'package:http/http.dart' as http;
 
 final List<String> volCategories = [
   "카테고리1",
@@ -245,6 +250,7 @@ class _VolSearchScreenState extends State<VolSearchScreen>
   @override
   void initState() {
     super.initState();
+    _postGetApiDispatch();
     // _apiGetDispatch();
     _focusNode.addListener(_handleFocusChange);
     // 검색 창이 내려와있을 때 스크롤 하면 검색창 다시 사라짐
@@ -310,6 +316,28 @@ class _VolSearchScreenState extends State<VolSearchScreen>
   //     throw Exception("통신 실패!");
   //   }
   // }
+
+  Future<void> _postGetApiDispatch() async {
+    final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+    final response = await http.post(url);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse);
+      print("성공");
+
+      _volList =
+          jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+
+      print(_volList!.length);
+      print(_volList!);
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("API를 불러오는데 실패하였습니다.");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -459,6 +487,48 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                             listApiType: item["listApiType"] ?? "",
                           ),
                         );
+
+                        //     FutureBuilder(
+                        //   future: _postGetApiDispatch(),
+                        //   builder: (context, snapshot) {
+                        //     if (snapshot.connectionState ==
+                        //         ConnectionState.waiting) {
+                        //       return const Center(
+                        //         child: CircularProgressIndicator(),
+                        //       );
+                        //     } else if (snapshot.hasError) {
+                        //       if (snapshot.error is TimeoutException) {
+                        //         return const Center(
+                        //           child: Text("통신 연결 실패"),
+                        //         );
+                        //       } else {
+                        //         return const Center(
+                        //           child: Text(
+                        //             "알 수 없는 오류 발생",
+                        //           ),
+                        //         );
+                        //       }
+                        //     } else if (snapshot.hasData) {
+                        //       // 데이터가 있을 경우의 처리
+
+                        //       return VolPostCard(
+                        //         id: item["item"] ?? "",
+                        //         title: item["title"] ?? "",
+                        //         contnet: item["contnet"] ?? "",
+                        //         host: item["host"] ?? "",
+                        //         locationStr: item["locationStr"] ?? "",
+                        //         actPlace: item["actPlace"] ?? "",
+                        //         teenager: item["teenager"] ?? "",
+                        //         listApiType: item["listApiType"] ?? "",
+                        //       );
+                        //     } else {
+                        //       // 이외의 경우에 대한 처리ㄴㄴ
+                        //       return const Center(
+                        //         child: Text("데이터 없음"),
+                        //       );
+                        //     }
+                        //   },
+                        // );
                       }
                       // return Container(
                       //   height: 140,

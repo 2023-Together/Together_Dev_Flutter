@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class VolPostCard extends StatefulWidget {
   // 봉사활동 아이디
@@ -99,20 +102,30 @@ class _VolPostCardState extends State<VolPostCard> {
           //   );
           // }
           swagPlatformDialog(
-            context: context,
-            title: "로그인 알림",
-            message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
-            actions: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: const Text("아니오"),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const Text("예"),
-              ),
-            ],
-          );
+                  context: context,
+                  title: "로그인 알림",
+                  message:
+                      "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+                  actions: [
+                    TextButton(
+                      onPressed: () => context.pop(),
+                      child: const Text("아니오"),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        if (widget.listApiType == "1365") {
+                          launchUrl(Uri.parse(
+                              'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${120}'));
+                        } else if (widget.listApiType == "vms") {
+                          launchUrl(Uri.parse(
+                              'https://www.vms.or.kr/partspace/recruitView.do?seq=${120}'));
+                        }
+                        Navigator.pop(context);
+                      },
+                      child: const Text("예"),
+                    ),
+                  ],
+                );
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
@@ -186,108 +199,24 @@ class _VolPostCardState extends State<VolPostCard> {
                                   color: Colors.black,
                                 ),
                               ),
-                            )
-                          else if (widget.listApiType == 'vms')
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 7,
-                                vertical: 3,
-                              ),
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 59, 88, 255),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                              ),
-                              child: Text(
-                                widget.listApiType,
-                                style: const TextStyle(
-                                  fontSize: 10.0,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          if (widget.listApiType != '1365' &&
-                              widget.listApiType != 'vms')
-                            const SizedBox(width: 0, height: 0),
-                          Gaps.h8,
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 7, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: Colors.purple.shade300,
-                              // border: Border.all(
-                              //   width: 1,
-                              // ),
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                            ),
-                            child: const Text(
-                              "모집 중",
-                              style: TextStyle(
-                                fontSize: 10.0,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Text(
-                    widget.contnet,
-                    style: const TextStyle(fontSize: 12.0, height: 2.0),
-                  ),
-                  // Text(
-                  //   "모집기간 : ${widget.startTime} ~ ${widget.endTime}",
-                  //   style: const TextStyle(
-                  //     color: Color.fromARGB(255, 124, 123, 123),
-                  //     fontSize: 12.0,
-                  //     height: 2.8,
-                  //   ),
-                  // ),
-                  Text(
-                    "활동 장소: ${widget.actPlace}",
-                    style: const TextStyle(
-                        color: Color.fromARGB(255, 124, 123, 123),
-                        fontSize: 12.0,
-                        height: 2.8),
-                  ),
-                  // Text(
-                  //   "청소년 가능 여부: ${widget.teenager}",
-                  //   style: const TextStyle(
-                  //     color: Color.fromARGB(255, 124, 123, 123),
-                  //     fontSize: 12.0,
-                  //     height: 2.8
-                  //   ),
-                  // ),
-                  Container(
-                    height: 1,
-                    width: 400,
-                    color: const Color.fromARGB(255, 203, 203, 203),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.host,
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 124, 123, 123),
-                            fontSize: 12.0,
-                            height: 2.5),
-                      ),
-                      Text(
-                        widget.locationStr,
-                        style: const TextStyle(
-                            color: Color.fromARGB(255, 124, 123, 123),
-                            fontSize: 12.0,
-                            height: 2.5),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                            if (widget.listApiType != '1365' &&
+                                widget.listApiType != 'vms')
+                              SizedBox(width: 0, height: 0),
+                          ],
+                        ),
+
+                        // Text(
+                        //   widget.locationStr,
+                        //   style: const TextStyle(
+                        //       color: Color.fromARGB(255, 124, 123, 123),
+                        //       fontSize: 12.0,
+                        //       height: 2.5),
+                        // ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
