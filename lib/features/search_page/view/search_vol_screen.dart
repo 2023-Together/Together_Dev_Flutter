@@ -155,9 +155,12 @@ class _VolSearchScreenState extends State<VolSearchScreen>
   final TextEditingController _searchController = TextEditingController();
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
+  // 스크롤 제어를 위한 컨트롤러
+  final ScrollController _scrollController = ScrollController();
 
   List<VolunteerModel>? _volList;
 
+  int pageNum = 1;
   bool _isFocused = false;
 
   String selectedDropdown1 = '';
@@ -290,36 +293,17 @@ class _VolSearchScreenState extends State<VolSearchScreen>
     _animationController.dispose();
     _searchController.dispose();
     _focusNode.dispose();
+    _scrollController.dispose();
 
     super.dispose();
   }
 
-  // 1365, vms API를 가져오는 통신
-  // void _apiGetDispatch() async {
-  //   final url = Uri.parse("http://59.4.3.198:80/together/getVMS1365Api");
-  //   final response = await http.post(url);
-
-  //   // 응답 처리
-  //   if (response.statusCode >= 200 && response.statusCode < 300) {
-  //     final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-  //     print(jsonResponse);
-  //     print("봉사 리스트 : 성공");
-
-  //     // 응답 데이터를 ClubSearchModel 리스트로 파싱
-  //     _volList =
-  //         jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
-
-  //     print(_volList!.length);
-  //     print(_volList!);
-  //   } else {
-  //     print("${response.statusCode} : ${response.body}");
-  //     throw Exception("통신 실패!");
-  //   }
-  // }
-
   Future<void> _postGetApiDispatch() async {
     final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
-    final response = await http.post(url);
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"pageNum": pageNum};
+
+    final response = await http.post(url, headers: headers, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
@@ -439,6 +423,7 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                 Gaps.v6,
                 Expanded(
                   child: ListView.separated(
+                    controller: _scrollController,
                     shrinkWrap: true,
                     itemCount: volDatas.length,
                     itemBuilder: (context, index) {
