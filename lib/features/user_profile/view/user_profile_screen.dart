@@ -10,10 +10,12 @@ import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/user_profile_card.dart';
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/providers/user_provider.dart';
+
 
 // final List<Map<String, dynamic>> userDatas = [
 //   {
@@ -53,11 +55,17 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  late UserModel? userData;
+
   void _userSetupTap() {
     context.pushNamed(UserInformSetup.routeName);
   }
 
   List<PostCardModel>? _postListWithoutAds;
+
+  final TextEditingController _DefController = TextEditingController();
+
+  String? _DefError;
 
   // 스크롤 제어를 위한 컨트롤러를 선언합니다.
 
@@ -81,11 +89,53 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
   }
 
+  void _onUpdateDef() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://59.4.3.198:80/together/updateUserDef");
+
+    final data = {
+      "userId": userData!.userId,
+      "userDef": userData.userDef,
+    };
+    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
+    final body = jsonEncode(data); // 데이터를 JSON 문자열로 변환
+
+    final response =
+        await http.post(url, headers: headers, body: body); // 헤더와 JSON 문자열 전송
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final result = int.parse(response.body);
+      if (result == 0) {
+        setState(() {
+          context.read<UserProvider>().userData?.userDef = userData.userDef;
+        });
+        print("통신 성공");
+      } else {
+        print("통신 실패!");
+        print(response.statusCode);
+        print(response.body);
+      }
+    } else {
+      print("수정 에러!");
+      print(response.statusCode);
+      print(response.body);
+    }
+  }
+
   // 리스트 새로고침
   // Future _refreshComunityList() async {
   //   _postGetDispatch();
   //   setState(() {});
   // }
+
+  @override
+  void initState() {
+    super.initState();
+
+    // userData = context.read<UserProvider>().userData;
+
+    // _DefController.text = userData!.userDef ?? '';
+  }
 
   @override
   void dispose() {
@@ -143,23 +193,155 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       UserProfileCard(
                         userData: userData,
                       ),
-                      // Gaps.v10,
-                      // Row(
+                      Gaps.v20,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Gaps.h20,
+                          Text(
+                            "상태 메세지",
+                            style: TextStyle(
+                              fontSize: Sizes.size20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Gaps.v10,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: Container(
+                          padding: const EdgeInsets.all(
+                            Sizes.size12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(Sizes.size8),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 2,
+                                blurRadius: 3,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              // Expanded(
+                              //   child: Row(
+                              //     children: [
+                              //       Icon(
+                              //         Icons.groups_2_outlined,
+                              //       ),
+                              //       Gaps.h10,
+                              //       // 기존 상태 메세지 표시
+                              //       Text("동아리: ${userData!.userDef}"),
+                              //     ],
+                              //   ),
+                              // ),
+                              Gaps.h5,
+                              GestureDetector(
+                                onTap: () {
+                                  // 상태 메세지 수정 버튼을 눌렀을 때의 동작
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      String? newStatus =
+                                          userData!.userDef; // 현재 상태 메세지를 보관
+
+                                      return AlertDialog(
+                                        title: Text("상태 메세지 수정"),
+                                        content: TextField(
+                                          onChanged: (value) {
+                                            newStatus =
+                                                value; // 새로운 상태 메세지를 업데이트
+                                          },
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.pop(
+                                                  context); // 다이얼로그 닫기
+                                            },
+                                            child: Text("취소"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              // setState(() {
+                                              //   userData.userDef = newStatus; // 상태 메세지 업데이트
+                                              // });
+                                              _onUpdateDef();
+                                              Navigator.pop(
+                                                  context); // 다이얼로그 닫기
+                                            },
+                                            child: Text("저장"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Icon(Icons.edit), // 상태 메세지 수정 아이콘
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // const Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
                       //   children: [
-                      //     const Expanded(
-                      //       child: Column(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [Text("봉사 신청"), Text("2건")],
-                      //       ),
-                      //     ),
-                      //     Container(height: 50, width: 2, color: Colors.grey),
-                      //     const Expanded(
-                      //       child: Column(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         children: [Text("봉사 완료"), Text("6건")],
+                      //     Gaps.h20,
+                      //     Text(
+                      //       "상태 메세지",
+                      //       style: TextStyle(
+                      //         fontSize: Sizes.size20,
+                      //         fontWeight: FontWeight.bold,
                       //       ),
                       //     ),
                       //   ],
+                      // ),
+                      // Gaps.v10,
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      //   child: Container(
+                      //     padding: const EdgeInsets.all(
+                      //       Sizes.size12,
+                      //     ),
+                      //     decoration: BoxDecoration(
+                      //       color: Colors.white,
+                      //       borderRadius: BorderRadius.circular(Sizes.size8),
+                      //       boxShadow: [
+                      //         BoxShadow(
+                      //           color: Colors.grey.withOpacity(0.5),
+                      //           spreadRadius: 2,
+                      //           blurRadius: 3,
+                      //           offset: const Offset(0, 2),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     child: GestureDetector(
+                      //       onTap: () {},
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Row(
+                      //             children: [
+                      //               Icon(
+                      //                 Icons.groups_2_outlined,
+                      //               ),
+                      //               Gaps.h10,
+                      //               Text("동아리"),
+                      //             ],
+                      //           ),
+                      //           Gaps.h5,
+                      //           Icon(Icons.chevron_right), // Right arrow icon
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
                       // ),
                       Gaps.v20,
                       const Row(

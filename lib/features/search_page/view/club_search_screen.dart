@@ -305,3 +305,105 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
     );
   }
 }
+
+List<Map<String, dynamic>> clubSearchPostList = [
+  {
+    "clubId": 1,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 22,
+    "isRequest": true,
+  },
+  {
+    "clubId": 2,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 64,
+    "isRequest": true,
+  },
+  {
+    "clubId": 3,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 21,
+    "isRequest": false,
+  },
+  {
+    "clubId": 4,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 18,
+    "isRequest": true,
+  },
+  {
+    "clubId": 5,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 8,
+    "isRequest": false,
+  },
+  {
+    "clubId": 6,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 37,
+    "isRequest": false,
+  },
+];
+
+List<Map<String, dynamic>> initClubSearchPostList = [
+  {
+    "clubId": 1,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 22,
+    "isRequest": true,
+  },
+  {
+    "clubId": 2,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 64,
+    "isRequest": true,
+  },
+  {
+    "clubId": 3,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 21,
+    "isRequest": false,
+  },
+  {
+    "clubId": 4,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 18,
+    "isRequest": true,
+  },
+  {
+    "clubId": 5,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 8,
+    "isRequest": false,
+  },
+  {
+    "clubId": 6,
+    "clubDef": "동아리에서 동아리원을 모집합니다! 많은 관심 부탁드립니다. :)",
+    "clubName": "SWAG 동아리",
+    "clubMaster": "이재현",
+    "clubNum": 37,
+    "isRequest": false,
+  },
+];
