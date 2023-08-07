@@ -3,7 +3,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/org_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 final List<String> volAddress = [
   "지역1",
@@ -172,8 +171,7 @@ class OrgSearchScreen extends StatefulWidget {
 
 class _OrgSearchScreenState extends State<OrgSearchScreen>
     with SingleTickerProviderStateMixin {
-
-      // 검색 애니메이션 컨트롤러 선언
+  // 검색 애니메이션 컨트롤러 선언
   late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 300),
@@ -189,14 +187,12 @@ class _OrgSearchScreenState extends State<OrgSearchScreen>
     end: 1.0,
   ).animate(_animationController);
 
-   // 검색 제어를 위한 컨트롤러
+  // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
   // 포커스 검사
   final FocusNode _focusNode = FocusNode();
 
   bool _isFocused = false;
-
-
 
   String option1 = "";
   String option2 = "";
@@ -236,7 +232,7 @@ class _OrgSearchScreenState extends State<OrgSearchScreen>
     setState(() {});
   }
 
-    void _handleFocusChange() {
+  void _handleFocusChange() {
     if (_focusNode.hasFocus != _isFocused) {
       setState(() {
         _isFocused = _focusNode.hasFocus;
@@ -262,12 +258,12 @@ class _OrgSearchScreenState extends State<OrgSearchScreen>
   void initState() {
     super.initState();
 
-     _focusNode.addListener(_handleFocusChange);
+    _focusNode.addListener(_handleFocusChange);
 
-     // 검색 창이 내려와있을 때 스크롤 하면 검색창 다시 사라짐
-        if (_animationController.isCompleted) {
-          _toggleAnimations();
-        }
+    // 검색 창이 내려와있을 때 스크롤 하면 검색창 다시 사라짐
+    if (_animationController.isCompleted) {
+      _toggleAnimations();
+    }
   }
 
   // @override
@@ -374,7 +370,6 @@ class _OrgSearchScreenState extends State<OrgSearchScreen>
                 },
               ),
             ),
-            
           ],
         ),
       ),

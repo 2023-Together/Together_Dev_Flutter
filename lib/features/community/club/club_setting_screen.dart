@@ -2,18 +2,31 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/community/club/club_select_screen.dart';
 import 'package:swag_cross_app/features/community/club/request_club_apply.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+
+class ClubSettingScreenArgs {
+  final ClubDataModel clubData;
+
+  ClubSettingScreenArgs({required this.clubData});
+}
 
 class ClubSettingScreen extends StatefulWidget {
   static const routeName = "club_setting";
   static const routeURL = "club_setting";
-  const ClubSettingScreen({super.key});
+  const ClubSettingScreen({
+    super.key,
+    required this.clubData,
+  });
+
+  final ClubDataModel clubData;
 
   @override
   State<ClubSettingScreen> createState() => _ClubSettingScreenState();
@@ -25,13 +38,18 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
   bool _clubApply = true;
 
   void _requestJoinTap() {
-    context.pushNamed(RequestClubApply.routeName);
+    context.pushNamed(
+      RequestClubApply.routeName,
+      extra: RequestClubApplyArgs(clubData: widget.clubData),
+    );
   }
 
   void _clubMembersChecTap() {
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => const ClubSelectScreen(),
+        builder: (context) => ClubSelectScreen(
+          clubData: widget.clubData,
+        ),
       ),
     );
   }
@@ -131,6 +149,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final userData = context.watch<UserProvider>().userData;
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
@@ -144,85 +163,96 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
             horizontal: 10,
           ),
           children: [
-            ListTile(
-              tileColor: Colors.white,
-              onTap: _clubMembersChecTap,
-              title: const Text("동아리원 목록"),
-              trailing: const Icon(
-                Icons.keyboard_arrow_right,
-                size: 30,
-              ),
-            ),
-            Gaps.v6,
-            ListTile(
-              tileColor: Colors.white,
-              onTap: _requestJoinTap,
-              title: const Text("동아리 신청 현황"),
-              subtitle: const Text("신청자 : n명"),
-              trailing: const Icon(
-                Icons.keyboard_arrow_right,
-                size: 30,
-              ),
-            ),
-            Gaps.v6,
-            ExpansionTile(
-              title: const Text("동아리 설명 수정"),
-              collapsedShape: const BeveledRectangleBorder(),
-              shape: const BeveledRectangleBorder(),
-              childrenPadding: const EdgeInsets.symmetric(
-                horizontal: 6,
-                vertical: 4,
-              ),
-              children: [
-                SWAGTextField(
-                  hintText: "수정할 동아리 설명을 입력해주세요",
-                  maxLine: 4,
-                  controller: _clubContentController,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: ListTile(
+                tileColor: Colors.white,
+                onTap: _clubMembersChecTap,
+                title: const Text("동아리원 목록"),
+                trailing: const Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 30,
                 ),
-                ElevatedButton(
-                  onPressed: _clubContentController.text.trim().isNotEmpty
-                      ? _modifyClubContent
-                      : null,
-                  child: const Text("수정"),
+              ),
+            ),
+            if (widget.clubData.clubLeaderId == userData!.userId)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: ListTile(
+                  tileColor: Colors.white,
+                  onTap: _requestJoinTap,
+                  title: const Text("동아리 신청 현황"),
+                  subtitle: const Text("신청자 : n명"),
+                  trailing: const Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30,
+                  ),
                 ),
-              ],
-            ),
-            Gaps.v6,
-            SwitchListTile.adaptive(
-              tileColor: Colors.white,
-              value: _clubApply,
-              onChanged: (value) => _onChangeClubRecruiting(value),
-              title: const Text("동아리 신청 받기 여부"),
-              subtitle: const Text(
-                "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
-                maxLines: 2,
               ),
-            ),
-            // Gaps.v6,
-            // // 동아리장의 기능
-            // const ListTile(
-            //   tileColor: Colors.white,
-            //   title: Text("동아리장 위임"),
-            // ),
-            Gaps.v6,
-            ListTile(
-              tileColor: Colors.white,
-              onTap: _requestDeleteTap,
-              title: const Text("동아리 삭제"),
-              trailing: const Icon(
-                Icons.keyboard_arrow_right,
-                size: 30,
+            if (widget.clubData.clubLeaderId == userData.userId)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: ExpansionTile(
+                  title: const Text("동아리 설명 수정"),
+                  collapsedShape: const BeveledRectangleBorder(),
+                  shape: const BeveledRectangleBorder(),
+                  childrenPadding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 4,
+                  ),
+                  children: [
+                    SWAGTextField(
+                      hintText: "수정할 동아리 설명을 입력해주세요",
+                      maxLine: 4,
+                      controller: _clubContentController,
+                    ),
+                    ElevatedButton(
+                      onPressed: _clubContentController.text.trim().isNotEmpty
+                          ? _modifyClubContent
+                          : null,
+                      child: const Text("수정"),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            Gaps.v6,
+            if (widget.clubData.clubLeaderId == userData.userId)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: SwitchListTile.adaptive(
+                  tileColor: Colors.white,
+                  value: _clubApply,
+                  onChanged: (value) => _onChangeClubRecruiting(value),
+                  title: const Text("동아리 신청 받기 여부"),
+                  subtitle: const Text(
+                    "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",
+                    maxLines: 2,
+                  ),
+                ),
+              ),
+            if (widget.clubData.clubLeaderId == userData.userId)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: ListTile(
+                  tileColor: Colors.white,
+                  onTap: _requestDeleteTap,
+                  title: const Text("동아리 삭제"),
+                  trailing: const Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30,
+                  ),
+                ),
+              ),
             // 동아리원의 기능
-            ListTile(
-              tileColor: Colors.white,
-              onTap: _requestOutTap,
-              title: const Text("동아리 탈퇴"),
-              trailing: const Icon(
-                Icons.keyboard_arrow_right,
-                size: 30,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 3),
+              child: ListTile(
+                tileColor: Colors.white,
+                onTap: _requestOutTap,
+                title: const Text("동아리 탈퇴"),
+                trailing: const Icon(
+                  Icons.keyboard_arrow_right,
+                  size: 30,
+                ),
               ),
             ),
           ],

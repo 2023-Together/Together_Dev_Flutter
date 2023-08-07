@@ -1,24 +1,24 @@
 class VolunteerModel {
-  String? seq;
-  String? listApiType;
-  String? title;
+  String seq;
+  String listApiType;
+  String title;
   String? centName;
-  String? actPlace;
+  String actPlace;
   String? areaName;
   String? actTypeName;
-  int? status;
-  String? teenager;
+  int status;
+  String teenager;
 
   VolunteerModel({
-    this.seq,
-    this.listApiType,
-    this.title,
+    required this.seq,
+    required this.listApiType,
+    required this.title,
     this.centName,
     this.areaName,
-    this.actPlace,
+    required this.actPlace,
     this.actTypeName,
-    this.status,
-    this.teenager,
+    required this.status,
+    required this.teenager,
   });
 
   factory VolunteerModel.fromJson(Map<String, dynamic> json) {

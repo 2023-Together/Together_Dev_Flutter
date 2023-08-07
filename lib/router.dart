@@ -105,7 +105,7 @@ final router = GoRouter(
       builder: (context, state) {
         final args = state.extra as ClubCommunityScreenArgs;
         return ClubCommunityScreen(
-          clubId: args.clubId,
+          clubData: args.clubData,
         );
       },
       routes: [
@@ -120,7 +120,10 @@ final router = GoRouter(
           path: ClubSettingScreen.routeURL,
           name: ClubSettingScreen.routeName,
           builder: (context, state) {
-            return const ClubSettingScreen();
+            final args = state.extra as ClubSettingScreenArgs;
+            return ClubSettingScreen(
+              clubData: args.clubData,
+            );
           },
         )
       ],
@@ -206,11 +209,8 @@ final router = GoRouter(
             if (state.extra != null) {
               final args = state.extra as NoticeEditScreenArgs;
               return NoticeEditScreen(
-                id: args.id,
+                noticeData: args.noticeData,
                 pageName: args.pageName,
-                title: args.title,
-                content: args.content,
-                images: args.images,
               );
             }
             return const NoticeEditScreen(
@@ -228,7 +228,12 @@ final router = GoRouter(
     GoRoute(
       name: RequestClubApply.routeName,
       path: RequestClubApply.routeURL,
-      builder: (context, state) => const RequestClubApply(),
+      builder: (context, state) {
+        final args = state.extra as RequestClubApplyArgs;
+        return RequestClubApply(
+          clubData: args.clubData,
+        );
+      },
     ),
     GoRoute(
       name: VolDetailScreen.routeName,

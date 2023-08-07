@@ -4,20 +4,15 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
 
 class NoticeEditScreenArgs {
-  final int id;
+  final PostCardModel? noticeData;
   final String pageName;
-  final String title;
-  final String content;
-  final List<String>? images;
 
   NoticeEditScreenArgs({
-    required this.id,
+    this.noticeData,
     required this.pageName,
-    required this.title,
-    required this.content,
-    this.images,
   });
 }
 
@@ -27,18 +22,12 @@ class NoticeEditScreen extends StatefulWidget {
 
   const NoticeEditScreen({
     super.key,
-    this.id,
-    this.title,
-    this.content,
-    this.images,
+    this.noticeData,
     required this.pageName,
   });
 
-  final int? id;
+  final PostCardModel? noticeData;
   final String pageName;
-  final String? title;
-  final String? content;
-  final List<String>? images;
 
   @override
   State<NoticeEditScreen> createState() => _NoticeEditScreenState();
@@ -58,8 +47,10 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
   void initState() {
     super.initState();
 
-    _titleController = TextEditingController(text: widget.title ?? "");
-    _contentController = TextEditingController(text: widget.content ?? "");
+    _titleController =
+        TextEditingController(text: widget.noticeData?.postTitle ?? "");
+    _contentController =
+        TextEditingController(text: widget.noticeData?.postContent ?? "");
   }
 
   Future<void> _onSubmitFinishButton() async {

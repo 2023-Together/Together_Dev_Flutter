@@ -22,12 +22,56 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   final TextEditingController _contentController = TextEditingController();
 
   bool _isThereSearchValue = false;
-  // bool _clubApply = true;
+  bool _isAuthClubName = false;
+  String? _clubNameError;
+  String? _clubNameHelper;
+
+  Future<void> _onCheckClubName() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/club/getClubByClubName");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "clubName": _nameController.text,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      setState(() {
+        _isAuthClubName = true;
+        _clubNameHelper = "인증이 완료되었습니다!";
+        _textOnChange("");
+      });
+    } else if (response.statusCode == 409) {
+      setState(() {
+        _clubNameError = "중복된 닉네임이 존재합니다!";
+        _textOnChange("");
+      });
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      setState(() {
+        _clubNameError = "통신 실패!";
+        _textOnChange("");
+      });
+    }
+  }
 
   void _textOnChange(String? value) {
     setState(() {
-      _isThereSearchValue = _nameController.text.trim().isNotEmpty &&
+      _isThereSearchValue = (_isAuthClubName &&
+              _clubNameError == null &&
+              _clubNameHelper != null) &&
           _contentController.text.trim().isNotEmpty;
+    });
+  }
+
+  void _onChangeClubName(String? value) {
+    setState(() {
+      _isAuthClubName = false;
+      _clubNameError = null;
+      _clubNameHelper = null;
+      _textOnChange("");
     });
   }
 
@@ -61,8 +105,6 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
       );
     }
   }
-
-  void _checkClubName() {}
 
   @override
   void dispose() {
@@ -111,9 +153,11 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
                 hintText: "동아리 이름을 입력해주세요.",
                 maxLine: 1,
                 controller: _nameController,
-                onChanged: _textOnChange,
+                onChanged: _onChangeClubName,
                 buttonText: "중복확인",
-                onSubmitted: _checkClubName,
+                onSubmitted: _onCheckClubName,
+                errorText: _clubNameError,
+                helperText: _clubNameHelper,
               ),
               Gaps.v40,
               Text(

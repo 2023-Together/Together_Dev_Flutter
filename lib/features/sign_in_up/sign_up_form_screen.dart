@@ -156,12 +156,6 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
       print(response.statusCode);
       print(response.body);
     }
-
-    // setState(() {
-    //   _isAuthNickName = true;
-    //   _nickNameHelper = "인증이 완료되었습니다!";
-    //   _onChangeAllText();
-    // });
   }
 
   Future<void> _callMobileCheckCode() async {
