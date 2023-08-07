@@ -64,7 +64,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     _focusNode.addListener(_handleFocusChange);
 
-    // 스크롤 이벤트 처리
     _scrollController.addListener(
       () {
         // 검색 창이 내려와있을대 스크롤 하면 검색창 다시 사라짐
@@ -89,7 +88,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   }
 
   // 리스트 새로고침
-  Future<void> _refreshComunityList() async {
+  Future<void> _refreshPostList() async {
     _postGetDispatch();
     setState(() {});
   }
@@ -121,6 +120,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("메인 커뮤니티 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _postList =
@@ -130,10 +130,38 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
-  
+
+  Future<void> _searchPostList() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"keyword": _searchController.text};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("메인 커뮤니티 검색 : 성공");
+
+      // 응답 데이터를 ClubSearchModel 리스트로 파싱
+      final jsonPostList =
+          jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
+
+      _postList = await _insertAds(jsonPostList, 5);
+      _searchController.text = "";
+      _focusNode.unfocus();
+      _toggleAnimations();
+      setState(() {});
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
+    }
+  }
+
   // 리스트에 광고 삽입하는 함수
   Future<List<PostCardModel>> _insertAds(
       List<PostCardModel> originalList, int adInterval) async {
@@ -186,9 +214,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   @override
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
+
     return SafeArea(
       child: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         // backgroundColor: Colors.blue.shade100,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -263,7 +292,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         body: Stack(
           children: [
             FutureBuilder<List<PostCardModel>>(
-              future: _postGetDispatch(),
+              future: _postList != null
+                  ? Future.value(
+                      _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                  : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   // 데이터를 기다리는 동안 로딩 인디케이터 표시
@@ -280,7 +312,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   _postList = snapshot.data!;
 
                   return RefreshIndicator.adaptive(
-                    onRefresh: _refreshComunityList,
+                    onRefresh: _refreshPostList,
                     child: CustomScrollView(
                       controller: _scrollController,
                       // CustomScrollView 안에 들어갈 element들
@@ -319,6 +351,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                           delegate: SliverChildBuilderDelegate(
                             childCount: _postList!.length,
                             (context, index) {
+                              // print("$index / ${_postList!.length}");
                               final item = _postList![index];
                               if (!item.isAd) {
                                 return PostCard(
@@ -375,11 +408,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     hintText: "검색어를 입력하세요.",
                     maxLine: 1,
                     controller: _searchController,
-                    onSubmitted: () {
-                      _searchController.text = "";
-                      _focusNode.unfocus();
-                      _toggleAnimations();
-                    },
+                    onSubmitted: _searchPostList,
                     buttonText: "검색",
                     focusNode: _focusNode,
                   ),

@@ -122,10 +122,13 @@ class _UserProfileCardState extends State<UserProfileCard> {
       },
       leading: CircleAvatar(
         radius: 40,
-        child: Text(widget.userData!.userName),
+        child: Text(userData!.userName),
+        // backgroundImage: NetworkImage(
+        //   "https://avatars.githubusercontent.com/u/77985708?v=4",
+        // ),
       ),
       title: Text(
-        widget.userData!.userName,
+        userData!.userName,
         style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: Sizes.size18,

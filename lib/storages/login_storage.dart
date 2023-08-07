@@ -5,15 +5,15 @@ class LoginStorage {
 
   static const _keyLoginData = "loginData";
 
-  static Future saveLoginData({required String id, required String pw}) async {
-    await storage.write(key: _keyLoginData, value: "$id,$pw");
+  static Future saveLoginData({required String email}) async {
+    await storage.write(key: _keyLoginData, value: email);
   }
 
   static Future<String?> getLoginData() async {
     return await storage.read(key: _keyLoginData);
   }
 
-  // 아이디, 비밀번호를 비움
+  // 이메일을 비움
   static Future resetLoginData() async {
     await storage.write(key: _keyLoginData, value: "");
   }

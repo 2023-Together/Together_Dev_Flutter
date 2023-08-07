@@ -93,10 +93,7 @@ final router = GoRouter(
           builder: (context, state) {
             final args = state.extra as ClubSearchDetailScreenArgs;
             return ClubSearchDetailScreen(
-              clubId: args.clubId,
-              clubDef: args.clubDef,
-              clubName: args.clubName,
-              clubMaster: args.clubMaster,
+              clubData: args.clubData,
             );
           },
         ),

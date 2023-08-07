@@ -29,33 +29,33 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      userId: json['user_id'],
-      userEmail: json['user_email'],
-      userPhoneNumber: json['user_phonenumber'],
-      userName: json['user_name'],
-      userNickname: json['user_nickname'],
-      userGender: json['user_gender'],
-      userBirthdate: DateTime.parse(json['user_birthdate']),
-      userProfileImage: json['user_profile_image'],
-      userDef: json['user_def'],
-      userType: json['user_type'],
-      userSns: json['user_sns'] != null ? jsonDecode(json['user_sns']) : null,
+      userId: json['userId'],
+      userEmail: json['userEmail'],
+      userPhoneNumber: json['userPhonenumber'],
+      userName: json['userName'],
+      userNickname: json['userNickname'],
+      userGender: json['userGender'],
+      userBirthdate: DateTime.parse(json['userBirthdate']),
+      userProfileImage: json['userProfileImage'],
+      userDef: json['userDef'],
+      userType: json['userType'],
+      userSns: json['userSns'] != null ? jsonDecode(json['userSns']) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'user_id': userId,
-      'user_email': userEmail,
-      'user_phonenumber': userPhoneNumber,
-      'user_name': userName,
-      'user_nickname': userNickname,
-      'user_gender': userGender,
-      'user_birthdate': userBirthdate.toIso8601String(),
-      'user_profile_image': userProfileImage,
-      'user_def': userDef,
-      'user_type': userType,
-      'user_sns': userSns != null ? jsonEncode(userSns) : null,
+      'userId': userId,
+      'userEmail': userEmail,
+      'userPhonenumber': userPhoneNumber,
+      'userName': userName,
+      'userNickname': userNickname,
+      'userGender': userGender,
+      'userBirthdate': userBirthdate.toIso8601String(),
+      'userProfileImage': userProfileImage,
+      'userDef': userDef,
+      'userType': userType,
+      'userSns': userSns != null ? jsonEncode(userSns) : null,
     };
   }
 }

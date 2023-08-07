@@ -1,12 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/features/community/club/club_select_screen.dart';
 import 'package:swag_cross_app/features/community/club/request_club_apply.dart';
-import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+
+import 'package:http/http.dart' as http;
 
 class ClubSettingScreen extends StatefulWidget {
   static const routeName = "club_setting";
@@ -20,10 +22,37 @@ class ClubSettingScreen extends StatefulWidget {
 class _ClubSettingScreenState extends State<ClubSettingScreen> {
   final TextEditingController _clubContentController = TextEditingController();
 
-  bool _clubApply = false;
+  bool _clubApply = true;
 
   void _requestJoinTap() {
     context.pushNamed(RequestClubApply.routeName);
+  }
+
+  void _clubMembersChecTap() {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => const ClubSelectScreen(),
+      ),
+    );
+  }
+
+  void _onChangeClubRecruiting(bool value) async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/club/updateClubRecruiting");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"clubId": "3", "clubRecruiting": _clubApply ? 1 : 0};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      setState(() {
+        _clubApply = !_clubApply;
+      });
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
+    }
   }
 
   void _requestDeleteTap() {
@@ -38,8 +67,8 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
         ),
         TextButton(
           onPressed: () {
-            context.read<MainNavigationProvider>().changeIndex(2);
-            context.goNamed(MainNavigation.routeName);
+            context.pop();
+            context.pop();
           },
           child: const Text("예"),
         ),
@@ -59,8 +88,8 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
         ),
         TextButton(
           onPressed: () {
-            context.read<MainNavigationProvider>().changeIndex(2);
-            context.goNamed(MainNavigation.routeName);
+            context.pop();
+            context.pop();
           },
           child: const Text("예"),
         ),
@@ -94,6 +123,13 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
   // }
 
   @override
+  void dispose() {
+    _clubContentController.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
@@ -108,6 +144,16 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
             horizontal: 10,
           ),
           children: [
+            ListTile(
+              tileColor: Colors.white,
+              onTap: _clubMembersChecTap,
+              title: const Text("동아리원 목록"),
+              trailing: const Icon(
+                Icons.keyboard_arrow_right,
+                size: 30,
+              ),
+            ),
+            Gaps.v6,
             ListTile(
               tileColor: Colors.white,
               onTap: _requestJoinTap,
@@ -145,9 +191,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
             SwitchListTile.adaptive(
               tileColor: Colors.white,
               value: _clubApply,
-              onChanged: (value) => setState(() {
-                _clubApply = !_clubApply;
-              }),
+              onChanged: (value) => _onChangeClubRecruiting(value),
               title: const Text("동아리 신청 받기 여부"),
               subtitle: const Text(
                 "활성화 해야 새로운 동아리원을 신청 받을수 있습니다!",

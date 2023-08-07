@@ -13,6 +13,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
+
 final List<String> volCategories = [
   "카테고리1",
   "카테고리2",
@@ -372,7 +373,7 @@ class _VolSearchScreenState extends State<VolSearchScreen>
                   height: 50,
                   color: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: Sizes.size14,
+                    horizontal: Sizes.size6,
                     vertical: Sizes.size4,
                   ),
                   child: ListView(
