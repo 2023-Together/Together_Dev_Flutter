@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:swag_cross_app/utils/time_parse.dart';
 
 class NoticeCard extends StatefulWidget {
   const NoticeCard({
     super.key,
-    required this.id,
-    required this.title,
-    required this.content,
-    required this.date,
-    this.images,
-    required this.isLogined,
+    required this.noticeData,
     this.isFAQ = false,
   });
 
-  final int id;
-  final String title;
-  final String content;
-  final String date;
-  final List<String>? images;
-  final bool isLogined;
+  final PostCardModel noticeData;
   final bool isFAQ;
 
   @override
@@ -32,6 +26,7 @@ class _NoticeCardState extends State<NoticeCard> {
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     return ExpansionTile(
       // onExpansionChanged: (value) {
       //   setState(() {
@@ -39,12 +34,12 @@ class _NoticeCardState extends State<NoticeCard> {
       //   });
       // },
       title: Text(
-        widget.title,
+        widget.noticeData.postTitle,
       ),
       subtitle: widget.isFAQ
           ? null
           : Text(
-              widget.date,
+              TimeParse.getTimeAgo(widget.noticeData.postCreationDate),
               style: TextStyle(
                 color: Colors.grey.shade600,
               ),
@@ -58,7 +53,7 @@ class _NoticeCardState extends State<NoticeCard> {
         SizedBox(
           width: double.infinity,
           child: Text(
-            widget.content,
+            widget.noticeData.postContent,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
         ),
@@ -81,7 +76,7 @@ class _NoticeCardState extends State<NoticeCard> {
         //     ],
         //   ),
         Gaps.v10,
-        if (widget.isLogined && !widget.isFAQ)
+        if (isLogined && !widget.isFAQ)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Row(
@@ -91,11 +86,8 @@ class _NoticeCardState extends State<NoticeCard> {
                   onPressed: () => context.pushNamed(
                     NoticeEditScreen.routeName,
                     extra: NoticeEditScreenArgs(
-                      id: widget.id,
+                      noticeData: widget.noticeData,
                       pageName: "공지사항 수정",
-                      title: widget.title,
-                      content: widget.content,
-                      images: widget.images,
                     ),
                   ),
                   child: const Text("수정"),

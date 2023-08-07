@@ -5,14 +5,26 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/models/club_request_model.dart';
 
 import 'package:http/http.dart' as http;
 
+class RequestClubApplyArgs {
+  final ClubDataModel clubData;
+
+  RequestClubApplyArgs({required this.clubData});
+}
+
 class RequestClubApply extends StatefulWidget {
   static const routeName = "request_join";
   static const routeURL = "/request_join";
-  const RequestClubApply({super.key});
+  const RequestClubApply({
+    super.key,
+    required this.clubData,
+  });
+
+  final ClubDataModel clubData;
 
   @override
   State<RequestClubApply> createState() => _RequestClubApplyState();
@@ -25,13 +37,12 @@ class _RequestClubApplyState extends State<RequestClubApply> {
     final url =
         Uri.parse("http://58.150.133.91:80/together/club/getJoinClubQueue");
     final headers = {'Content-Type': 'application/json'};
-    final data = {"clubId": "1"};
+    final data = {"clubId": widget.clubData.clubId};
 
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      print(response.body);
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
       return jsonResponse

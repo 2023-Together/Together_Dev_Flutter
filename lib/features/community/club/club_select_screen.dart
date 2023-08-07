@@ -4,9 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
+
+class ClubSelectScreenArgs {
+  final ClubDataModel clubData;
+
+  ClubSelectScreenArgs({required this.clubData});
+}
 
 class ClubSelectScreen extends StatefulWidget {
-  const ClubSelectScreen({super.key});
+  const ClubSelectScreen({
+    super.key,
+    required this.clubData,
+  });
+
+  final ClubDataModel clubData;
 
   @override
   State<ClubSelectScreen> createState() => _ClubSelectScreenState();
@@ -19,13 +31,12 @@ class _ClubSelectScreenState extends State<ClubSelectScreen> {
     final url = Uri.parse(
         "http://58.150.133.91:80/together/club/getClubMemberByClubId");
     final headers = {'Content-Type': 'application/json'};
-    final data = {"clubId": "1"};
+    final data = {"clubId": widget.clubData.clubId};
 
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      print(response.body);
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       final List<String> clubMembers = jsonResponse
           .map((member) => member["userNickname"] as String)

@@ -1,10 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/widgets/comment_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/comment_model.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+
+import 'package:http/http.dart' as http;
 
 class PostDetailCommentscreen extends StatefulWidget {
-  const PostDetailCommentscreen({super.key});
+  const PostDetailCommentscreen({
+    super.key,
+    required this.postData,
+  });
+
+  final PostCardModel postData;
 
   @override
   State<PostDetailCommentscreen> createState() =>
@@ -17,6 +30,58 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
   bool get wantKeepAlive => true; // 페이지 상태 유지를 위해 true 반환
 
   final TextEditingController _commentController = TextEditingController();
+
+  List<CommentModel>? _commentsList;
+
+  Future<List<CommentModel>> _commentGetDispatch() async {
+    final url = Uri.parse(
+        "http://58.150.133.91:80/together/post/getAllCommentByPostId");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"postId": widget.postData.postId};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print(jsonResponse);
+      print("댓글 불러오기 : 성공");
+
+      final commentsList =
+          jsonResponse.map((data) => CommentModel.fromJson(data)).toList();
+
+      return commentsList;
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
+    }
+  }
+
+  Future<void> _onSubmittedCommentEdit() async {
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/createComment");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "commentUserId": context.read<UserProvider>().userData?.userId,
+      "commentPostId": widget.postData.postId,
+      "commentContent": _commentController.text,
+      "commentParentnum": 0,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("댓글 등록 : 성공");
+
+      _commentsList = await _commentGetDispatch();
+      setState(() {});
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      print("댓글 등록 : 실패");
+    }
+  }
 
   @override
   void dispose() {
@@ -36,20 +101,40 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: ListView.separated(
-                shrinkWrap: true,
-                physics: const ClampingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final item = comments[index];
-                  return CommentCard(
-                    username: item['username'],
-                    date: item['date'],
-                    comment: item['comment'],
-                    id: item['id'],
-                  );
+              child: FutureBuilder(
+                future: _commentsList != null
+                    ? Future.value(
+                        _commentsList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                    : _commentGetDispatch(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    // 데이터를 기다리는 동안 로딩 인디케이터 표시
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    // 에러가 발생한 경우 에러 메시지 표시
+                    return Center(
+                      child: Text('오류 발생: ${snapshot.error}'),
+                    );
+                  } else {
+                    // 데이터를 성공적으로 가져왔을 때 ListView 표시
+                    _commentsList = snapshot.data!;
+
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      physics: const ClampingScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final item = _commentsList![index];
+                        return CommentCard(
+                          commentData: item,
+                        );
+                      },
+                      separatorBuilder: (context, index) => Gaps.v6,
+                      itemCount: _commentsList!.length,
+                    );
+                  }
                 },
-                separatorBuilder: (context, index) => Gaps.v6,
-                itemCount: comments.length,
               ),
             ),
             Container(
@@ -62,10 +147,7 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
                 hintText: "등록할 댓글을 입력해주세요..",
                 maxLine: 1,
                 controller: _commentController,
-                onSubmitted: () {
-                  print(_commentController.text);
-                  _commentController.text = "";
-                },
+                onSubmitted: _onSubmittedCommentEdit,
                 buttonText: "등록",
               ),
             ),

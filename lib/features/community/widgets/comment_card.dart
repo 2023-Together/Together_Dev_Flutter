@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/models/comment_model.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
 class CommentCard extends StatefulWidget {
   const CommentCard({
     super.key,
-    required this.username,
-    required this.date,
-    required this.comment,
-    required this.id,
+    required this.commentData,
   });
 
-  final String username;
-  final String date;
-  final String comment;
-  final int id;
+  final CommentModel commentData;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -35,7 +30,7 @@ class _CommentCardState extends State<CommentCard> {
 
   void _checkTextOverflow() {
     TextSpan text = TextSpan(
-      text: widget.comment,
+      text: widget.commentData.commentContent,
       style: Theme.of(context).textTheme.bodyMedium,
     );
     TextPainter textPainter = TextPainter(
@@ -73,12 +68,12 @@ class _CommentCardState extends State<CommentCard> {
                       children: [
                         RichText(
                           text: TextSpan(
-                            text: widget.username,
+                            text: widget.commentData.userNickname,
                             style: Theme.of(context).textTheme.bodyMedium,
                             children: [
                               TextSpan(
                                 text:
-                                    ' ㆍ ${TimeParse.getTimeAgo(DateTime.parse(widget.date))}',
+                                    ' ㆍ ${TimeParse.getTimeAgo(DateTime.parse("2023-08-06 12:00:30"))}',
                                 style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],
@@ -97,7 +92,7 @@ class _CommentCardState extends State<CommentCard> {
                       ],
                     ),
                     Text(
-                      widget.comment,
+                      widget.commentData.commentContent,
                       maxLines: _isExpanded ? null : 4,
                       overflow: _isExpanded ? null : TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyMedium,

@@ -146,7 +146,9 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                   title: widget.postData.postTitle,
                   content: widget.postData.postContent,
                 ),
-                const PostDetailCommentscreen(),
+                PostDetailCommentscreen(
+                  postData: widget.postData,
+                ),
               ],
             ),
           ),

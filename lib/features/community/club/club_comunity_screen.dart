@@ -11,23 +11,24 @@ import 'package:swag_cross_app/features/community/club/club_setting_screen.dart'
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
 import 'package:http/http.dart' as http;
 
 class ClubCommunityScreenArgs {
-  final int clubId;
+  final ClubDataModel clubData;
 
-  ClubCommunityScreenArgs({required this.clubId});
+  ClubCommunityScreenArgs({required this.clubData});
 }
 
 class ClubCommunityScreen extends StatefulWidget {
-  final int clubId;
+  final ClubDataModel clubData;
 
   const ClubCommunityScreen({
     super.key,
-    required this.clubId,
+    required this.clubData,
   });
 
   static const routeName = "club_community";
@@ -128,7 +129,10 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   }
 
   void _clubSettingTap() {
-    context.pushNamed(ClubSettingScreen.routeName);
+    context.pushNamed(
+      ClubSettingScreen.routeName,
+      extra: ClubSettingScreenArgs(clubData: widget.clubData),
+    );
   }
 
   Future<List<PostCardModel>> _postGetDispatch() async {

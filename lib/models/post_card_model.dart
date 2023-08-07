@@ -36,8 +36,8 @@ class PostCardModel {
       postContent: json['postContent'] ?? '',
       postTag: json['postTag'],
       postCreationDate: DateTime.parse(json['postCreationDate']),
-      postLikeCount: json['postLikeCount'],
-      postCommentCount: json['postCommentCount'],
+      postLikeCount: json['postLikeCount'] ?? 0,
+      postCommentCount: json['postCommentCount'] ?? 0,
     );
   }
 }
