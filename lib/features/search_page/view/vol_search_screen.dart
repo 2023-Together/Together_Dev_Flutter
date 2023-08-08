@@ -50,8 +50,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
 
-  String selectedDropdown1 = '';
-  String selectedDropdown2 = '';
   String selectedDropdown3 = '';
   String selectedDropdown4 = '';
 
@@ -96,7 +94,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-        print(jsonResponse);
         print("봉사 리스트 : 성공");
 
         setState(() {
@@ -157,29 +154,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
-  Future<List<VolunteerModel>> _postGetApiDispatch() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
-    final data = {"pageNum": "$pageNum"};
-
-    final response = await http.post(url, body: data);
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print(jsonResponse);
-      print("봉사 리스트 : 성공");
-
-      List<VolunteerModel> newVolList =
-          jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
-      print(pageNum++);
-
-      return newVolList;
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("API를 불러오는데 실패하였습니다.");
-    }
-  }
-
   Future<void> _searchVolList() async {
     final url = Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
@@ -206,7 +180,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   Future<void> _scrollEnd() async {
     // 스크롤이 맨 아래로 내려가면 실행됨
-    if (_scrollController.position.extentAfter < 300 &&
+    if (_scrollController.position.extentAfter < 350 &&
         !_isFirstLoadRunning &&
         !_isLoadMoreRunning) {
       setState(() {
@@ -244,7 +218,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          print(jsonResponse);
+          // print(jsonResponse);
           print("봉사 리스트 : 성공");
 
           setState(() {
@@ -369,28 +343,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       SWAGStateDropDownButton(
-                        initOption: selectedDropdown1,
-                        onChangeOption: (dynamic value) {
-                          setState(() {
-                            selectedDropdown1 = value;
-                          });
-                        },
-                        title: "지역별",
-                        options: dropdownList1,
-                      ),
-                      Gaps.h8,
-                      SWAGStateDropDownButton(
-                        initOption: selectedDropdown2,
-                        onChangeOption: (dynamic value) {
-                          setState(() {
-                            selectedDropdown2 = value;
-                          });
-                        },
-                        title: "분야별",
-                        options: dropdownList2,
-                      ),
-                      Gaps.h8,
-                      SWAGStateDropDownButton(
                         initOption: selectedDropdown3,
                         onChangeOption: (dynamic value) {
                           setState(() {
@@ -467,76 +419,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     );
   }
 }
-
-final List<String> dropdownList1 = [
-  '',
-  '가좌동',
-  '강남동',
-  '계동',
-  '귀곡동',
-  '금곡면',
-  '금산면',
-  '남성동',
-  '내동면',
-  '대곡면',
-  '대안동',
-  '대평면',
-  '동성동',
-  '망경동',
-  '명석면',
-  '문산읍',
-  '미천면',
-  '본성동',
-  '봉곡동',
-  '봉래동',
-  '사봉면',
-  '상대동',
-  '상봉동',
-  '상평동',
-  '수곡면',
-  '수정동',
-  '신안동',
-  '옥봉동',
-  '유곡동',
-  '이반성면',
-  '장대동',
-  '장재동',
-  '정촌면',
-  '주약동',
-  '중안동',
-  '중앙동',
-  '지수면',
-  '진성면',
-  '집현면',
-  '초전동',
-  '충무공동',
-  '칠암동',
-  '판문동',
-  '평거동',
-  '평안동',
-  '하대동',
-  '하촌동',
-  '호탄동',
-];
-final List<String> dropdownList2 = [
-  '',
-  '의료봉사',
-  '문화행사',
-  '행사보조',
-  '생활편의지원',
-  '주거환경',
-  '상담',
-  '의료',
-  '농어촌 봉사',
-  '환경보호',
-  '안전,예방',
-  '행정보조',
-  '공익,인권',
-  '재해,재난',
-  '국제협력, 해외봉사',
-  '멘토링',
-  '기타',
-];
 
 final List<String> dropdownList3 = [
   '',

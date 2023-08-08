@@ -73,7 +73,7 @@ class _CommentCardState extends State<CommentCard> {
                             children: [
                               TextSpan(
                                 text:
-                                    ' ㆍ ${TimeParse.getTimeAgo(DateTime.parse("2023-08-06 12:00:30"))}',
+                                    ' ㆍ ${TimeParse.getTimeAgo(widget.commentData.commentCreationDate)}',
                                 style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],

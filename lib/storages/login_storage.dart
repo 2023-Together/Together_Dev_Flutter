@@ -15,6 +15,6 @@ class LoginStorage {
 
   // 이메일을 비움
   static Future resetLoginData() async {
-    await storage.write(key: _keyLoginData, value: "");
+    await storage.delete(key: _keyLoginData);
   }
 }

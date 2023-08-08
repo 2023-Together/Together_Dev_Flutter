@@ -35,7 +35,14 @@ class ClubSettingScreen extends StatefulWidget {
 class _ClubSettingScreenState extends State<ClubSettingScreen> {
   final TextEditingController _clubContentController = TextEditingController();
 
-  bool _clubApply = true;
+  bool _clubApply = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _clubApply = widget.clubData.clubRecruiting;
+  }
 
   void _requestJoinTap() {
     context.pushNamed(
@@ -64,6 +71,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      print("동아리 신청 여부 변경 : 성공");
       setState(() {
         _clubApply = !_clubApply;
       });

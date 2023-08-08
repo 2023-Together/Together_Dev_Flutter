@@ -25,8 +25,6 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
   @override
   void initState() {
     super.initState();
-
-    _clubGetDispatch();
   }
 
   Future<List<ClubDataModel>> _clubGetDispatch() async {
@@ -44,7 +42,6 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("동아리 리스트 : 성공");
-      print(jsonResponse);
 
       final clubList =
           jsonResponse.map((data) => ClubDataModel.fromJson(data)).toList();
@@ -98,7 +95,9 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
         ),
       ),
       body: FutureBuilder<List<ClubDataModel>>(
-        future: _clubGetDispatch(),
+        future: _clubList != null
+            ? Future.value(_clubList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+            : _clubGetDispatch(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // 데이터를 기다리는 동안 로딩 인디케이터 표시
