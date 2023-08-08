@@ -21,28 +21,29 @@ final List<String> volCategories = [
 ];
 
 class VolSearchScreen extends StatefulWidget {
-  const VolSearchScreen({super.key});
+  const VolSearchScreen({Key? key}) : super(key: key);
 
   @override
   State<VolSearchScreen> createState() => _VolSearchScreenState();
 }
 
 class _VolSearchScreenState extends State<VolSearchScreen> {
-  final GlobalKey<SliverAnimatedListState> _listKey =
-      GlobalKey<SliverAnimatedListState>();
-
   // 검색 제어를 위한 컨트롤러
   final TextEditingController _searchController = TextEditingController();
   // 스크롤 제어를 위한 컨트롤러
   final ScrollController _scrollController = ScrollController();
+  // 포커스 제어를 위한 컨트롤러
+  final FocusNode _focusNode = FocusNode();
+
   final double _previousScrollOffset = 0.0;
 
   List<VolunteerModel>? _volList;
 
   int pageNum = 1;
-  final bool _isFocused = false;
+  bool _isFocused = false;
   bool _isSearched = false;
-  int totalItemsCount = 0;
+  bool _isFirstLoadRunning = false;
+  bool _isLoadMoreRunning = false;
 
   String selectedDropdown1 = '';
   String selectedDropdown2 = '';
@@ -53,6 +54,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   void initState() {
     super.initState();
 
+    _initLoad();
+
+    _focusNode.addListener(_onChangeFocused);
+
     _scrollController.addListener(_scrollEnd);
   }
 
@@ -60,20 +65,89 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   void dispose() {
     _searchController.dispose();
     _scrollController.dispose();
+    _focusNode.dispose();
 
     super.dispose();
   }
 
+  void _onChangeFocused() {
+    if (_focusNode.hasFocus != _isFocused) {
+      setState(() {
+        _isFocused = _focusNode.hasFocus;
+      });
+    }
+  }
+
+  void _initLoad() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
+
+    try {
+      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+      final data = {"pageNum": "$pageNum"};
+
+      final response = await http.post(url, body: data);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+        print(jsonResponse);
+        print("봉사 리스트 : 성공");
+
+        setState(() {
+          _volList = jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList();
+          pageNum++;
+        });
+      } else {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception("API를 불러오는데 실패하였습니다.");
+      }
+    } catch (e) {
+      print(e.toString());
+    } finally {
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
+    }
+  }
+
   // 리스트 새로고침
   Future<void> _refreshVolList() async {
-    pageNum = 1;
-    if (_isSearched) {
-      await _searchVolList();
-    } else {
-      final newVolList = await _postGetApiDispatch();
-      _volList!.clear();
+    setState(() {
+      _isFirstLoadRunning = true;
+      pageNum = 1;
+    });
+
+    try {
+      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+      final data = {"pageNum": "$pageNum"};
+
+      final response = await http.post(url, body: data);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+        print(jsonResponse);
+        print("봉사 리스트 : 성공");
+
+        setState(() {
+          _volList = jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList();
+          pageNum++;
+        });
+      } else {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception("API를 불러오는데 실패하였습니다.");
+      }
+    } catch (e) {
+      print(e.toString());
+    } finally {
       setState(() {
-        _volList!.addAll(newVolList);
+        _isFirstLoadRunning = false;
       });
     }
   }
@@ -127,67 +201,60 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   Future<void> _scrollEnd() async {
     // 스크롤이 맨 아래로 내려가면 실행됨
-    if (_scrollController.offset >=
-            _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
-      Future.delayed(const Duration(milliseconds: 100)).then((_) async {
-        if (_isSearched) {
-          // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
-          final url =
-              Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
-          final data = {
-            "pageNum": "$pageNum",
-            "keyword": _searchController.text
-          };
+    if (_scrollController.position.extentAfter < 300 &&
+        !_isFirstLoadRunning &&
+        !_isLoadMoreRunning) {
+      setState(() {
+        _isLoadMoreRunning = true;
+      });
+      if (_isSearched) {
+        // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
+        final url =
+            Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
+        final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
 
-          final response = await http.post(url, body: data);
+        final response = await http.post(url, body: data);
 
-          if (response.statusCode >= 200 && response.statusCode < 300) {
-            final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-            print("봉사 검색 : 성공");
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+          print("봉사 검색 : 성공");
 
-            // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
-            _updateList(jsonResponse
-                .map((data) => VolunteerModel.fromJson(data))
-                .toList());
-          } else {
-            print("${response.statusCode} : ${response.body}");
-            throw Exception("통신 실패!");
-          }
+          // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
+          _volList!.addAll(jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList());
+          pageNum++;
         } else {
-          // 전체 리스트에서 추가 데이터를 가져옵니다.
-          final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
-          final data = {"pageNum": "$pageNum"};
-
-          final response = await http.post(url, body: data);
-
-          if (response.statusCode >= 200 && response.statusCode < 300) {
-            final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-            print(jsonResponse);
-            print("봉사 리스트 : 성공");
-
-            _updateList(jsonResponse
-                .map((data) => VolunteerModel.fromJson(data))
-                .toList());
-          } else {
-            print('Response status: ${response.statusCode}');
-            print('Response body: ${response.body}');
-            throw Exception("API를 불러오는데 실패하였습니다.");
-          }
+          print("${response.statusCode} : ${response.body}");
+          throw Exception("통신 실패!");
         }
+      } else {
+        // 전체 리스트에서 추가 데이터를 가져옵니다.
+        final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+        final data = {"pageNum": "$pageNum"};
+
+        final response = await http.post(url, body: data);
+
+        if (response.statusCode >= 200 && response.statusCode < 300) {
+          final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+          print(jsonResponse);
+          print("봉사 리스트 : 성공");
+
+          _volList!.addAll(jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList());
+          pageNum++;
+        } else {
+          print('Response status: ${response.statusCode}');
+          print('Response body: ${response.body}');
+          throw Exception("API를 불러오는데 실패하였습니다.");
+        }
+      }
+
+      setState(() {
+        _isLoadMoreRunning = false;
       });
     }
-  }
-
-  void _updateList(List<VolunteerModel> newVolList) {
-    final int index = _volList!.length;
-    _volList!.addAll(newVolList);
-
-    // 새로운 _volList의 개수로 totalItemsCount 업데이트
-    totalItemsCount = _volList!.length;
-
-    _listKey.currentState?.insertItem(index);
-    pageNum++;
   }
 
   @override
@@ -207,6 +274,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
             controller: _searchController,
             onSubmitted: _searchVolList,
             buttonText: "검색",
+            focusNode: _focusNode,
           ),
         ),
         automaticallyImplyLeading: false,
@@ -277,38 +345,24 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                   ),
                 ),
                 Gaps.v6,
-                Expanded(
-                  child: FutureBuilder<List<VolunteerModel>>(
-                    future: _volList != null
-                        ? Future.value(
-                            _volList!) // _postList가 이미 가져온 상태라면 Future.value 사용
-                        : _postGetApiDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        // 데이터를 기다리는 동안 로딩 인디케이터 표시
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        // 에러가 발생한 경우 에러 메시지 표시
-                        return Center(
-                          child: Text('오류 발생: ${snapshot.error}'),
-                        );
-                      } else {
-                        // 데이터를 성공적으로 가져왔을 때 ListView 표시
-                        _volList = snapshot.data!;
-
-                        return RefreshIndicator.adaptive(
+                _isFirstLoadRunning
+                    ? const Expanded(
+                        child: Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                      )
+                    : Expanded(
+                        child: RefreshIndicator.adaptive(
                           onRefresh: _refreshVolList,
-                          child: ListView.separated(
-                            key: Key(
-                                totalItemsCount.toString()), // 상태 유지를 위해 키 사용
+                          child: ListView.builder(
+                            cacheExtent: 100,
                             controller: _scrollController,
                             shrinkWrap: true,
                             itemCount: _volList!.length,
                             itemBuilder: (context, index) {
                               final item = _volList![index];
                               return Container(
+                                margin: const EdgeInsets.symmetric(vertical: 5),
                                 height: 140,
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
@@ -318,41 +372,9 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                                 ),
                               );
                             },
-                            separatorBuilder: (context, index) => Gaps.v10,
                           ),
-                          // child: CustomScrollView(
-                          //   controller: _scrollController,
-                          //   slivers: <Widget>[
-                          //     SliverPadding(
-                          //       padding: const EdgeInsets.symmetric(
-                          //         horizontal: Sizes.size10,
-                          //       ),
-                          //       sliver: SliverList(
-                          //         key: _listKey, // 이 부분을 추가하세요.
-                          //         delegate: SliverChildBuilderDelegate(
-                          //           (BuildContext context, int index) {
-                          //             final item = _volList![index];
-                          //             return Container(
-                          //               height: 140,
-                          //               decoration: const BoxDecoration(
-                          //                 color: Colors.white,
-                          //               ),
-                          //               child: VolPostCard(
-                          //                 volData: item,
-                          //               ),
-                          //             );
-                          //           },
-                          //           childCount: _volList!.length,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        );
-                      }
-                    },
-                  ),
-                ),
+                        ),
+                      ),
               ],
             ),
           ),
@@ -364,7 +386,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
               dismissible: true,
               // 자신을 클릭하면 실행되는 함수
-              onDismiss: () => FocusScope.of(context).unfocus(),
+              onDismiss: () => _focusNode.unfocus(),
             ),
         ],
       ),

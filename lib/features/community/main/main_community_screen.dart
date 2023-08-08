@@ -20,9 +20,7 @@ import 'package:swag_cross_app/utils/ad_helper.dart';
 import 'package:http/http.dart' as http;
 
 class MainCommunityScreen extends StatefulWidget {
-  const MainCommunityScreen({
-    super.key,
-  });
+  const MainCommunityScreen({Key? key}) : super(key: key);
 
   @override
   State<MainCommunityScreen> createState() => _MainCommunityScreenState();
