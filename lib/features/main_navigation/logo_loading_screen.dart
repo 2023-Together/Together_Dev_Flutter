@@ -1,8 +1,15 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
+import 'package:swag_cross_app/models/DBModels/user_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:swag_cross_app/storages/login_storage.dart';
+
+import 'package:http/http.dart' as http;
 
 class LogoLoadingScreen extends StatefulWidget {
   static const routeName = "loading";
@@ -36,23 +43,36 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
     super.dispose();
   }
 
-  // void _checkAutoLogined() async {
-  //   final String? loginData = await LoginStorage.getLoginData();
-  //   print(loginData);
+  void _checkAutoLogined() async {
+    final String? loginData = await LoginStorage.getLoginData();
+    print(loginData);
 
-  //   if (loginData == null) return;
-  //   if (loginData.trim().isNotEmpty) {
-  //     List<String> userData = loginData.split(",");
+    if (loginData == null) return;
+    if (loginData.trim().isNotEmpty) {
+      final url = Uri.parse("http://59.4.3.198:80/together/login");
+      // final headers = {'Content-Type': 'application/json'};
+      final data = {"userEmail": loginData};
 
-  //     final id = userData[0];
-  //     final pw = userData[1];
+      final response = await http.post(url, body: data);
 
-  //     if (!mounted) return;
-  //     context.read<UserProvider>().login("naver");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final jsonResponse = jsonDecode(response.body);
+        print(jsonResponse);
+        if (jsonResponse.isEmpty) {
+          print("로그인 실패");
+        } else {
+          if (!mounted) return;
+          context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+          context.pop();
+        }
+      } else {
+        print("로그인 실패");
+      }
 
-  //     context.goNamed(MainNavigation.routeName);
-  //   }
-  // }
+      if (!mounted) return;
+      context.goNamed(MainNavigation.routeName);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

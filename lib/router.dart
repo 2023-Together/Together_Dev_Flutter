@@ -13,7 +13,7 @@ import 'package:swag_cross_app/features/customer_service/customer_service_screen
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/club_search_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/club_detail_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/club_search_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
 import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';

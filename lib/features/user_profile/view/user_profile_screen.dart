@@ -16,58 +16,31 @@ import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/providers/user_provider.dart';
 
-
-// final List<Map<String, dynamic>> userDatas = [
-//   {
-//     "userId": "1",
-//     "userEmail": "thdusrkd01@naver.com",
-//     "userPw": "000000",
-//     "userName": "강소연",
-//     "userNickName": "망고012",
-//     "userDef": "hello!",
-//     "userGender": "여자",
-//     "userType": "봉사자",
-//     // "userProfileImage": "",
-//     "userBirthDate": "2001-09-28",
-//     "userPhoneNumber": "010-0000-0000",
-//   },
-// ];
-
-// class UserProfileScreenArgs {
-//   final int userId1;
-
-//   UserProfileScreenArgs({required this.userId1});
-// }
-
 class UserProfileScreen extends StatefulWidget {
-  // final int userId1;
-
   static const routeName = "user_profile";
   static const routeURL = "/user_profile";
 
-  const UserProfileScreen({
-    super.key,
-    // required this.userId1,
-  });
+  const UserProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  late UserModel? userData;
-
-  void _userSetupTap() {
-    context.pushNamed(UserInformSetup.routeName);
-  }
+  late UserModel? _userData;
 
   List<PostCardModel>? _postListWithoutAds;
 
-  final TextEditingController _DefController = TextEditingController();
+  late TextEditingController _defController;
 
-  String? _DefError;
+  @override
+  void initState() {
+    super.initState();
 
-  // 스크롤 제어를 위한 컨트롤러를 선언합니다.
+    _userData = context.read<UserProvider>().userData!;
+
+    _defController = TextEditingController(text: _userData!.userDef ?? "");
+  }
 
   Future<List<PostCardModel>> _postGetDispatch() async {
     final url =
@@ -95,7 +68,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     final data = {
       "userId": userData!.userId,
-      "userDef": userData.userDef,
+      "userDef": _defController.text,
     };
     final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
     final body = jsonEncode(data); // 데이터를 JSON 문자열로 변환
@@ -104,22 +77,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         await http.post(url, headers: headers, body: body); // 헤더와 JSON 문자열 전송
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final result = int.parse(response.body);
+      final result = response.body as int;
       if (result == 0) {
-        setState(() {
-          context.read<UserProvider>().userData?.userDef = userData.userDef;
-        });
-        print("통신 성공");
+        print("설명 수정 : 성공");
+        context.read<UserProvider>().updateUserData(_userData!);
       } else {
-        print("통신 실패!");
-        print(response.statusCode);
-        print(response.body);
+        print("설명 수정 : 실패");
+        print('Response body: ${response.body}');
       }
     } else {
       print("수정 에러!");
       print(response.statusCode);
       print(response.body);
     }
+  }
+
+  void _userSetupTap() {
+    context.pushNamed(UserInformSetup.routeName);
   }
 
   // 리스트 새로고침
@@ -129,16 +103,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   // }
 
   @override
-  void initState() {
-    super.initState();
-
-    // userData = context.read<UserProvider>().userData;
-
-    // _DefController.text = userData!.userDef ?? '';
-  }
-
-  @override
   void dispose() {
+    _defController.dispose();
+
     super.dispose();
   }
 
@@ -148,267 +115,190 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      body: SafeArea(
-        child: DefaultTabController(
-          initialIndex: 0,
-          length: 2,
-          // NestedScrollView : SliverAppBar와 TabBar를 같이 쓰는 경우 처럼 여러개의 스크롤 함께쓸때 유용한 위젯
-          child: NestedScrollView(
-            // CustomScrollView 안에 들어갈 element들
-            // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                SliverAppBar(
-                  title: const Text("내정보"),
-                  // actions: [
-                  //   IconButton(
-                  //     onPressed: () {},
-                  //     icon: const FaIcon(
-                  //       FontAwesomeIcons.gear,
-                  //       size: Sizes.size20,
-                  //     ),
-                  //   ),
-                  // ],
-                  actions: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size14,
-                        vertical: Sizes.size10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: _userSetupTap,
-                            child: const Icon(Icons.settings_outlined),
-                          ),
-                        ],
-                      ),
+      body: DefaultTabController(
+        initialIndex: 0,
+        length: 2,
+        // NestedScrollView : SliverAppBar와 TabBar를 같이 쓰는 경우 처럼 여러개의 스크롤 함께쓸때 유용한 위젯
+        child: NestedScrollView(
+          // CustomScrollView 안에 들어갈 element들
+          // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                title: const Text("내정보"),
+                actions: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: Sizes.size14,
+                      vertical: Sizes.size10,
                     ),
-                  ],
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    children: [
-                      UserProfileCard(
-                        userData: userData,
-                      ),
-                      Gaps.v20,
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Gaps.h20,
-                          Text(
-                            "상태 메세지",
-                            style: TextStyle(
-                              fontSize: Sizes.size20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Gaps.v10,
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: Container(
-                          padding: const EdgeInsets.all(
-                            Sizes.size12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(Sizes.size8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 2,
-                                blurRadius: 3,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // Expanded(
-                              //   child: Row(
-                              //     children: [
-                              //       Icon(
-                              //         Icons.groups_2_outlined,
-                              //       ),
-                              //       Gaps.h10,
-                              //       // 기존 상태 메세지 표시
-                              //       Text("동아리: ${userData!.userDef}"),
-                              //     ],
-                              //   ),
-                              // ),
-                              Gaps.h5,
-                              GestureDetector(
-                                onTap: () {
-                                  // 상태 메세지 수정 버튼을 눌렀을 때의 동작
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      String? newStatus =
-                                          userData!.userDef; // 현재 상태 메세지를 보관
-
-                                      return AlertDialog(
-                                        title: Text("상태 메세지 수정"),
-                                        content: TextField(
-                                          onChanged: (value) {
-                                            newStatus =
-                                                value; // 새로운 상태 메세지를 업데이트
-                                          },
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              Navigator.pop(
-                                                  context); // 다이얼로그 닫기
-                                            },
-                                            child: Text("취소"),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              // setState(() {
-                                              //   userData.userDef = newStatus; // 상태 메세지 업데이트
-                                              // });
-                                              _onUpdateDef();
-                                              Navigator.pop(
-                                                  context); // 다이얼로그 닫기
-                                            },
-                                            child: Text("저장"),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: Icon(Icons.edit), // 상태 메세지 수정 아이콘
-                              ),
-                            ],
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: _userSetupTap,
+                          child: const Icon(Icons.settings_outlined),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    UserProfileCard(
+                      userData: userData,
+                    ),
+                    Gaps.v10,
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Gaps.h20,
+                        Text(
+                          "상태 메세지",
+                          style: TextStyle(
+                            fontSize: Sizes.size20,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-
-                      // const Row(
-                      //   mainAxisAlignment: MainAxisAlignment.start,
-                      //   children: [
-                      //     Gaps.h20,
-                      //     Text(
-                      //       "상태 메세지",
-                      //       style: TextStyle(
-                      //         fontSize: Sizes.size20,
-                      //         fontWeight: FontWeight.bold,
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                      // Gaps.v10,
-                      // Padding(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      //   child: Container(
-                      //     padding: const EdgeInsets.all(
-                      //       Sizes.size12,
-                      //     ),
-                      //     decoration: BoxDecoration(
-                      //       color: Colors.white,
-                      //       borderRadius: BorderRadius.circular(Sizes.size8),
-                      //       boxShadow: [
-                      //         BoxShadow(
-                      //           color: Colors.grey.withOpacity(0.5),
-                      //           spreadRadius: 2,
-                      //           blurRadius: 3,
-                      //           offset: const Offset(0, 2),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     child: GestureDetector(
-                      //       onTap: () {},
-                      //       child: Row(
-                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //         children: [
-                      //           Row(
-                      //             children: [
-                      //               Icon(
-                      //                 Icons.groups_2_outlined,
-                      //               ),
-                      //               Gaps.h10,
-                      //               Text("동아리"),
-                      //             ],
-                      //           ),
-                      //           Gaps.h5,
-                      //           Icon(Icons.chevron_right), // Right arrow icon
-                      //         ],
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      Gaps.v20,
-                      const Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Gaps.h20,
-                          Text(
-                            "내가 올린 게시글",
-                            style: TextStyle(
-                              fontSize: Sizes.size20,
-                              fontWeight: FontWeight.bold,
+                      ],
+                    ),
+                    Gaps.v10,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(
+                          Sizes.size12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(Sizes.size8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 2,
+                              blurRadius: 3,
+                              offset: const Offset(0, 2),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _userData!.userDef ?? "",
+                              maxLines: 5,
+                              overflow: TextOverflow
+                                  .ellipsis, // 변경: 3줄을 초과할 경우 ...으로 표시
+                              style: const TextStyle(
+                                fontSize: Sizes.size16,
+                              ),
+                            ),
+                            Gaps.h5,
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: const Text("상태 메세지 수정"),
+                                      content: TextField(
+                                        controller: _defController,
+                                        maxLines: 5,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.normal,
+                                        ),
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("취소"),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            _onUpdateDef();
+                                            context.pop();
+                                          },
+                                          child: const Text("저장"),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: const Icon(Icons.edit),
+                            ),
+                          ],
+                        ),
                       ),
-                      Gaps.v10,
-                    ],
-                  ),
-                ),
-                // SliverPersistentHeader는 SliverToBoxAdapter안에서 선언할수 없음
-                SliverPersistentHeader(
-                  delegate: PersistentTabBar(),
-                  pinned: true,
-                ),
-              ];
-            },
-            body: TabBarView(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
-                  child: FutureBuilder<List<PostCardModel>>(
-                    // future: _postGetDispatch(),
-                    future: _postListWithoutAds != null
-                        ? Future.value(
-                            _postListWithoutAds!) // _postList가 이미 가져온 상태라면 Future.value 사용
-                        : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('오류 발생: ${snapshot.error}'),
-                        );
-                      } else {
-                        _postListWithoutAds =
-                            snapshot.data!.where((item) => !item.isAd).toList();
-
-                        return ListView.builder(
-                          itemCount: _postListWithoutAds!.length,
-                          itemBuilder: (context, index) => PostCard(
-                            postData: _postListWithoutAds![index],
+                    ),
+                    Gaps.v20,
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "내가 올린 게시글",
+                          style: TextStyle(
+                            fontSize: Sizes.size20,
+                            fontWeight: FontWeight.bold,
                           ),
-                        );
-                      }
-                    },
-                  ),
+                        ),
+                      ],
+                    ),
+                    Gaps.v10,
+                  ],
                 ),
-                const Center(
-                  child: Text("동아리에 올린 게시글"),
+              ),
+              // SliverPersistentHeader는 SliverToBoxAdapter안에서 선언할수 없음
+              SliverPersistentHeader(
+                delegate: PersistentTabBar(),
+                pinned: true,
+              ),
+            ];
+          },
+          body: TabBarView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                child: FutureBuilder<List<PostCardModel>>(
+                  // future: _postGetDispatch(),
+                  future: _postListWithoutAds != null
+                      ? Future.value(
+                          _postListWithoutAds!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                      : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('오류 발생: ${snapshot.error}'),
+                      );
+                    } else {
+                      _postListWithoutAds =
+                          snapshot.data!.where((item) => !item.isAd).toList();
+
+                      return ListView.builder(
+                        itemCount: _postListWithoutAds!.length,
+                        itemBuilder: (context, index) => PostCard(
+                          postData: _postListWithoutAds![index],
+                        ),
+                      );
+                    }
+                  },
                 ),
-                // const Center(
-                //   child: Text("좋아요한 게시글"),
-                // ),
-              ],
-            ),
+              ),
+              const Center(
+                child: Text("동아리에 올린 게시글"),
+              ),
+              // const Center(
+              //   child: Text("좋아요한 게시글"),
+              // ),
+            ],
           ),
         ),
       ),
