@@ -304,14 +304,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print("volNum : ${_volList?.length}");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         title: Container(
           color: Colors.white,
-          padding: const EdgeInsets.all(6),
           child: SWAGTextField(
             hintText: "검색어를 입력하세요.",
             maxLine: 1,
@@ -404,16 +402,20 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               ],
             ),
           ),
-          if (_isFocused)
-            // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            ModalBarrier(
+          // if (_isFocused)
+          // 슬라이드 화면 뒤쪽의 검은 화면 구현
+          AnimatedOpacity(
+            opacity: _isFocused ? 1 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: ModalBarrier(
               // color: _barrierAnimation,
-              color: Colors.transparent,
+              color: Colors.black12,
               // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
               dismissible: true,
               // 자신을 클릭하면 실행되는 함수
               onDismiss: () => _focusNode.unfocus(),
             ),
+          ),
         ],
       ),
     );
