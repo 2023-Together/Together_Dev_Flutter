@@ -137,18 +137,24 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   Future<List<PostCardModel>> _postGetDispatch() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
-    final response = await http.get(url);
+        Uri.parse("http://58.150.133.91:80/together/post/getPostsByClubId");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "clubId": widget.clubData.clubId,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("동아리 커뮤니티 : 성공");
+      print(jsonResponse);
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
-      _postList =
+      final postList =
           jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
 
-      return await _insertAds(_postList!, 5);
+      return await _insertAds(postList, 5);
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -184,7 +190,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       postId: 0,
       postBoardId: 0,
       postUserId: 0,
-      userName: "",
+      userNickname: "",
       postTitle: "",
       postContent: "",
       postTag: [],
@@ -248,15 +254,22 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton(
               heroTag: "club_community_edit",
-              onPressed: () {
+              onPressed: () async {
                 // 동아리 게시글 작성
-                context.pushNamed(
+                final result = context.pushNamed(
                   PostEditScreen.routeName,
                   extra: PostEditScreenArgs(
                     pageTitle: "동아리 게시글 등록",
                     editType: PostEditType.clubInsert,
+                    clubData: widget.clubData,
                   ),
                 );
+
+                if (result is bool) {
+                  if (result as bool) {
+                    _postList = await _postGetDispatch();
+                  }
+                }
               },
               backgroundColor: Colors.blue.shade300,
               child: const FaIcon(

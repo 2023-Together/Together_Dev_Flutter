@@ -1,6 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
@@ -120,35 +119,38 @@ class _UserProfileCardState extends State<UserProfileCard> {
           UserInformUpdate.routeName,
         );
       },
-      leading: CircleAvatar(
+      leading: const CircleAvatar(
         radius: 40,
-        child: Text(userData!.userName),
+        child: FaIcon(
+          FontAwesomeIcons.solidCircleUser,
+          size: 45,
+        ),
         // backgroundImage: NetworkImage(
         //   "https://avatars.githubusercontent.com/u/77985708?v=4",
         // ),
       ),
       title: Text(
-        userData!.userName,
+        userData!.userNickname,
         style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: Sizes.size18,
         ),
       ),
-      subtitle: 
-      // GestureDetector(
-      //   onTap: () {
-      //     // _showEditDialog(context);
-      //   },
-      //   child: Text(
-      //     widget.userData!.userDef ?? '',
-      //     style: TextStyle(
-      //       fontSize: Sizes.size14,
-      //     ),
-      //   ),
-      // ),
-      const Text(
-        "SWAG 동아리",
-        style: TextStyle(
+      subtitle:
+          // GestureDetector(
+          //   onTap: () {
+          //     // _showEditDialog(context);
+          //   },
+          //   child: Text(
+          //     widget.userData!.userDef ?? '',
+          //     style: TextStyle(
+          //       fontSize: Sizes.size14,
+          //     ),
+          //   ),
+          // ),
+          Text(
+        userData!.userEmail,
+        style: const TextStyle(
           fontSize: Sizes.size14,
         ),
       ),

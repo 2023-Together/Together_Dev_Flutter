@@ -2,7 +2,7 @@ class PostCardModel {
   final int postId; // 게시글 고유 아이디
   final int postBoardId; // 어떤 게시판에 속해있는지
   final int postUserId; // 게시글 작성 유저 did
-  final String userName; // 작성자 이름
+  final String userNickname; // 작성자 별명
   final String postTitle; // 게시글 제목
   final String postContent; // 게시글 내용(평문)
   final List<Map<String, dynamic>>?
@@ -16,7 +16,7 @@ class PostCardModel {
     required this.postId,
     required this.postBoardId,
     required this.postUserId,
-    required this.userName,
+    required this.userNickname,
     required this.postTitle,
     required this.postContent,
     required this.postTag,
@@ -31,7 +31,7 @@ class PostCardModel {
       postId: json['postId'],
       postBoardId: json['postBoardId'],
       postUserId: json['postUserId'],
-      userName: json['userName'],
+      userNickname: json['userNickname'],
       postTitle: json['postTitle'] ?? '',
       postContent: json['postContent'] ?? '',
       postTag: json['postTag'],

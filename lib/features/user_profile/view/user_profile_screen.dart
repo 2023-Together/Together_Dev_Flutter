@@ -65,26 +65,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   void _onUpdateDef() async {
     final userData = context.read<UserProvider>().userData;
     final url = Uri.parse("http://59.4.3.198:80/together/updateUserDef");
-
+    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
     final data = {
-      "userId": userData!.userId,
+      "userId": userData!.userId.toString(),
       "userDef": _defController.text,
     };
-    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
-    final body = jsonEncode(data); // 데이터를 JSON 문자열로 변환
 
-    final response =
-        await http.post(url, headers: headers, body: body); // 헤더와 JSON 문자열 전송
+    final response = await http.post(url, body: data); // 헤더와 JSON 문자열 전송
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final result = response.body as int;
-      if (result == 0) {
-        print("설명 수정 : 성공");
-        context.read<UserProvider>().updateUserData(_userData!);
-      } else {
-        print("설명 수정 : 실패");
-        print('Response body: ${response.body}');
-      }
+      print("설명 수정 : 성공");
+      context.read<UserProvider>().updateUserDef(_defController.text);
     } else {
       print("수정 에러!");
       print(response.statusCode);
@@ -221,6 +212,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                           onPressed: () {
                                             _onUpdateDef();
                                             context.pop();
+                                            setState(() {});
                                           },
                                           child: const Text("저장"),
                                         ),
@@ -239,6 +231,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
+                        Gaps.h10,
                         Text(
                           "내가 올린 게시글",
                           style: TextStyle(

@@ -52,16 +52,10 @@ class UserInformSetup extends StatelessWidget {
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final result = int.parse(response.body);
-      if (result == 0) {
-        if (!context.mounted) return;
-        context.read<UserProvider>().logout();
-        context.read<MainNavigationProvider>().changeIndex(0);
-        context.pop();
-      } else {
-        print("삭제 실패");
-        print("${response.statusCode} : ${response.body}");
-      }
+      if (!context.mounted) return;
+      context.read<UserProvider>().logout();
+      context.read<MainNavigationProvider>().changeIndex(0);
+      context.pop();
     } else {
       print("삭제 실패");
       print("${response.statusCode} : ${response.body}");

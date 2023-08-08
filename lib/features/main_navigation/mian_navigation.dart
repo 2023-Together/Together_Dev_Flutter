@@ -86,7 +86,6 @@ class _MainNavigationState extends State<MainNavigation> {
     final isLogined = context.watch<UserProvider>().isLogined;
     final selectedIndex =
         context.watch<MainNavigationProvider>().navigationIndex;
-    print(selectedIndex);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(

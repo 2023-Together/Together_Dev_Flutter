@@ -121,7 +121,7 @@ class _PostCard extends State<PostCard> {
                 //   ),
                 // ),
                 title: Text(
-                  widget.postData.userName,
+                  widget.postData.userNickname,
                   maxLines: 1,
                 ),
                 titleTextStyle: const TextStyle(

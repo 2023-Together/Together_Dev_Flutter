@@ -10,6 +10,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
+
 import 'package:http/http.dart' as http;
 
 class AuthButton extends StatefulWidget {
@@ -135,49 +136,24 @@ class _AuthButtonState extends State<AuthButton> {
         ],
       );
     }
-
-    //-------------------------------------------------------------
-
-    // if (!mounted) return;
-    // final UserModel updateData = UserModel(
-    //   userId: 1,
-    //   userEmail: "dlwogus1027@naver.com",
-    //   userPhoneNumber: "01049049193",
-    //   userName: "이재현",
-    //   userNickname: "푸른함대앤디",
-    //   userGender: 0,
-    //   userBirthdate: DateTime.parse("1999-10-27"),
-    //   userType: "user",
-    // );
-
-    // context.read<UserProvider>().login(updateData);
-    // context.pop();
   }
 
   // 네이버 회원가입
   void _signUpForNaver(BuildContext context) async {
-    // 사용횟수가 정해져 있어서 테스트할때 주석을 풀어야함
-    final NaverLoginResult result = await FlutterNaverLogin.logIn();
-
     if (!mounted) return;
-    if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
+    final UserModel updateData = UserModel(
+      userId: 1,
+      userEmail: "dlwogus1027@naver.com",
+      userPhoneNumber: "01049049193",
+      userName: "이재현",
+      userNickname: "푸른함대앤디",
+      userGender: 0,
+      userBirthdate: DateTime.parse("1999-10-27"),
+      userType: "user",
+    );
 
-      final userData = result.account;
-      print(userData);
-    } else {
-      swagPlatformDialog(
-        context: context,
-        title: "오류!",
-        message: result.errorMessage,
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text("알겠습니다"),
-          ),
-        ],
-      );
-    }
+    context.read<UserProvider>().login(updateData);
+    context.pop();
   }
 
   // 카카오 로그인
