@@ -5,7 +5,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_main_screen.dart';
 import 'package:swag_cross_app/features/community/main/main_community_screen.dart';
 import 'package:swag_cross_app/features/main_navigation/widgets/nav_tab.dart';
-import 'package:swag_cross_app/features/search_page/view/search_vol_screen.dart';
+import 'package:swag_cross_app/features/search_page/view/vol_search_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_profile_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
