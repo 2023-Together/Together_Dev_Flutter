@@ -4,7 +4,7 @@ class ClubSearchModel {
   int clubBoardId;
   String clubName;
   String clubDescription;
-  int clubRecruiting;
+  bool clubRecruiting;
   // String clubMaster;
   // int clubMembers;
 

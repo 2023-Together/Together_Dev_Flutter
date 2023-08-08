@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 //import 'package:swag_cross_app/features/page_test/widgets/categori_buttons.dart';
@@ -13,6 +16,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 final List<String> volCategories = [
   "카테고리1",
@@ -220,10 +225,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           print("봉사 검색 : 성공");
 
           // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
-          _volList!.addAll(jsonResponse
-              .map((data) => VolunteerModel.fromJson(data))
-              .toList());
-          pageNum++;
+          setState(() {
+            _volList!.addAll(jsonResponse
+                .map((data) => VolunteerModel.fromJson(data))
+                .toList());
+            pageNum++;
+          });
         } else {
           print("${response.statusCode} : ${response.body}");
           throw Exception("통신 실패!");
@@ -240,10 +247,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           print(jsonResponse);
           print("봉사 리스트 : 성공");
 
-          _volList!.addAll(jsonResponse
-              .map((data) => VolunteerModel.fromJson(data))
-              .toList());
-          pageNum++;
+          setState(() {
+            _volList!.addAll(jsonResponse
+                .map((data) => VolunteerModel.fromJson(data))
+                .toList());
+            pageNum++;
+          });
         } else {
           print('Response status: ${response.statusCode}');
           print('Response body: ${response.body}');
@@ -257,9 +266,70 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
+  void _onVolBoxTap(VolunteerModel volData) {
+    if (!context.read<UserProvider>().isLogined) {
+      final loginType = context.read<UserProvider>().isLogined;
+
+      if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
+        swagPlatformDialog(
+          context: context,
+          title: "로그인 알림",
+          message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
+          actions: [
+            TextButton(
+              onPressed: () => context.pop(),
+              child: const Text("아니오"),
+            ),
+            TextButton(
+              onPressed: () {
+                if (volData.listApiType == "1365") {
+                  final url_1365 = Uri.parse(
+                      'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
+                  launchUrl(
+                    url_1365,
+                    mode: LaunchMode.externalApplication,
+                  );
+                } else if (volData.listApiType == "vms") {
+                  final urlVms = Uri.parse(
+                      'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
+                  launchUrl(
+                    urlVms,
+                    mode: LaunchMode.externalApplication,
+                  );
+                }
+                Navigator.pop(context);
+              },
+              child: const Text("예"),
+            ),
+          ],
+        );
+      }
+    } else {
+      try {
+        if (volData.listApiType == "1365") {
+          final url_1365 = Uri.parse(
+              'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
+          launchUrl(
+            url_1365,
+            mode: LaunchMode.externalApplication,
+          );
+        } else if (volData.listApiType == "vms") {
+          final urlVms = Uri.parse(
+              'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
+          launchUrl(
+            urlVms,
+            mode: LaunchMode.externalApplication,
+          );
+        }
+        Navigator.pop(context);
+      } catch (e) {
+        print("URL 열기 에러: $e");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    print("pageNum : $pageNum");
     print("volNum : ${_volList?.length}");
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -361,14 +431,18 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                             itemCount: _volList!.length,
                             itemBuilder: (context, index) {
                               final item = _volList![index];
-                              return Container(
-                                margin: const EdgeInsets.symmetric(vertical: 5),
-                                height: 140,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                ),
-                                child: VolPostCard(
-                                  volData: item,
+                              return GestureDetector(
+                                onTap: () => _onVolBoxTap(item),
+                                child: Container(
+                                  margin:
+                                      const EdgeInsets.symmetric(vertical: 5),
+                                  height: 140,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                  ),
+                                  child: VolPostCard(
+                                    volData: item,
+                                  ),
                                 ),
                               );
                             },
