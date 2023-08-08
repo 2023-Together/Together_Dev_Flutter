@@ -66,7 +66,7 @@ class ClubRequestCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
-                      clubData.clubRecruiting == 1
+                      clubData.clubRecruiting
                           ? Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 6, vertical: 4),

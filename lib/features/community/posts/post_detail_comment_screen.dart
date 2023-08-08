@@ -13,9 +13,9 @@ import 'package:http/http.dart' as http;
 
 class PostDetailCommentscreen extends StatefulWidget {
   const PostDetailCommentscreen({
-    super.key,
+    Key? key,
     required this.postData,
-  });
+  }) : super(key: key);
 
   final PostCardModel postData;
 
@@ -58,11 +58,12 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
   }
 
   Future<void> _onSubmittedCommentEdit() async {
+    final userData = context.read<UserProvider>().userData;
     final url =
         Uri.parse("http://58.150.133.91:80/together/post/createComment");
     final headers = {'Content-Type': 'application/json'};
     final data = {
-      "commentUserId": context.read<UserProvider>().userData?.userId,
+      "commentUserId": userData!.userId,
       "commentPostId": widget.postData.postId,
       "commentContent": _commentController.text,
       "commentParentnum": 0,
@@ -72,11 +73,13 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("댓글 등록 : 성공");
 
-      _commentsList = await _commentGetDispatch();
-      setState(() {});
+      setState(() async {
+        _commentsList = await _commentGetDispatch();
+        FocusScope.of(context).unfocus();
+        _commentController.text = "";
+      });
     } else {
       print("${response.statusCode} : ${response.body}");
       print("댓글 등록 : 실패");
@@ -92,6 +95,7 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
 
   @override
   Widget build(BuildContext context) {
+    print("userId : ${context.read<UserProvider>().userData?.userId}");
     super.build(context); // 반드시 super.build(context) 호출해야 함
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -137,20 +141,21 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
                 },
               ),
             ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+            if (context.watch<UserProvider>().isLogined)
+              Container(
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                ),
+                padding: const EdgeInsets.all(10),
+                child: SWAGTextField(
+                  hintText: "등록할 댓글을 입력해주세요..",
+                  maxLine: 1,
+                  controller: _commentController,
+                  onSubmitted: _onSubmittedCommentEdit,
+                  buttonText: "등록",
+                ),
               ),
-              padding: const EdgeInsets.all(10),
-              child: SWAGTextField(
-                hintText: "등록할 댓글을 입력해주세요..",
-                maxLine: 1,
-                controller: _commentController,
-                onSubmitted: _onSubmittedCommentEdit,
-                buttonText: "등록",
-              ),
-            ),
           ],
         ),
       ),
