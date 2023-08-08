@@ -33,6 +33,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void updateUserDef(String userDef) {
+    _userData!.userDef = userDef;
+    notifyListeners();
+  }
+
   void loginCheckIsNone(BuildContext context) {
     if (_isLogined) {
       _isLogined = false;

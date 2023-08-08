@@ -188,6 +188,15 @@ class _SignInScreenState extends State<SignInScreen> {
                   authType: SignType.signIn,
                 ),
               ),
+              const Expanded(
+                flex: 1,
+                child: AuthButton(
+                  path: "naver",
+                  text: "테스트 로그인",
+                  signType: SNSType.naver,
+                  authType: SignType.signUp,
+                ),
+              ),
             ],
           ),
         ),

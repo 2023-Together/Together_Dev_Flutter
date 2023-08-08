@@ -3,13 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 enum PostEditType {
   mainInsert,
@@ -22,12 +25,14 @@ class PostEditScreenArgs {
   final PostEditType editType;
   final int? maxImages;
   final PostCardModel? postData;
+  final ClubDataModel? clubData;
 
   PostEditScreenArgs({
     required this.pageTitle,
     required this.editType,
     this.maxImages,
     this.postData,
+    this.clubData,
   });
 }
 
@@ -41,12 +46,14 @@ class PostEditScreen extends StatefulWidget {
     required this.editType,
     this.maxImages,
     this.postData,
+    this.clubData,
   });
 
   final String pageTitle;
   final PostEditType editType;
   final int? maxImages;
   final PostCardModel? postData;
+  final ClubDataModel? clubData;
 
   @override
   State<PostEditScreen> createState() => _PostEditScreenState();
@@ -200,6 +207,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
     //         (e) => base64Encode(File(e).readAsBytesSync()),
     //       )
     //     : [];
+    final userData = context.read<UserProvider>().userData;
 
     if (widget.editType == PostEditType.mainInsert) {
       final url = Uri.parse("http://58.150.133.91:80/together/post/createPost");
@@ -216,6 +224,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('생성 성공!');
+        context.pop<bool>(true);
       } else {
         if (!mounted) return;
         swagPlatformDialog(
@@ -224,13 +233,49 @@ class _PostEditScreenState extends State<PostEditScreen> {
           message: "게시글 생성에 오류가 발생하였습니다! \n ${response.body}",
           actions: [
             TextButton(
-              onPressed: () => context.pop(),
+              onPressed: () {
+                context.pop();
+                context.pop<bool>(false);
+              },
               child: const Text("알겠습니다"),
             ),
           ],
         );
       }
     } else if (widget.editType == PostEditType.clubInsert) {
+      final url =
+          Uri.parse("http://58.150.133.91:80/together/post/createPostByClubId");
+      final headers = {'Content-Type': 'application/json'};
+      final data = {
+        "clubId": widget.clubData!.clubId,
+        "postUserId": userData!.userId,
+        "postTitle": _titleController.text,
+        "postContent": _contentController.text,
+      };
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(data));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('생성 성공!');
+        context.pop<bool>(true);
+      } else {
+        if (!mounted) return;
+        swagPlatformDialog(
+          context: context,
+          title: "${response.statusCode} 오류",
+          message: "게시글 생성에 오류가 발생하였습니다! \n ${response.body}",
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+                context.pop<bool>(false);
+              },
+              child: const Text("알겠습니다"),
+            ),
+          ],
+        );
+      }
     } else if (widget.editType == PostEditType.postUpdate) {
     } else {
       print("오류!");

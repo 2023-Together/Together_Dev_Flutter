@@ -79,6 +79,7 @@ final router = GoRouter(
           editType: args.editType,
           maxImages: args.maxImages,
           postData: args.postData,
+          clubData: args.clubData,
         );
       },
     ),

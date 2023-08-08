@@ -188,7 +188,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
       postId: 0,
       postBoardId: 0,
       postUserId: 0,
-      userName: "",
+      userNickname: "",
       postTitle: "",
       postContent: "",
       postTag: [],

@@ -172,20 +172,13 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final result = int.parse(response.body);
-      if (result == 0) {
-        setState(() {
-          _isAuthNickName = true;
-          _nickNameHelper = "인증이 완료되었습니다!";
-          _onChangeAllText();
-        });
-      } else {
-        setState(() {
-          _nickNameError = "중복된 닉네임이 존재합니다!";
-        });
-      }
+      setState(() {
+        _isAuthNickName = true;
+        _nickNameHelper = "인증이 완료되었습니다!";
+        _onChangeAllText();
+      });
     } else {
-      _nickNameError = "통신 실패!";
+      _nickNameError = "중복된 닉네임이 존재합니다!";
       print(response.statusCode);
       print(response.body);
     }
@@ -237,21 +230,14 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final result = int.parse(response.body);
-      if (result == 0) {
-        setState(() {
-          _isAuthMobile = true;
-          _mobileHelper = "인증이 완료되었습니다!";
-          _onChangeAllText();
-        });
-      } else {
-        setState(() {
-          _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
-        });
-      }
+      setState(() {
+        _isAuthMobile = true;
+        _mobileHelper = "인증이 완료되었습니다!";
+        _onChangeAllText();
+      });
     } else {
       setState(() {
-        _mobileCheckError = "통신 실패!";
+        _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
       });
     }
 

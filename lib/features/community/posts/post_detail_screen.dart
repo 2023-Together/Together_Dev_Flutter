@@ -111,7 +111,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         //   backgroundColor: Colors.transparent,
                         // ),
                         title: Text(
-                          widget.postData.userName,
+                          widget.postData.userNickname,
                         ),
                         subtitle: Text(
                           TimeParse.getTimeAgo(
