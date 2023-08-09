@@ -149,6 +149,7 @@ class _AuthButtonState extends State<AuthButton> {
       userNickname: "푸른함대앤디",
       userGender: 0,
       userBirthdate: DateTime.parse("1999-10-27"),
+      userDef: "안녕하세요!",
       userType: "user",
     );
 
