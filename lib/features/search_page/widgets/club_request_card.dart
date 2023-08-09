@@ -28,7 +28,6 @@ class ClubRequestCard extends StatelessWidget {
         margin: const EdgeInsets.symmetric(
           horizontal: Sizes.size16,
         ),
-        clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: const BorderRadius.all(
