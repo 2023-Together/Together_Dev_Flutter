@@ -43,6 +43,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
     final userData = context.watch<UserProvider>().userData;
 
     return Scaffold(
@@ -55,43 +56,47 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
             physics: const NeverScrollableScrollPhysics(),
             headerSliverBuilder: (context, innerBoxIsScrolled) => [
               SliverAppBar(
-                actions: widget.postData.postUserId == userData!.userId
-                    ? [
-                        PopupMenuButton<String>(
-                          offset: const Offset(0, 25),
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                onTap: () {
-                                  print("게시글 수정");
-                                  context.pushNamed(
-                                    PostEditScreen.routeName,
-                                    extra: PostEditScreenArgs(
-                                      pageTitle: "게시글 수정",
-                                      editType: PostEditType.postUpdate,
-                                      postData: widget.postData,
+                actions: isLogined
+                    ? widget.postData.postUserId == userData!.userId
+                        ? [
+                            PopupMenuButton<String>(
+                              offset: const Offset(0, 25),
+                              itemBuilder: (context) {
+                                return [
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      print("게시글 수정");
+                                      context.pushNamed(
+                                        PostEditScreen.routeName,
+                                        extra: PostEditScreenArgs(
+                                          pageTitle: "게시글 수정",
+                                          editType: PostEditType.postUpdate,
+                                          postData: widget.postData,
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      "수정",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
                                     ),
-                                  );
-                                },
-                                child: Text(
-                                  "수정",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                              PopupMenuItem(
-                                onTap: () {
-                                  print("게시글 삭제");
-                                },
-                                child: Text(
-                                  "삭제",
-                                  style: Theme.of(context).textTheme.bodyLarge,
-                                ),
-                              ),
-                            ];
-                          },
-                          child: const Icon(Icons.more_vert),
-                        ),
-                      ]
+                                  ),
+                                  PopupMenuItem(
+                                    onTap: () {
+                                      print("게시글 삭제");
+                                    },
+                                    child: Text(
+                                      "삭제",
+                                      style:
+                                          Theme.of(context).textTheme.bodyLarge,
+                                    ),
+                                  ),
+                                ];
+                              },
+                              child: const Icon(Icons.more_vert),
+                            ),
+                          ]
+                        : null
                     : null,
               ),
               // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯

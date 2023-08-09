@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
@@ -19,6 +20,7 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
         ),
       ),
       child: const TabBar(
+        dragStartBehavior: DragStartBehavior.down,
         // 선택한 탭의 밑줄 색
         indicatorColor: Colors.blue,
         labelPadding: EdgeInsets.symmetric(
