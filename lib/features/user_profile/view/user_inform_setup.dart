@@ -80,7 +80,7 @@ class UserInformSetup extends StatelessWidget {
               child: ListTile(
                 onTap: () {},
                 title: const Text(
-                  "회원 정보 수정",
+                  "회원 정보 조회",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,

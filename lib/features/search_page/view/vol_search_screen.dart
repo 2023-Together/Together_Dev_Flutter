@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -40,15 +39,15 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   // 포커스 제어를 위한 컨트롤러
   final FocusNode _focusNode = FocusNode();
 
-  final double _previousScrollOffset = 0.0;
-
-  List<VolunteerModel>? _volList;
+  late List<VolunteerModel> _volList;
 
   int pageNum = 1;
   bool _isFocused = false;
   bool _isSearched = false;
   bool _isFirstLoadRunning = false;
   bool _isLoadMoreRunning = false;
+
+  String? _searchText;
 
   String selectedDropdown3 = '';
   String selectedDropdown4 = '';
@@ -81,7 +80,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
-  void _initLoad() async {
+  Future<void> _initLoad() async {
     setState(() {
       _isFirstLoadRunning = true;
     });
@@ -108,7 +107,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         throw Exception("API를 불러오는데 실패하였습니다.");
       }
     } catch (e) {
-      print(e.toString());
+      throw Exception("통신 실패! : $e");
     } finally {
       setState(() {
         _isFirstLoadRunning = false;
@@ -154,7 +153,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
-  Future<void> _searchVolList() async {
+  void _searchVolList() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     final url = Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
     pageNum = 0;
@@ -170,15 +172,21 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
             jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
 
         pageNum++;
+        _isFocused = false;
         _isSearched = true;
+        _searchText = _searchController.text;
+        _focusNode.unfocus();
       });
     } else {
       print("${response.statusCode} : ${response.body}");
       throw Exception("통신 실패!");
     }
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
-  Future<void> _scrollEnd() async {
+  void _scrollEnd() async {
     // 스크롤이 맨 아래로 내려가면 실행됨
     if (_scrollController.position.extentAfter < 350 &&
         !_isFirstLoadRunning &&
@@ -200,7 +208,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
           // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
           setState(() {
-            _volList!.addAll(jsonResponse
+            _volList.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -222,7 +230,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           print("봉사 리스트 : 성공");
 
           setState(() {
-            _volList!.addAll(jsonResponse
+            _volList.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -371,51 +379,59 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                           child: CircularProgressIndicator.adaptive(),
                         ),
                       )
-                    : Expanded(
-                        child: RefreshIndicator.adaptive(
-                          onRefresh: _refreshVolList,
-                          child: ListView.builder(
-                            cacheExtent: 100,
-                            controller: _scrollController,
-                            shrinkWrap: true,
-                            itemCount: _volList!.length,
-                            itemBuilder: (context, index) {
-                              final item = _volList![index];
-                              return GestureDetector(
-                                onTap: () => _onVolBoxTap(item),
-                                child: Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 5),
-                                  height: 140,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                  ),
-                                  child: VolPostCard(
-                                    volData: item,
-                                  ),
-                                ),
-                              );
-                            },
+                    : _volList.isEmpty
+                        ? const Expanded(
+                            child: Center(
+                              child: Text('통신에 실패하였습니다!'),
+                            ),
+                          )
+                        : Expanded(
+                            child: RefreshIndicator.adaptive(
+                              onRefresh: _refreshVolList,
+                              child: ListView.builder(
+                                cacheExtent: 100,
+                                controller: _scrollController,
+                                physics: const AlwaysScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount: _volList.length,
+                                itemBuilder: (context, index) {
+                                  final item = _volList[index];
+                                  return GestureDetector(
+                                    onTap: () => _onVolBoxTap(item),
+                                    child: Container(
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 5),
+                                      height: 150,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      child: VolPostCard(
+                                        volData: item,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
               ],
             ),
           ),
           // if (_isFocused)
           // 슬라이드 화면 뒤쪽의 검은 화면 구현
-          AnimatedOpacity(
-            opacity: _isFocused ? 1 : 0,
-            duration: const Duration(milliseconds: 200),
-            child: ModalBarrier(
-              // color: _barrierAnimation,
-              color: Colors.black12,
-              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-              dismissible: true,
-              // 자신을 클릭하면 실행되는 함수
-              onDismiss: () => _focusNode.unfocus(),
+          if (_isFocused)
+            AnimatedOpacity(
+              opacity: _isFocused ? 1 : 0,
+              duration: const Duration(milliseconds: 200),
+              child: ModalBarrier(
+                // color: _barrierAnimation,
+                color: Colors.black12,
+                // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                dismissible: true,
+                // 자신을 클릭하면 실행되는 함수
+                onDismiss: () => _focusNode.unfocus(),
+              ),
             ),
-          ),
         ],
       ),
     );
