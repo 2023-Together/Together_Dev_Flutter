@@ -72,15 +72,22 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   final FocusNode _focusNode = FocusNode();
 
   bool _isFocused = false;
+  bool _isSearched = false;
+  bool _isFirstLoadRunning = false;
+  final bool _isLoadMoreRunning = false;
+
+  String? _searchText;
 
   double width = 0;
   double height = 0;
 
-  List<PostCardModel>? _postList;
+  late List<PostCardModel> _postList;
 
   @override
   void initState() {
     super.initState();
+
+    _postGetDispatch();
 
     _focusNode.addListener(_handleFocusChange);
 
@@ -100,12 +107,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         _isFocused = _focusNode.hasFocus;
       });
     }
-  }
-
-  // 리스트 새로고침
-  Future _refreshComunityList() async {
-    _postGetDispatch();
-    setState(() {});
   }
 
   // 광고 로딩 실패일때 실행
@@ -135,7 +136,10 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     );
   }
 
-  Future<List<PostCardModel>> _postGetDispatch() async {
+  Future<void> _postGetDispatch() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     final url =
         Uri.parse("http://58.150.133.91:80/together/post/getPostsByClubId");
     final headers = {'Content-Type': 'application/json'};
@@ -148,23 +152,71 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("동아리 커뮤니티 : 성공");
-      print(jsonResponse);
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
-      final postList =
-          jsonResponse.map((data) => PostCardModel.fromJson(data)).toList();
-
-      return await _insertAds(postList, 5);
+      setState(() {
+        _postList = _insertAds(
+            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
+            5);
+      });
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
+  }
+
+  // 게시물 검색
+  Future<void> _searchPostList() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {"keyword": _searchController.text};
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("메인 커뮤니티 검색 : 성공");
+
+      // 응답 데이터를 PostCardModel 리스트로 파싱
+      setState(() {
+        _postList = _insertAds(
+            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
+            5);
+
+        _isSearched = true;
+        _searchText = _searchController.text;
+        _focusNode.unfocus();
+        _toggleAnimations();
+      });
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+    }
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
+  }
+
+  // 리스트 새로고침
+  Future<void> _refreshPostList() async {
+    _postGetDispatch();
+    _searchText = null;
+    setState(() {});
   }
 
   // 리스트에 광고 삽입하는 함수
-  Future<List<PostCardModel>> _insertAds(
-      List<PostCardModel> originalList, int adInterval) async {
+  List<PostCardModel> _insertAds(
+      List<PostCardModel> originalList, int adInterval) {
     List<PostCardModel> resultList = [];
 
     for (int i = 0; i < originalList.length; i++) {
@@ -214,7 +266,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   @override
   Widget build(BuildContext context) {
     // final isLogined = context.watch<UserProvider>().isLogined;
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -267,7 +318,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
                 if (result is bool) {
                   if (result as bool) {
-                    _postList = await _postGetDispatch();
+                    _postGetDispatch();
                   }
                 }
               },
@@ -280,120 +331,50 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
           ),
         ],
       ),
-      // CustomScrollView : 스크롤 가능한 구역
       body: Stack(
         children: [
-          // 메인 화면
-          FutureBuilder(
-            future: _postList != null
-                ? Future.value(
-                    _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
-                : _postGetDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // 데이터를 기다리는 동안 로딩 인디케이터 표시
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasError) {
-                // 에러가 발생한 경우 에러 메시지 표시
-                return Center(
-                  child: Text('오류 발생: ${snapshot.error}'),
-                );
-              } else {
-                // 데이터를 성공적으로 가져왔을 때 ListView 표시
-                _postList = snapshot.data!;
-
-                return RefreshIndicator.adaptive(
-                  onRefresh: _refreshComunityList,
-                  child: CustomScrollView(
-                    controller: _scrollController,
-                    // CustomScrollView 안에 들어갈 element들
-                    // 원하는걸 아무거나 넣을수는 없고 지정된 아이템만 넣을수 있음
-                    slivers: [
-                      // SliverToBoxAdapter : sliver에서 일반 flutter 위젯을 사용할때 쓰는 위젯
-                      // SliverToBoxAdapter(
-                      //   child: Center(
-                      //     child: Column(
-                      //       children: [
-                      //         Padding(
-                      //           padding: const EdgeInsets.symmetric(
-                      //             vertical: Sizes.size4,
-                      //             horizontal: Sizes.size20,
-                      //           ),
-                      //           child: Image.asset(
-                      //             "assets/images/volImg.jpg",
-                      //             width: size.width,
-                      //             height: 160,
-                      //             fit: BoxFit.cover,
-                      //           ),
-                      //         ),
-                      //         Gaps.v8,
-                      //         ListTile(
-                      //           onTap: () => context.pushNamed(
-                      //             ClubNoticeScreen.routeName,
-                      //           ),
-                      //           shape: const BeveledRectangleBorder(
-                      //             side: BorderSide(
-                      //               width: 0.1,
-                      //             ),
-                      //           ),
-                      //           title: const Text(
-                      //             "동아리 공지사항",
-                      //             maxLines: 1,
-                      //           ),
-                      //           subtitle: const Text(
-                      //             "마지막 등록일 : 5일전",
-                      //             maxLines: 1,
-                      //           ),
-                      //           trailing: const Icon(
-                      //             Icons.keyboard_arrow_right,
-                      //             size: 30,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // ),
-                      // SliverFixedExtentList : item들의 리스트를 만들어 냄
-                      SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          childCount: _postList!.length,
-                          (context, index) {
-                            final item = _postList![index];
-                            if (!item.isAd) {
-                              return PostCard(
-                                postData: item,
-                              );
-                            } else {
-                              return StatefulBuilder(
-                                builder: (context, setState) => Container(
-                                  height: 50,
-                                  alignment: Alignment.center,
-                                  child: AdWidget(
-                                    ad: BannerAd(
-                                      listener: BannerAdListener(
-                                        onAdFailedToLoad: failedAdsLoading,
-                                        onAdLoaded: (_) {},
-                                        onAdClosed: (ad) => ad.dispose(),
-                                      ),
-                                      size: AdSize.fullBanner,
-                                      adUnitId: AdHelper.bannerAdUnitId,
-                                      request: const AdRequest(),
-                                    )..load(),
-                                  ),
+          _isFirstLoadRunning
+              ? const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                )
+              : _postList.isEmpty
+                  ? const Center(
+                      child: Text('통신에 실패하였습니다!'),
+                    )
+                  : RefreshIndicator.adaptive(
+                      onRefresh: _refreshPostList,
+                      child: ListView.builder(
+                        itemCount: _postList.length,
+                        itemBuilder: (context, index) {
+                          print("${index + 1}/${_postList.length}");
+                          final item = _postList[index];
+                          if (!item.isAd) {
+                            return PostCard(
+                              postData: item,
+                            );
+                          } else {
+                            return StatefulBuilder(
+                              builder: (context, setState) => Container(
+                                height: 50,
+                                alignment: Alignment.center,
+                                child: AdWidget(
+                                  ad: BannerAd(
+                                    listener: BannerAdListener(
+                                      onAdFailedToLoad: failedAdsLoading,
+                                      onAdLoaded: (_) {},
+                                      onAdClosed: (ad) => ad.dispose(),
+                                    ),
+                                    size: AdSize.fullBanner,
+                                    adUnitId: AdHelper.bannerAdUnitId,
+                                    request: const AdRequest(),
+                                  )..load(),
                                 ),
-                              );
-                            }
-                          },
-                        ),
+                              ),
+                            );
+                          }
+                        },
                       ),
-                    ],
-                  ),
-                );
-              }
-            },
-          ),
+                    ),
           if (_isFocused)
             // 슬라이드 화면 뒤쪽의 검은 화면 구현
             ModalBarrier(
@@ -416,14 +397,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                   hintText: "검색어를 입력하세요.",
                   maxLine: 1,
                   controller: _searchController,
-                  onSubmitted: () {
-                    _searchController.text = "";
-                    _focusNode.unfocus();
-                    _toggleAnimations();
-                  },
-                  onChanged: (String? value) {
-                    print(_searchController.text);
-                  },
+                  onSubmitted: _searchPostList,
                   buttonText: "검색",
                   focusNode: _focusNode,
                 ),
