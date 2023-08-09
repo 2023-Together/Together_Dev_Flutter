@@ -33,6 +33,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   late TextEditingController _defController;
 
+  List<PostCardModel>? _postList;
+
   @override
   void initState() {
     super.initState();
@@ -43,9 +45,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   Future<List<PostCardModel>> _postGetDispatch() async {
+    final userData = context.read<UserProvider>().userData;
+
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
-    final response = await http.get(url);
+        Uri.parse("http://58.150.133.91:80/together/club/getPostsByUserId");
+    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
+
+    final data = {
+      "userId": userData!.userId,
+    };
+
+    final response = await http.post(url);
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
@@ -59,6 +69,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+    }
+  }
+
+  // 동아리 게시글 통신
+  Future<List<PostCardModel>> _postClubDispatch() async {
+    final userData = context.read<UserProvider>().userData;
+
+    final url =
+        Uri.parse("http://58.150.133.91:80/together/club/getPostsByUserId");
+    final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
+
+    final data = {
+      "userId": userData!.userId.toString(),
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("동아리 정보 : 성공");
+
+      // 응답 데이터를 PostCardModel 리스트로 파싱하여 변환
+      return jsonResponse
+          .map<PostCardModel>((data) => PostCardModel.fromJson(data))
+          .toList();
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      throw Exception("동아리 게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
 
@@ -254,6 +294,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           },
           body: TabBarView(
             children: [
+
+              // 커뮤니티 게시글
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
                 child: FutureBuilder<List<PostCardModel>>(
@@ -275,6 +317,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       _postListWithoutAds =
                           snapshot.data!.where((item) => !item.isAd).toList();
 
+                      if (_postListWithoutAds!.isEmpty) {
+                        return Center(
+                          child: Text("작성한 게시글이 없습니다."),
+                        );
+                      }
+
                       return ListView.builder(
                         itemCount: _postListWithoutAds!.length,
                         itemBuilder: (context, index) => PostCard(
@@ -285,9 +333,44 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   },
                 ),
               ),
-              const Center(
-                child: Text("동아리에 올린 게시글"),
+
+              // 동아리 게시글
+              FutureBuilder<List<PostCardModel>>(
+                future: _postList != null
+                    ? Future.value(
+                        _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                    : _postClubDispatch(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text("오류 발생: ${snapshot.error}"),
+                    );
+                  } else {
+                    _postList = snapshot.data!;
+
+                    if (_postList!.isEmpty) {
+                      return Center(
+                        child: Text("작성한 동아리 게시글이 없습니다."),
+                      );
+                    }
+
+                    return ListView.builder(
+                      itemCount: _postListWithoutAds!.length,
+                      itemBuilder: (context, index) => PostCard(
+                        postData: _postListWithoutAds![index],
+                      ),
+                    );
+                  }
+                },
               ),
+              // Center(
+              //   child: Text("동아리에 올린 게시글"),
+              // ),
+
               // const Center(
               //   child: Text("좋아요한 게시글"),
               // ),
