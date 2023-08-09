@@ -75,11 +75,10 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
     if (response.statusCode >= 200 && response.statusCode < 300) {
       print("댓글 등록 : 성공");
 
-      setState(() async {
-        _commentsList = await _commentGetDispatch();
-        FocusScope.of(context).unfocus();
-        _commentController.text = "";
-      });
+      _commentsList = await _commentGetDispatch();
+      FocusScope.of(context).unfocus();
+      _commentController.text = "";
+      setState(() {});
     } else {
       print("${response.statusCode} : ${response.body}");
       print("댓글 등록 : 실패");
