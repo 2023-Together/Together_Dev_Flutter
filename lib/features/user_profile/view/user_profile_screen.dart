@@ -33,7 +33,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   late TextEditingController _defController;
 
-  List<PostCardModel>? _postList;
+  List<PostCardModel>? _mainPostList;
+  List<PostCardModel>? _clubPostList;
 
   @override
   void initState() {
@@ -128,10 +129,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   // 리스트 새로고침
-  // Future _refreshComunityList() async {
-  //   _postGetDispatch();
-  //   setState(() {});
-  // }
+  Future _onRefreshMainPostList() async {
+    _mainPostList = await _userPostMainDispatch();
+    setState(() {});
+  }
+
+  Future<void> _onRefreshClubPostList() async {
+    _clubPostList = await _userPostClubDispatch();
+    setState(() {});
+  }
 
   @override
   void dispose() {
@@ -289,7 +295,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 // SliverPersistentHeader는 SliverToBoxAdapter안에서 선언할수 없음
                 SliverPersistentHeader(
                   delegate: PersistentTabBar(),
-                  pinned: false,
+                  pinned: true,
                   floating: true,
                 ),
               ];
@@ -297,13 +303,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             body: TabBarView(
               children: [
                 // 커뮤니티 게시글
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                RefreshIndicator.adaptive(
+                  onRefresh: _onRefreshMainPostList,
                   child: FutureBuilder<List<PostCardModel>>(
-                    // future: _postGetDispatch(),
-                    future: _postListWithoutAds != null
+                    future: _mainPostList != null
                         ? Future.value(
-                            _postListWithoutAds!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                            _mainPostList!) // _postList가 이미 가져온 상태라면 Future.value 사용
                         : _userPostMainDispatch(), // _postList가 null이라면 데이터를 가져오기 위해 호출
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -315,19 +320,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           child: Text('오류 발생: ${snapshot.error}'),
                         );
                       } else {
-                        _postListWithoutAds =
-                            snapshot.data!.where((item) => !item.isAd).toList();
+                        _mainPostList = snapshot.data!;
 
-                        if (_postListWithoutAds!.isEmpty) {
+                        if (_mainPostList!.isEmpty) {
                           return const Center(
                             child: Text("작성한 게시글이 없습니다."),
                           );
                         }
 
                         return ListView.builder(
-                          itemCount: _postListWithoutAds!.length,
+                          itemCount: _mainPostList!.length,
                           itemBuilder: (context, index) => PostCard(
-                            postData: _postListWithoutAds![index],
+                            postData: _mainPostList![index],
                           ),
                         );
                       }
@@ -336,45 +340,41 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
 
                 // 동아리 게시글
-                FutureBuilder<List<PostCardModel>>(
-                  future: _postList != null
-                      ? Future.value(
-                          _postList!) // _postList가 이미 가져온 상태라면 Future.value 사용
-                      : _userPostClubDispatch(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (snapshot.hasError) {
-                      return Center(
-                        child: Text("오류 발생: ${snapshot.error}"),
-                      );
-                    } else {
-                      _postList = snapshot.data!;
-
-                      if (_postList!.isEmpty) {
+                RefreshIndicator.adaptive(
+                  onRefresh: _onRefreshClubPostList,
+                  child: FutureBuilder<List<PostCardModel>>(
+                    future: _clubPostList != null
+                        ? Future.value(
+                            _clubPostList!) // _postList가 이미 가져온 상태라면 Future.value 사용
+                        : _userPostClubDispatch(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
-                          child: Text("작성한 동아리 게시글이 없습니다."),
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text("오류 발생: ${snapshot.error}"),
+                        );
+                      } else {
+                        _clubPostList = snapshot.data!;
+
+                        if (_clubPostList!.isEmpty) {
+                          return const Center(
+                            child: Text("작성한 동아리 게시글이 없습니다."),
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: _clubPostList!.length,
+                          itemBuilder: (context, index) => PostCard(
+                            postData: _clubPostList![index],
+                          ),
                         );
                       }
-
-                      return ListView.builder(
-                        itemCount: _postListWithoutAds!.length,
-                        itemBuilder: (context, index) => PostCard(
-                          postData: _postListWithoutAds![index],
-                        ),
-                      );
-                    }
-                  },
+                    },
+                  ),
                 ),
-                // Center(
-                //   child: Text("동아리에 올린 게시글"),
-                // ),
-
-                // const Center(
-                //   child: Text("좋아요한 게시글"),
-                // ),
               ],
             ),
           ),
