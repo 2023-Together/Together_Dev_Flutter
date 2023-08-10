@@ -28,13 +28,18 @@ class _NoticeScreenState extends State<NoticeScreen> {
   List<PostCardModel>? _noticeList;
 
   Future<List<PostCardModel>> _noticeGetDispatch() async {
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
-    final response = await http.get(url);
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://58.150.133.91:80/together/post/getAllNotice");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "userId": userData?.userId,
+    };
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 : 성공");
+      print("공지사항 리스트 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _noticeList =
@@ -112,54 +117,3 @@ class _NoticeScreenState extends State<NoticeScreen> {
     );
   }
 }
-
-List<Map<String, dynamic>> noticeList = [
-  {
-    "id": 1,
-    "title": "제목1",
-    "content": "내용1",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 2,
-    "title": "제목2",
-    "content": "내용2",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 3,
-    "title": "제목3",
-    "content": "내용3",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 4,
-    "title": "제목4",
-    "content": "내용4",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 5,
-    "title": "제목5",
-    "content": "내용5",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 6,
-    "title": "제목6",
-    "content": "내용6",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 7,
-    "title": "제목7",
-    "content": "내용7",
-    "date": "2023-07-10 16:43",
-  },
-  {
-    "id": 8,
-    "title": "제목8",
-    "content": "내용8",
-    "date": "2023-07-10 16:43",
-  },
-];

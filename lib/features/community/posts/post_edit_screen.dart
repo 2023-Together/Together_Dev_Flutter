@@ -12,6 +12,8 @@ import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
 enum PostEditType {
@@ -224,7 +226,11 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('생성 성공!');
-        context.pop<bool>(true);
+        if (!mounted) return;
+        context.read<MainPostProvider>().mainPostGetDispatch(
+              userId: userData!.userId,
+            );
+        context.pop();
       } else {
         if (!mounted) return;
         swagPlatformDialog(
@@ -258,7 +264,12 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('생성 성공!');
-        context.pop<bool>(true);
+        if (!mounted) return;
+        context.read<ClubPostProvider>().clubPostGetDispatch(
+              userId: userData.userId,
+              clubId: widget.clubData!.clubId,
+            );
+        context.pop();
       } else {
         if (!mounted) return;
         swagPlatformDialog(
