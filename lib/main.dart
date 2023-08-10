@@ -4,7 +4,9 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/router.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -21,6 +23,8 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => MainNavigationProvider()),
+        ChangeNotifierProvider(create: (context) => ClubPostProvider()),
+        ChangeNotifierProvider(create: (context) => MainPostProvider()),
       ],
       child: const SWAGCrossApp(),
     ),
