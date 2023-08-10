@@ -42,6 +42,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     _defController = TextEditingController(text: _userData!.userDef ?? "");
 
+    _mainPostFuture = _userPostMainDispatch();
     _clubPostFuture = _userPostClubDispatch();
   }
 
