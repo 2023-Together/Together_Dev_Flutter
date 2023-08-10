@@ -20,6 +20,7 @@ import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart'
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_inquiry.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_setup.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 
@@ -270,16 +271,6 @@ final router = GoRouter(
         );
       },
     ),
-    // GoRoute(
-    //   path: UserProfileScreen.routeURL,
-    //   name: UserProfileScreen.routeName,
-    //   builder: (context, state) {
-    //     final args = state.extra as UserProfileScreenArgs;
-    //     return UserProfileScreen(
-    //       userId1: args.userId1,
-    //     );
-    //   },
-    // ),
     GoRoute(
         path: UserInformUpdate.routeURL,
         name: UserInformUpdate.routeName,
@@ -324,6 +315,13 @@ final router = GoRouter(
       //     },
       //   ),
       // ],
+    ),
+    GoRoute(
+      path: UserInformInquiry.routeURL,
+      name: UserInformInquiry.routeName,
+      builder: (context, state) {
+        return const UserInformInquiry();
+      },
     ),
   ],
 );
