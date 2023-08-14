@@ -93,6 +93,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("봉사 리스트 : 성공");
+      print(jsonResponse);
 
       setState(() {
         _volList =
@@ -200,6 +201,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
           print("봉사 검색 : 성공");
+          print(jsonResponse);
 
           // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
           setState(() {
@@ -221,7 +223,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          // print(jsonResponse);
+          print(jsonResponse);
           print("봉사 리스트 : 성공");
 
           setState(() {
