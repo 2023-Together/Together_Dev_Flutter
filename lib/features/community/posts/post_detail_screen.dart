@@ -1,12 +1,19 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import 'package:swag_cross_app/features/community/posts/post_detail_comment_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
 import 'package:swag_cross_app/features/community/widgets/club_persistent_tab_bar.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
@@ -15,10 +22,14 @@ import 'package:swag_cross_app/utils/time_parse.dart';
 class PostDetailScreenArgs {
   final PostCardModel postData;
   final int tabBarSelected;
+  final int index;
+  final bool isClub;
 
   PostDetailScreenArgs({
     required this.postData,
     required this.tabBarSelected,
+    required this.index,
+    required this.isClub,
   });
 }
 
@@ -29,10 +40,14 @@ class PostDetailScreen extends StatefulWidget {
     super.key,
     required this.postData,
     required this.tabBarSelected,
+    required this.index,
+    required this.isClub,
   });
 
   final PostCardModel postData;
   final int tabBarSelected;
+  final int index;
+  final bool isClub;
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -40,6 +55,66 @@ class PostDetailScreen extends StatefulWidget {
 
 class _PostDetailScreenState extends State<PostDetailScreen> {
   List<String> imgs = [];
+  late int likeCount;
+  late bool isLiked;
+
+  @override
+  void initState() {
+    super.initState();
+
+    likeCount = widget.postData.postLikeCount;
+    isLiked = widget.postData.postLikeId;
+  }
+
+  Future<void> _onTapLikeDispatch() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://58.150.133.91:80/together/post/postLike");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "likeUserId": userData!.userId,
+      "likePostId": widget.postData.postId,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (!mounted) return;
+    if (!widget.isClub) {
+      if (response.statusCode == 200) {
+        print("좋아요 삭제 : 성공");
+        context.read<MainPostProvider>().onChangePostLike(index: widget.index);
+        isLiked = false;
+        likeCount--;
+        setState(() {});
+      } else if (response.statusCode == 201) {
+        print("좋아요 추가 : 성공");
+        context.read<MainPostProvider>().onChangePostLike(index: widget.index);
+        isLiked = true;
+        likeCount++;
+        setState(() {});
+      } else {
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
+      }
+    } else {
+      if (response.statusCode == 200) {
+        print("좋아요 삭제 : 성공");
+        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
+        isLiked = false;
+        likeCount--;
+        setState(() {});
+      } else if (response.statusCode == 201) {
+        print("좋아요 추가 : 성공");
+        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
+        isLiked = true;
+        likeCount++;
+        setState(() {});
+      } else {
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -120,21 +195,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                         ),
                         subtitle: Text(
                           TimeParse.getTimeAgo(
-                              widget.postData.postCreationDate),
+                            widget.postData.postCreationDate,
+                          ),
                         ),
                         trailing: InkWell(
-                          onTap: () {
-                            // 버튼을 눌렀을 때 수행할 작업
-                          },
+                          onTap: _onTapLikeDispatch,
                           child: Column(
                             children: [
-                              const FaIcon(
-                                FontAwesomeIcons.thumbsUp,
+                              FaIcon(
+                                isLiked
+                                    ? FontAwesomeIcons.solidThumbsUp
+                                    : FontAwesomeIcons.thumbsUp,
                                 color: Colors.blue,
                                 size: 30,
                               ),
                               Text(
-                                "120",
+                                likeCount.toString(),
                                 style: Theme.of(context).textTheme.bodyLarge,
                               ),
                             ],

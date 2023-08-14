@@ -157,6 +157,7 @@ class _AuthButtonState extends State<AuthButton> {
     );
 
     context.read<UserProvider>().login(updateData);
+    context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
     context.pop();
   }
 

@@ -11,6 +11,8 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
@@ -20,11 +22,13 @@ class PostCard extends StatefulWidget {
     required this.postData,
     required this.index,
     this.isClub = false,
+    this.clubId,
   }) : super(key: key);
 
   final PostCardModel postData;
   final int index;
   final bool isClub;
+  final int? clubId;
 
   @override
   State<PostCard> createState() => _PostCard();
@@ -45,28 +49,28 @@ class _PostCard extends State<PostCard> {
     final data = {
       "likeUserId": userData!.userId,
       "likePostId": widget.postData.postId,
-      "likeId": widget.postData.postLikeId,
     };
 
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      print("좋아요 변경 : 성공");
-      if (!mounted) return;
-      if (!widget.isClub) {
-        // context
-        //     .read<MainPostProvider>()
-        //     .refreshMainPostDispatch(userId: userData.userId);
+    if (!mounted) return;
+    if (!widget.isClub) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("좋아요 변경 : 성공");
+        context.read<MainPostProvider>().onChangePostLike(index: widget.index);
       } else {
-        // context
-        //     .read<ClubPostProvider>()
-        //     .refreshMainPostDispatch(userId: userData.userId);
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
       }
-      setState(() {});
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("좋아요 변경 : 성공");
+        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
+      } else {
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
+      }
     }
   }
 
@@ -77,6 +81,8 @@ class _PostCard extends State<PostCard> {
       extra: PostDetailScreenArgs(
         postData: widget.postData,
         tabBarSelected: page,
+        index: widget.index,
+        isClub: widget.isClub,
       ),
     );
   }
@@ -168,12 +174,12 @@ class _PostCard extends State<PostCard> {
                       onPressed: isLogined ? _onTapLikeDispatch : () {},
                       icon: FaIcon(
                         isLogined
-                            ? widget.postData.postLikeId != 0
+                            ? widget.postData.postLikeId
                                 ? FontAwesomeIcons.solidThumbsUp
                                 : FontAwesomeIcons.thumbsUp
                             : FontAwesomeIcons.thumbsUp,
                         color: isLogined
-                            ? widget.postData.postLikeId != 0
+                            ? widget.postData.postLikeId
                                 ? Colors.blue.shade600
                                 : Colors.black
                             : Colors.black,

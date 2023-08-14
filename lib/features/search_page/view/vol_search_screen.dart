@@ -56,7 +56,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   void initState() {
     super.initState();
 
-    _initLoad();
+    // _initLoad();
 
     _focusNode.addListener(_onChangeFocused);
 

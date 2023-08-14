@@ -67,6 +67,8 @@ final router = GoRouter(
         return PostDetailScreen(
           postData: args.postData,
           tabBarSelected: args.tabBarSelected,
+          index: args.index,
+          isClub: args.isClub,
         );
       },
     ),

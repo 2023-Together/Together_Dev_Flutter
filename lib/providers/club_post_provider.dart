@@ -7,8 +7,17 @@ import 'package:http/http.dart' as http;
 
 class ClubPostProvider extends ChangeNotifier {
   List<PostCardModel>? _clubPostList;
+  final bool _isSearched = false;
+  String? _searchText;
 
   List<PostCardModel>? get clubPostList => _clubPostList ?? [];
+
+  Future<void> refreshClubPostDispatch(
+      {required int? userId, required int clubId}) async {
+    clubPostGetDispatch(userId: userId!, clubId: clubId);
+    _searchText = null;
+    notifyListeners();
+  }
 
   Future<void> clubPostGetDispatch(
       {required int userId, required int clubId}) async {
@@ -68,9 +77,8 @@ class ClubPostProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> onChangePostLike(
-      {required int index, required PostCardModel data}) async {
-    _clubPostList![index] = data;
+  Future<void> onChangePostLike({required int index}) async {
+    _clubPostList![index].postLikeId = !_clubPostList![index].postLikeId;
     notifyListeners();
   }
 
@@ -107,7 +115,7 @@ class ClubPostProvider extends ChangeNotifier {
       postContent: "",
       postTag: [],
       postCreationDate: DateTime.now(),
-      postLikeId: 0,
+      postLikeId: false,
       postLikeCount: 0,
       postCommentCount: 0,
       isAd: true,
