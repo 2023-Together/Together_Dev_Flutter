@@ -277,6 +277,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                               postData: item,
                               index: index,
                               isClub: true,
+                              clubId: widget.clubData.clubId,
                             );
                           } else {
                             return StatefulBuilder(

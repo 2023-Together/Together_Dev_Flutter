@@ -39,7 +39,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   // 포커스 제어를 위한 컨트롤러
   final FocusNode _focusNode = FocusNode();
 
-  late List<VolunteerModel> _volList;
+  List<VolunteerModel>? _volList;
 
   int pageNum = 1;
   bool _isFocused = false;
@@ -56,7 +56,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   void initState() {
     super.initState();
 
-    _initLoad();
+    // _initLoad();
 
     _focusNode.addListener(_onChangeFocused);
 
@@ -85,34 +85,30 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       _isFirstLoadRunning = true;
     });
 
-    try {
-      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
-      final data = {"pageNum": "$pageNum"};
+    final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+    final data = {"pageNum": "$pageNum"};
 
-      final response = await http.post(url, body: data);
+    final response = await http.post(url, body: data);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-        print("봉사 리스트 : 성공");
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("봉사 리스트 : 성공");
+      print(jsonResponse);
 
-        setState(() {
-          _volList = jsonResponse
-              .map((data) => VolunteerModel.fromJson(data))
-              .toList();
-          pageNum++;
-        });
-      } else {
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception("API를 불러오는데 실패하였습니다.");
-      }
-    } catch (e) {
-      throw Exception("통신 실패! : $e");
-    } finally {
       setState(() {
-        _isFirstLoadRunning = false;
+        _volList =
+            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+        pageNum++;
       });
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      return;
     }
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   // 리스트 새로고침
@@ -205,10 +201,11 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
           print("봉사 검색 : 성공");
+          print(jsonResponse);
 
           // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
           setState(() {
-            _volList.addAll(jsonResponse
+            _volList!.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -226,11 +223,11 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          // print(jsonResponse);
+          print(jsonResponse);
           print("봉사 리스트 : 성공");
 
           setState(() {
-            _volList.addAll(jsonResponse
+            _volList!.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -379,10 +376,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                           child: CircularProgressIndicator.adaptive(),
                         ),
                       )
-                    : _volList.isEmpty
+                    : _volList == null
                         ? const Expanded(
                             child: Center(
-                              child: Text('통신에 실패하였습니다!'),
+                              child: Text('봉사 정보를 불러오는데 실패하였습니다.'),
                             ),
                           )
                         : Expanded(
@@ -393,9 +390,9 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                                 controller: _scrollController,
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: _volList.length,
+                                itemCount: _volList!.length,
                                 itemBuilder: (context, index) {
-                                  final item = _volList[index];
+                                  final item = _volList![index];
                                   return GestureDetector(
                                     onTap: () => _onVolBoxTap(item),
                                     child: Container(

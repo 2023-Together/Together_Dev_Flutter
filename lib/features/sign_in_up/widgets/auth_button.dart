@@ -8,6 +8,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
@@ -105,6 +106,8 @@ class _AuthButtonState extends State<AuthButton> {
           if (!mounted) return;
           context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
           LoginStorage.saveLoginData(email: userData.email);
+          context.read<MainPostProvider>().refreshMainPostDispatch(
+              userId: int.parse(jsonResponse["userId"]));
           context.pop();
         }
       } else {
@@ -154,6 +157,7 @@ class _AuthButtonState extends State<AuthButton> {
     );
 
     context.read<UserProvider>().login(updateData);
+    context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
     context.pop();
   }
 

@@ -5,10 +5,9 @@ class PostCardModel {
   final String userNickname; // 작성자 별명
   final String postTitle; // 게시글 제목
   final String postContent; // 게시글 내용(평문)
-  final List<Map<String, dynamic>>?
-      postTag; // 게시글 태그(없으면 null) 태그 있으면 List[Json] 형식으로 저장
+  final List<String>? postTag; // 게시글 태그(없으면 null) 태그 있으면 List[Json] 형식으로 저장
   final DateTime postCreationDate; // 게시물 작성시간(행 생성기준 자동으로)
-  int postLikeId; // 좋아요 여부
+  bool postLikeId; // 좋아요 여부
   final int postLikeCount; // 좋아요 개수
   final int postCommentCount; // 댓글 개수
   final bool isAd; // 광고인지 광고가 아닌지 설정
@@ -36,9 +35,10 @@ class PostCardModel {
       userNickname: json['userNickname'],
       postTitle: json['postTitle'] ?? '',
       postContent: json['postContent'] ?? '',
-      postTag: json['postTag'],
+      postTag:
+          json['postTag'] != null ? List<String>.from(json['postTag']) : null,
       postCreationDate: DateTime.parse(json['postCreationDate']),
-      postLikeId: json['postLikeId'],
+      postLikeId: json['postLikeId'] == 0 ? false : true,
       postLikeCount: json['postLikeCount'] ?? 0,
       postCommentCount: json['postCommentCount'] ?? 0,
     );

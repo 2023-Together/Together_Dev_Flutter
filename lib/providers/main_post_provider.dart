@@ -39,7 +39,7 @@ class MainPostProvider extends ChangeNotifier {
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      return;
     }
     notifyListeners();
   }
@@ -69,7 +69,7 @@ class MainPostProvider extends ChangeNotifier {
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      return;
     }
   }
 
@@ -102,7 +102,7 @@ class MainPostProvider extends ChangeNotifier {
       } else {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
-        throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+        return;
       }
     } else {
       final url =
@@ -129,14 +129,14 @@ class MainPostProvider extends ChangeNotifier {
             5);
       } else {
         print("${response.statusCode} : ${response.body}");
-        throw Exception("통신 실패!");
+        return;
       }
     }
+    notifyListeners();
   }
 
-  Future<void> onChangePostLike(
-      {required int index, required PostCardModel data}) async {
-    _postList![index] = data;
+  Future<void> onChangePostLike({required int index}) async {
+    _postList![index].postLikeId = !_postList![index].postLikeId;
     notifyListeners();
   }
 
@@ -173,7 +173,7 @@ class MainPostProvider extends ChangeNotifier {
       postContent: "",
       postTag: [],
       postCreationDate: DateTime.now(),
-      postLikeId: 0,
+      postLikeId: false,
       postLikeCount: 0,
       postCommentCount: 0,
       isAd: true,
