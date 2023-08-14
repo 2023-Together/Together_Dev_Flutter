@@ -15,6 +15,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/utils/ad_helper.dart';
 
 class MainCommunityScreen extends StatefulWidget {
@@ -187,6 +188,78 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   //       final url = Uri.parse(
   //           "http://58.150.133.91:80/together/post/getPostForKeyword");
   //       final headers = {'Content-Type': 'application/json'};
+
+  //       final response =
+  //           await http.post(url, headers: headers, body: jsonEncode(data));
+
+  //       if (response.statusCode >= 200 && response.statusCode < 300) {
+  //         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  //         print("메인 커뮤니티 검색 : 성공");
+
+  //         List<PostCardModel> currentPostList =
+  //             List.from(_postList.where((element) => !element.isAd));
+
+  //         // 응답 데이터를 PostCardModel 리스트로 파싱
+  //         setState(() {
+  //           _postList = _insertAds(
+  //               currentPostList +
+  //                   jsonResponse
+  //                       .map((data) => PostCardModel.fromJson(data))
+  //                       .toList(),
+  //               5);
+  //         });
+  //       } else {
+  //         print("${response.statusCode} : ${response.body}");
+  //         throw Exception("통신 실패!");
+  //       }
+  //     }
+
+  //     setState(() {
+  //       _isLoadMoreRunning = false;
+  //     });
+  //   }
+  // }
+
+  // Future<void> _scrollEnd() async {
+  //   // 스크롤이 맨 아래로 내려가면 실행됨
+  //   if (_scrollController.position.extentAfter < 100 &&
+  //       !_isLoadMoreRunning &&
+  //       !_isFirstLoadRunning) {
+  //     setState(() {
+  //       _isLoadMoreRunning = true;
+  //     });
+
+  //     if (!_isSearched) {
+  //       final url = Uri.parse(
+  //           "http://58.150.133.91:80/together/post/getAllPostForMain");
+  //       final response = await http.get(url);
+
+  //       if (response.statusCode >= 200 && response.statusCode < 300) {
+  //         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  //         print("메인 커뮤니티 : 성공");
+
+  //         List<PostCardModel> currentPostList =
+  //             List.from(_postList.where((element) => !element.isAd));
+
+  //         // 응답 데이터를 PostCardModel 리스트로 파싱
+  //         setState(() {
+  //           _postList = _insertAds(
+  //               currentPostList +
+  //                   jsonResponse
+  //                       .map((data) => PostCardModel.fromJson(data))
+  //                       .toList(),
+  //               5);
+  //         });
+  //       } else {
+  //         print('Response status: ${response.statusCode}');
+  //         print('Response body: ${response.body}');
+  //         throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+  //       }
+  //     } else {
+  //       final url = Uri.parse(
+  //           "http://58.150.133.91:80/together/post/getPostForKeyword");
+  //       final headers = {'Content-Type': 'application/json'};
+  //       final data = {"keyword": _searchText};
 
   //       final response =
   //           await http.post(url, headers: headers, body: jsonEncode(data));
