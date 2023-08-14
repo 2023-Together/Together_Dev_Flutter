@@ -8,6 +8,7 @@ class PostCardModel {
   final List<Map<String, dynamic>>?
       postTag; // 게시글 태그(없으면 null) 태그 있으면 List[Json] 형식으로 저장
   final DateTime postCreationDate; // 게시물 작성시간(행 생성기준 자동으로)
+  int postLikeId; // 좋아요 여부
   final int postLikeCount; // 좋아요 개수
   final int postCommentCount; // 댓글 개수
   final bool isAd; // 광고인지 광고가 아닌지 설정
@@ -21,6 +22,7 @@ class PostCardModel {
     required this.postContent,
     required this.postTag,
     required this.postCreationDate,
+    required this.postLikeId,
     required this.postLikeCount,
     required this.postCommentCount,
     this.isAd = false,
@@ -36,6 +38,7 @@ class PostCardModel {
       postContent: json['postContent'] ?? '',
       postTag: json['postTag'],
       postCreationDate: DateTime.parse(json['postCreationDate']),
+      postLikeId: json['postLikeId'],
       postLikeCount: json['postLikeCount'] ?? 0,
       postCommentCount: json['postCommentCount'] ?? 0,
     );

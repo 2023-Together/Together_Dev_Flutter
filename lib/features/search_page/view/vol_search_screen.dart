@@ -44,7 +44,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   int pageNum = 1;
   bool _isFocused = false;
   bool _isSearched = false;
-  bool _isFirstLoadRunning = false;
+  bool _isFirstLoadRunning = true;
   bool _isLoadMoreRunning = false;
 
   String? _searchText;

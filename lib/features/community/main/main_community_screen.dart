@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,7 +12,7 @@ import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
 import 'package:http/http.dart' as http;
@@ -52,13 +51,8 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   final FocusNode _focusNode = FocusNode();
 
   bool _isFocused = false;
-  bool _isSearched = false;
-  bool _isFirstLoadRunning = false;
+  bool _isFirstLoadRunning = true;
   final bool _isLoadMoreRunning = false;
-
-  String? _searchText;
-
-  late List<PostCardModel> _postList;
 
   @override
   void initState() {
@@ -94,9 +88,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 리스트 새로고침
   Future<void> _refreshPostList() async {
-    _postGetDispatch();
-    _searchText = null;
-    setState(() {});
+    final userData = context.read<UserProvider>().userData;
+    context
+        .read<MainPostProvider>()
+        .refreshMainPostDispatch(userId: userData?.userId);
   }
 
   // 광고 로딩 실패일때 실행
@@ -124,25 +119,10 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
-    final response = await http.get(url);
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 : 성공");
-
-      // 응답 데이터를 PostCardModel 리스트로 파싱
-      setState(() {
-        _postList = _insertAds(
-            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
-            5);
-      });
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
-    }
+    final userData = context.read<UserProvider>().userData;
+    context
+        .read<MainPostProvider>()
+        .mainPostGetDispatch(userId: userData?.userId);
     setState(() {
       _isFirstLoadRunning = false;
     });
@@ -153,77 +133,92 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
-    final headers = {'Content-Type': 'application/json'};
-    final data = {"keyword": _searchController.text};
-
-    final response =
-        await http.post(url, headers: headers, body: jsonEncode(data));
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 검색 : 성공");
-
-      // 응답 데이터를 PostCardModel 리스트로 파싱
+    final userData = context.read<UserProvider>().userData;
+    context.read<MainPostProvider>().mainPostSearchDispatch(
+          userId: userData?.userId,
+          keyword: _searchController.text,
+        );
+    if (context.read<MainPostProvider>().postList!.isNotEmpty) {
       setState(() {
-        _postList = _insertAds(
-            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
-            5);
-
-        _isSearched = true;
-        _searchText = _searchController.text;
         _focusNode.unfocus();
         _toggleAnimations();
       });
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
     setState(() {
       _isFirstLoadRunning = false;
     });
   }
 
-  // 리스트에 광고 삽입하는 함수
-  List<PostCardModel> _insertAds(
-      List<PostCardModel> originalList, int adInterval) {
-    List<PostCardModel> resultList = [];
+  // Future<void> _scrollEnd() async {
+  //   // 스크롤이 맨 아래로 내려가면 실행됨
+  //   if (_scrollController.position.extentAfter < 100 &&
+  //       !_isLoadMoreRunning &&
+  //       !_isFirstLoadRunning) {
+  //     setState(() {
+  //       _isLoadMoreRunning = true;
+  //     });
 
-    for (int i = 0; i < originalList.length; i++) {
-      // 광고를 삽입할 위치인지 확인
-      if (i > 0 && i % adInterval == 0) {
-        // 광고를 삽입할 위치라면 광고 모델을 생성하여 리스트에 추가
-        resultList.add(_createAdModel());
-      }
+  //     if (!_isSearched) {
+  //       final url = Uri.parse(
+  //           "http://58.150.133.91:80/together/post/getAllPostForMain");
+  //       final response = await http.get(url);
 
-      // 원본 리스트의 요소를 리스트에 추가
-      resultList.add(originalList[i]);
-    }
+  //       if (response.statusCode >= 200 && response.statusCode < 300) {
+  //         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  //         print("메인 커뮤니티 : 성공");
 
-    return resultList;
-  }
+  //         List<PostCardModel> currentPostList =
+  //             List.from(_postList.where((element) => !element.isAd));
 
-  // 가상의 광고 모델 생성 함수
-  PostCardModel _createAdModel() {
-    // 광고 모델을 생성하여 반환하는 로직 구현
-    // 여기서는 가상의 광고 모델을 생성하여 반환하도록 가정
-    // 필요에 따라 광고 모델을 별도로 정의하고 초기화해야 합니다.
-    return PostCardModel(
-      postId: 0,
-      postBoardId: 0,
-      postUserId: 0,
-      userNickname: "",
-      postTitle: "",
-      postContent: "",
-      postTag: [],
-      postCreationDate: DateTime.now(),
-      postLikeCount: 0,
-      postCommentCount: 0,
-      isAd: true,
-    );
-  }
+  //         // 응답 데이터를 PostCardModel 리스트로 파싱
+  //         setState(() {
+  //           _postList = _insertAds(
+  //               currentPostList +
+  //                   jsonResponse
+  //                       .map((data) => PostCardModel.fromJson(data))
+  //                       .toList(),
+  //               5);
+  //         });
+  //       } else {
+  //         print('Response status: ${response.statusCode}');
+  //         print('Response body: ${response.body}');
+  //         throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+  //       }
+  //     } else {
+  //       final url = Uri.parse(
+  //           "http://58.150.133.91:80/together/post/getPostForKeyword");
+  //       final headers = {'Content-Type': 'application/json'};
+
+  //       final response =
+  //           await http.post(url, headers: headers, body: jsonEncode(data));
+
+  //       if (response.statusCode >= 200 && response.statusCode < 300) {
+  //         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+  //         print("메인 커뮤니티 검색 : 성공");
+
+  //         List<PostCardModel> currentPostList =
+  //             List.from(_postList.where((element) => !element.isAd));
+
+  //         // 응답 데이터를 PostCardModel 리스트로 파싱
+  //         setState(() {
+  //           _postList = _insertAds(
+  //               currentPostList +
+  //                   jsonResponse
+  //                       .map((data) => PostCardModel.fromJson(data))
+  //                       .toList(),
+  //               5);
+  //         });
+  //       } else {
+  //         print("${response.statusCode} : ${response.body}");
+  //         throw Exception("통신 실패!");
+  //       }
+  //     }
+
+  //     setState(() {
+  //       _isLoadMoreRunning = false;
+  //     });
+  //   }
+  // }
 
   // Future<void> _scrollEnd() async {
   //   // 스크롤이 맨 아래로 내려가면 실행됨
@@ -310,6 +305,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   @override
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
+    final mainPostList = context.watch<MainPostProvider>().postList;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -354,33 +350,27 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
         ),
         floatingActionButton: Visibility(
           visible: !_isFocused,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (isLogined)
-                AnimatedOpacity(
-                  opacity: isLogined ? 1 : 0,
-                  duration: const Duration(milliseconds: 200),
-                  child: FloatingActionButton(
-                    heroTag: "community_edit",
-                    onPressed: () {
-                      // 동아리 게시글 작성
-                      context.pushNamed(
-                        PostEditScreen.routeName,
-                        extra: PostEditScreenArgs(
-                          pageTitle: "게시글 등록",
-                          editType: PostEditType.mainInsert,
-                        ),
-                      );
-                    },
-                    backgroundColor: Colors.blue.shade300,
-                    child: const FaIcon(
-                      FontAwesomeIcons.penToSquare,
-                      color: Colors.black,
-                    ),
+          child: AnimatedOpacity(
+            opacity: _animationController.isCompleted || isLogined ? 1 : 0,
+            duration: const Duration(milliseconds: 200),
+            child: FloatingActionButton(
+              heroTag: "community_edit",
+              onPressed: () {
+                // 동아리 게시글 작성
+                context.pushNamed(
+                  PostEditScreen.routeName,
+                  extra: PostEditScreenArgs(
+                    pageTitle: "게시글 등록",
+                    editType: PostEditType.mainInsert,
                   ),
-                ),
-            ],
+                );
+              },
+              backgroundColor: Colors.blue.shade300,
+              child: const FaIcon(
+                FontAwesomeIcons.penToSquare,
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
         // CustomScrollView : 스크롤 가능한 구역
@@ -390,9 +380,9 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                 ? const Center(
                     child: CircularProgressIndicator.adaptive(),
                   )
-                : _postList.isEmpty
+                : mainPostList!.isEmpty
                     ? const Center(
-                        child: Text('통신에 실패하였습니다!'),
+                        child: Text('게시물이 존재하지 않거나 통신에 실패했습니다!'),
                       )
                     : RefreshIndicator.adaptive(
                         onRefresh: _refreshPostList,
@@ -429,13 +419,13 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                               ),
                             ),
                             SliverList.builder(
-                              itemCount: _postList.length,
+                              itemCount: mainPostList.length,
                               itemBuilder: (context, index) {
-                                print("${index + 1}/${_postList.length}");
-                                final item = _postList[index];
+                                final item = mainPostList[index];
                                 if (!item.isAd) {
                                   return PostCard(
                                     postData: item,
+                                    index: index,
                                   );
                                 } else {
                                   return StatefulBuilder(

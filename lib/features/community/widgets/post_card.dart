@@ -1,7 +1,12 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
@@ -11,34 +16,58 @@ import 'package:swag_cross_app/utils/time_parse.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
-    super.key,
+    Key? key,
     required this.postData,
-  });
+    required this.index,
+    this.isClub = false,
+  }) : super(key: key);
 
   final PostCardModel postData;
+  final int index;
+  final bool isClub;
 
   @override
   State<PostCard> createState() => _PostCard();
 }
 
 class _PostCard extends State<PostCard> {
-  late bool _checkGood;
   final int imgHeight = 100;
 
   @override
   void initState() {
     super.initState();
-
-    _checkGood = false;
   }
 
-  void _onGoodTap() {
-    if (_checkGood) {
-      _checkGood = !_checkGood;
+  Future<void> _onTapLikeDispatch() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://58.150.133.91:80/together/post/postLike");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "likeUserId": userData!.userId,
+      "likePostId": widget.postData.postId,
+      "likeId": widget.postData.postLikeId,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print("좋아요 변경 : 성공");
+      if (!mounted) return;
+      if (!widget.isClub) {
+        // context
+        //     .read<MainPostProvider>()
+        //     .refreshMainPostDispatch(userId: userData.userId);
+      } else {
+        // context
+        //     .read<ClubPostProvider>()
+        //     .refreshMainPostDispatch(userId: userData.userId);
+      }
+      setState(() {});
     } else {
-      _checkGood = !_checkGood;
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
     }
-    setState(() {});
   }
 
   // 댓글로 이동
@@ -54,7 +83,6 @@ class _PostCard extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final isLogined = context.watch<UserProvider>().isLogined;
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
@@ -137,15 +165,15 @@ class _PostCard extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: isLogined ? _onGoodTap : () {},
+                      onPressed: isLogined ? _onTapLikeDispatch : () {},
                       icon: FaIcon(
                         isLogined
-                            ? _checkGood
+                            ? widget.postData.postLikeId != 0
                                 ? FontAwesomeIcons.solidThumbsUp
                                 : FontAwesomeIcons.thumbsUp
                             : FontAwesomeIcons.thumbsUp,
                         color: isLogined
-                            ? _checkGood
+                            ? widget.postData.postLikeId != 0
                                 ? Colors.blue.shade600
                                 : Colors.black
                             : Colors.black,

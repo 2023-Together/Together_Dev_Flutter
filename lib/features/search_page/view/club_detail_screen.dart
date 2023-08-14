@@ -79,7 +79,6 @@ class ClubSearchDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(clubData.clubRecruiting == 1);
     return Scaffold(
       appBar: AppBar(
         title: const Text("동아리 신청"),
@@ -87,15 +86,14 @@ class ClubSearchDetailScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed:
-              clubData.clubRecruiting == 1 ? () => _onSubmit(context) : null,
+          onPressed: clubData.clubRecruiting ? () => _onSubmit(context) : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          child: Text(clubData.clubRecruiting == 1 ? "신청" : "신청 불가능"),
+          child: Text(clubData.clubRecruiting ? "신청" : "신청 불가능"),
         ),
       ),
       body: SingleChildScrollView(
