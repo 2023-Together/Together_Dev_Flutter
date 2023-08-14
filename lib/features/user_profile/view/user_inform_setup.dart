@@ -4,18 +4,24 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_inquiry.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
 import 'package:http/http.dart' as http;
 
-class UserInformSetup extends StatelessWidget {
+class UserInformSetup extends StatefulWidget {
   static const routeName = "user_setup";
   static const routeURL = "/user_setup";
 
   const UserInformSetup({super.key});
 
+  @override
+  State<UserInformSetup> createState() => _UserInformSetupState();
+}
+
+class _UserInformSetupState extends State<UserInformSetup> {
   Widget _title({required String title}) {
     return Text(
       title,
@@ -28,12 +34,6 @@ class UserInformSetup extends StatelessWidget {
     );
   }
 
-  // 회원 탈퇴
-  // void onLogoutAllTap(BuildContext context) {
-  //   LoginStorage.resetLoginData();
-  //   context.read<UserProvider>().logout();
-  //   context.pushReplacementNamed(MainNavigation.routeName);
-  // }
 
   // 로그아웃
   void onLogoutTap(BuildContext context) {
@@ -78,9 +78,14 @@ class UserInformSetup extends StatelessWidget {
             Card(
               elevation: 0,
               child: ListTile(
-                onTap: () {},
+                onTap: () {
+                  // _userInquiryTap;
+                  context.pushNamed(
+                    UserInformInquiry.routeName,
+                  );
+                },
                 title: const Text(
-                  "회원 정보 수정",
+                  "회원 정보 조회",
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                     fontSize: 15.0,
