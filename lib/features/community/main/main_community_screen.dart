@@ -51,7 +51,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   bool _isFocused = false;
   bool _isFirstLoadRunning = true;
-  bool _isLoadMoreRunning = false;
+  final bool _isLoadMoreRunning = false;
 
   @override
   void initState() {
@@ -63,7 +63,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
     _scrollController.addListener(
       () {
-        _scrollEnd();
+        // _scrollEnd();
         // 검색 창이 내려와있을때 스크롤 하면 검색창 다시 사라짐
         if (_animationController.isCompleted) {
           _toggleAnimations();
@@ -148,25 +148,25 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     });
   }
 
-  Future<void> _scrollEnd() async {
-    // 스크롤이 맨 아래로 내려가면 실행됨
-    if (_scrollController.position.extentAfter < 100 &&
-        !_isLoadMoreRunning &&
-        !_isFirstLoadRunning) {
-      setState(() {
-        _isLoadMoreRunning = true;
-      });
+  // Future<void> _scrollEnd() async {
+  //   // 스크롤이 맨 아래로 내려가면 실행됨
+  //   if (_scrollController.position.extentAfter < 100 &&
+  //       !_isLoadMoreRunning &&
+  //       !_isFirstLoadRunning) {
+  //     setState(() {
+  //       _isLoadMoreRunning = true;
+  //     });
 
-      final userData = context.read<UserProvider>().userData;
-      context
-          .read<MainPostProvider>()
-          .scrollEndAddPostDispatch(userId: userData?.userId);
+  //     final userData = context.read<UserProvider>().userData;
+  //     context
+  //         .read<MainPostProvider>()
+  //         .scrollEndAddPostDispatch(userId: userData?.userId);
 
-      setState(() {
-        _isLoadMoreRunning = false;
-      });
-    }
-  }
+  //     setState(() {
+  //       _isLoadMoreRunning = false;
+  //     });
+  //   }
+  // }
 
   @override
   void dispose() {
