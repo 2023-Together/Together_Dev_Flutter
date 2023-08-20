@@ -91,6 +91,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
       if (!mounted) return;
       context.pop();
     } else {
+      print("${response.statusCode} : ${response.body}");
       if (!mounted) return;
       swagPlatformDialog(
         context: context,

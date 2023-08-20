@@ -83,6 +83,7 @@ class _PostCard extends State<PostCard> {
         tabBarSelected: page,
         index: widget.index,
         isClub: widget.isClub,
+        clubId: widget.clubId,
       ),
     );
   }

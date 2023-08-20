@@ -85,6 +85,11 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
     }
   }
 
+  Future<void> _onRefreshCommentList() async {
+    _commentsList = await _commentGetDispatch();
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _commentController.dispose();
@@ -94,7 +99,7 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
 
   @override
   Widget build(BuildContext context) {
-    print("userId : ${context.read<UserProvider>().userData?.userId}");
+    // print("userId : ${context.read<UserProvider>().userData?.userId}");
     super.build(context); // 반드시 super.build(context) 호출해야 함
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -124,17 +129,21 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
                     // 데이터를 성공적으로 가져왔을 때 ListView 표시
                     _commentsList = snapshot.data!;
 
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final item = _commentsList![index];
-                        return CommentCard(
-                          commentData: item,
-                        );
-                      },
-                      separatorBuilder: (context, index) => Gaps.v6,
-                      itemCount: _commentsList!.length,
+                    return RefreshIndicator.adaptive(
+                      onRefresh: _onRefreshCommentList,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final item = _commentsList![index];
+                          return CommentCard(
+                            commentData: item,
+                            refreshCommentList: _onRefreshCommentList,
+                          );
+                        },
+                        separatorBuilder: (context, index) => Gaps.v6,
+                        itemCount: _commentsList!.length,
+                      ),
                     );
                   }
                 },

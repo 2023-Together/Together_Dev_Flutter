@@ -4,19 +4,16 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
+import 'package:swag_cross_app/models/post_card_model.dart';
 
 class FaqEditScreenArgs {
-  final int id;
+  final PostCardModel postData;
   final String pageName;
-  final String title;
-  final String content;
   final List<String>? images;
 
   FaqEditScreenArgs({
-    required this.id,
+    required this.postData,
     required this.pageName,
-    required this.title,
-    required this.content,
     this.images,
   });
 }
@@ -27,17 +24,13 @@ class FaqEditScreen extends StatefulWidget {
 
   const FaqEditScreen({
     super.key,
-    this.id,
-    this.title,
-    this.content,
-    this.images,
+    required this.postData,
     required this.pageName,
+    this.images,
   });
 
-  final int? id;
+  final PostCardModel postData;
   final String pageName;
-  final String? title;
-  final String? content;
   final List<String>? images;
 
   @override
@@ -58,8 +51,10 @@ class _FaqEditScreenState extends State<FaqEditScreen> {
   void initState() {
     super.initState();
 
-    _titleController = TextEditingController(text: widget.title ?? "");
-    _contentController = TextEditingController(text: widget.content ?? "");
+    _titleController =
+        TextEditingController(text: widget.postData.postTitle ?? "");
+    _contentController =
+        TextEditingController(text: widget.postData.postContent ?? "");
   }
 
   Future<void> _onSubmitFinishButton() async {

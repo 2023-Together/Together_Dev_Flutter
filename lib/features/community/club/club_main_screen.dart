@@ -68,9 +68,8 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
 
   // 리스트 새로고침
   Future _refreshClubList() async {
-    setState(() async {
-      _clubList = await _clubGetDispatch();
-    });
+    _clubList = await _clubGetDispatch();
+    setState(() {});
   }
 
   @override
@@ -115,9 +114,21 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
 
             return _clubList!.isEmpty
                 ? Center(
-                    child: Text(
-                      "사용자가 소속되어 있는 동아리가 존재하지 않습니다!\n 상단의 '+'버튼을 눌러 동아리에 가입해주세요!",
-                      style: Theme.of(context).textTheme.labelMedium,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton.filled(
+                          color: Colors.grey.shade300,
+                          iconSize: MediaQuery.of(context).size.width / 2,
+                          onPressed: _refreshClubList,
+                          icon: const Icon(Icons.refresh),
+                        ),
+                        Gaps.v20,
+                        Text(
+                          "사용자가 소속되어 있는 동아리가 존재하지 않습니다!\n 상단의 '+'버튼을 눌러 동아리에 가입해주세요!",
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
                     ),
                   )
                 : RefreshIndicator.adaptive(

@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,11 +6,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
+
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
-import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
+import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/providers/club_post_provider.dart';
@@ -225,27 +227,20 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AnimatedOpacity(
-            opacity: _animationController.isCompleted || isLogined ? 0 : 1,
+            opacity: _animationController.isCompleted || isLogined ? 1 : 0,
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton(
               heroTag: "club_community_edit",
               onPressed: () async {
                 // 동아리 게시글 작성
-                final result = context.pushNamed(
+                context.pushNamed(
                   PostEditScreen.routeName,
                   extra: PostEditScreenArgs(
                     pageTitle: "동아리 게시글 등록",
                     editType: PostEditType.clubInsert,
-                    clubData: widget.clubData,
+                    clubId: widget.clubData.clubId,
                   ),
                 );
-                print(result);
-
-                if (result is bool) {
-                  if (result as bool) {
-                    _postGetDispatch();
-                  }
-                }
               },
               backgroundColor: Colors.blue.shade300,
               child: const FaIcon(
