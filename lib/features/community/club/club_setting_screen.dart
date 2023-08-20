@@ -92,9 +92,29 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
           child: const Text("아니오"),
         ),
         TextButton(
-          onPressed: () {
-            context.pop();
-            context.pop();
+          onPressed: () async {
+            final userData = context.read<UserProvider>().userData;
+            final url =
+                Uri.parse("http://58.150.133.91:80/together/club/deleteClub");
+            final headers = {'Content-Type': 'application/json'};
+            final data = {
+              "clubId": widget.clubData.clubId,
+              "clubLeaderId": userData!.userId,
+            };
+
+            final response =
+                await http.post(url, headers: headers, body: jsonEncode(data));
+
+            if (response.statusCode >= 200 && response.statusCode < 300) {
+              print("동아리 삭제 : 성공");
+              if (!mounted) return;
+              context.pop();
+              context.pop();
+              context.pop();
+            } else {
+              print("${response.statusCode} : ${response.body}");
+              throw Exception("통신 실패!");
+            }
           },
           child: const Text("예"),
         ),

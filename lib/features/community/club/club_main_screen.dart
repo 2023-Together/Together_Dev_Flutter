@@ -68,9 +68,8 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
 
   // 리스트 새로고침
   Future _refreshClubList() async {
-    setState(() async {
-      _clubList = await _clubGetDispatch();
-    });
+    _clubList = await _clubGetDispatch();
+    setState(() {});
   }
 
   @override
