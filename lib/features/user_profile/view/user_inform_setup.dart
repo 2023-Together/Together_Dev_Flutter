@@ -34,7 +34,6 @@ class _UserInformSetupState extends State<UserInformSetup> {
     );
   }
 
-
   // 로그아웃
   void onLogoutTap(BuildContext context) {
     context.read<UserProvider>().logout();
@@ -205,7 +204,7 @@ class _UserInformSetupState extends State<UserInformSetup> {
                 ),
               ),
             ),
-            _title(title: "로그아웃"),
+            _title(title: "계정 관리"),
             Card(
               elevation: 0,
               child: ListTile(
