@@ -148,12 +148,15 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                         )
                       : ListView.separated(
                           itemBuilder: (context, index) => ListTile(
-                            title:
-                                Text("이름: ${_requestList![index].joinClubId}"),
-                            subtitle: Text(
-                              "${_requestList![index].joinContent}",
-                              maxLines: null,
-                            ),
+                            title: Text(
+                                "${index + 1}. ${_requestList![index].joinClubId}"),
+                            subtitle:
+                                _requestList![index].joinContent!.isNotEmpty
+                                    ? Text(
+                                        "${_requestList![index].joinContent}",
+                                        maxLines: null,
+                                      )
+                                    : null,
                             trailing: ElevatedButton(
                               onPressed: () {
                                 _requestTap(index, _requestList![index]);

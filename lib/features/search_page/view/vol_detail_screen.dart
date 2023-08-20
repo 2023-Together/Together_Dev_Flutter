@@ -93,7 +93,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
     });
   }
 
-  static CameraPosition initialPosition = CameraPosition(
+  static CameraPosition initialPosition = const CameraPosition(
     target: schoolLatlng, // 카메라 위치
     zoom: 15, // 확대 정도
   );
@@ -408,9 +408,7 @@ class _VolDetailScreenState extends State<VolDetailScreen>
                   height: 40.0,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(),
-                    onPressed: () {
-                      _showAlertDialog();
-                    },
+                    onPressed: _showAlertDialog,
                     child: const Text("신청하기"),
                   ),
                 ),

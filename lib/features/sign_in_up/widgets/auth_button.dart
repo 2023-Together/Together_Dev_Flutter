@@ -145,7 +145,7 @@ class _AuthButtonState extends State<AuthButton> {
   void _signUpForNaver(BuildContext context) async {
     if (!mounted) return;
     final UserModel updateData = UserModel(
-      userId: 1,
+      userId: 3,
       userEmail: "dlwogus1027@naver.com",
       userPhoneNumber: "01049049193",
       userName: "이재현",

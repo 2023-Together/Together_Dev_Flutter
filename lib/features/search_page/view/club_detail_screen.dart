@@ -2,11 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/club_search_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class ClubSearchDetailScreenArgs {
   final ClubSearchModel clubData;
@@ -39,11 +41,12 @@ class ClubSearchDetailScreen extends StatelessWidget {
         ),
         TextButton(
           onPressed: () async {
+            final userData = context.read<UserProvider>().userData;
             final url =
                 Uri.parse("http://58.150.133.91:80/together/club/joinClub");
             final headers = {'Content-Type': 'application/json'};
             final data = {
-              "joinUserId": "5",
+              "joinUserId": userData!.userId,
               "joinClubId": clubData.clubId,
             };
 
