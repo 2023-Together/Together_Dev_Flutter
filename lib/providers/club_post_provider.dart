@@ -13,21 +13,24 @@ class ClubPostProvider extends ChangeNotifier {
   List<PostCardModel>? get clubPostList => _clubPostList ?? [];
 
   Future<void> refreshClubPostDispatch(
-      {required int? userId, required int clubId}) async {
-    clubPostGetDispatch(userId: userId!, clubId: clubId);
+      {required int userId, required int? clubId}) async {
+    print(clubId);
+    await clubPostGetDispatch(userId: userId, clubId: clubId);
     _searchText = null;
     notifyListeners();
   }
 
   Future<void> clubPostGetDispatch(
-      {required int userId, required int clubId}) async {
+      {required int userId, required int? clubId}) async {
     final url =
         Uri.parse("http://58.150.133.91:80/together/post/getPostsByClubId");
     final headers = {'Content-Type': 'application/json'};
+    print(clubId);
     final data = {
       "userId": userId,
       "clubId": clubId,
     };
+
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
 
@@ -41,7 +44,6 @@ class ClubPostProvider extends ChangeNotifier {
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
     notifyListeners();
   }

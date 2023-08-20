@@ -48,9 +48,15 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
     }
   }
 
+  Future<void> _onRefreshNoticeList() async {
+    _noticeList = await _noticeGetDispatch();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
+    final userData = context.watch<UserProvider>().userData;
     return Scaffold(
       // 키보드를 열었을때 사이즈가 조정되는 현상을 해결
       resizeToAvoidBottomInset: false,
@@ -101,7 +107,10 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
               ),
               itemBuilder: (context, index) {
                 final item = _noticeList![index];
-                return NoticeCard(noticeData: item);
+                return NoticeCard(
+                  noticeData: item,
+                  userId: userData!.userId,
+                );
               },
               separatorBuilder: (context, index) => Gaps.v6,
               itemCount: _noticeList!.length,

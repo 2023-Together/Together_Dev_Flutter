@@ -24,12 +24,14 @@ class PostDetailScreenArgs {
   final int tabBarSelected;
   final int index;
   final bool isClub;
+  final int? clubId;
 
   PostDetailScreenArgs({
     required this.postData,
     required this.tabBarSelected,
     required this.index,
     required this.isClub,
+    this.clubId,
   });
 }
 
@@ -42,12 +44,14 @@ class PostDetailScreen extends StatefulWidget {
     required this.tabBarSelected,
     required this.index,
     required this.isClub,
+    this.clubId,
   });
 
   final PostCardModel postData;
   final int tabBarSelected;
   final int index;
   final bool isClub;
+  final int? clubId;
 
   @override
   State<PostDetailScreen> createState() => _PostDetailScreenState();
@@ -66,6 +70,37 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
     isLiked = widget.postData.postLikeId;
   }
 
+  void _deletePostTap() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("http://58.150.133.91:80/together/post/deletePost");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "postId": widget.postData.postId,
+      "postUserId": userData!.userId,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print("게시물 삭제 : 성공");
+      if (!mounted) return;
+      if (!widget.isClub) {
+        context
+            .read<MainPostProvider>()
+            .refreshMainPostDispatch(userId: userData.userId);
+      } else {
+        context.read<ClubPostProvider>().refreshClubPostDispatch(
+            clubId: widget.clubId!, userId: userData.userId);
+      }
+      context.pop();
+      context.pop();
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
+    }
+  }
+
   Future<void> _onTapLikeDispatch() async {
     final userData = context.read<UserProvider>().userData;
     final url = Uri.parse("http://58.150.133.91:80/together/post/postLike");
@@ -79,40 +114,22 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (!mounted) return;
-    if (!widget.isClub) {
-      if (response.statusCode == 200) {
-        print("좋아요 삭제 : 성공");
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      print(response.statusCode == 200 ? "좋아요 삭제 : 성공" : "좋아요 추가 : 성공");
+
+      if (!widget.isClub) {
         context.read<MainPostProvider>().onChangePostLike(index: widget.index);
-        isLiked = false;
-        likeCount--;
-        setState(() {});
-      } else if (response.statusCode == 201) {
-        print("좋아요 추가 : 성공");
-        context.read<MainPostProvider>().onChangePostLike(index: widget.index);
-        isLiked = true;
-        likeCount++;
-        setState(() {});
       } else {
-        print("${response.statusCode} : ${response.body}");
-        throw Exception("통신 실패!");
+        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
       }
+
+      setState(() {
+        isLiked = response.statusCode == 201;
+        likeCount += isLiked ? 1 : -1;
+      });
     } else {
-      if (response.statusCode == 200) {
-        print("좋아요 삭제 : 성공");
-        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
-        isLiked = false;
-        likeCount--;
-        setState(() {});
-      } else if (response.statusCode == 201) {
-        print("좋아요 추가 : 성공");
-        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
-        isLiked = true;
-        likeCount++;
-        setState(() {});
-      } else {
-        print("${response.statusCode} : ${response.body}");
-        throw Exception("통신 실패!");
-      }
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
     }
   }
 
@@ -145,8 +162,11 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                         PostEditScreen.routeName,
                                         extra: PostEditScreenArgs(
                                           pageTitle: "게시글 수정",
-                                          editType: PostEditType.postUpdate,
+                                          editType: widget.isClub
+                                              ? PostEditType.clubUpdate
+                                              : PostEditType.mainUpdate,
                                           postData: widget.postData,
+                                          clubId: widget.clubId,
                                         ),
                                       );
                                     },
@@ -157,9 +177,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
                                     ),
                                   ),
                                   PopupMenuItem(
-                                    onTap: () {
-                                      print("게시글 삭제");
-                                    },
+                                    onTap: _deletePostTap,
                                     child: Text(
                                       "삭제",
                                       style:

@@ -36,12 +36,16 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
   final TextEditingController _clubContentController = TextEditingController();
 
   bool _clubApply = false;
+  bool _isClubDef = false;
 
   @override
   void initState() {
     super.initState();
 
     _clubApply = widget.clubData.clubRecruiting;
+    if (widget.clubData.clubDescription.isNotEmpty) {
+      _clubContentController.text = widget.clubData.clubDescription;
+    }
   }
 
   void _requestJoinTap() {
@@ -113,7 +117,6 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
               context.pop();
             } else {
               print("${response.statusCode} : ${response.body}");
-              throw Exception("통신 실패!");
             }
           },
           child: const Text("예"),
@@ -143,7 +146,37 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
     );
   }
 
-  void _modifyClubContent() {}
+  void _modifyClubContent() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse(
+        "http://58.150.133.91:80/together/club/updateClubDescription");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "clubId": widget.clubData.clubId,
+      "clubLeaderId": userData!.userId,
+      "clubDescription": _clubContentController.text,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print("동아리 설명 수정 : 성공");
+      widget.clubData.clubDescription = _clubContentController.text;
+      setState(() {});
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      throw Exception("통신 실패!");
+    }
+  }
+
+  void _onChangeClubDef(String? value) {
+    if (_clubContentController.text.trim().isNotEmpty) {
+      setState(() {
+        _isClubDef = true;
+      });
+    }
+  }
 
   // void _DelegationClubMasterTap() {
   //   swagPlatformDialog(
@@ -233,11 +266,13 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
                       hintText: "수정할 동아리 설명을 입력해주세요",
                       maxLine: 4,
                       controller: _clubContentController,
+                      onChanged: _onChangeClubDef,
                     ),
                     ElevatedButton(
-                      onPressed: _clubContentController.text.trim().isNotEmpty
-                          ? _modifyClubContent
-                          : null,
+                      onPressed: _isClubDef ? _modifyClubContent : null,
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(MediaQuery.of(context).size.width, 30),
+                      ),
                       child: const Text("수정"),
                     ),
                   ],
@@ -271,18 +306,19 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
                 ),
               ),
             // 동아리원의 기능
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: ListTile(
-                tileColor: Colors.white,
-                onTap: _requestOutTap,
-                title: const Text("동아리 탈퇴"),
-                trailing: const Icon(
-                  Icons.keyboard_arrow_right,
-                  size: 30,
+            if (widget.clubData.clubLeaderId != userData.userId)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: ListTile(
+                  tileColor: Colors.white,
+                  onTap: _requestOutTap,
+                  title: const Text("동아리 탈퇴"),
+                  trailing: const Icon(
+                    Icons.keyboard_arrow_right,
+                    size: 30,
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

@@ -139,23 +139,31 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                   // 데이터를 성공적으로 가져왔을 때 ListView 표시
                   _requestList = snapshot.data!;
 
-                  return ListView.separated(
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text("이름: ${_requestList![index].joinClubId}"),
-                      subtitle: Text(
-                        "${_requestList![index].joinContent}",
-                        maxLines: null,
-                      ),
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          _requestTap(index, _requestList![index]);
-                        },
-                        child: const Text("확인"),
-                      ),
-                    ),
-                    separatorBuilder: (context, index) => Gaps.v4,
-                    itemCount: _requestList!.length,
-                  );
+                  return _requestList!.isEmpty
+                      ? Center(
+                          child: Text(
+                            "신청자가 존재하지 않습니다!",
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        )
+                      : ListView.separated(
+                          itemBuilder: (context, index) => ListTile(
+                            title:
+                                Text("이름: ${_requestList![index].joinClubId}"),
+                            subtitle: Text(
+                              "${_requestList![index].joinContent}",
+                              maxLines: null,
+                            ),
+                            trailing: ElevatedButton(
+                              onPressed: () {
+                                _requestTap(index, _requestList![index]);
+                              },
+                              child: const Text("확인"),
+                            ),
+                          ),
+                          separatorBuilder: (context, index) => Gaps.v4,
+                          itemCount: _requestList!.length,
+                        );
                 }
               },
             ),

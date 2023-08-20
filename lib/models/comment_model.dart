@@ -1,4 +1,5 @@
 class CommentModel {
+  int commentId;
   int commentUserId;
   int commentPostId;
   String commentContent;
@@ -7,7 +8,8 @@ class CommentModel {
   DateTime commentCreationDate;
 
   CommentModel(
-      {required this.commentUserId,
+      {required this.commentId,
+      required this.commentUserId,
       required this.commentPostId,
       required this.commentContent,
       required this.commentParentnum,
@@ -15,7 +17,8 @@ class CommentModel {
       required this.commentCreationDate});
 
   CommentModel.fromJson(Map<String, dynamic> json)
-      : commentUserId = json["commentUserId"],
+      : commentId = json["commentId"],
+        commentUserId = json["commentUserId"],
         commentPostId = json["commentPostId"],
         commentContent = json["commentContent"],
         commentParentnum = json["commentParentnum"],
@@ -24,6 +27,7 @@ class CommentModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data["commentId"] = commentId;
     data["commentUserId"] = commentUserId;
     data["commentPostId"] = commentPostId;
     data["commentContent"] = commentContent;

@@ -3,8 +3,8 @@ class PostCardModel {
   final int postBoardId; // 어떤 게시판에 속해있는지
   final int postUserId; // 게시글 작성 유저 did
   final String userNickname; // 작성자 별명
-  final String postTitle; // 게시글 제목
-  final String postContent; // 게시글 내용(평문)
+  String postTitle; // 게시글 제목
+  String postContent; // 게시글 내용(평문)
   final List<String>? postTag; // 게시글 태그(없으면 null) 태그 있으면 List[Json] 형식으로 저장
   final DateTime postCreationDate; // 게시물 작성시간(행 생성기준 자동으로)
   bool postLikeId; // 좋아요 여부

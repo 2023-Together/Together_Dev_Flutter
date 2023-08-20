@@ -13,7 +13,7 @@ class MainPostProvider extends ChangeNotifier {
   List<PostCardModel>? get postList => _postList ?? [];
 
   Future<void> refreshMainPostDispatch({required int? userId}) async {
-    mainPostGetDispatch(userId: userId);
+    await mainPostGetDispatch(userId: userId);
     _searchText = null;
     notifyListeners();
   }
@@ -31,7 +31,7 @@ class MainPostProvider extends ChangeNotifier {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("메인 커뮤니티 : 성공");
-      print(jsonResponse);
+      // print(jsonResponse);
 
       // 응답 데이터를 PostCardModel 리스트로 파싱
       _postList = _insertAds(
