@@ -48,4 +48,19 @@ class VolunteerModel {
       'teenager': teenager,
     };
   }
+
+   @override
+  String toString() {
+    return '''
+      listApiType: $listApiType,
+      seq: $seq,
+      title: $title,
+      centName: $centName,
+      areaName: $areaName,
+      actPlace: $actPlace,
+      actTypeName: $actTypeName,
+      status: $status,
+      teenager: $teenager
+    ''';
+  }
 }

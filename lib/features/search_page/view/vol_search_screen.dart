@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
@@ -42,6 +43,8 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   final FocusNode _focusNode = FocusNode();
 
   List<VolunteerModel>? _volList;
+
+  late VolunteerModel volData;
 
   int pageNum = 1;
   bool _isFocused = false;
@@ -82,21 +85,32 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
-  // void onChangeCategory(String value) {
-  //   if (value == "가능") {
+  void onChangeCategory(VolunteerModel volData) {
+    if (selectedStatus == "모집 대기") {
+      _volList = _volList!.where((item) => item.status == 1).toList();
+    } else if (selectedStatus == "모집 중") {
+      _volList = _volList!.where((item) => item.status == 2).toList();
+    } else if (selectedStatus == "모집 완료") {
+      _volList = _volList!.where((item) => item.status == 3).toList();
+    } else {
+      _initLoad();
+    }
 
-  //   } else if (value == "불가능") {
-  //   } else {
-  //     _initLoad();
-  //   }
-  // }
+    if (selectedTeenager == "가능") {
+      _volList = _volList!.where((item) => item.teenager == "Y").toList();
+    } else if (selectedTeenager == "불가능") {
+      _volList = _volList!.where((item) => item.teenager == "N").toList();
+    } else {
+      _initLoad();
+    }
+  }
 
   Future<void> _initLoad() async {
     setState(() {
       _isFirstLoadRunning = true;
     });
 
-    final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
     final data = {"pageNum": "$pageNum"};
 
     final response = await http.post(url, body: data);
@@ -121,33 +135,70 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
   }
 
-
   // 조건 바꾸기
   List<VolunteerModel> _applyFilters(List<VolunteerModel> list) {
+    List<VolunteerModel> filteredList = List.from(list);
+
     if (selectedStatus.isNotEmpty) {
-      list = list
-          .where((item) =>
-              item.status == _getStatusString(selectedStatus))
-          .toList();
-    } if (selectedTeenager.isNotEmpty) {
-      list = list
-          .where((item) =>
-              item.teenager ==
-              _getTeenagerString(selectedTeenager))
-          .toList();
+      // filteredList = filteredList
+      //     .where((item) => item.status == _getStatusString(selectedStatus))
+      //     .toList();
+      print(_getStatusString(selectedStatus));
+      if (_getStatusString(selectedStatus) == 1) {
+        filteredList = filteredList.where((item) => item.status == 1).toList();
+      } else if (_getStatusString(selectedStatus) == 2) {
+        filteredList = filteredList.where((item) => item.status == 2).toList();
+      } else if (_getStatusString(selectedStatus) == 3) {
+        filteredList = filteredList.where((item) => item.status == 3).toList();
+      } else {
+        _initLoad();
+      }
+
+      // Convert the filteredList to a list of JSON strings
+      List<String> jsonList =
+          filteredList.map((item) => json.encode(item.toJson())).toList();
+
+// Print the list of JSON strings
+      print(jsonList);
     }
 
-    return list;
+    if (selectedTeenager.isNotEmpty) {
+      // filteredList = filteredList
+      //     .where(
+      //         (item) => item.teenager == _getTeenagerString(selectedTeenager))
+      //     .toList();
+      print(_getTeenagerString(selectedTeenager));
+
+      if (_getTeenagerString(selectedTeenager) == "Y") {
+        filteredList =
+            filteredList.where((item) => item.teenager == "Y").toList();
+        print(filteredList);
+      } else if (_getTeenagerString(selectedTeenager) == "N") {
+        filteredList =
+            filteredList.where((item) => item.teenager == "N").toList();
+      } else {
+        _initLoad();
+      }
+
+      // Convert the filteredList to a list of JSON strings
+      List<String> jsonList =
+          filteredList.map((item) => json.encode(item.toJson())).toList();
+
+// Print the list of JSON strings
+      print(jsonList);
+    }
+
+    return filteredList;
   }
 
   String _getStatusString(String value) {
     switch (value) {
-      case '1':
-        return '모집 대기';
-      case '2':
-        return '모집 중';
-      case '3':
-        return '모집 완료';
+      case '모집 대기':
+        return '1';
+      case '모집 중':
+        return '2';
+      case '모집 완료':
+        return '3';
       default:
         return '';
     }
@@ -155,10 +206,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   String _getTeenagerString(String value) {
     switch (value) {
-      case 'Y':
-        return '가능';
-      case 'N':
-        return '불가능';
+      case '가능':
+        return 'Y';
+      case '불가능':
+        return 'N';
       default:
         return '';
     }
@@ -166,16 +217,13 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   // "적용" 버튼을 클릭하여 필터를 적용하고 검색하는 함수
   void _applyFiltersAndSearch() async {
-    final dropDownProvider =
-        // Provider.of<DropDownProvider>(context, listen: false);
-
     setState(() {
       _isFirstLoadRunning = true;
       _isSearched = true;
     });
 
     try {
-      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
       final data = {
         "pageNum": "$pageNum",
       };
@@ -190,17 +238,14 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
             jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
 
         // 필터를 전체 봉사 목록에 적용
-        List<VolunteerModel> filteredVolList =
-            _applyFilters(allVolList);
+        List<VolunteerModel> filteredVolList = _applyFilters(allVolList);
 
         setState(() {
           _volList = filteredVolList;
-          pageNum = 1; // 새로운 필터링된 목록을 받으므로 페이지 번호 재설정
+          pageNum = 1;
           _isFirstLoadRunning = false;
           _focusNode.unfocus();
         });
-
-        // _searchVolList();
       } else {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
@@ -220,7 +265,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
       final data = {"pageNum": "$pageNum"};
 
       final response = await http.post(url, body: data);
@@ -254,7 +299,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url = Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
+    final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
     pageNum = 0;
 
@@ -284,41 +329,16 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   }
 
   void _scrollEnd() async {
-    // 스크롤이 맨 아래로 내려가면 실행됨
     if (_scrollController.position.extentAfter < 350 &&
         !_isFirstLoadRunning &&
         !_isLoadMoreRunning) {
       setState(() {
         _isLoadMoreRunning = true;
       });
-      if (_isSearched) {
-        // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
+
+      try {
         final url =
-            Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
-        final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
-
-        final response = await http.post(url, body: data);
-
-        if (response.statusCode >= 200 && response.statusCode < 300) {
-          final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          print("봉사 검색 : 성공");
-          print(jsonResponse);
-
-          // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
-          setState(() {
-            _volList!.addAll(jsonResponse
-                .map((data) => VolunteerModel.fromJson(data))
-                .toList());
-            pageNum++;
-          });
-        } else {
-          print("${response.statusCode} : ${response.body}");
-          throw Exception("통신 실패!");
-        }
-      } else {
-        // 전체 리스트에서 추가 데이터를 가져옵니다.
-        final url =
-            Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+            Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
         final data = {"pageNum": "$pageNum"};
 
         final response = await http.post(url, body: data);
@@ -328,10 +348,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           print(jsonResponse);
           print("봉사 리스트 : 성공");
 
+          List<VolunteerModel> newVolList = jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList();
+
           setState(() {
-            _volList!.addAll(jsonResponse
-                .map((data) => VolunteerModel.fromJson(data))
-                .toList());
+            _volList!.addAll(_applyFilters(newVolList));
             pageNum++;
           });
         } else {
@@ -339,11 +361,13 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           print('Response body: ${response.body}');
           throw Exception("API를 불러오는데 실패하였습니다.");
         }
+      } catch (e) {
+        print(e.toString());
+      } finally {
+        setState(() {
+          _isLoadMoreRunning = false;
+        });
       }
-
-      setState(() {
-        _isLoadMoreRunning = false;
-      });
     }
   }
 
@@ -447,30 +471,59 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                   child: ListView(
                     scrollDirection: Axis.horizontal,
                     children: [
-                      SWAGStateDropDownButton(
-                        initOption: selectedStatus,
-                        onChangeOption: (dynamic value) {
+                      // SWAGStateDropDownButton(
+                      //   initOption: selectedStatus,
+                      //   onChangeOption: (dynamic value) {
+                      //     setState(() {
+                      //       selectedStatus = value;
+                      //     });
+                      //   },
+                      //   title: "모집 여부",
+                      //   options: dropdownList3,
+                      // ),
+                      DropdownButton(
+                        value: selectedStatus,
+                        items: dropdownList3
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(e),
+                                  value: e,
+                                ))
+                            .toList(),
+                        onChanged: (dynamic value) {
                           setState(() {
                             selectedStatus = value;
                           });
                         },
-                        title: "모집 여부",
-                        options: dropdownList3,
                       ),
                       Gaps.h8,
-                      SWAGStateDropDownButton(
-                        initOption: selectedTeenager,
-                        onChangeOption: (dynamic value) {
+                      // SWAGStateDropDownButton(
+                      //   initOption: selectedTeenager,
+                      //   onChangeOption: (dynamic value) {
+                      //     setState(() {
+                      //       selectedTeenager = value;
+                      //     });
+                      //   },
+                      //   title: "청소년 가능 여부",
+                      //   options: dropdownList4,
+                      // ),
+                      DropdownButton(
+                        value: selectedTeenager,
+                        items: dropdownList4
+                            .map((e) => DropdownMenuItem(
+                                  child: Text(e),
+                                  value: e,
+                                ))
+                            .toList(),
+                        onChanged: (dynamic value) {
                           setState(() {
                             selectedTeenager = value;
                           });
                         },
-                        title: "청소년 가능 여부",
-                        options: dropdownList4,
                       ),
                       TextButton(
                         onPressed: () {
                           // "적용" 버튼 클릭 시 실행되는 로직
+                          // onChangeCategory(volData);
                           _applyFiltersAndSearch();
                         },
                         child: const Text("적용"),
@@ -546,6 +599,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
 final List<String> dropdownList3 = [
   '',
+  '모집 대기',
   '모집 중',
   '모집 완료',
 ];
