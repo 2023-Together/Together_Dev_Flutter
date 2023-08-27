@@ -61,6 +61,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
               context.pop();
             } else {
               print("${response.statusCode} : ${response.body}");
+              context.pop();
               throw Exception("통신 실패!");
             }
           },
@@ -145,7 +146,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
-                              text: "${clubData.clubLeaderId}",
+                              text: clubData.clubMasterNickname,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -158,11 +159,11 @@ class ClubSearchDetailScreen extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyLarge,
-                      children: const [
-                        TextSpan(text: "동아리 인원(명) : "),
+                      children: [
+                        const TextSpan(text: "동아리 인원(명) : "),
                         TextSpan(
-                          text: "53",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          text: "${clubData.clubMemberCount}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),

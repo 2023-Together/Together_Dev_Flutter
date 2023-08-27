@@ -126,6 +126,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
               context.pop();
             } else {
               print("${response.statusCode} : ${response.body}");
+              context.pop();
             }
           },
           child: const Text("예"),

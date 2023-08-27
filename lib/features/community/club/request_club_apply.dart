@@ -46,9 +46,10 @@ class _RequestClubApplyState extends State<RequestClubApply> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
-      return jsonResponse
-          .map((data) => ClubRequestModel.fromJson(data))
-          .toList();
+      final filterList =
+          jsonResponse.map((data) => ClubRequestModel.fromJson(data)).toList();
+
+      return filterList.where((element) => element.joinState == 0).toList();
     } else {
       print("${response.statusCode} : ${response.body}");
       throw Exception("통신 실패!");
@@ -75,6 +76,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                 await http.post(url, headers: headers, body: jsonEncode(data));
 
             if (response.statusCode >= 200 && response.statusCode < 300) {
+              print("신청 거부 : 성공");
               _requestList!.removeAt(index);
               context.pop();
               setState(() {});
@@ -110,6 +112,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                 await http.post(url, headers: headers, body: jsonEncode(data));
 
             if (response.statusCode >= 200 && response.statusCode < 300) {
+              print("신청 승인 : 성공");
               _requestList!.removeAt(index);
               context.pop();
               setState(() {});
@@ -177,7 +180,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                       : ListView.separated(
                           itemBuilder: (context, index) => ListTile(
                             title: Text(
-                                "${index + 1}. ${_requestList![index].joinClubId}"),
+                                "${index + 1}. ${_requestList![index].userNickname}"),
                             subtitle:
                                 _requestList![index].joinContent!.isNotEmpty
                                     ? Text(

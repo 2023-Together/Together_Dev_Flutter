@@ -235,8 +235,11 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 );
               } else if (snapshot.hasError) {
                 // 에러가 발생한 경우 에러 메시지 표시
-                return Center(
-                  child: Text('오류 발생: ${snapshot.error}'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Center(
+                    child: Text('${snapshot.error}'),
+                  ),
                 );
               } else {
                 // 데이터를 성공적으로 가져왔을 때 ListView 표시

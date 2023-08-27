@@ -16,6 +16,7 @@ import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 
 import 'package:swag_cross_app/utils/ad_helper.dart';
+import 'package:swag_cross_app/utils/time_parse.dart';
 
 class MainCommunityScreen extends StatefulWidget {
   const MainCommunityScreen({Key? key}) : super(key: key);
@@ -182,6 +183,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
     final mainPostList = context.watch<MainPostProvider>().postList;
+    final noticeLastDate = context.watch<MainPostProvider>().noticeLastDate;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -284,8 +286,8 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                                   "공지사항",
                                   maxLines: 1,
                                 ),
-                                subtitle: const Text(
-                                  "최근 등록일 : 5일전",
+                                subtitle: Text(
+                                  "최근 등록일 : ${TimeParse.getTimeAgo(noticeLastDate!)}",
                                   maxLines: 1,
                                 ),
                                 trailing: const Icon(
@@ -316,7 +318,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                                             onAdClosed: (ad) => ad.dispose(),
                                           ),
                                           size: AdSize.fullBanner,
-                                          adUnitId: AdHelper.bannerAdUnitId,
+                                          adUnitId: AdHelper.bannerAdUnitIdTest,
                                           request: const AdRequest(),
                                         )..load(),
                                       ),

@@ -24,7 +24,7 @@ class ClubListProvider extends ChangeNotifier {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 리스트 : 성공");
+      print("가입된 동아리 리스트 : 성공");
 
       _clubList =
           jsonResponse.map((data) => ClubDataModel.fromJson(data)).toList();
