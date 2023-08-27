@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
@@ -74,6 +75,14 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     super.dispose();
   }
 
+  void onChangeCategory(String value) {
+    if (value == "가능") {
+    } else if (value == "불가능") {
+    } else {
+      _initLoad();
+    }
+  }
+
   void _onChangeFocused() {
     if (_focusNode.hasFocus != _isFocused) {
       setState(() {
@@ -96,7 +105,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       _isFirstLoadRunning = true;
     });
 
-    final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
     final data = {"pageNum": "$pageNum"};
 
     final response = await http.post(url, body: data);
@@ -175,16 +184,15 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
-      final data = {
-        "pageNum": "$pageNum",
-      };
+    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
+    final data = {"pageNum": "$pageNum"};
 
-      final response = await http.post(url, body: data);
+    final response = await http.post(url, body: data);
 
-      if (response.statusCode >= 200 && response.statusCode < 300) {
-        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-        print("봉사 리스트 : 성공");
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("봉사 리스트 : 성공");
+      print(jsonResponse);
 
         List<VolunteerModel> allVolList =
             jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
@@ -210,6 +218,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       print(e.toString());
       throw Exception("통신 실패! : $e");
     }
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   // 리스트 새로고침
@@ -220,7 +232,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
       final data = {"pageNum": "$pageNum"};
 
       final response = await http.post(url, body: data);
@@ -254,7 +266,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url = Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
+    final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
     pageNum = 0;
 
@@ -293,8 +305,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       });
       if (_isSearched) {
         // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
-        final url =
-            Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
+        final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
         final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
 
         final response = await http.post(url, body: data);
@@ -317,8 +328,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         }
       } else {
         // 전체 리스트에서 추가 데이터를 가져옵니다.
-        final url =
-            Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+        final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
         final data = {"pageNum": "$pageNum"};
 
         final response = await http.post(url, body: data);
