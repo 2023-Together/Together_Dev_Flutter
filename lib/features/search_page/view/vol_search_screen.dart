@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
@@ -17,7 +16,6 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:swag_cross_app/providers/dropdown_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -130,19 +128,17 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
   }
 
-
   // 조건 바꾸기
   List<VolunteerModel> _applyFilters(List<VolunteerModel> list) {
     if (selectedStatus.isNotEmpty) {
       list = list
-          .where((item) =>
-              item.status == _getStatusString(selectedStatus))
+          .where((item) => item.status == _getStatusString(selectedStatus))
           .toList();
-    } if (selectedTeenager.isNotEmpty) {
+    }
+    if (selectedTeenager.isNotEmpty) {
       list = list
-          .where((item) =>
-              item.teenager ==
-              _getTeenagerString(selectedTeenager))
+          .where(
+              (item) => item.teenager == _getTeenagerString(selectedTeenager))
           .toList();
     }
 
@@ -175,8 +171,8 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   // "적용" 버튼을 클릭하여 필터를 적용하고 검색하는 함수
   void _applyFiltersAndSearch() async {
-    final dropDownProvider =
-        // Provider.of<DropDownProvider>(context, listen: false);
+    // final dropDownProvider =
+    // Provider.of<DropDownProvider>(context, listen: false);
 
     setState(() {
       _isFirstLoadRunning = true;
@@ -184,22 +180,21 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
-    final data = {"pageNum": "$pageNum"};
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
+      final data = {"pageNum": "$pageNum"};
 
-    final response = await http.post(url, body: data);
+      final response = await http.post(url, body: data);
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("봉사 리스트 : 성공");
-      print(jsonResponse);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+        print("봉사 리스트 : 성공");
+        print(jsonResponse);
 
         List<VolunteerModel> allVolList =
             jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
 
         // 필터를 전체 봉사 목록에 적용
-        List<VolunteerModel> filteredVolList =
-            _applyFilters(allVolList);
+        List<VolunteerModel> filteredVolList = _applyFilters(allVolList);
 
         setState(() {
           _volList = filteredVolList;

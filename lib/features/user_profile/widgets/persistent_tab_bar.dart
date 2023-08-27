@@ -30,11 +30,11 @@ class PersistentTabBar extends SliverPersistentHeaderDelegate {
         tabs: [
           TabBarWidget(
             icon: Icons.grid_4x4_rounded,
-            title: "커뮤니티글",
+            title: "커뮤니티",
           ),
           TabBarWidget(
             icon: Icons.groups_2_outlined,
-            title: "동아리글",
+            title: "동아리",
           ),
           // TabBarWidget(
           //   icon: FontAwesomeIcons.thumbsUp,
