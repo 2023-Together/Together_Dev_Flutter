@@ -81,10 +81,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final userData = context.read<UserProvider>().userData;
 
     final url =
-        Uri.parse("${HttpIp.communityUrl}/together/post/getPostsByUserId");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getClubPostCreatedByUser");
     final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
     final data = {
-      "userId": userData!.userId.toString(),
+      "userId": userData!.userId,
     };
 
     final response =

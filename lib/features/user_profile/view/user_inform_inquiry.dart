@@ -45,13 +45,13 @@ class UserInformInquiry extends StatelessWidget {
             ),
             Gaps.v10,
             UserDataBox(
-              data: userData!.userNickname,
+              data: userData.userNickname,
               name: "닉네임(SNS)",
               hint: "네이버에서 가져온 정보",
             ),
             Gaps.v10,
             UserDataBox(
-              data: userData!.userName,
+              data: userData.userName,
               name: "이름(실명)",
               hint: "봉사 신청 기능에 사용될 실명",
             ),
@@ -65,7 +65,7 @@ class UserInformInquiry extends StatelessWidget {
             ),
             Gaps.v10,
             UserDataBox(
-              data: userData!.userPhoneNumber,
+              data: userData.userPhoneNumber,
               name: "전화번호",
               hint: "유저 전화번호",
             ),
