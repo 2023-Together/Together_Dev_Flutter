@@ -119,8 +119,8 @@ class ClubRequestCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("인원 : 0명"),
-                      Text("동아리장 : ${clubData.clubLeaderId}"),
+                      Text("동아리장 : ${clubData.clubMasterNickname}"),
+                      Text("인원 : ${clubData.clubMemberCount}명"),
                     ],
                   ),
                 ],

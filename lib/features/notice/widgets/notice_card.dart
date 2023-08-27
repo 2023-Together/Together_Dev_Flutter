@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -16,12 +17,10 @@ class NoticeCard extends StatefulWidget {
   const NoticeCard({
     Key? key,
     required this.noticeData,
-    required this.userId,
     this.isFAQ = false,
   }) : super(key: key);
 
   final PostCardModel noticeData;
-  final int userId;
   final bool isFAQ;
 
   @override
@@ -33,7 +32,7 @@ class _NoticeCardState extends State<NoticeCard> {
 
   void _onDeleteNotice() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://58.150.133.91:80/together/post/deletePost");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/deletePost");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "postId": widget.noticeData.postId,
@@ -115,24 +114,25 @@ class _NoticeCardState extends State<NoticeCard> {
         //     ],
         //   ),
         Gaps.v10,
-        if (isLogined && !widget.isFAQ && userData!.userId == 1)
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                ElevatedButton(
-                  onPressed: _onUpdateNotice,
-                  child: const Text("수정"),
-                ),
-                Gaps.h10,
-                ElevatedButton(
-                  onPressed: _onDeleteNotice,
-                  child: const Text("삭제"),
-                ),
-              ],
+        if (isLogined && userData != null)
+          if (!widget.isFAQ && userData.userId == 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: _onUpdateNotice,
+                    child: const Text("수정"),
+                  ),
+                  Gaps.h10,
+                  ElevatedButton(
+                    onPressed: _onDeleteNotice,
+                    child: const Text("삭제"),
+                  ),
+                ],
+              ),
             ),
-          ),
       ],
     );
   }

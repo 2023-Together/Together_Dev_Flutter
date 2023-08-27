@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
@@ -103,7 +104,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   }
 
   void _onSignUpSubmitted() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/register");
+    final url = Uri.parse("${HttpIp.userUrl}/together/register");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userEmail": _email,
@@ -131,7 +132,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   }
 
   Future<void> _onCheckNickName() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
+    final url = Uri.parse("${HttpIp.userUrl}/together/selectByUserNickname");
     final data = {
       "userNickname": _nickNameController.text,
     };
@@ -153,7 +154,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
 
   Future<void> _callMobileCheckCode() async {
     _mobileCheckError = null;
-    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final url = Uri.parse("${HttpIp.userUrl}/together/sendMessage");
     final data = {
       "userPhonenumber": _mobileController.text,
     };
@@ -182,7 +183,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
   }
 
   Future<void> _callAuthMobile() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
+    final url = Uri.parse("${HttpIp.userUrl}/together/isCurrectNum");
     final data = {
       "sendNum": _mobileCheckController.text,
       "getNum": _mobileAuthCode,

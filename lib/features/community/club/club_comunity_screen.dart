@@ -196,7 +196,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       appBar: AppBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: Text("${widget.clubData.clubName}(n명)"),
+        title: Text(widget.clubData.clubName),
         leadingWidth: 35,
         actions: [
           Padding(
@@ -287,7 +287,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                                       onAdClosed: (ad) => ad.dispose(),
                                     ),
                                     size: AdSize.fullBanner,
-                                    adUnitId: AdHelper.bannerAdUnitId,
+                                    adUnitId: AdHelper.bannerAdUnitIdTest,
                                     request: const AdRequest(),
                                   )..load(),
                                 ),

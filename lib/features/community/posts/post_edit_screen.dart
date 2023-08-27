@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
@@ -215,7 +216,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
     if (widget.editType == PostEditType.mainInsert) {
       // 메인 게시물 등록
-      final url = Uri.parse("http://58.150.133.91:80/together/post/createPost");
+      final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "postBoardId": "11",
@@ -253,7 +254,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
     } else if (widget.editType == PostEditType.clubInsert) {
       // 동아리 게시물 등록
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/createPostByClubId");
+          Uri.parse("${HttpIp.communityUrl}/together/post/createPostByClubId");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "clubId": widget.clubId,
@@ -293,7 +294,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
       // 메인 게시물 수정
       print("메인 게시물 수정");
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/updatePostByPostId");
+          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "postId": widget.postData!.postId,
@@ -335,7 +336,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
       // 동아리 게시물 수정
       print("동아리 게시물 수정");
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/updatePostByPostId");
+          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "postId": widget.postData!.postId,

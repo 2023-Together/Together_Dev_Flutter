@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/notice/widgets/notice_card.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
@@ -29,7 +30,7 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
 
   Future<List<PostCardModel>> _noticeGetDispatch() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getAllPostForMain");
     final response = await http.get(url);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -109,7 +110,6 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
                 final item = _noticeList![index];
                 return NoticeCard(
                   noticeData: item,
-                  userId: userData!.userId,
                 );
               },
               separatorBuilder: (context, index) => Gaps.v6,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 
 import 'package:http/http.dart' as http;
@@ -12,7 +13,7 @@ class ClubListProvider extends ChangeNotifier {
 
   Future<void> myClubGetDispatch({required int userId}) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getAffiliatedClub");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getAffiliatedClub");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userId": userId,
@@ -23,7 +24,7 @@ class ClubListProvider extends ChangeNotifier {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 리스트 : 성공");
+      print("가입된 동아리 리스트 : 성공");
 
       _clubList =
           jsonResponse.map((data) => ClubDataModel.fromJson(data)).toList();
