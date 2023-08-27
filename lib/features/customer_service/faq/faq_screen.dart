@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/customer_service/faq/faq_edit_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -32,7 +33,7 @@ class _FAQScreenState extends State<FAQScreen> {
 
   Future<List<PostCardModel>> _onFaqGetDispatch() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostByBoardId");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostByBoardId");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "boardId": "2",

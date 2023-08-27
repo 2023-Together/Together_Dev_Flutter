@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 
 import 'package:http/http.dart' as http;
@@ -23,7 +24,7 @@ class ClubPostProvider extends ChangeNotifier {
   Future<void> clubPostGetDispatch(
       {required int userId, required int? clubId}) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostsByClubId");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostsByClubId");
     final headers = {'Content-Type': 'application/json'};
     print(clubId);
     final data = {
@@ -54,7 +55,7 @@ class ClubPostProvider extends ChangeNotifier {
     required String keyword,
   }) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostForKeyword");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userId": userId,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
@@ -56,7 +57,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   void initState() {
     super.initState();
 
-    // _initLoad();
+    _initLoad();
 
     _focusNode.addListener(_onChangeFocused);
 
@@ -72,6 +73,14 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     super.dispose();
   }
 
+  void onChangeCategory(String value) {
+    if (value == "가능") {
+    } else if (value == "불가능") {
+    } else {
+      _initLoad();
+    }
+  }
+
   void _onChangeFocused() {
     if (_focusNode.hasFocus != _isFocused) {
       setState(() {
@@ -85,7 +94,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       _isFirstLoadRunning = true;
     });
 
-    final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
     final data = {"pageNum": "$pageNum"};
 
     final response = await http.post(url, body: data);
@@ -119,7 +128,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
       final data = {"pageNum": "$pageNum"};
 
       final response = await http.post(url, body: data);
@@ -153,7 +162,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url = Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
+    final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
     pageNum = 0;
 
@@ -192,8 +201,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       });
       if (_isSearched) {
         // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
-        final url =
-            Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
+        final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
         final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
 
         final response = await http.post(url, body: data);
@@ -216,7 +224,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         }
       } else {
         // 전체 리스트에서 추가 데이터를 가져옵니다.
-        final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+        final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
         final data = {"pageNum": "$pageNum"};
 
         final response = await http.post(url, body: data);

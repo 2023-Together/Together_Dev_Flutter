@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
@@ -74,7 +75,7 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
     final userData = context.read<UserProvider>().userData;
     if (widget.editType == NoticeEditType.noticeInsert) {
       // 공지사항 추가
-      final url = Uri.parse("http://58.150.133.91:80/together/post/createPost");
+      final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "postBoardId": "1",
@@ -110,7 +111,7 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
     } else {
       // 공지사항 수정
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/updatePostByPostId");
+          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "postId": widget.noticeData!.postId,

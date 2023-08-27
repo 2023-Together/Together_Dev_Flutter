@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/notice/widgets/notice_card.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
@@ -28,11 +29,11 @@ class _NoticeScreenState extends State<NoticeScreen> {
   List<PostCardModel>? _noticeList;
 
   Future<List<PostCardModel>> _noticeGetDispatch() async {
-    final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://58.150.133.91:80/together/post/getAllNotice");
+    final url =
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostByBoardId");
     final headers = {'Content-Type': 'application/json'};
     final data = {
-      "userId": userData?.userId,
+      "boardId": "1",
     };
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
@@ -69,23 +70,25 @@ class _NoticeScreenState extends State<NoticeScreen> {
       appBar: AppBar(
         title: const Text("공지사항"),
       ),
-      floatingActionButton: userData!.userId == 1
-          ? AnimatedOpacity(
-              opacity: isLogined ? 1 : 0,
-              duration: const Duration(milliseconds: 200),
-              child: FloatingActionButton(
-                heroTag: "community_edit",
-                onPressed: () {
-                  // 동아리 게시글 작성
-                  context.pushNamed(NoticeEditScreen.routeName);
-                },
-                backgroundColor: Colors.blue.shade300,
-                child: const FaIcon(
-                  FontAwesomeIcons.penToSquare,
-                  color: Colors.black,
-                ),
-              ),
-            )
+      floatingActionButton: isLogined
+          ? userData!.userId == 1
+              ? AnimatedOpacity(
+                  opacity: isLogined ? 1 : 0,
+                  duration: const Duration(milliseconds: 200),
+                  child: FloatingActionButton(
+                    heroTag: "community_edit",
+                    onPressed: () {
+                      // 동아리 게시글 작성
+                      context.pushNamed(NoticeEditScreen.routeName);
+                    },
+                    backgroundColor: Colors.blue.shade300,
+                    child: const FaIcon(
+                      FontAwesomeIcons.penToSquare,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              : null
           : null,
       body: FutureBuilder(
         future: _noticeList != null
@@ -118,7 +121,6 @@ class _NoticeScreenState extends State<NoticeScreen> {
                   final item = _noticeList![index];
                   return NoticeCard(
                     noticeData: item,
-                    userId: userData.userId,
                   );
                 },
                 separatorBuilder: (context, index) => Gaps.v6,

@@ -7,7 +7,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:http/http.dart' as http;
-import 'package:swag_cross_app/constants/httpIp.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class ClubMakeScreen extends StatefulWidget {
   static const routeName = "club_edit";

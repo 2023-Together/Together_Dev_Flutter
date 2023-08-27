@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 import 'package:swag_cross_app/features/community/posts/post_detail_comment_screen.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_intro_screen.dart';
@@ -72,7 +73,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   void _deletePostTap() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://58.150.133.91:80/together/post/deletePost");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/deletePost");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "postId": widget.postData.postId,
@@ -103,7 +104,7 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
 
   Future<void> _onTapLikeDispatch() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://58.150.133.91:80/together/post/postLike");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/postLike");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "likeUserId": userData!.userId,

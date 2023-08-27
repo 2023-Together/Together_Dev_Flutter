@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/user_profile/widgets/persistent_tab_bar.dart';
@@ -50,7 +51,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final userData = context.read<UserProvider>().userData;
 
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostsByUserId");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostsByUserId");
     final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
 
     final data = {
@@ -80,7 +81,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final userData = context.read<UserProvider>().userData;
 
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostsByUserId");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostsByUserId");
     final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
     final data = {
       "userId": userData!.userId.toString(),
@@ -106,7 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   void _onUpdateDef() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://59.4.3.198:80/together/updateUserDef");
+    final url = Uri.parse("${HttpIp.userUrl}/together/updateUserDef");
     final headers = {'Content-Type': 'application/json'}; // 헤더에 Content-Type 추가
     final data = {
       "userId": userData!.userId.toString(),

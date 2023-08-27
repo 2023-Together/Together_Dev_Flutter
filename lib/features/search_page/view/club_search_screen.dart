@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -70,7 +71,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   // 동아리 리스트를 가져오는 통신
   Future<List<ClubSearchModel>> _clubGetDispatch() async {
-    final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/club/getAllClub");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -91,7 +92,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   Future<void> _searchClubList() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getClubForKeyword");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getClubForKeyword");
     final headers = {'Content-Type': 'application/json'};
     final data = {"keyword": _searchController.text};
 

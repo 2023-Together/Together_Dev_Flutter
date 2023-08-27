@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/providers/club_list_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
-import 'package:swag_cross_app/constants/httpIp.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class ClubSettingScreenArgs {
   final ClubDataModel clubData;

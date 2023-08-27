@@ -5,7 +5,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
-import 'package:swag_cross_app/constants/httpIp.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class ClubSelectScreenArgs {
   final ClubDataModel clubData;

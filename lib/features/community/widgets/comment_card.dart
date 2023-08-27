@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/models/comment_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -56,7 +57,7 @@ class _CommentCardState extends State<CommentCard> {
   Future<void> _onDeleteComment() async {
     final userData = context.read<UserProvider>().userData;
     final url = Uri.parse(
-        "http://58.150.133.91:80/together/post/deleteCommentByCommentId");
+        "${HttpIp.communityUrl}/together/post/deleteCommentByCommentId");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "commentId": widget.commentData.commentId,

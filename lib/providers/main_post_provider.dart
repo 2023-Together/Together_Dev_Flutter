@@ -1,16 +1,19 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 
 import 'package:http/http.dart' as http;
 
 class MainPostProvider extends ChangeNotifier {
+  DateTime? _noticeLastDate;
   List<PostCardModel>? _postList;
   bool _isSearched = false;
   String? _searchText;
 
   List<PostCardModel>? get postList => _postList ?? [];
+  DateTime? get noticeLastDate => _noticeLastDate;
 
   Future<void> refreshMainPostDispatch({required int? userId}) async {
     await mainPostGetDispatch(userId: userId);
@@ -20,7 +23,7 @@ class MainPostProvider extends ChangeNotifier {
 
   Future<void> mainPostGetDispatch({required int? userId}) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getAllPostForMain");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userId": userId,
@@ -29,13 +32,15 @@ class MainPostProvider extends ChangeNotifier {
         await http.post(url, headers: headers, body: jsonEncode(data));
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
       print("메인 커뮤니티 : 성공");
-      // print(jsonResponse);
+
+      _noticeLastDate = DateTime.parse(jsonResponse["lastNoticeDate"]);
+      final postData = jsonResponse["snsMainPosts"] as List<dynamic>;
 
       // 응답 데이터를 PostCardModel 리스트로 파싱
       _postList = _insertAds(
-          jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(), 5);
+          postData.map((data) => PostCardModel.fromJson(data)).toList(), 5);
     } else {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
@@ -47,7 +52,7 @@ class MainPostProvider extends ChangeNotifier {
   Future<void> mainPostSearchDispatch(
       {required userId, required String keyword}) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+        Uri.parse("${HttpIp.communityUrl}/together/post/getPostForKeyword");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userId": userId,
@@ -76,7 +81,7 @@ class MainPostProvider extends ChangeNotifier {
   Future<void> scrollEndAddPostDispatch({required int? userId}) async {
     if (!_isSearched) {
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/getAllPostForMain");
+          Uri.parse("${HttpIp.communityUrl}/together/post/getAllPostForMain");
       final headers = {'Content-Type': 'application/json'};
       final data = {
         "userId": userId,
@@ -106,7 +111,7 @@ class MainPostProvider extends ChangeNotifier {
       }
     } else {
       final url =
-          Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
+          Uri.parse("${HttpIp.communityUrl}/together/post/getPostForKeyword");
       final headers = {'Content-Type': 'application/json'};
       final data = {"keyword": _searchText};
 
