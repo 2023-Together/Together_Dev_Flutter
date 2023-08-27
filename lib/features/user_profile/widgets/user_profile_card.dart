@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
@@ -27,7 +28,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
   final TextEditingController _DefController = TextEditingController();
 
   void _onUpdateDef(int userId, String userDef) async {
-    final url = Uri.parse("http://59.4.3.198:80/together/updateUserDef");
+    final url = Uri.parse("${HttpIp.userUrl}/together/updateUserDef");
 
     final data = {
       "userId": userId,

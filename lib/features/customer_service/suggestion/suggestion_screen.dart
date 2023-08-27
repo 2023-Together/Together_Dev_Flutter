@@ -1,8 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
+
+import 'package:http/http.dart' as http;
 
 class SuggestionScreen extends StatefulWidget {
   const SuggestionScreen({
@@ -32,7 +39,52 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
   }
 
   Future<void> _onSubmitFinishButton() async {
-    print("내용 : ${_contentController.text}");
+    final userData = context.read<UserProvider>().userData;
+    final url =
+        Uri.parse("${HttpIp.communityUrl}/together/post/createSuggestion");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "postUserId": userData!.userId,
+      "postContent": _contentController.text,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (!mounted) return;
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print("게시물 삭제 : 성공");
+      swagPlatformDialog(
+        context: context,
+        title: "등록 성공",
+        message: "건의 내용의 전달이 완료되었습니다!",
+        actions: [
+          TextButton(
+            onPressed: () {
+              _contentController.text = "";
+              context.pop();
+            },
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
+    } else {
+      print(response.statusCode);
+      print(response.body);
+      swagPlatformDialog(
+        context: context,
+        title: "등록 실패",
+        message: "건의 내용의 전달이 실패하였습니다!",
+        actions: [
+          TextButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text("알겠습니다"),
+          ),
+        ],
+      );
+    }
   }
 
   @override
@@ -75,7 +127,6 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
               hintText: "추가 되었으면 하는 기능을 입력해주세요.",
               maxLine: 10,
               controller: _contentController,
-              onSubmitted: _onSubmitFinishButton,
               onChanged: _textOnChange,
             ),
             Gaps.v10,

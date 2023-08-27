@@ -1,44 +1,78 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
 
 class PostCard extends StatefulWidget {
   const PostCard({
-    super.key,
+    Key? key,
     required this.postData,
-  });
+    required this.index,
+    this.isClub = false,
+    this.clubId,
+  }) : super(key: key);
 
   final PostCardModel postData;
+  final int index;
+  final bool isClub;
+  final int? clubId;
 
   @override
   State<PostCard> createState() => _PostCard();
 }
 
 class _PostCard extends State<PostCard> {
-  late bool _checkGood;
   final int imgHeight = 100;
 
   @override
   void initState() {
     super.initState();
-
-    _checkGood = false;
   }
 
-  void _onGoodTap() {
-    if (_checkGood) {
-      _checkGood = !_checkGood;
+  Future<void> _onTapLikeDispatch() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/postLike");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "likeUserId": userData!.userId,
+      "likePostId": widget.postData.postId,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (!mounted) return;
+    if (!widget.isClub) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("좋아요 변경 : 성공");
+        context.read<MainPostProvider>().onChangePostLike(index: widget.index);
+      } else {
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
+      }
     } else {
-      _checkGood = !_checkGood;
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("좋아요 변경 : 성공");
+        context.read<ClubPostProvider>().onChangePostLike(index: widget.index);
+      } else {
+        print("${response.statusCode} : ${response.body}");
+        throw Exception("통신 실패!");
+      }
     }
-    setState(() {});
   }
 
   // 댓글로 이동
@@ -48,13 +82,15 @@ class _PostCard extends State<PostCard> {
       extra: PostDetailScreenArgs(
         postData: widget.postData,
         tabBarSelected: page,
+        index: widget.index,
+        isClub: widget.isClub,
+        clubId: widget.clubId,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final isLogined = context.watch<UserProvider>().isLogined;
     return LayoutBuilder(
       builder: (context, constraints) => GestureDetector(
@@ -137,15 +173,15 @@ class _PostCard extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: isLogined ? _onGoodTap : () {},
+                      onPressed: isLogined ? _onTapLikeDispatch : () {},
                       icon: FaIcon(
                         isLogined
-                            ? _checkGood
+                            ? widget.postData.postLikeId
                                 ? FontAwesomeIcons.solidThumbsUp
                                 : FontAwesomeIcons.thumbsUp
                             : FontAwesomeIcons.thumbsUp,
                         color: isLogined
-                            ? _checkGood
+                            ? widget.postData.postLikeId
                                 ? Colors.blue.shade600
                                 : Colors.black
                             : Colors.black,

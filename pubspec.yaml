@@ -95,6 +95,8 @@ dependencies:
   # 함수 중복 실행 타이머 라이브러리
   debounce_throttle: ^2.0.0
 
+  filter_list: ^1.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

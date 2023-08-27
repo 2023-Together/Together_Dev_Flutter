@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/club_request_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
@@ -70,7 +71,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   // 동아리 리스트를 가져오는 통신
   Future<List<ClubSearchModel>> _clubGetDispatch() async {
-    final url = Uri.parse("http://58.150.133.91:80/together/club/getAllClub");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/club/getAllClub");
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -91,7 +92,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
   Future<void> _searchClubList() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getClubForKeyword");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getClubForKeyword");
     final headers = {'Content-Type': 'application/json'};
     final data = {"keyword": _searchController.text};
 
@@ -234,8 +235,11 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 );
               } else if (snapshot.hasError) {
                 // 에러가 발생한 경우 에러 메시지 표시
-                return Center(
-                  child: Text('오류 발생: ${snapshot.error}'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Center(
+                    child: Text('${snapshot.error}'),
+                  ),
                 );
               } else {
                 // 데이터를 성공적으로 가져왔을 때 ListView 표시

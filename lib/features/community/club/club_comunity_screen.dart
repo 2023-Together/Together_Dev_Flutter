@@ -1,21 +1,22 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/club/club_setting_screen.dart';
-import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/community/posts/post_edit_screen.dart';
+import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
-import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/club_post_provider.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/ad_helper.dart';
-
-import 'package:http/http.dart' as http;
 
 class ClubCommunityScreenArgs {
   final ClubDataModel clubData;
@@ -81,8 +82,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
   double width = 0;
   double height = 0;
 
-  late List<PostCardModel> _postList;
-
   @override
   void initState() {
     super.initState();
@@ -140,30 +139,9 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostsByClubId");
-    final headers = {'Content-Type': 'application/json'};
-    final data = {
-      "clubId": widget.clubData.clubId,
-    };
-    final response =
-        await http.post(url, headers: headers, body: jsonEncode(data));
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 커뮤니티 : 성공");
-
-      // 응답 데이터를 ClubSearchModel 리스트로 파싱
-      setState(() {
-        _postList = _insertAds(
-            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
-            5);
-      });
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
-    }
+    final userData = context.read<UserProvider>().userData;
+    context.read<ClubPostProvider>().clubPostGetDispatch(
+        userId: userData!.userId, clubId: widget.clubData.clubId);
     setState(() {
       _isFirstLoadRunning = false;
     });
@@ -174,33 +152,19 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/getPostForKeyword");
-    final headers = {'Content-Type': 'application/json'};
-    final data = {"keyword": _searchController.text};
-
-    final response =
-        await http.post(url, headers: headers, body: jsonEncode(data));
-
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 검색 : 성공");
-
-      // 응답 데이터를 PostCardModel 리스트로 파싱
+    final userData = context.read<UserProvider>().userData;
+    context.read<ClubPostProvider>().clubPostSearchDispatch(
+          userId: userData!.userId,
+          clubId: widget.clubData.clubId,
+          keyword: _searchController.text,
+        );
+    if (context.read<ClubPostProvider>().clubPostList!.isNotEmpty) {
       setState(() {
-        _postList = _insertAds(
-            jsonResponse.map((data) => PostCardModel.fromJson(data)).toList(),
-            5);
-
         _isSearched = true;
         _searchText = _searchController.text;
         _focusNode.unfocus();
         _toggleAnimations();
       });
-    } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
     setState(() {
       _isFirstLoadRunning = false;
@@ -212,45 +176,6 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
     _postGetDispatch();
     _searchText = null;
     setState(() {});
-  }
-
-  // 리스트에 광고 삽입하는 함수
-  List<PostCardModel> _insertAds(
-      List<PostCardModel> originalList, int adInterval) {
-    List<PostCardModel> resultList = [];
-
-    for (int i = 0; i < originalList.length; i++) {
-      // 광고를 삽입할 위치인지 확인
-      if (i > 0 && i % adInterval == 0) {
-        // 광고를 삽입할 위치라면 광고 모델을 생성하여 리스트에 추가
-        resultList.add(_createAdModel());
-      }
-
-      // 원본 리스트의 요소를 리스트에 추가
-      resultList.add(originalList[i]);
-    }
-
-    return resultList;
-  }
-
-  // 가상의 광고 모델 생성 함수
-  PostCardModel _createAdModel() {
-    // 광고 모델을 생성하여 반환하는 로직 구현
-    // 여기서는 가상의 광고 모델을 생성하여 반환하도록 가정
-    // 필요에 따라 광고 모델을 별도로 정의하고 초기화해야 합니다.
-    return PostCardModel(
-      postId: 0,
-      postBoardId: 0,
-      postUserId: 0,
-      userNickname: "",
-      postTitle: "",
-      postContent: "",
-      postTag: [],
-      postCreationDate: DateTime.now(),
-      postLikeCount: 0,
-      postCommentCount: 0,
-      isAd: true,
-    );
   }
 
   @override
@@ -265,12 +190,13 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   @override
   Widget build(BuildContext context) {
-    // final isLogined = context.watch<UserProvider>().isLogined;
+    final isLogined = context.watch<UserProvider>().isLogined;
+    final clubPostList = context.watch<ClubPostProvider>().clubPostList;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         centerTitle: false,
-        title: const Text("SWAG 동아리(10명)"),
+        title: Text(widget.clubData.clubName),
         leadingWidth: 35,
         actions: [
           Padding(
@@ -301,26 +227,20 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           AnimatedOpacity(
-            opacity: _animationController.isCompleted ? 0 : 1,
+            opacity: _animationController.isCompleted || isLogined ? 1 : 0,
             duration: const Duration(milliseconds: 200),
             child: FloatingActionButton(
               heroTag: "club_community_edit",
               onPressed: () async {
                 // 동아리 게시글 작성
-                final result = context.pushNamed(
+                context.pushNamed(
                   PostEditScreen.routeName,
                   extra: PostEditScreenArgs(
                     pageTitle: "동아리 게시글 등록",
                     editType: PostEditType.clubInsert,
-                    clubData: widget.clubData,
+                    clubId: widget.clubData.clubId,
                   ),
                 );
-
-                if (result is bool) {
-                  if (result as bool) {
-                    _postGetDispatch();
-                  }
-                }
               },
               backgroundColor: Colors.blue.shade300,
               child: const FaIcon(
@@ -337,20 +257,22 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
               ? const Center(
                   child: CircularProgressIndicator.adaptive(),
                 )
-              : _postList.isEmpty
+              : clubPostList!.isEmpty
                   ? const Center(
-                      child: Text('통신에 실패하였습니다!'),
+                      child: Text('게시물이 존재하지 않거나 통신에 실패했습니다!'),
                     )
                   : RefreshIndicator.adaptive(
                       onRefresh: _refreshPostList,
                       child: ListView.builder(
-                        itemCount: _postList.length,
+                        itemCount: clubPostList.length,
                         itemBuilder: (context, index) {
-                          print("${index + 1}/${_postList.length}");
-                          final item = _postList[index];
+                          final item = clubPostList[index];
                           if (!item.isAd) {
                             return PostCard(
                               postData: item,
+                              index: index,
+                              isClub: true,
+                              clubId: widget.clubData.clubId,
                             );
                           } else {
                             return StatefulBuilder(
@@ -365,7 +287,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
                                       onAdClosed: (ad) => ad.dispose(),
                                     ),
                                     size: AdSize.fullBanner,
-                                    adUnitId: AdHelper.bannerAdUnitId,
+                                    adUnitId: AdHelper.bannerAdUnitIdTest,
                                     request: const AdRequest(),
                                   )..load(),
                                 ),

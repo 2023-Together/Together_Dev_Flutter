@@ -7,6 +7,7 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class ClubMakeScreen extends StatefulWidget {
   static const routeName = "club_edit";
@@ -28,7 +29,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
 
   Future<void> _onCheckClubName() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getClubByClubName");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getClubByClubName");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "clubName": _nameController.text,
@@ -76,7 +77,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   }
 
   Future<void> _onSubmitFinishButton() async {
-    final url = Uri.parse("http://58.150.133.91:80/together/club/createClub");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/club/createClub");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "clubLeaderId": "1",
@@ -91,6 +92,7 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
       if (!mounted) return;
       context.pop();
     } else {
+      print("${response.statusCode} : ${response.body}");
       if (!mounted) return;
       swagPlatformDialog(
         context: context,

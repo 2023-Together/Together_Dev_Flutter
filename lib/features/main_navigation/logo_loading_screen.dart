@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -49,7 +50,7 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
 
     if (loginData == null) return;
     if (loginData.trim().isNotEmpty) {
-      final url = Uri.parse("http://59.4.3.198:80/together/login");
+      final url = Uri.parse("${HttpIp.userUrl}/together/login");
       // final headers = {'Content-Type': 'application/json'};
       final data = {"userEmail": loginData};
 

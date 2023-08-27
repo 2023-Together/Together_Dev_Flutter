@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
@@ -15,6 +16,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/dropdown_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -39,18 +41,18 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
   // 포커스 제어를 위한 컨트롤러
   final FocusNode _focusNode = FocusNode();
 
-  late List<VolunteerModel> _volList;
+  List<VolunteerModel>? _volList;
 
   int pageNum = 1;
   bool _isFocused = false;
   bool _isSearched = false;
-  bool _isFirstLoadRunning = false;
+  bool _isFirstLoadRunning = true;
   bool _isLoadMoreRunning = false;
 
   String? _searchText;
 
-  String selectedDropdown3 = '';
-  String selectedDropdown4 = '';
+  String selectedStatus = '';
+  String selectedTeenager = '';
 
   @override
   void initState() {
@@ -80,14 +82,103 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
+  // void onChangeCategory(String value) {
+  //   if (value == "가능") {
+
+  //   } else if (value == "불가능") {
+  //   } else {
+  //     _initLoad();
+  //   }
+  // }
+
   Future<void> _initLoad() async {
     setState(() {
       _isFirstLoadRunning = true;
     });
 
+    final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+    final data = {"pageNum": "$pageNum"};
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("봉사 리스트 : 성공");
+      print(jsonResponse);
+      setState(() {
+        _volList =
+            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+        pageNum++;
+      });
+    } else {
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+      return;
+    }
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
+  }
+
+
+  // 조건 바꾸기
+  List<VolunteerModel> _applyFilters(List<VolunteerModel> list) {
+    if (selectedStatus.isNotEmpty) {
+      list = list
+          .where((item) =>
+              item.status == _getStatusString(selectedStatus))
+          .toList();
+    } if (selectedTeenager.isNotEmpty) {
+      list = list
+          .where((item) =>
+              item.teenager ==
+              _getTeenagerString(selectedTeenager))
+          .toList();
+    }
+
+    return list;
+  }
+
+  String _getStatusString(String value) {
+    switch (value) {
+      case '1':
+        return '모집 대기';
+      case '2':
+        return '모집 중';
+      case '3':
+        return '모집 완료';
+      default:
+        return '';
+    }
+  }
+
+  String _getTeenagerString(String value) {
+    switch (value) {
+      case 'Y':
+        return '가능';
+      case 'N':
+        return '불가능';
+      default:
+        return '';
+    }
+  }
+
+  // "적용" 버튼을 클릭하여 필터를 적용하고 검색하는 함수
+  void _applyFiltersAndSearch() async {
+    final dropDownProvider =
+        // Provider.of<DropDownProvider>(context, listen: false);
+
+    setState(() {
+      _isFirstLoadRunning = true;
+      _isSearched = true;
+    });
+
     try {
-      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
-      final data = {"pageNum": "$pageNum"};
+      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
+      final data = {
+        "pageNum": "$pageNum",
+      };
 
       final response = await http.post(url, body: data);
 
@@ -95,23 +186,29 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
         print("봉사 리스트 : 성공");
 
+        List<VolunteerModel> allVolList =
+            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+
+        // 필터를 전체 봉사 목록에 적용
+        List<VolunteerModel> filteredVolList =
+            _applyFilters(allVolList);
+
         setState(() {
-          _volList = jsonResponse
-              .map((data) => VolunteerModel.fromJson(data))
-              .toList();
-          pageNum++;
+          _volList = filteredVolList;
+          pageNum = 1; // 새로운 필터링된 목록을 받으므로 페이지 번호 재설정
+          _isFirstLoadRunning = false;
+          _focusNode.unfocus();
         });
+
+        // _searchVolList();
       } else {
         print('Response status: ${response.statusCode}');
         print('Response body: ${response.body}');
         throw Exception("API를 불러오는데 실패하였습니다.");
       }
     } catch (e) {
+      print(e.toString());
       throw Exception("통신 실패! : $e");
-    } finally {
-      setState(() {
-        _isFirstLoadRunning = false;
-      });
     }
   }
 
@@ -123,7 +220,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     });
 
     try {
-      final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+      final url = Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
       final data = {"pageNum": "$pageNum"};
 
       final response = await http.post(url, body: data);
@@ -157,7 +254,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url = Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
+    final url = Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
     final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
     pageNum = 0;
 
@@ -197,7 +294,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       if (_isSearched) {
         // 검색 결과가 있는 경우 추가 데이터를 가져옵니다.
         final url =
-            Uri.parse("http://59.4.3.198:80/together/read1365selectApi");
+            Uri.parse("http://61.39.251.115:80/together/read1365selectApi");
         final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
 
         final response = await http.post(url, body: data);
@@ -205,10 +302,11 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
           print("봉사 검색 : 성공");
+          print(jsonResponse);
 
           // 응답 데이터를 VolunteerModel 리스트로 파싱하고 _volList에 추가
           setState(() {
-            _volList.addAll(jsonResponse
+            _volList!.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -219,18 +317,19 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         }
       } else {
         // 전체 리스트에서 추가 데이터를 가져옵니다.
-        final url = Uri.parse("http://59.4.3.198:80/together/readVMS1365Api");
+        final url =
+            Uri.parse("http://61.39.251.115:80/together/readVMS1365Api");
         final data = {"pageNum": "$pageNum"};
 
         final response = await http.post(url, body: data);
 
         if (response.statusCode >= 200 && response.statusCode < 300) {
           final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-          // print(jsonResponse);
+          print(jsonResponse);
           print("봉사 리스트 : 성공");
 
           setState(() {
-            _volList.addAll(jsonResponse
+            _volList!.addAll(jsonResponse
                 .map((data) => VolunteerModel.fromJson(data))
                 .toList());
             pageNum++;
@@ -349,10 +448,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       SWAGStateDropDownButton(
-                        initOption: selectedDropdown3,
+                        initOption: selectedStatus,
                         onChangeOption: (dynamic value) {
                           setState(() {
-                            selectedDropdown3 = value;
+                            selectedStatus = value;
                           });
                         },
                         title: "모집 여부",
@@ -360,14 +459,21 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                       ),
                       Gaps.h8,
                       SWAGStateDropDownButton(
-                        initOption: selectedDropdown3,
+                        initOption: selectedTeenager,
                         onChangeOption: (dynamic value) {
                           setState(() {
-                            selectedDropdown3 = value;
+                            selectedTeenager = value;
                           });
                         },
                         title: "청소년 가능 여부",
                         options: dropdownList4,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // "적용" 버튼 클릭 시 실행되는 로직
+                          _applyFiltersAndSearch();
+                        },
+                        child: const Text("적용"),
                       ),
                     ],
                   ),
@@ -379,10 +485,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                           child: CircularProgressIndicator.adaptive(),
                         ),
                       )
-                    : _volList.isEmpty
+                    : _volList == null
                         ? const Expanded(
                             child: Center(
-                              child: Text('통신에 실패하였습니다!'),
+                              child: Text('봉사 정보를 불러오는데 실패하였습니다.'),
                             ),
                           )
                         : Expanded(
@@ -393,9 +499,9 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                                 controller: _scrollController,
                                 physics: const AlwaysScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: _volList.length,
+                                itemCount: _volList!.length,
                                 itemBuilder: (context, index) {
-                                  final item = _volList[index];
+                                  final item = _volList![index];
                                   return GestureDetector(
                                     onTap: () => _onVolBoxTap(item),
                                     child: Container(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/customer_service/customer_service_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
@@ -34,7 +35,6 @@ class _UserInformSetupState extends State<UserInformSetup> {
     );
   }
 
-
   // 로그아웃
   void onLogoutTap(BuildContext context) {
     context.read<UserProvider>().logout();
@@ -44,7 +44,7 @@ class _UserInformSetupState extends State<UserInformSetup> {
   }
 
   void _onDeleteTap(BuildContext context) async {
-    final url = Uri.parse("http://59.4.3.198:80/together/delete");
+    final url = Uri.parse("${HttpIp.userUrl}/together/delete");
     final data = {
       "userId": "${context.read<UserProvider>().userData?.userId}",
     };
@@ -205,7 +205,7 @@ class _UserInformSetupState extends State<UserInformSetup> {
                 ),
               ),
             ),
-            _title(title: "로그아웃"),
+            _title(title: "계정 관리"),
             Card(
               elevation: 0,
               child: ListTile(

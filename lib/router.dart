@@ -67,6 +67,9 @@ final router = GoRouter(
         return PostDetailScreen(
           postData: args.postData,
           tabBarSelected: args.tabBarSelected,
+          index: args.index,
+          isClub: args.isClub,
+          clubId: args.clubId,
         );
       },
     ),
@@ -80,7 +83,7 @@ final router = GoRouter(
           editType: args.editType,
           maxImages: args.maxImages,
           postData: args.postData,
-          clubData: args.clubData,
+          clubId: args.clubId,
         );
       },
     ),
@@ -159,9 +162,7 @@ final router = GoRouter(
             final args = state.extra as FaqEditScreenArgs;
             return FaqEditScreen(
               pageName: args.pageName,
-              id: args.id,
-              title: args.title,
-              content: args.content,
+              postData: args.postData,
             );
           },
         )
@@ -213,10 +214,12 @@ final router = GoRouter(
               return NoticeEditScreen(
                 noticeData: args.noticeData,
                 pageName: args.pageName,
+                editType: args.editType,
               );
             }
             return const NoticeEditScreen(
               pageName: "공지사항 등록",
+              editType: NoticeEditType.noticeInsert,
             );
           },
         ),

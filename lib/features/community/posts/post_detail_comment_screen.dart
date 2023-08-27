@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/community/widgets/comment_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/comment_model.dart';
@@ -34,8 +35,8 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
   List<CommentModel>? _commentsList;
 
   Future<List<CommentModel>> _commentGetDispatch() async {
-    final url = Uri.parse(
-        "http://58.150.133.91:80/together/post/getAllCommentByPostId");
+    final url =
+        Uri.parse("${HttpIp.communityUrl}/together/post/getAllCommentByPostId");
     final headers = {'Content-Type': 'application/json'};
     final data = {"postId": widget.postData.postId};
 
@@ -59,8 +60,7 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
 
   Future<void> _onSubmittedCommentEdit() async {
     final userData = context.read<UserProvider>().userData;
-    final url =
-        Uri.parse("http://58.150.133.91:80/together/post/createComment");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/createComment");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "commentUserId": userData!.userId,
@@ -85,6 +85,11 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
     }
   }
 
+  Future<void> _onRefreshCommentList() async {
+    _commentsList = await _commentGetDispatch();
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _commentController.dispose();
@@ -94,7 +99,7 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
 
   @override
   Widget build(BuildContext context) {
-    print("userId : ${context.read<UserProvider>().userData?.userId}");
+    // print("userId : ${context.read<UserProvider>().userData?.userId}");
     super.build(context); // 반드시 super.build(context) 호출해야 함
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -124,17 +129,21 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
                     // 데이터를 성공적으로 가져왔을 때 ListView 표시
                     _commentsList = snapshot.data!;
 
-                    return ListView.separated(
-                      shrinkWrap: true,
-                      physics: const ClampingScrollPhysics(),
-                      itemBuilder: (context, index) {
-                        final item = _commentsList![index];
-                        return CommentCard(
-                          commentData: item,
-                        );
-                      },
-                      separatorBuilder: (context, index) => Gaps.v6,
-                      itemCount: _commentsList!.length,
+                    return RefreshIndicator.adaptive(
+                      onRefresh: _onRefreshCommentList,
+                      child: ListView.separated(
+                        shrinkWrap: true,
+                        physics: const ClampingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          final item = _commentsList![index];
+                          return CommentCard(
+                            commentData: item,
+                            refreshCommentList: _onRefreshCommentList,
+                          );
+                        },
+                        separatorBuilder: (context, index) => Gaps.v6,
+                        itemCount: _commentsList!.length,
+                      ),
                     );
                   }
                 },

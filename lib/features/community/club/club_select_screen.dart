@@ -5,6 +5,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class ClubSelectScreenArgs {
   final ClubDataModel clubData;
@@ -28,8 +29,8 @@ class _ClubSelectScreenState extends State<ClubSelectScreen> {
   List<String>? _clubMembers;
 
   Future<List<String>> _clubMembersDispatch() async {
-    final url = Uri.parse(
-        "http://58.150.133.91:80/together/club/getClubMemberByClubId");
+    final url =
+        Uri.parse("${HttpIp.communityUrl}/together/club/getClubMemberByClubId");
     final headers = {'Content-Type': 'application/json'};
     final data = {"clubId": widget.clubData.clubId};
 

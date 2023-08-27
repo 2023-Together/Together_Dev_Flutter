@@ -1,15 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/models/comment_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/utils/time_parse.dart';
+
+import 'package:http/http.dart' as http;
 
 class CommentCard extends StatefulWidget {
   const CommentCard({
     super.key,
     required this.commentData,
+    required this.refreshCommentList,
   });
 
   final CommentModel commentData;
+  final Function refreshCommentList;
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -45,8 +54,32 @@ class _CommentCardState extends State<CommentCard> {
     });
   }
 
+  Future<void> _onDeleteComment() async {
+    final userData = context.read<UserProvider>().userData;
+    final url = Uri.parse(
+        "${HttpIp.communityUrl}/together/post/deleteCommentByCommentId");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "commentId": widget.commentData.commentId,
+      "commentUserId": userData!.userId,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print("댓글 삭제 : 성공");
+      widget.refreshCommentList();
+    } else {
+      print("${response.statusCode} : ${response.body}");
+      print("댓글 삭제 : 실패");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isLogined = context.watch<UserProvider>().isLogined;
+    final userData = context.watch<UserProvider>().userData;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -79,16 +112,20 @@ class _CommentCardState extends State<CommentCard> {
                             ],
                           ),
                         ),
-                        PopupMenuButton(
-                          itemBuilder: (context) => [
-                            PopupMenuItem(
-                              child: Text(
-                                "삭제",
-                                style: Theme.of(context).textTheme.bodyMedium,
+                        if (isLogined &&
+                            widget.commentData.commentUserId ==
+                                userData!.userId)
+                          PopupMenuButton(
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                onTap: _onDeleteComment,
+                                child: Text(
+                                  "삭제",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
+                            ],
+                          ),
                       ],
                     ),
                     Text(

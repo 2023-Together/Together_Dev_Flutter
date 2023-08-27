@@ -5,6 +5,7 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
@@ -126,7 +127,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   void _onUpdateSubmitted() async {
     final userData = context.read<UserProvider>().userData;
 
-    final url = Uri.parse("http://59.4.3.198:80/together/update");
+    final url = Uri.parse("${HttpIp.userUrl}/together/update");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "userEmail": _email,
@@ -164,7 +165,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   }
 
   Future<void> _onCheckNickName() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/selectByUserNickname");
+    final url = Uri.parse("${HttpIp.userUrl}/together/selectByUserNickname");
     final data = {
       "userNickname": _nickNameController.text,
     };
@@ -192,7 +193,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
 
   Future<void> _callMobileCheckCode() async {
     _mobileCheckError = null;
-    final url = Uri.parse("http://59.4.3.198:80/together/sendMessage");
+    final url = Uri.parse("${HttpIp.userUrl}/together/sendMessage");
     final data = {
       "userPhonenumber": _mobileController.text,
     };
@@ -221,7 +222,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   }
 
   Future<void> _callAuthMobile() async {
-    final url = Uri.parse("http://59.4.3.198:80/together/isCurrectNum");
+    final url = Uri.parse("${HttpIp.userUrl}/together/isCurrectNum");
     final data = {
       "sendNum": _mobileCheckController.text,
       "getNum": _mobileAuthCode,

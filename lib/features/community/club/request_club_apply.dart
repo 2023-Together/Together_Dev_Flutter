@@ -9,6 +9,7 @@ import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/models/club_request_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/constants/http_ip.dart';
 
 class RequestClubApplyArgs {
   final ClubDataModel clubData;
@@ -35,7 +36,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
 
   Future<List<ClubRequestModel>> _getClubRequestDispatch() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getJoinClubQueue");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getJoinClubQueue");
     final headers = {'Content-Type': 'application/json'};
     final data = {"clubId": widget.clubData.clubId};
 
@@ -45,9 +46,10 @@ class _RequestClubApplyState extends State<RequestClubApply> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
-      return jsonResponse
-          .map((data) => ClubRequestModel.fromJson(data))
-          .toList();
+      final filterList =
+          jsonResponse.map((data) => ClubRequestModel.fromJson(data)).toList();
+
+      return filterList.where((element) => element.joinState == 0).toList();
     } else {
       print("${response.statusCode} : ${response.body}");
       throw Exception("통신 실패!");
@@ -62,15 +64,43 @@ class _RequestClubApplyState extends State<RequestClubApply> {
       message: "${requestData.joinUserId}의 신청을 승인하시겠습니까?",
       actions: [
         TextButton(
-          onPressed: () {
-            context.pop();
+          onPressed: () async {
+            final url = Uri.parse(
+                "${HttpIp.communityUrl}/together/club/joinClubRefusal");
+            final headers = {'Content-Type': 'application/json'};
+            final data = {
+              "joinQueueId": requestData.joinQueueId,
+            };
+
+            final response =
+                await http.post(url, headers: headers, body: jsonEncode(data));
+
+            if (response.statusCode >= 200 && response.statusCode < 300) {
+              print("신청 거부 : 성공");
+              _requestList!.removeAt(index);
+              context.pop();
+              setState(() {});
+            } else {
+              if (!mounted) return;
+              swagPlatformDialog(
+                context: context,
+                title: "오류! ${response.statusCode}",
+                message: response.body,
+                actions: [
+                  TextButton(
+                    onPressed: () => context.pop(),
+                    child: const Text("알겠습니다"),
+                  ),
+                ],
+              );
+            }
           },
           child: const Text("거부"),
         ),
         TextButton(
           onPressed: () async {
             final url = Uri.parse(
-                "http://58.150.133.91:80/together/club/joinClubApproval");
+                "${HttpIp.communityUrl}/together/club/joinClubApproval");
             final headers = {'Content-Type': 'application/json'};
             final data = {
               "joinQueueId": requestData.joinQueueId,
@@ -82,6 +112,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                 await http.post(url, headers: headers, body: jsonEncode(data));
 
             if (response.statusCode >= 200 && response.statusCode < 300) {
+              print("신청 승인 : 성공");
               _requestList!.removeAt(index);
               context.pop();
               setState(() {});
@@ -139,23 +170,34 @@ class _RequestClubApplyState extends State<RequestClubApply> {
                   // 데이터를 성공적으로 가져왔을 때 ListView 표시
                   _requestList = snapshot.data!;
 
-                  return ListView.separated(
-                    itemBuilder: (context, index) => ListTile(
-                      title: Text("이름: ${_requestList![index].joinClubId}"),
-                      subtitle: Text(
-                        "${_requestList![index].joinContent}",
-                        maxLines: null,
-                      ),
-                      trailing: ElevatedButton(
-                        onPressed: () {
-                          _requestTap(index, _requestList![index]);
-                        },
-                        child: const Text("확인"),
-                      ),
-                    ),
-                    separatorBuilder: (context, index) => Gaps.v4,
-                    itemCount: _requestList!.length,
-                  );
+                  return _requestList!.isEmpty
+                      ? Center(
+                          child: Text(
+                            "신청자가 존재하지 않습니다!",
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        )
+                      : ListView.separated(
+                          itemBuilder: (context, index) => ListTile(
+                            title: Text(
+                                "${index + 1}. ${_requestList![index].userNickname}"),
+                            subtitle:
+                                _requestList![index].joinContent!.isNotEmpty
+                                    ? Text(
+                                        "${_requestList![index].joinContent}",
+                                        maxLines: null,
+                                      )
+                                    : null,
+                            trailing: ElevatedButton(
+                              onPressed: () {
+                                _requestTap(index, _requestList![index]);
+                              },
+                              child: const Text("확인"),
+                            ),
+                          ),
+                          separatorBuilder: (context, index) => Gaps.v4,
+                          itemCount: _requestList!.length,
+                        );
                 }
               },
             ),

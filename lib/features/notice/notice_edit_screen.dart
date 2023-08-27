@@ -1,18 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
+
+import 'package:http/http.dart' as http;
+
+enum NoticeEditType {
+  noticeUpdate,
+  noticeInsert,
+}
 
 class NoticeEditScreenArgs {
   final PostCardModel? noticeData;
   final String pageName;
+  final NoticeEditType editType;
 
   NoticeEditScreenArgs({
     this.noticeData,
     required this.pageName,
+    required this.editType,
   });
 }
 
@@ -24,9 +40,11 @@ class NoticeEditScreen extends StatefulWidget {
     super.key,
     this.noticeData,
     required this.pageName,
+    required this.editType,
   });
 
   final PostCardModel? noticeData;
+  final NoticeEditType editType;
   final String pageName;
 
   @override
@@ -54,14 +72,87 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
   }
 
   Future<void> _onSubmitFinishButton() async {
-    print("제목 : ${_titleController.text}");
-    print("내용 : ${_contentController.text}");
+    final userData = context.read<UserProvider>().userData;
+    if (widget.editType == NoticeEditType.noticeInsert) {
+      // 공지사항 추가
+      final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
+      final headers = {'Content-Type': 'application/json'};
+      final data = {
+        "postBoardId": "1",
+        "postUserId": userData!.userId,
+        "postTitle": _titleController.text,
+        "postContent": _contentController.text,
+      };
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(data));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print('생성 성공!');
+        if (!mounted) return;
+        context.pop();
+        setState(() {});
+      } else {
+        if (!mounted) return;
+        swagPlatformDialog(
+          context: context,
+          title: "${response.statusCode} 오류",
+          message: "공지사항 생성에 오류가 발생하였습니다! \n ${response.body}",
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text("알겠습니다"),
+            ),
+          ],
+        );
+      }
+    } else {
+      // 공지사항 수정
+      final url =
+          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
+      final headers = {'Content-Type': 'application/json'};
+      final data = {
+        "postId": widget.noticeData!.postId,
+        "postUserId": userData!.userId,
+        "postTitle": _titleController.text,
+        "postContent": _contentController.text,
+      };
+
+      final response =
+          await http.post(url, headers: headers, body: jsonEncode(data));
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print("공지사항 수정 : 성공");
+        if (!mounted) return;
+        widget.noticeData!.postTitle = _titleController.text;
+        widget.noticeData!.postContent = _contentController.text;
+        context.pop();
+        setState(() {});
+      } else {
+        if (!mounted) return;
+        swagPlatformDialog(
+          context: context,
+          title: "${response.statusCode} 오류",
+          message: "게시글 수정에 오류가 발생하였습니다! \n ${response.body}",
+          actions: [
+            TextButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text("알겠습니다"),
+            ),
+          ],
+        );
+      }
+    }
   }
 
   void _textOnChange(String? value) {
     setState(() {
-      _isThereSearchValue = _titleController.text.isNotEmpty &&
-          _contentController.text.isNotEmpty;
+      _isThereSearchValue = _titleController.text.trim().isNotEmpty &&
+          _contentController.text.trim().isNotEmpty;
     });
   }
 
@@ -120,10 +211,7 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed: _titleController.text.trim().isNotEmpty &&
-                  _contentController.text.trim().isNotEmpty
-              ? _onSubmitFinishButton
-              : null,
+          onPressed: _isThereSearchValue ? _onSubmitFinishButton : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
@@ -154,9 +242,6 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
                       hintText: "글 제목을 입력해주세요.",
                       maxLine: 1,
                       controller: _titleController,
-                      onSubmitted: () {
-                        print(_titleController.text);
-                      },
                       onChanged: _textOnChange,
                     ),
                     Gaps.v40,
@@ -169,9 +254,6 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
                       hintText: "내용을 입력해주세요.",
                       maxLine: 6,
                       controller: _contentController,
-                      onSubmitted: () {
-                        print(_contentController.text);
-                      },
                       onChanged: _textOnChange,
                     ),
                     // Gaps.v40,

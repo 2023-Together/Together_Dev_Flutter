@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/sign_in_up/enums/login_platform.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
+import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/storages/login_storage.dart';
 
@@ -78,7 +80,7 @@ class _AuthButtonState extends State<AuthButton> {
       final userData = result.account;
       print(userData);
 
-      final url = Uri.parse("http://59.4.3.198:80/together/login");
+      final url = Uri.parse("${HttpIp.userUrl}/together/login");
       // final headers = {'Content-Type': 'application/json'};
       final data = {"userEmail": userData.email};
 
@@ -105,6 +107,8 @@ class _AuthButtonState extends State<AuthButton> {
           if (!mounted) return;
           context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
           LoginStorage.saveLoginData(email: userData.email);
+          context.read<MainPostProvider>().refreshMainPostDispatch(
+              userId: int.parse(jsonResponse["userId"]));
           context.pop();
         }
       } else {
@@ -154,6 +158,7 @@ class _AuthButtonState extends State<AuthButton> {
     );
 
     context.read<UserProvider>().login(updateData);
+    context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
     context.pop();
   }
 

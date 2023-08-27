@@ -4,7 +4,7 @@ class ClubDataModel {
   final int clubLeaderId; // 동아리장 유저 고유 아이디
   final int clubBoardId; // 동아리 게시판 고유 아이디
   final String clubName; // 동아리 이름
-  final String clubDescription; // 동아리 설명
+  String clubDescription; // 동아리 설명
   final bool clubRecruiting;
 
   ClubDataModel({

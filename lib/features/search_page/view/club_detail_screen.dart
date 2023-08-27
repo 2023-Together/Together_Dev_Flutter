@@ -2,11 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/club_search_model.dart';
+import 'package:swag_cross_app/providers/user_provider.dart';
 
 class ClubSearchDetailScreenArgs {
   final ClubSearchModel clubData;
@@ -39,11 +42,12 @@ class ClubSearchDetailScreen extends StatelessWidget {
         ),
         TextButton(
           onPressed: () async {
+            final userData = context.read<UserProvider>().userData;
             final url =
-                Uri.parse("http://58.150.133.91:80/together/club/joinClub");
+                Uri.parse("${HttpIp.communityUrl}/together/club/joinClub");
             final headers = {'Content-Type': 'application/json'};
             final data = {
-              "joinUserId": "5",
+              "joinUserId": userData!.userId,
               "joinClubId": clubData.clubId,
             };
 
@@ -57,6 +61,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
               context.pop();
             } else {
               print("${response.statusCode} : ${response.body}");
+              context.pop();
               throw Exception("통신 실패!");
             }
           },
@@ -79,7 +84,6 @@ class ClubSearchDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(clubData.clubRecruiting == 1);
     return Scaffold(
       appBar: AppBar(
         title: const Text("동아리 신청"),
@@ -87,15 +91,14 @@ class ClubSearchDetailScreen extends StatelessWidget {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         child: ElevatedButton(
-          onPressed:
-              clubData.clubRecruiting == 1 ? () => _onSubmit(context) : null,
+          onPressed: clubData.clubRecruiting ? () => _onSubmit(context) : null,
           style: ElevatedButton.styleFrom(
             textStyle: const TextStyle(
               fontSize: 18,
             ),
             padding: const EdgeInsets.symmetric(vertical: 12),
           ),
-          child: Text(clubData.clubRecruiting == 1 ? "신청" : "신청 불가능"),
+          child: Text(clubData.clubRecruiting ? "신청" : "신청 불가능"),
         ),
       ),
       body: SingleChildScrollView(
@@ -143,7 +146,7 @@ class ClubSearchDetailScreen extends StatelessWidget {
                           children: [
                             const TextSpan(text: "동아리장 : "),
                             TextSpan(
-                              text: "${clubData.clubLeaderId}",
+                              text: clubData.clubMasterNickname,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
@@ -156,11 +159,11 @@ class ClubSearchDetailScreen extends StatelessWidget {
                   RichText(
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyLarge,
-                      children: const [
-                        TextSpan(text: "동아리 인원(명) : "),
+                      children: [
+                        const TextSpan(text: "동아리 인원(명) : "),
                         TextSpan(
-                          text: "53",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          text: "${clubData.clubMemberCount}",
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
