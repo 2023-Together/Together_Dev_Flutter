@@ -12,6 +12,19 @@ class VolPostCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String statusText = "";
+    Color statusColor = Colors.purple.shade300;
+
+    if (volData.status == 1) {
+      statusText = "모집 대기";
+      statusColor = Colors.yellow;
+    } else if (volData.status == 2) {
+      statusText = "모집 중";
+      statusColor = Colors.purple.shade300;
+    } else if (volData.status == 3) {
+      statusText = "모집 완료";
+      statusColor = Colors.orange;
+    }
     return LayoutBuilder(
       builder: (context, constraints) => Container(
         clipBehavior: Clip.hardEdge,
@@ -26,10 +39,6 @@ class VolPostCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [],
-            // ),
             ListTile(
               contentPadding: EdgeInsets.zero,
               title: Text(
@@ -44,16 +53,14 @@ class VolPostCard extends StatelessWidget {
               trailing: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                 decoration: BoxDecoration(
-                  color: Colors.purple.shade300,
-                  // border: Border.all(
-                  //   width: 1,
-                  // ),
+                  color: statusColor,
                   borderRadius: const BorderRadius.all(
                     Radius.circular(5),
                   ),
                 ),
-                child: const Text(
-                  "모집 중",
+                child: Text(
+                  statusText,
+                  // volData.status == 2 ? "모집 중" : "모집 완료",
                   style: TextStyle(
                     fontSize: 12.0,
                     color: Colors.white,

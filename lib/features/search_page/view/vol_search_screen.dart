@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/community/widgets/post_card.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
@@ -16,6 +17,7 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:swag_cross_app/providers/dropdown_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -50,8 +52,8 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
   String? _searchText;
 
-  String selectedDropdown3 = '';
-  String selectedDropdown4 = '';
+  String selectedStatus = '';
+  String selectedTeenager = '';
 
   @override
   void initState() {
@@ -89,6 +91,15 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
+  // void onChangeCategory(String value) {
+  //   if (value == "가능") {
+
+  //   } else if (value == "불가능") {
+  //   } else {
+  //     _initLoad();
+  //   }
+  // }
+
   Future<void> _initLoad() async {
     setState(() {
       _isFirstLoadRunning = true;
@@ -103,7 +114,6 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
       print("봉사 리스트 : 성공");
       print(jsonResponse);
-
       setState(() {
         _volList =
             jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
@@ -113,6 +123,100 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
       return;
+    }
+
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
+  }
+
+
+  // 조건 바꾸기
+  List<VolunteerModel> _applyFilters(List<VolunteerModel> list) {
+    if (selectedStatus.isNotEmpty) {
+      list = list
+          .where((item) =>
+              item.status == _getStatusString(selectedStatus))
+          .toList();
+    } if (selectedTeenager.isNotEmpty) {
+      list = list
+          .where((item) =>
+              item.teenager ==
+              _getTeenagerString(selectedTeenager))
+          .toList();
+    }
+
+    return list;
+  }
+
+  String _getStatusString(String value) {
+    switch (value) {
+      case '1':
+        return '모집 대기';
+      case '2':
+        return '모집 중';
+      case '3':
+        return '모집 완료';
+      default:
+        return '';
+    }
+  }
+
+  String _getTeenagerString(String value) {
+    switch (value) {
+      case 'Y':
+        return '가능';
+      case 'N':
+        return '불가능';
+      default:
+        return '';
+    }
+  }
+
+  // "적용" 버튼을 클릭하여 필터를 적용하고 검색하는 함수
+  void _applyFiltersAndSearch() async {
+    final dropDownProvider =
+        // Provider.of<DropDownProvider>(context, listen: false);
+
+    setState(() {
+      _isFirstLoadRunning = true;
+      _isSearched = true;
+    });
+
+    try {
+    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
+    final data = {"pageNum": "$pageNum"};
+
+    final response = await http.post(url, body: data);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+      print("봉사 리스트 : 성공");
+      print(jsonResponse);
+
+        List<VolunteerModel> allVolList =
+            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
+
+        // 필터를 전체 봉사 목록에 적용
+        List<VolunteerModel> filteredVolList =
+            _applyFilters(allVolList);
+
+        setState(() {
+          _volList = filteredVolList;
+          pageNum = 1; // 새로운 필터링된 목록을 받으므로 페이지 번호 재설정
+          _isFirstLoadRunning = false;
+          _focusNode.unfocus();
+        });
+
+        // _searchVolList();
+      } else {
+        print('Response status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        throw Exception("API를 불러오는데 실패하였습니다.");
+      }
+    } catch (e) {
+      print(e.toString());
+      throw Exception("통신 실패! : $e");
     }
 
     setState(() {
@@ -354,10 +458,10 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                     scrollDirection: Axis.horizontal,
                     children: [
                       SWAGStateDropDownButton(
-                        initOption: selectedDropdown3,
+                        initOption: selectedStatus,
                         onChangeOption: (dynamic value) {
                           setState(() {
-                            selectedDropdown3 = value;
+                            selectedStatus = value;
                           });
                         },
                         title: "모집 여부",
@@ -365,14 +469,21 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                       ),
                       Gaps.h8,
                       SWAGStateDropDownButton(
-                        initOption: selectedDropdown3,
+                        initOption: selectedTeenager,
                         onChangeOption: (dynamic value) {
                           setState(() {
-                            selectedDropdown3 = value;
+                            selectedTeenager = value;
                           });
                         },
                         title: "청소년 가능 여부",
                         options: dropdownList4,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          // "적용" 버튼 클릭 시 실행되는 로직
+                          _applyFiltersAndSearch();
+                        },
+                        child: const Text("적용"),
                       ),
                     ],
                   ),
