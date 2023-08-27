@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'package:swag_cross_app/constants/gaps.dart';
+import 'package:swag_cross_app/constants/httpIp.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
@@ -44,7 +45,7 @@ class _PostCard extends State<PostCard> {
 
   Future<void> _onTapLikeDispatch() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse("http://58.150.133.91:80/together/post/postLike");
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/postLike");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "likeUserId": userData!.userId,

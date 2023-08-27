@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/providers/club_list_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:swag_cross_app/constants/httpIp.dart';
 
 class ClubSettingScreenArgs {
   final ClubDataModel clubData;
@@ -71,7 +72,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
 
   void _onChangeClubRecruiting(bool value) async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/updateClubRecruiting");
+        Uri.parse("${HttpIp.communityUrl}/together/club/updateClubRecruiting");
     final headers = {'Content-Type': 'application/json'};
     final data = {"clubId": "3", "clubRecruiting": _clubApply ? 1 : 0};
 
@@ -103,7 +104,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
           onPressed: () async {
             final userData = context.read<UserProvider>().userData;
             final url =
-                Uri.parse("http://58.150.133.91:80/together/club/deleteClub");
+                Uri.parse("${HttpIp.communityUrl}/together/club/deleteClub");
             final headers = {'Content-Type': 'application/json'};
             final data = {
               "clubId": widget.clubData.clubId,
@@ -147,7 +148,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
           onPressed: () async {
             final userData = context.read<UserProvider>().userData;
             final url = Uri.parse(
-                "http://58.150.133.91:80/together/club/withdrawalClub");
+                "${HttpIp.communityUrl}/together/club/withdrawalClub");
             final headers = {'Content-Type': 'application/json'};
             final data = {
               "memberClubId": widget.clubData.clubId,
@@ -181,8 +182,8 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
 
   void _modifyClubContent() async {
     final userData = context.read<UserProvider>().userData;
-    final url = Uri.parse(
-        "http://58.150.133.91:80/together/club/updateClubDescription");
+    final url =
+        Uri.parse("${HttpIp.communityUrl}/together/club/updateClubDescription");
     final headers = {'Content-Type': 'application/json'};
     final data = {
       "clubId": widget.clubData.clubId,
@@ -213,7 +214,7 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
 
   Future<void> _getApplyLengthDispatch() async {
     final url =
-        Uri.parse("http://58.150.133.91:80/together/club/getJoinClubQueue");
+        Uri.parse("${HttpIp.communityUrl}/together/club/getJoinClubQueue");
     final headers = {'Content-Type': 'application/json'};
     final data = {"clubId": widget.clubData.clubId};
 
