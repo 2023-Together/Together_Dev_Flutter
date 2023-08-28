@@ -78,7 +78,10 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
     final url =
         Uri.parse("${HttpIp.communityUrl}/together/club/updateClubRecruiting");
     final headers = {'Content-Type': 'application/json'};
-    final data = {"clubId": "3", "clubRecruiting": _clubApply ? 1 : 0};
+    final data = {
+      "clubId": widget.clubData.clubId,
+      "clubRecruiting": _clubApply ? 1 : 0
+    };
 
     final response =
         await http.post(url, headers: headers, body: jsonEncode(data));
