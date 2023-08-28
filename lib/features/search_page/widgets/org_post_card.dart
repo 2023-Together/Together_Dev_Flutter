@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/org_detail_screen.dart';
 
 class OrgPostCard extends StatefulWidget {
   final String id;

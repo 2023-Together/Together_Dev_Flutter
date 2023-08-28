@@ -61,7 +61,7 @@ class _RequestClubApplyState extends State<RequestClubApply> {
     swagPlatformDialog(
       context: context,
       title: "신청 승인",
-      message: "${requestData.joinUserId}의 신청을 승인하시겠습니까?",
+      message: "${requestData.userNickname}의 신청을 승인하시겠습니까?",
       actions: [
         TextButton(
           onPressed: () async {
@@ -141,7 +141,11 @@ class _RequestClubApplyState extends State<RequestClubApply> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text("동아리 신청 현황"),
+        leading: BackButton(
+          onPressed: () => context.pop(_requestList?.length),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

@@ -53,11 +53,15 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
     _getApplyLengthDispatch();
   }
 
-  void _requestJoinTap() {
-    context.pushNamed(
+  void _requestJoinTap() async {
+    final requestCount = await context.pushNamed(
       RequestClubApply.routeName,
       extra: RequestClubApplyArgs(clubData: widget.clubData),
     );
+
+    setState(() {
+      _applyLength = int.parse(requestCount.toString());
+    });
   }
 
   void _clubMembersChecTap() {
@@ -225,7 +229,8 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
 
-      _applyLength = jsonResponse.length;
+      _applyLength =
+          jsonResponse.where((element) => element["joinState"] == 0).length;
       setState(() {});
     } else {
       print("${response.statusCode} : ${response.body}");
