@@ -15,12 +15,6 @@ import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-final List<String> volCategories = [
-  "카테고리1",
-  "카테고리2",
-  "카테고리3",
-];
-
 class VolSearchScreen extends StatefulWidget {
   const VolSearchScreen({Key? key}) : super(key: key);
 

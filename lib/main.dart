@@ -58,6 +58,7 @@ class SWAGCrossApp extends StatelessWidget {
         Locale('en', 'US'), // 영어
       ],
       theme: ThemeData(
+        // useMaterial3: true,
         // 모든 하위 Scaffold에 배경색을 지정해 준다.
         scaffoldBackgroundColor: Colors.white,
 
