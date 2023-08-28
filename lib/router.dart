@@ -13,10 +13,10 @@ import 'package:swag_cross_app/features/customer_service/customer_service_screen
 import 'package:swag_cross_app/features/main_navigation/mian_navigation.dart';
 import 'package:swag_cross_app/features/notice/notice_edit_screen.dart';
 import 'package:swag_cross_app/features/notice/notice_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/club_detail_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/club_search_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/org_detail_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/vol_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/club_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/club_search_screen.dart';
+import 'package:swag_cross_app/features/search_page/org_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/vol_detail_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_in_screen.dart';
 import 'package:swag_cross_app/features/sign_in_up/sign_up_form_screen.dart';
 import 'package:swag_cross_app/features/user_profile/view/change_phoneNum.dart';
