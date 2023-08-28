@@ -233,7 +233,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
             child: FloatingActionButton(
               heroTag: "community_edit",
               onPressed: () {
-                // 동아리 게시글 작성
+                // 커뮤니티 게시글 작성
                 context.pushNamed(
                   PostEditScreen.routeName,
                   extra: PostEditScreenArgs(

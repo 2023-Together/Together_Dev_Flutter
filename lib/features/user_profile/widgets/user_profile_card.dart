@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
+import 'package:swag_cross_app/features/user_profile/view/user_inform_inquiry.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
 
@@ -117,7 +118,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
     return ListTile(
       onTap: () {
         context.pushNamed(
-          UserInformUpdate.routeName,
+          UserInformInquiry.routeName
         );
       },
       leading: const CircleAvatar(
