@@ -245,7 +245,7 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
                 // 데이터를 성공적으로 가져왔을 때 ListView 표시
                 _clubList = snapshot.data!;
                 _filteredList = _clubList!
-                    .where((element) => element.clubRecruiting == 1)
+                    .where((element) => element.clubRecruiting)
                     .toList();
 
                 return RefreshIndicator.adaptive(
