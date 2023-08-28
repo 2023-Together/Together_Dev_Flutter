@@ -6,7 +6,6 @@ import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/providers/club_list_provider.dart';
 import 'package:swag_cross_app/providers/club_post_provider.dart';
-import 'package:swag_cross_app/providers/dropdown_provider.dart';
 import 'package:swag_cross_app/providers/main_navigation_provider.dart';
 import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -25,7 +24,6 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => MainNavigationProvider()),
-        // ChangeNotifierProvider(create: (_) => DropDownProvider()),
         ChangeNotifierProvider(create: (context) => ClubPostProvider()),
         ChangeNotifierProvider(create: (context) => MainPostProvider()),
         ChangeNotifierProvider(create: (context) => ClubListProvider()),
