@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/features/community/club/club_comunity_screen.dart';
 import 'package:swag_cross_app/features/community/club/club_make_screen.dart';
-import 'package:swag_cross_app/features/search_page/view/club_search_screen.dart';
+import 'package:swag_cross_app/features/search_page/club_search_screen.dart';
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
 import 'package:swag_cross_app/providers/club_list_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
