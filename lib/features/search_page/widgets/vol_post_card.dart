@@ -5,7 +5,7 @@ import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 class VolPostCard extends StatelessWidget {
   final VolunteerModel volData;
 
-  const VolPostCard({
+  const VolPostCard( {
     super.key,
     required this.volData,
   });

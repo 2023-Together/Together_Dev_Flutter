@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/search_page/view/club_detail_screen.dart';
+import 'package:swag_cross_app/features/search_page/club_detail_screen.dart';
 import 'package:swag_cross_app/models/club_search_model.dart';
 
 class ClubRequestCard extends StatelessWidget {
