@@ -183,7 +183,6 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
   Widget build(BuildContext context) {
     final isLogined = context.watch<UserProvider>().isLogined;
     final mainPostList = context.watch<MainPostProvider>().postList;
-    final noticeLastDate = context.watch<MainPostProvider>().noticeLastDate;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -287,7 +286,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                                   maxLines: 1,
                                 ),
                                 subtitle: Text(
-                                  "최근 등록일 : ${TimeParse.getTimeAgo(noticeLastDate!)}",
+                                  "최근 등록일 : ${TimeParse.getTimeAgo(context.watch<MainPostProvider>().noticeLastDate!)}",
                                   maxLines: 1,
                                 ),
                                 trailing: const Icon(
