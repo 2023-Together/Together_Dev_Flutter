@@ -183,8 +183,8 @@ class _PostCard extends State<PostCard> {
                         color: isLogined
                             ? widget.postData.postLikeId
                                 ? Colors.blue.shade600
-                                : Colors.black
-                            : Colors.black,
+                                : null
+                            : null,
                       ),
                     ),
                     Gaps.h6,
@@ -192,7 +192,6 @@ class _PostCard extends State<PostCard> {
                       onPressed: () => _goDetailScreen(1),
                       icon: const FaIcon(
                         FontAwesomeIcons.comment,
-                        color: Colors.black,
                         size: 30,
                       ),
                     ),

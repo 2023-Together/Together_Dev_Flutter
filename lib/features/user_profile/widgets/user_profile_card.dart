@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_inquiry.dart';
-import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
 import 'package:swag_cross_app/models/DBModels/user_model.dart';
 
 import 'package:http/http.dart' as http;
@@ -41,28 +40,16 @@ class _UserProfileCardState extends State<UserProfileCard> {
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      // final UserModel updateData = UserModel(
-      //   userId: userId,
-      //   userDef: userDef,
-      // );
-      // if (!mounted) return;
-      // context.read<UserProvider>().updateUserData(updateData);
-      // context.pop();
-      final result = int.parse(response.body);
-      if (result == 0) {
-        setState(() {
-          context.read<UserProvider>().userData?.userDef = userDef;
-        });
-        print("통신 성공");
-      } else {
-        print("통신 실패!");
-        print(response.statusCode);
-        print(response.body);
-      }
+      setState(() {
+        context.read<UserProvider>().userData?.userDef = userDef;
+      });
     } else {
-      print("수정 에러!");
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "설명 수정 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -117,9 +104,7 @@ class _UserProfileCardState extends State<UserProfileCard> {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: () {
-        context.pushNamed(
-          UserInformInquiry.routeName
-        );
+        context.pushNamed(UserInformInquiry.routeName);
       },
       leading: const CircleAvatar(
         radius: 40,

@@ -48,8 +48,12 @@ class _NoticeScreenState extends State<NoticeScreen> {
 
       return _noticeList!;
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (!mounted) throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }

@@ -98,9 +98,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         pageNum++;
       });
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      return;
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
 
     setState(() {
@@ -124,7 +127,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
         print(jsonResponse);
-        print("봉사 리스트 : 성공");
+        print("봉사 새로고침 : 성공");
 
         setState(() {
           _volList = jsonResponse
@@ -138,9 +141,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
           _isFiltered = false;
         });
       } else {
-        print('Response status: ${response.statusCode}');
-        print('Response body: ${response.body}');
-        throw Exception("API를 불러오는데 실패하였습니다.");
+        if (!mounted) return;
+        HttpIp.errorPrint(
+          context: context,
+          title: "목록 호출 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
+        );
       }
     } catch (e) {
       print(e.toString());
@@ -178,8 +184,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
         _focusNode.unfocus();
       });
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "검색 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
     setState(() {
       _isFirstLoadRunning = false;
@@ -217,9 +227,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               pageNum++;
             });
           } else {
-            print('Response status: ${response.statusCode}');
-            print('Response body: ${response.body}');
-            throw Exception("API를 불러오는데 실패하였습니다.");
+            if (!mounted) return;
+            HttpIp.errorPrint(
+              context: context,
+              title: "추가 호출 실패!",
+              message: "${response.statusCode.toString()} : ${response.body}",
+            );
           }
         } catch (e) {
           print(e.toString());
@@ -247,9 +260,12 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               pageNum++;
             });
           } else {
-            print('Response status: ${response.statusCode}');
-            print('Response body: ${response.body}');
-            throw Exception("API를 불러오는데 실패하였습니다.");
+            if (!mounted) return;
+            HttpIp.errorPrint(
+              context: context,
+              title: "추가 호출 실패!",
+              message: "${response.statusCode.toString()} : ${response.body}",
+            );
           }
         } catch (e) {
           print(e.toString());

@@ -8,7 +8,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
@@ -94,18 +93,10 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
         setState(() {});
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "공지사항 생성에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "공지사항 생성 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else {
@@ -132,18 +123,10 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
         setState(() {});
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "게시글 수정에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "공지사항 수정 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     }

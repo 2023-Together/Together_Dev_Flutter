@@ -53,7 +53,12 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
 
       return commentsList;
     } else {
-      print("${response.statusCode} : ${response.body}");
+      if (!mounted) throw Exception("통신 실패!");
+      HttpIp.errorPrint(
+        context: context,
+        title: "댓글 목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("통신 실패!");
     }
   }
@@ -80,8 +85,12 @@ class _PostDetailCommentscreenState extends State<PostDetailCommentscreen>
       _commentController.text = "";
       setState(() {});
     } else {
-      print("${response.statusCode} : ${response.body}");
-      print("댓글 등록 : 실패");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "댓글 등록 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

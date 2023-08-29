@@ -60,9 +60,13 @@ class ClubSearchDetailScreen extends StatelessWidget {
               context.pop();
               context.pop();
             } else {
-              print("${response.statusCode} : ${response.body}");
+              if (!context.mounted) return;
+              HttpIp.errorPrint(
+                context: context,
+                title: "동아리 신청 실패!",
+                message: "${response.statusCode.toString()} : ${response.body}",
+              );
               context.pop();
-              throw Exception("통신 실패!");
             }
           },
           child: const Text("예"),

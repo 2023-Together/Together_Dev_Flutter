@@ -92,8 +92,12 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
         _clubApply = !_clubApply;
       });
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "신청 여부 변경 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -132,7 +136,12 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
               context.pop();
               context.pop();
             } else {
-              print("${response.statusCode} : ${response.body}");
+              if (!mounted) return;
+              HttpIp.errorPrint(
+                context: context,
+                title: "동아리 삭제 실패!",
+                message: "${response.statusCode.toString()} : ${response.body}",
+              );
               context.pop();
             }
           },
@@ -176,7 +185,12 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
               context.pop();
               context.pop();
             } else {
-              print("${response.statusCode} : ${response.body}");
+              if (!mounted) return;
+              HttpIp.errorPrint(
+                context: context,
+                title: "동아리 탈퇴 실패!",
+                message: "${response.statusCode.toString()} : ${response.body}",
+              );
               context.pop();
               context.pop();
               context.pop();
@@ -207,8 +221,12 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
       widget.clubData.clubDescription = _clubContentController.text;
       setState(() {});
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "동아리 설명 수정 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -236,8 +254,12 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
           jsonResponse.where((element) => element["joinState"] == 0).length;
       setState(() {});
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "신청자 목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

@@ -45,8 +45,12 @@ class _NoticeCardState extends State<NoticeCard> {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       print("게시물 삭제 : 성공");
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "게시물 삭제 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

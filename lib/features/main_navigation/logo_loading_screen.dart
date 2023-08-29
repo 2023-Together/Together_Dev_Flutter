@@ -58,16 +58,16 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
-        if (jsonResponse.isEmpty) {
-          print("로그인 실패");
-        } else {
-          if (!mounted) return;
-          context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
-          context.pop();
-        }
+        if (!mounted) return;
+        context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+        context.pop();
       } else {
-        print("로그인 실패");
+        if (!mounted) return;
+        HttpIp.errorPrint(
+          context: context,
+          title: "자동 로그인 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
+        );
       }
 
       if (!mounted) return;

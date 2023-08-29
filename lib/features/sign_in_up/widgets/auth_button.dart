@@ -112,18 +112,11 @@ class _AuthButtonState extends State<AuthButton> {
           context.pop();
         }
       } else {
-        print("로그인 실패");
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
           title: "로그인 실패!",
-          message: "${response.statusCode} : ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else {

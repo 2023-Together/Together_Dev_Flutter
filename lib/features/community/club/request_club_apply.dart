@@ -51,7 +51,12 @@ class _RequestClubApplyState extends State<RequestClubApply> {
 
       return filterList.where((element) => element.joinState == 0).toList();
     } else {
-      print("${response.statusCode} : ${response.body}");
+      if (!mounted) throw Exception("통신 실패!");
+      HttpIp.errorPrint(
+        context: context,
+        title: "신청자 목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("통신 실패!");
     }
   }
@@ -82,16 +87,10 @@ class _RequestClubApplyState extends State<RequestClubApply> {
               setState(() {});
             } else {
               if (!mounted) return;
-              swagPlatformDialog(
+              HttpIp.errorPrint(
                 context: context,
-                title: "오류! ${response.statusCode}",
-                message: response.body,
-                actions: [
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text("알겠습니다"),
-                  ),
-                ],
+                title: "신청 거부 실패!",
+                message: "${response.statusCode.toString()} : ${response.body}",
               );
             }
           },
@@ -118,16 +117,10 @@ class _RequestClubApplyState extends State<RequestClubApply> {
               setState(() {});
             } else {
               if (!mounted) return;
-              swagPlatformDialog(
+              HttpIp.errorPrint(
                 context: context,
-                title: "오류! ${response.statusCode}",
-                message: response.body,
-                actions: [
-                  TextButton(
-                    onPressed: () => context.pop(),
-                    child: const Text("알겠습니다"),
-                  ),
-                ],
+                title: "신청 승인 실패!",
+                message: "${response.statusCode.toString()} : ${response.body}",
               );
             }
           },

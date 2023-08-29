@@ -237,18 +237,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
         context.pop();
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "게시글 생성에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "게시물 생성 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else if (widget.editType == PostEditType.clubInsert) {
@@ -276,18 +268,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
         context.pop();
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "게시글 생성에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "게시물 생성 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else if (widget.editType == PostEditType.mainUpdate) {
@@ -318,18 +302,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
         setState(() {});
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "게시글 수정에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "게시물 수정 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else if (widget.editType == PostEditType.clubUpdate) {
@@ -361,18 +337,10 @@ class _PostEditScreenState extends State<PostEditScreen> {
         context.pop();
       } else {
         if (!mounted) return;
-        swagPlatformDialog(
+        HttpIp.errorPrint(
           context: context,
-          title: "${response.statusCode} 오류",
-          message: "게시글 수정에 오류가 발생하였습니다! \n ${response.body}",
-          actions: [
-            TextButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text("알겠습니다"),
-            ),
-          ],
+          title: "게시물 수정 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
         );
       }
     } else {

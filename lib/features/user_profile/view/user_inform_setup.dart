@@ -52,13 +52,18 @@ class _UserInformSetupState extends State<UserInformSetup> {
     final response = await http.post(url, body: data);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      if (!context.mounted) return;
+      if (!mounted) return;
       context.read<UserProvider>().logout();
+      LoginStorage.resetLoginData();
       context.read<MainNavigationProvider>().changeIndex(0);
       context.pop();
     } else {
-      print("삭제 실패");
-      print("${response.statusCode} : ${response.body}");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "계정 삭제 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

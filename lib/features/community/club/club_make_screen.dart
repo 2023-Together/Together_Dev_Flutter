@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/constants/http_ip.dart';
@@ -53,7 +52,12 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
         _textOnChange("");
       });
     } else {
-      print("${response.statusCode} : ${response.body}");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "중복 인증 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       setState(() {
         _clubNameError = "통신 실패!";
         _textOnChange("");
@@ -97,18 +101,11 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
       context.read<ClubListProvider>().myClubGetDispatch(userId: userId);
       context.pop();
     } else {
-      print("${response.statusCode} : ${response.body}");
       if (!mounted) return;
-      swagPlatformDialog(
+      HttpIp.errorPrint(
         context: context,
-        title: "오류",
-        message: "동아리 생성에 오류가 발생하였습니다!",
-        actions: [
-          TextButton(
-            onPressed: () => context.pop(),
-            child: const Text("알겠습니다"),
-          ),
-        ],
+        title: "동아리 생성 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
       );
     }
   }

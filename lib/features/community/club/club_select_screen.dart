@@ -45,7 +45,12 @@ class _ClubSelectScreenState extends State<ClubSelectScreen> {
 
       return clubMembers;
     } else {
-      print("${response.statusCode} : ${response.body}");
+      if (!mounted) throw Exception("통신 실패!");
+      HttpIp.errorPrint(
+        context: context,
+        title: "동아리원 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("통신 실패!");
     }
   }

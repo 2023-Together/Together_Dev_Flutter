@@ -158,9 +158,12 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
       context.read<UserProvider>().updateUserData(updateData);
       context.pop();
     } else {
-      print("회원가입 에러!");
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "회원가입 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -180,8 +183,13 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
       });
     } else {
       _nickNameError = "중복된 닉네임이 존재합니다!";
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "전화번호 인증 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
+      setState(() {});
     }
 
     // setState(() {
@@ -213,11 +221,15 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
         });
       }
     } else {
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "전화번호 검사 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       setState(() {
         _mobileError = "통신 실패!";
       });
-      print(response.statusCode);
-      print(response.body);
     }
   }
 
@@ -237,6 +249,12 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
         _onChangeAllText();
       });
     } else {
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "중복 확인 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       setState(() {
         _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
       });

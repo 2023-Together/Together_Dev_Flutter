@@ -97,8 +97,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       context.pop();
       context.pop();
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "게시물 삭제 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -129,8 +133,12 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
         likeCount += isLiked ? 1 : -1;
       });
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "좋아요 변경 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

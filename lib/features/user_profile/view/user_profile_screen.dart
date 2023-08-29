@@ -70,8 +70,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           .map<PostCardModel>((data) => PostCardModel.fromJson(data))
           .toList();
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (!mounted) throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
@@ -92,15 +96,19 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("동아리 정보 : 성공");
+      print("사용자가 생성한 동아리 게시물 : 성공");
 
       // 응답 데이터를 PostCardModel 리스트로 파싱하여 변환
       return jsonResponse
           .map<PostCardModel>((data) => PostCardModel.fromJson(data))
           .toList();
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (!mounted) throw Exception("동아리 게시물 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("동아리 게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
@@ -120,9 +128,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       print("설명 수정 : 성공");
       context.read<UserProvider>().updateUserDef(_defController.text);
     } else {
-      print("수정 에러!");
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "설명 수정 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

@@ -69,20 +69,11 @@ class _SuggestionScreenState extends State<SuggestionScreen> {
         ],
       );
     } else {
-      print(response.statusCode);
-      print(response.body);
-      swagPlatformDialog(
+      if (!mounted) return;
+      HttpIp.errorPrint(
         context: context,
-        title: "등록 실패",
-        message: "건의 내용의 전달이 실패하였습니다!",
-        actions: [
-          TextButton(
-            onPressed: () {
-              context.pop();
-            },
-            child: const Text("알겠습니다"),
-          ),
-        ],
+        title: "건의하기 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
       );
     }
   }

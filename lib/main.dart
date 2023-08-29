@@ -36,6 +36,26 @@ void main() async {
 class SWAGCrossApp extends StatelessWidget {
   const SWAGCrossApp({super.key});
 
+  MaterialColor createMaterialColor(Color color) {
+    List strengths = <double>[.05];
+    Map<int, Color> swatch = {};
+    final int r = color.red, g = color.green, b = color.blue;
+
+    for (int i = 1; i < 10; i++) {
+      strengths.add(0.1 * i);
+    }
+    for (var strength in strengths) {
+      final double ds = 0.5 - strength;
+      swatch[(strength * 1000).round()] = Color.fromRGBO(
+        r + ((ds < 0 ? r : (255 - r)) * ds).round(),
+        g + ((ds < 0 ? g : (255 - g)) * ds).round(),
+        b + ((ds < 0 ? b : (255 - b)) * ds).round(),
+        1,
+      );
+    }
+    return MaterialColor(color.value, swatch);
+  }
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -59,6 +79,7 @@ class SWAGCrossApp extends StatelessWidget {
       ],
       theme: ThemeData(
         // useMaterial3: true,
+        // primarySwatch: createMaterialColor(const Color.fromARGB(255, 174, 152, 216)),
         // 모든 하위 Scaffold에 배경색을 지정해 준다.
         scaffoldBackgroundColor: Colors.white,
 
@@ -129,8 +150,8 @@ class SWAGCrossApp extends StatelessWidget {
         // ElevatedButton
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.purple.shade300,
-          ),
+              // backgroundColor: Colors.purple.shade300,
+              ),
         ),
 
         // ListTile
@@ -145,7 +166,7 @@ class SWAGCrossApp extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             fontSize: Sizes.size14,
           ),
-          iconColor: Colors.black54,
+          iconColor: Colors.black87,
         ),
 
         // ExpansionTile
@@ -191,7 +212,6 @@ class SWAGCrossApp extends StatelessWidget {
             size: 38,
           ),
         ),
-        primaryColor: const Color(0xFFE9435A),
       ),
       debugShowCheckedModeBanner: false,
       // home: const MainNavigation(initSelectedIndex: 2),
