@@ -84,8 +84,12 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
 
       return _clubList!;
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (!mounted) throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("동아리 데이터를 불러오는데 실패하였습니다.");
     }
   }
@@ -113,8 +117,12 @@ class _ClubSearchScreenState extends State<ClubSearchScreen>
       _toggleAnimations();
       setState(() {});
     } else {
-      print("${response.statusCode} : ${response.body}");
-      throw Exception("통신 실패!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "동아리 검색 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 

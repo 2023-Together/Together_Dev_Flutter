@@ -125,9 +125,12 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
       if (!mounted) return;
       context.pop();
     } else {
-      print("회원가입 에러!");
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "회원가입 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
   }
 
@@ -147,8 +150,13 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
       });
     } else {
       _nickNameError = "중복된 닉네임이 존재합니다!";
-      print(response.statusCode);
-      print(response.body);
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "전화번호 인증 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
+      setState(() {});
     }
   }
 
@@ -168,17 +176,20 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
           _mobileError = "다른 계정에 등록된 전화번호 입니다!";
         });
       } else {
-        print(result);
         setState(() {
           _mobileAuthCode = response.body;
         });
       }
     } else {
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "전화번호 검사 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       setState(() {
         _mobileError = "통신 실패!";
       });
-      print(response.statusCode);
-      print(response.body);
     }
   }
 
@@ -198,6 +209,12 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
         _onChangeAllText();
       });
     } else {
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "중복 확인 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       setState(() {
         _mobileCheckError = "인증에 실패했습니다. 다시 시도해 주세요!";
       });

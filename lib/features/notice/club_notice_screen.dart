@@ -35,7 +35,7 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("메인 커뮤니티 : 성공");
+      print("동아리 공지사항 리스트 : 성공");
 
       // 응답 데이터를 ClubSearchModel 리스트로 파싱
       _noticeList =
@@ -43,8 +43,12 @@ class _ClubNoticeScreenState extends State<ClubNoticeScreen> {
 
       return _noticeList!;
     } else {
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      if (!mounted) throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
+      HttpIp.errorPrint(
+        context: context,
+        title: "목록 호출 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
       throw Exception("게시물 데이터를 불러오는데 실패하였습니다.");
     }
   }
