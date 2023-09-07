@@ -62,7 +62,6 @@ class UserModel {
 
   Map<String, dynamic> toQr() {
     return {
-      'userId': userId,
       'userEmail': userEmail,
       'userPhonenumber': userPhoneNumber,
       'userName': userName,
