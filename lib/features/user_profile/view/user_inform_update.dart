@@ -8,7 +8,6 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_state_dropDown_button.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 import 'package:http/http.dart' as http;
@@ -41,7 +40,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
 
   String? _mobileAuthCode;
 
-  String _gender = "";
+  int? _gender;
   DateTime? _birthday = DateTime.now();
   String _email = "";
   String? _nameError;
@@ -64,7 +63,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     _nickNameHelper = "인증이 완료되었습니다!";
     _nameController.text = userData!.userName;
     _birthday = userData!.userBirthdate;
-    _gender = userData!.userGender == 0 ? "남" : "여";
+    _gender = userData!.userGender;
     _mobileController.text = userData!.userPhoneNumber;
     _isAuthMobile = true;
     _mobileHelper = "인증이 완료되었습니다!";
@@ -84,7 +83,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
 
       _nameController.text = userData.name;
       _nameError == null;
-      _gender = userData.gender == "M" ? "남" : "여";
+      _gender = userData.gender == "M" ? 0 : 1;
       final birthday = userData.birthday.split("-");
       _birthday = DateTime(
         int.parse(userData.birthyear),
@@ -117,7 +116,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
   void _onChangeAllText() {
     _isEditFinished =
         (_nameError == null && _nameController.text.trim().isNotEmpty) &&
-            _gender.trim().isNotEmpty &&
+            _gender != null &&
             _birthday != null &&
             _email.trim().isNotEmpty &&
             _isAuthMobile;
@@ -134,7 +133,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
       "userPhonenumber": _mobileController.text,
       "userName": _nameController.text,
       "userNickname": _nickNameController.text,
-      "userGender": _gender == "남" ? 0 : 1,
+      "userGender": _gender,
       "userBirthdate":
           '${_birthday?.year}-${_birthday?.month.toString().padLeft(2, '0')}-${_birthday?.day.toString().padLeft(2, '0')}',
       "userType": "user",
@@ -150,7 +149,7 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
         userPhoneNumber: _mobileController.text,
         userName: _nameController.text,
         userNickname: _nickNameController.text,
-        userGender: _gender == "남" ? 0 : 1,
+        userGender: _gender!,
         userBirthdate: _birthday!,
         userType: userData.userType,
       );
@@ -371,13 +370,6 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
     }
   }
 
-  void _onChangeGender(String value) {
-    setState(() {
-      _gender = value;
-      _onChangeAllText();
-    });
-  }
-
   @override
   void dispose() {
     _mobileController.dispose();
@@ -552,28 +544,6 @@ class _UserInformUpdateState extends State<UserInformUpdate> {
                   ],
                 ),
                 Gaps.v20,
-                Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        "성별",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                    ),
-                    Gaps.h10,
-                    Expanded(
-                      flex: 3,
-                      child: SWAGStateDropDownButton(
-                        initOption: _gender,
-                        onChangeOption: _onChangeGender,
-                        title: "성별",
-                        options: _genderCategory,
-                      ),
-                    ),
-                  ],
-                ),
-                Gaps.v6,
                 Text(
                   "＃ 봉사를 신청했을때 해당 개인 정보로 기관에 데이터가 전달되기 때문에 꼭 본인의 정보를 정확하게 기입하셔야 합니다!",
                   style: Theme.of(context).textTheme.labelMedium,

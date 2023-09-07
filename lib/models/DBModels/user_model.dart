@@ -51,11 +51,25 @@ class UserModel {
       'userName': userName,
       'userNickname': userNickname,
       'userGender': userGender,
-      'userBirthdate': userBirthdate.toIso8601String(),
+      'userBirthdate':
+          '${userBirthdate.year}-${userBirthdate.month.toString().padLeft(2, '0')}-${userBirthdate.day.toString().padLeft(2, '0')}',
       'userProfileImage': userProfileImage,
       'userDef': userDef,
       'userType': userType,
       'userSns': userSns != null ? jsonEncode(userSns) : null,
+    };
+  }
+
+  Map<String, dynamic> toQr() {
+    return {
+      'userId': userId,
+      'userEmail': userEmail,
+      'userPhonenumber': userPhoneNumber,
+      'userName': userName,
+      'userGender': userGender == 0 ? "남" : "여",
+      'userBirthdate':
+          '${userBirthdate.year}-${userBirthdate.month.toString().padLeft(2, '0')}-${userBirthdate.day.toString().padLeft(2, '0')}',
+      'userProfileImage': userProfileImage,
     };
   }
 }

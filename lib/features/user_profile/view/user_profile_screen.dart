@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
@@ -290,7 +291,46 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           ),
                         ),
                       ),
-                      Gaps.v20,
+                      if (userData!.userId == 1)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 14, horizontal: 18),
+                          child: ExpansionTile(
+                            // backgroundColor: Colors.white,
+                            // collapsedBackgroundColor: Colors.white,
+                            childrenPadding: const EdgeInsets.only(bottom: 10),
+                            shape: const RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Colors.black26,
+                                width: 0.5,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            collapsedShape: const RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: Colors.black26,
+                                width: 0.5,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10.0),
+                              ),
+                            ),
+                            title: const Text("출석체크 QR"),
+                            children: [
+                              QrImageView(
+                                data: context
+                                    .watch<UserProvider>()
+                                    .userData!
+                                    .toQr()
+                                    .toString(),
+                                version: QrVersions.auto,
+                                size: 200,
+                              ),
+                            ],
+                          ),
+                        ),
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

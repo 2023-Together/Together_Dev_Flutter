@@ -4,9 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/user_profile/view/user_inform_update.dart';
-import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
-import 'package:swag_cross_app/models/DBModels/user_model.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class UserInformInquiry extends StatelessWidget {
   static const routeName = "user_inquiry";
@@ -19,21 +18,28 @@ class UserInformInquiry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userData = context.watch<UserProvider>().userData;
+    // print(userData!.toQr().toString());
 
-    DateTime? _birthday = DateTime.now();
+    DateTime? birthday = DateTime.now();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "회원 정보",
         ),
       ),
       body: SingleChildScrollView(
           child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Sizes.size24, vertical: Sizes.size16),
+            horizontal: Sizes.size24, vertical: Sizes.size8),
         child: Column(
           children: [
+            QrImageView(
+              data: context.watch<UserProvider>().userData!.toQr().toString(),
+              version: QrVersions.auto,
+              size: 200,
+            ),
+            Gaps.v10,
             UserDataBox(
               data: userData!.userEmail,
               name: "이메일",
@@ -57,8 +63,14 @@ class UserInformInquiry extends StatelessWidget {
             ),
             Gaps.v10,
             UserDataBox(
-              data: _birthday != null
-                  ? '${_birthday!.year}-${_birthday!.month.toString().padLeft(2, '0')}-${_birthday!.day.toString().padLeft(2, '0')}'
+              data: userData.userGender == 0 ? "남" : "여",
+              name: "성별",
+              hint: "사용자의 성별",
+            ),
+            Gaps.v10,
+            UserDataBox(
+              data: birthday != null
+                  ? '${birthday.year}-${birthday.month.toString().padLeft(2, '0')}-${birthday.day.toString().padLeft(2, '0')}'
                   : '없음',
               name: "생년월일",
               hint: "유저 생년월일",
@@ -79,7 +91,7 @@ class UserInformInquiry extends StatelessWidget {
               onPressed: () {
                 context.pushNamed(UserInformUpdate.routeName);
               },
-              child: Text("정보 수정"),
+              child: const Text("정보 수정"),
             ),
           ],
         ),
