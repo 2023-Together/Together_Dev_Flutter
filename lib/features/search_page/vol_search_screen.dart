@@ -134,7 +134,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-        print(jsonResponse);
+        // print(jsonResponse);
         print("봉사 새로고침 : 성공");
 
         setState(() {
@@ -233,7 +233,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
           if (response.statusCode >= 200 && response.statusCode < 300) {
             final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-            print(jsonResponse);
+            // print(jsonResponse);
             print("봉사 리스트 : 성공");
 
             List<VolunteerModel> newVolList = jsonResponse
@@ -266,7 +266,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
 
           if (response.statusCode >= 200 && response.statusCode < 300) {
             final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-            print(jsonResponse);
+            // print(jsonResponse);
             print("봉사 리스트 : 성공");
 
             List<VolunteerModel> newVolList = jsonResponse
@@ -423,9 +423,21 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                         ),
                       )
                     : _volList == null
-                        ? const Expanded(
+                        ? Expanded(
                             child: Center(
-                              child: Text('봉사 정보를 불러오는데 실패하였습니다.'),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton.filled(
+                                    color: Colors.grey.shade300,
+                                    iconSize:
+                                        MediaQuery.of(context).size.width / 2,
+                                    onPressed: _refreshVolList,
+                                    icon: const Icon(Icons.refresh),
+                                  ),
+                                  const Text('봉사 정보를 불러오는데 실패하였습니다.'),
+                                ],
+                              ),
                             ),
                           )
                         : Expanded(

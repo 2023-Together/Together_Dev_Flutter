@@ -331,6 +331,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ],
                           ),
                         ),
+                      Gaps.v16,
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [

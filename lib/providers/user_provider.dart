@@ -11,14 +11,16 @@ class UserProvider extends ChangeNotifier {
   bool get isLogined => _isLogined;
   UserModel? get userData => _userData;
 
-  void login(UserModel userData) {
+  Future<void> login(BuildContext context, UserModel userData) async {
     _isLogined = true;
     _userData = userData;
     notifyListeners();
+    context.pop();
   }
 
-  void testLogin() {
+  Future<void> autoLogin(UserModel userData) async {
     _isLogined = true;
+    _userData = userData;
     notifyListeners();
   }
 

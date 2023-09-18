@@ -75,10 +75,10 @@ class _AuthButtonState extends State<AuthButton> {
     final NaverLoginResult result = await FlutterNaverLogin.logIn();
 
     if (result.status == NaverLoginStatus.loggedIn) {
-      print('accessToken = ${result.accessToken}');
+      // print('accessToken = ${result.accessToken}');
 
       final userData = result.account;
-      print(userData);
+      // print(userData);
 
       final url = Uri.parse("${HttpIp.userUrl}/together/login");
       // final headers = {'Content-Type': 'application/json'};
@@ -105,10 +105,13 @@ class _AuthButtonState extends State<AuthButton> {
           );
         } else {
           if (!mounted) return;
-          context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+          context
+              .read<UserProvider>()
+              .login(context, UserModel.fromJson(jsonResponse));
           LoginStorage.saveLoginData(email: userData.email);
           context.read<MainPostProvider>().refreshMainPostDispatch(
-              userId: int.parse(jsonResponse["userId"]));
+                userId: int.parse(jsonResponse["userId"]),
+              );
           context.pop();
         }
       } else {
@@ -150,9 +153,8 @@ class _AuthButtonState extends State<AuthButton> {
       userType: "user",
     );
 
-    context.read<UserProvider>().login(updateData);
     context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
-    context.pop();
+    context.read<UserProvider>().login(context, updateData);
   }
 
   // 카카오 로그인

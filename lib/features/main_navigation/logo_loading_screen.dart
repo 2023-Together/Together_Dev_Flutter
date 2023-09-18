@@ -28,7 +28,7 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
   void initState() {
     super.initState();
 
-    // _checkAutoLogined();
+    _checkAutoLogined();
 
     if (_timer != null) {
       _timer!.cancel(); // 이전 타이머 취소
@@ -59,7 +59,9 @@ class _LogoLoadingScreenState extends State<LogoLoadingScreen> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         final jsonResponse = jsonDecode(response.body);
         if (!mounted) return;
-        context.read<UserProvider>().login(UserModel.fromJson(jsonResponse));
+        context
+            .read<UserProvider>()
+            .autoLogin(UserModel.fromJson(jsonResponse));
         context.pop();
       } else {
         if (!mounted) return;

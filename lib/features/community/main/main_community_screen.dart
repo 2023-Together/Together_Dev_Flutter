@@ -88,10 +88,16 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
 
   // 리스트 새로고침
   Future<void> _refreshPostList() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     final userData = context.read<UserProvider>().userData;
-    context
+    await context
         .read<MainPostProvider>()
         .refreshMainPostDispatch(userId: userData?.userId);
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   // 광고 로딩 실패일때 실행
@@ -266,8 +272,19 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                     child: CircularProgressIndicator.adaptive(),
                   )
                 : mainPostList!.isEmpty
-                    ? const Center(
-                        child: Text('게시물 정보를 불러오는데 실패하였습니다.'),
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton.filled(
+                              color: Colors.grey.shade300,
+                              iconSize: MediaQuery.of(context).size.width / 2,
+                              onPressed: _refreshPostList,
+                              icon: const Icon(Icons.refresh),
+                            ),
+                            const Text('게시물 정보를 불러오는데 실패하였습니다.'),
+                          ],
+                        ),
                       )
                     : RefreshIndicator.adaptive(
                         onRefresh: _refreshPostList,
