@@ -81,9 +81,11 @@ class _NoticeScreenState extends State<NoticeScreen> {
                   duration: const Duration(milliseconds: 200),
                   child: FloatingActionButton(
                     heroTag: "community_edit",
-                    onPressed: () {
+                    onPressed: () async {
                       // 동아리 게시글 작성
-                      context.pushNamed(NoticeEditScreen.routeName);
+                      await context.pushNamed(NoticeEditScreen.routeName);
+
+                      setState(() {});
                     },
                     backgroundColor: Colors.blue.shade300,
                     child: const FaIcon(
@@ -114,23 +116,38 @@ class _NoticeScreenState extends State<NoticeScreen> {
             // 데이터를 성공적으로 가져왔을 때 ListView 표시
             _noticeList = snapshot.data!;
 
-            return RefreshIndicator.adaptive(
-              onRefresh: _onRefreshNoticeList,
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 6,
-                ),
-                itemBuilder: (context, index) {
-                  final item = _noticeList![index];
-                  return NoticeCard(
-                    noticeData: item,
+            return _noticeList == null
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton.filled(
+                          color: Colors.grey.shade300,
+                          iconSize: MediaQuery.of(context).size.width / 2,
+                          onPressed: _onRefreshNoticeList,
+                          icon: const Icon(Icons.refresh),
+                        ),
+                        const Text('게시물 정보를 불러오는데 실패하였습니다.'),
+                      ],
+                    ),
+                  )
+                : RefreshIndicator.adaptive(
+                    onRefresh: _onRefreshNoticeList,
+                    child: ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 6,
+                      ),
+                      itemBuilder: (context, index) {
+                        final item = _noticeList![index];
+                        return NoticeCard(
+                          noticeData: item,
+                        );
+                      },
+                      separatorBuilder: (context, index) => Gaps.v6,
+                      itemCount: _noticeList!.length,
+                    ),
                   );
-                },
-                separatorBuilder: (context, index) => Gaps.v6,
-                itemCount: _noticeList!.length,
-              ),
-            );
           }
         },
       ),

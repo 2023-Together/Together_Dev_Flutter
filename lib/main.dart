@@ -150,8 +150,8 @@ class SWAGCrossApp extends StatelessWidget {
         // ElevatedButton
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-              // backgroundColor: Colors.purple.shade300,
-              ),
+            backgroundColor: Colors.purple.shade300,
+          ),
         ),
 
         // ListTile

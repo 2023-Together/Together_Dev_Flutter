@@ -57,8 +57,8 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
   late bool _isThereSearchValue =
       _titleController.text.isNotEmpty && _contentController.text.isNotEmpty;
 
-  final List<String> _imgList = [];
-  final List<String> _removeImgList = [];
+  final List<XFile> _imgList = [];
+  final List<XFile> _removeImgList = [];
 
   @override
   void initState() {
@@ -140,24 +140,26 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
   }
 
   // 이미지를 가져오는 함수
-  Future _getImage(ImageSource? imageSource) async {
+  Future _getImage(ImageSource imageSource) async {
     final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
     //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-    if (imageSource != null) {
+    if (imageSource == ImageSource.camera) {
       // 카메라
       final XFile? pickedFile = await picker.pickImage(source: imageSource);
       if (pickedFile != null) {
         setState(() {
-          _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
+          _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
         });
       }
     } else {
       // 갤러리
-      List<XFile> pickedFiles = await picker.pickMultiImage();
-      setState(() {
-        _imgList.addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
-      });
+      final XFile? pickedFile = await picker.pickImage(source: imageSource);
+      if (pickedFile != null) {
+        setState(() {
+          _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
+        });
+      }
     }
   }
 
@@ -173,7 +175,7 @@ class _NoticeEditScreenState extends State<NoticeEditScreen> {
   }
 
   // 선택한 이미지를 삭제리스트에 넣는 함수
-  void _addRemoveImgList(String img) {
+  void _addRemoveImgList(XFile img) {
     if (_removeImgList.contains(img)) {
       _removeImgList.remove(img);
     } else {

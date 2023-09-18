@@ -46,19 +46,27 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
   }
 
   void _onMoveClubCommunityScreen(
-      BuildContext context, ClubDataModel clubData) {
-    context.pushNamed(
+      BuildContext context, ClubDataModel clubData) async {
+    await context.pushNamed(
       ClubCommunityScreen.routeName,
       extra: ClubCommunityScreenArgs(clubData: clubData),
     );
+
+    _refreshClubList();
   }
 
   // 리스트 새로고침
   Future<void> _refreshClubList() async {
+    setState(() {
+      _isFirstLoadRunning = true;
+    });
     final userData = context.read<UserProvider>().userData;
-    context
+    await context
         .read<ClubListProvider>()
         .myClubGetDispatch(userId: userData!.userId);
+    setState(() {
+      _isFirstLoadRunning = false;
+    });
   }
 
   @override
@@ -119,9 +127,11 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
                         onTap: () => _onMoveClubCommunityScreen(context, item),
                         title: Text(
                           item.clubName,
+                          maxLines: 1,
                         ),
                         subtitle: Text(
                           item.clubDescription,
+                          maxLines: 1,
                         ),
                         trailing: const Icon(
                           Icons.keyboard_arrow_right_rounded,
@@ -129,10 +139,12 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
-                              10.0), // 원하는 모양의 border radius 설정
+                            10.0,
+                          ), // 원하는 모양의 border radius 설정
                           side: const BorderSide(
-                              color: Colors.black,
-                              width: 0.5), // border의 색상과 너비 설정
+                            color: Colors.black,
+                            width: 0.5,
+                          ), // border의 색상과 너비 설정
                         ),
                       );
                     },

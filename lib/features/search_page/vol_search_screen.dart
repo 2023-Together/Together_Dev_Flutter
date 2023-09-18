@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/search_page/widgets/vol_post_card.dart';
@@ -12,7 +11,6 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/DBModels/volunteer_model.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class VolSearchScreen extends StatefulWidget {
@@ -298,65 +296,41 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     }
   }
 
-  void _onVolBoxTap(VolunteerModel volData) {
-    if (!context.read<UserProvider>().isLogined) {
-      final loginType = context.read<UserProvider>().isLogined;
-
-      if (loginType.toString() != "naver" && loginType.toString() != "kakao") {
-        swagPlatformDialog(
-          context: context,
-          title: "로그인 알림",
-          message: "해당 봉사가 등록되어 있는 1365 혹은 vms 페이지로 이동하시겠습니까?",
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: const Text("아니오"),
-            ),
-            TextButton(
-              onPressed: () {
-                if (volData.listApiType == "1365") {
-                  final url_1365 = Uri.parse(
-                      'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
-                  launchUrl(
-                    url_1365,
-                    mode: LaunchMode.externalApplication,
-                  );
-                } else if (volData.listApiType == "vms") {
-                  final urlVms = Uri.parse(
-                      'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
-                  launchUrl(
-                    urlVms,
-                    mode: LaunchMode.externalApplication,
-                  );
-                }
-                Navigator.pop(context);
-              },
-              child: const Text("예"),
-            ),
-          ],
-        );
-      }
-    } else {
-      try {
-        if (volData.listApiType == "1365") {
-          final url_1365 = Uri.parse(
-              'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
-          launchUrl(
-            url_1365,
-            mode: LaunchMode.externalApplication,
-          );
-        } else if (volData.listApiType == "vms") {
-          final urlVms = Uri.parse(
-              'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
-          launchUrl(
-            urlVms,
-            mode: LaunchMode.externalApplication,
-          );
-        }
-        Navigator.pop(context);
-      } catch (e) {
-        print("URL 열기 에러: $e");
-      }
+  void _onVolBoxTap(VolunteerModel volData) async {
+    try {
+      swagPlatformDialog(
+        context: context,
+        title: "로그인 알림",
+        message: "해당 봉사가 등록되어 있는 웹페이지로 이동하시겠습니까?",
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("아니오"),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (volData.listApiType == "1365") {
+                final url_1365 = Uri.parse(
+                    'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
+                await launchUrl(
+                  url_1365,
+                  mode: LaunchMode.externalApplication,
+                );
+              } else if (volData.listApiType == "vms") {
+                final urlVms = Uri.parse(
+                    'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
+                await launchUrl(
+                  urlVms,
+                  mode: LaunchMode.externalApplication,
+                );
+              }
+            },
+            child: const Text("예"),
+          ),
+        ],
+      );
+    } catch (e) {
+      print("URL 열기 에러: $e");
     }
   }
 

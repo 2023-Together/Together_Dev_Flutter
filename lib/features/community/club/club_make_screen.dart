@@ -84,10 +84,11 @@ class _ClubMakeScreenState extends State<ClubMakeScreen> {
   }
 
   Future<void> _onSubmitFinishButton() async {
+    final userData = context.read<UserProvider>().userData;
     final url = Uri.parse("${HttpIp.communityUrl}/together/club/createClub");
     final headers = {'Content-Type': 'application/json'};
     final data = {
-      "clubLeaderId": "1",
+      "clubLeaderId": userData!.userId,
       "clubName": _nameController.text,
       "clubDescription": _contentController.text,
     };

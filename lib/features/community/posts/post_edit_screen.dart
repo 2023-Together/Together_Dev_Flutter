@@ -28,14 +28,14 @@ enum PostEditType {
 class PostEditScreenArgs {
   final String pageTitle;
   final PostEditType editType;
-  final int? maxImages;
+  final int maxImages;
   final PostCardModel? postData;
   final int? clubId;
 
   PostEditScreenArgs({
     required this.pageTitle,
     required this.editType,
-    this.maxImages,
+    this.maxImages = 20,
     this.postData,
     this.clubId,
   });
@@ -68,9 +68,9 @@ class _PostEditScreenState extends State<PostEditScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
 
-  final List<String> _imgList = [];
+  final List<XFile> _imgList = [];
   // final List<XFile> _imgList = [];
-  final List<String> _removeImgList = [];
+  final List<XFile> _removeImgList = [];
 
   // late String _postTag = widget.category ?? "";
   // final List<String> _categoryList = [
@@ -104,82 +104,59 @@ class _PostEditScreenState extends State<PostEditScreen> {
   }
 
   // 이미지를 가져오는 함수
-  Future _getImage(ImageSource? imageSource) async {
-    if (widget.maxImages != null) {
-      if (_imgList.length >= widget.maxImages!) {
-        swagPlatformDialog(
-          context: context,
-          title: "사진 개수 오류",
-          message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
-          actions: [
-            TextButton(
-              onPressed: () => context.pop(),
-              child: const Text("확인"),
-            ),
-          ],
-        );
-        return;
-      } else {
-        final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-
-        //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-        if (imageSource != null) {
-          // 카메라
-          final XFile? pickedFile = await picker.pickImage(source: imageSource);
-          if (pickedFile != null) {
-            setState(() {
-              _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
-            });
-          }
-        } else {
-          // 갤러리
-          List<XFile> pickedFiles = await picker.pickMultiImage();
-          if (_imgList.length + pickedFiles.length > widget.maxImages!) {
-            if (!mounted) return;
-            swagPlatformDialog(
-              context: context,
-              title: "사진 개수 오류",
-              message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
-              actions: [
-                TextButton(
-                  onPressed: () => context.pop(),
-                  child: const Text("확인"),
-                ),
-              ],
-            );
-            return;
-          }
-          setState(() {
-            _imgList
-                .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
-          });
-        }
-      }
+  Future _getImage(ImageSource imageSource) async {
+    if (_imgList.length >= widget.maxImages!) {
+      swagPlatformDialog(
+        context: context,
+        title: "사진 개수 오류",
+        message: "사진은 ${widget.maxImages}개만 업로드 할수 있습니다!",
+        actions: [
+          TextButton(
+            onPressed: () => context.pop(),
+            child: const Text("확인"),
+          ),
+        ],
+      );
+      return;
     } else {
       final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
 
       //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-      if (imageSource != null) {
+      if (imageSource == ImageSource.camera) {
         // 카메라
         final XFile? pickedFile = await picker.pickImage(source: imageSource);
-        if (pickedFile != null) {
-          setState(() {
-            _imgList.add(pickedFile.path); //가져온 이미지를 이미지 리스트에 저장
-          });
-        }
+        if (pickedFile == null) return;
+        setState(() {
+          _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
+        });
       } else {
         // 갤러리
-        List<XFile> pickedFiles = await picker.pickMultiImage();
-        setState(() {
-          _imgList
-              .addAll(pickedFiles.map((e) => e.path)); //가져온 이미지를 이미지 리스트에 저장
-        });
+        final XFile? pickedFile = await picker.pickImage(source: imageSource);
+        if (pickedFile == null) return;
+
+        if (_imgList.any((element) => element.name == pickedFile.name)) {
+          swagPlatformDialog(
+            context: context,
+            title: "중복 사진 오류",
+            message: "중복된 사진은 등록할 수 없습니다!",
+            actions: [
+              TextButton(
+                onPressed: () => context.pop(),
+                child: const Text("확인"),
+              ),
+            ],
+          );
+        } else {
+          setState(() {
+            _imgList.add(pickedFile); //가져온 이미지를 이미지 리스트에 저장
+          });
+        }
       }
     }
   }
 
   // 선택한 이미지를 삭제리스트에 넣는 함수
-  void _addRemoveImgList(String img) {
+  void _addRemoveImgList(XFile img) {
     if (_removeImgList.contains(img)) {
       _removeImgList.remove(img);
     } else {
@@ -196,7 +173,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
 
     _removeImgList.clear();
 
-    print(_imgList);
+    // print(_imgList);
     setState(() {});
   }
 
@@ -378,168 +355,170 @@ class _PostEditScreenState extends State<PostEditScreen> {
       ),
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              title: Text(widget.pageTitle),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // if (!(widget.postData!.postTag!.isNotEmpty))
-                    //   Column(
-                    //     crossAxisAlignment: CrossAxisAlignment.start,
-                    //     children: [
-                    //       Gaps.v20,
-                    //       Text(
-                    //         "카테고리",
-                    //         style: Theme.of(context).textTheme.titleSmall,
-                    //       ),
-                    //       Gaps.v10,
-                    //       SWAGStateDropDownButton(
-                    //         initOption: _category,
-                    //         onChangeOption: _onChangeOption,
-                    //         title: "카테고리를 선택해주세요.",
-                    //         options: _categoryList,
-                    //         isExpanded: true,
-                    //         width: double.infinity,
-                    //         height: 60,
-                    //         fontSize: 18,
-                    //         padding: const EdgeInsets.symmetric(horizontal: 16),
-                    //       ),
-                    //     ],
-                    //   ),
-                    Gaps.v20,
-                    Text(
-                      "제목",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "제목을 입력해주세요.",
-                      maxLine: 1,
-                      controller: _titleController,
-                      onChanged: _textOnChange,
-                    ),
-                    Gaps.v28,
-                    Text(
-                      "내용",
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    Gaps.v10,
-                    SWAGTextField(
-                      hintText: "내용을 입력해주세요.",
-                      maxLine: 6,
-                      controller: _contentController,
-                      onChanged: _textOnChange,
-                    ),
-                    Gaps.v8,
-                    Text(
-                      "# 본 커뮤니티는 봉사와 관련된 정보를 교환하기 위해 만들어진 어플리케이션입니다. 아래의 규칙을 지켜주시기 바랍니다.",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Gaps.v8,
-                    Text(
-                      "- 존중과 예의",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 정확한 정보 공유",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 긍정적인 분위기 조성",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 불건전한 콘텐츠 금지",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 개인정보 보호",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 홍보 및 광고 금지",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 불법 콘텐츠 및 저작권",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    Text(
-                      "- 커뮤니티 활동 적극 참여",
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    // Gaps.v40,
-                    // Text(
-                    //   "이미지",
-                    //   style: Theme.of(context).textTheme.titleSmall,
-                    // ),
-                    // Gaps.v10,
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //   children: [
-                    //     Row(
-                    //       children: [
-                    //         ElevatedButton(
-                    //           onPressed: () {
-                    //             _getImage(ImageSource
-                    //                 .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
-                    //           },
-                    //           child: const Text("카메라"),
-                    //         ),
-                    //         Gaps.h20,
-                    //         ElevatedButton(
-                    //           onPressed: () {
-                    //             _getImage(ImageSource
-                    //                 .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
-                    //           },
-                    //           child: const Text("갤러리"),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //     ElevatedButton.icon(
-                    //       onPressed: _removeImg,
-                    //       label: const Text("삭제"),
-                    //       icon: const Icon(Icons.delete),
-                    //     ),
-                    //   ],
-                    // ),
-                    // Gaps.v10,
-                  ],
-                ),
+        child: Scrollbar(
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                title: Text(widget.pageTitle),
               ),
-            ),
-            if (_imgList.isNotEmpty)
-              SliverGrid(
-                delegate: SliverChildBuilderDelegate(
-                  // (context, index) => Image.file(
-                  //   File(_imgList[index].path),
-                  //   fit: BoxFit.cover,
-                  // ),
-                  (context, index) => SWAGImgFile(
-                    key: UniqueKey(),
-                    img: _imgList[index],
-                    addRemoveImgList: _addRemoveImgList,
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // if (!(widget.postData!.postTag!.isNotEmpty))
+                      //   Column(
+                      //     crossAxisAlignment: CrossAxisAlignment.start,
+                      //     children: [
+                      //       Gaps.v20,
+                      //       Text(
+                      //         "카테고리",
+                      //         style: Theme.of(context).textTheme.titleSmall,
+                      //       ),
+                      //       Gaps.v10,
+                      //       SWAGStateDropDownButton(
+                      //         initOption: _category,
+                      //         onChangeOption: _onChangeOption,
+                      //         title: "카테고리를 선택해주세요.",
+                      //         options: _categoryList,
+                      //         isExpanded: true,
+                      //         width: double.infinity,
+                      //         height: 60,
+                      //         fontSize: 18,
+                      //         padding: const EdgeInsets.symmetric(horizontal: 16),
+                      //       ),
+                      //     ],
+                      //   ),
+                      Gaps.v20,
+                      Text(
+                        "제목",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Gaps.v10,
+                      SWAGTextField(
+                        hintText: "제목을 입력해주세요.",
+                        maxLine: 1,
+                        controller: _titleController,
+                        onChanged: _textOnChange,
+                      ),
+                      Gaps.v28,
+                      Text(
+                        "내용",
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Gaps.v10,
+                      SWAGTextField(
+                        hintText: "내용을 입력해주세요.",
+                        maxLine: 6,
+                        controller: _contentController,
+                        onChanged: _textOnChange,
+                      ),
+                      Gaps.v8,
+                      Text(
+                        "# 본 커뮤니티는 봉사와 관련된 정보를 교환하기 위해 만들어진 어플리케이션입니다. 아래의 규칙을 지켜주시기 바랍니다.",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Gaps.v8,
+                      Text(
+                        "- 존중과 예의",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 정확한 정보 공유",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 긍정적인 분위기 조성",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 불건전한 콘텐츠 금지",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 개인정보 보호",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 홍보 및 광고 금지",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 불법 콘텐츠 및 저작권",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      Text(
+                        "- 커뮤니티 활동 적극 참여",
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                      // Gaps.v28,
+                      // Text(
+                      //   "이미지",
+                      //   style: Theme.of(context).textTheme.titleSmall,
+                      // ),
+                      // Gaps.v10,
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Row(
+                      //       children: [
+                      //         ElevatedButton(
+                      //           onPressed: () {
+                      //             _getImage(ImageSource
+                      //                 .camera); //getImage 함수를 호출해서 카메라로 찍은 사진 가져오기
+                      //           },
+                      //           child: const Text("카메라"),
+                      //         ),
+                      //         Gaps.h20,
+                      //         ElevatedButton(
+                      //           onPressed: () {
+                      //             _getImage(ImageSource
+                      //                 .gallery); //getImage 함수를 호출해서 갤러리에서 사진 가져오기
+                      //           },
+                      //           child: const Text("갤러리"),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     ElevatedButton.icon(
+                      //       onPressed: _removeImg,
+                      //       label: const Text("삭제"),
+                      //       icon: const Icon(Icons.delete),
+                      //     ),
+                      //   ],
+                      // ),
+                      // Gaps.v10,
+                    ],
                   ),
-                  childCount: _imgList.length,
-                ),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  // 한 줄당 몇개를 넣을건지 지정
-                  crossAxisCount: 3,
-                  // 좌우 간격
-                  crossAxisSpacing: Sizes.size4,
-                  // 위아래 간격
-                  mainAxisSpacing: Sizes.size4,
-                  // 가로 / 세로 비율
-                  childAspectRatio: 1 / 1,
                 ),
               ),
-          ],
+              if (_imgList.isNotEmpty)
+                SliverGrid(
+                  delegate: SliverChildBuilderDelegate(
+                    // (context, index) => Image.file(
+                    //   File(_imgList[index].path),
+                    //   fit: BoxFit.cover,
+                    // ),
+                    (context, index) => SWAGImgFile(
+                      key: UniqueKey(),
+                      img: _imgList[index],
+                      addRemoveImgList: _addRemoveImgList,
+                    ),
+                    childCount: _imgList.length,
+                  ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    // 한 줄당 몇개를 넣을건지 지정
+                    crossAxisCount: 3,
+                    // 좌우 간격
+                    crossAxisSpacing: Sizes.size4,
+                    // 위아래 간격
+                    mainAxisSpacing: Sizes.size4,
+                    // 가로 / 세로 비율
+                    childAspectRatio: 1 / 1,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

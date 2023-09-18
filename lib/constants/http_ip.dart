@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 
 class HttpIp {
-  static const communityUrl = "http://61.39.251.228:80";
+  static const communityUrl = "http://61.39.251.231:80";
   static const userUrl = "http://61.39.251.208:80";
 
   static void errorPrint({

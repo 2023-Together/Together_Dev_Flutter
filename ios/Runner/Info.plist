@@ -47,6 +47,8 @@
       <true/>
       <key>UIApplicationSupportsIndirectInputEvents</key>
       <true/>
+      <key>UIApplicationExitsOnSuspend</key>
+      <true/>
 
       <!-- 추가 -->
       <key>CFBundleURLTypes</key>

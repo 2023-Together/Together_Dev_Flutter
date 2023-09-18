@@ -10,7 +10,6 @@ import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:swag_cross_app/models/DBModels/club_data_model.dart';
-import 'package:swag_cross_app/providers/club_list_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 
@@ -125,24 +124,24 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
             final response =
                 await http.post(url, headers: headers, body: jsonEncode(data));
 
-            if (!mounted) return;
             if (response.statusCode >= 200 && response.statusCode < 300) {
               print("동아리 삭제 : 성공");
 
-              context
-                  .read<ClubListProvider>()
-                  .myClubGetDispatch(userId: userData.userId);
+              // context
+              //     .read<ClubListProvider>()
+              //     .myClubGetDispatch(userId: userData.userId);
+              if (!mounted) return;
               context.pop();
               context.pop();
               context.pop();
             } else {
               if (!mounted) return;
+              context.pop();
               HttpIp.errorPrint(
                 context: context,
                 title: "동아리 삭제 실패!",
                 message: "${response.statusCode.toString()} : ${response.body}",
               );
-              context.pop();
             }
           },
           child: const Text("예"),
@@ -178,22 +177,20 @@ class _ClubSettingScreenState extends State<ClubSettingScreen> {
             if (!mounted) return;
             if (response.statusCode >= 200 && response.statusCode < 300) {
               print("동아리 탈퇴 : 성공");
-              context
-                  .read<ClubListProvider>()
-                  .myClubGetDispatch(userId: userData.userId);
+              // context
+              //     .read<ClubListProvider>()
+              //     .myClubGetDispatch(userId: userData.userId);
               context.pop();
               context.pop();
               context.pop();
             } else {
               if (!mounted) return;
+              context.pop();
               HttpIp.errorPrint(
                 context: context,
                 title: "동아리 탈퇴 실패!",
                 message: "${response.statusCode.toString()} : ${response.body}",
               );
-              context.pop();
-              context.pop();
-              context.pop();
             }
           },
           child: const Text("예"),
