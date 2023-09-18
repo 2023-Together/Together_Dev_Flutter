@@ -19,7 +19,6 @@ class UserInformInquiry extends StatelessWidget {
   Widget build(BuildContext context) {
     final userData = context.watch<UserProvider>().userData;
     // print(userData!.toQr().toString());
-
     DateTime? birthday = DateTime.now();
 
     return Scaffold(

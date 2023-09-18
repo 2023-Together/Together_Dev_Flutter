@@ -80,30 +80,38 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       _isFirstLoadRunning = true;
     });
 
-    final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
-    final data = {"pageNum": "$pageNum"};
+    try {
+      final url = Uri.parse("${HttpIp.userUrl}/together/readVMS1365Api");
+      final data = {"pageNum": "$pageNum"};
 
-    final response = await http.post(url, body: data);
+      final response = await http.post(url, body: data);
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("봉사 리스트 : 성공");
-      // print(jsonResponse);
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+        print("봉사 리스트 : 성공");
+        // print(jsonResponse);
+        setState(() {
+          _volList = jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList();
+
+          _filteredList = _volList!.where((item) => item.status == 2).toList();
+
+          pageNum++;
+        });
+      } else {
+        if (!mounted) return;
+        HttpIp.errorPrint(
+          context: context,
+          title: "목록 호출 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
+        );
+      }
+    } catch (e) {
+      print(e.toString());
       setState(() {
-        _volList =
-            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
-
-        _filteredList = _volList!.where((item) => item.status == 2).toList();
-
-        pageNum++;
+        _isFirstLoadRunning = false;
       });
-    } else {
-      if (!mounted) return;
-      HttpIp.errorPrint(
-        context: context,
-        title: "목록 호출 실패!",
-        message: "${response.statusCode.toString()} : ${response.body}",
-      );
     }
 
     setState(() {
@@ -150,6 +158,9 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
       }
     } catch (e) {
       print(e.toString());
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
     } finally {
       setState(() {
         _isFirstLoadRunning = false;
@@ -161,35 +172,44 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
-    final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
-    pageNum = 0;
 
-    final response = await http.post(url, body: data);
+    try {
+      final url = Uri.parse("${HttpIp.userUrl}/together/read1365selectApi");
+      final data = {"pageNum": "$pageNum", "keyword": _searchController.text};
+      pageNum = 0;
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      final jsonResponse = jsonDecode(response.body) as List<dynamic>;
-      print("봉사 검색 : 성공");
+      final response = await http.post(url, body: data);
 
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final jsonResponse = jsonDecode(response.body) as List<dynamic>;
+        print("봉사 검색 : 성공");
+
+        setState(() {
+          _volList = jsonResponse
+              .map((data) => VolunteerModel.fromJson(data))
+              .toList();
+
+          _filteredList = _volList!.where((item) => item.status == 2).toList();
+
+          pageNum++;
+          _isFocused = false;
+          _isSearched = true;
+          _searchText = _searchController.text;
+          _focusNode.unfocus();
+        });
+      } else {
+        if (!mounted) return;
+        HttpIp.errorPrint(
+          context: context,
+          title: "검색 실패!",
+          message: "${response.statusCode.toString()} : ${response.body}",
+        );
+      }
+    } catch (e) {
+      print(e.toString());
       setState(() {
-        _volList =
-            jsonResponse.map((data) => VolunteerModel.fromJson(data)).toList();
-
-        _filteredList = _volList!.where((item) => item.status == 2).toList();
-
-        pageNum++;
-        _isFocused = false;
-        _isSearched = true;
-        _searchText = _searchController.text;
-        _focusNode.unfocus();
+        _isFirstLoadRunning = false;
       });
-    } else {
-      if (!mounted) return;
-      HttpIp.errorPrint(
-        context: context,
-        title: "검색 실패!",
-        message: "${response.statusCode.toString()} : ${response.body}",
-      );
     }
     setState(() {
       _isFirstLoadRunning = false;

@@ -119,13 +119,21 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final userData = context.read<UserProvider>().userData;
-    context
-        .read<MainPostProvider>()
-        .mainPostGetDispatch(userId: userData?.userId);
-    setState(() {
-      _isFirstLoadRunning = false;
-    });
+    try {
+      final userData = context.read<UserProvider>().userData;
+      await context
+          .read<MainPostProvider>()
+          .mainPostGetDispatch(userId: userData?.userId);
+    } catch (e) {
+      print(e.toString());
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
+    } finally {
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
+    }
   }
 
   // 게시물 검색
@@ -134,7 +142,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
       _isFirstLoadRunning = true;
     });
     final userData = context.read<UserProvider>().userData;
-    context.read<MainPostProvider>().mainPostSearchDispatch(
+    await context.read<MainPostProvider>().mainPostSearchDispatch(
           userId: userData?.userId,
           keyword: _searchController.text,
         );
@@ -259,7 +267,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                   )
                 : mainPostList!.isEmpty
                     ? const Center(
-                        child: Text('게시물이 존재하지 않거나 통신에 실패했습니다!'),
+                        child: Text('게시물 정보를 불러오는데 실패하였습니다.'),
                       )
                     : RefreshIndicator.adaptive(
                         onRefresh: _refreshPostList,

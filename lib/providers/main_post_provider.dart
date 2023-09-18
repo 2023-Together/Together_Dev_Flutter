@@ -46,6 +46,7 @@ class MainPostProvider extends ChangeNotifier {
       print('Response body: ${response.body}');
       return;
     }
+
     notifyListeners();
   }
 
