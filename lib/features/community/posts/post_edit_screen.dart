@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +14,9 @@ import 'package:swag_cross_app/features/widget_tools/swag_imgFile.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_platform_dialog.dart';
 import 'package:swag_cross_app/features/widget_tools/swag_textfield.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
-import 'package:swag_cross_app/providers/club_post_provider.dart';
-import 'package:swag_cross_app/providers/main_post_provider.dart';
 import 'package:swag_cross_app/providers/user_provider.dart';
+
+import 'package:http/http.dart' as http;
 
 enum PostEditType {
   mainInsert,
@@ -184,146 +184,174 @@ class _PostEditScreenState extends State<PostEditScreen> {
   // }
 
   Future<void> _onSubmitFinishButton() async {
-    // Iterable<String> base64Images = _imgList.isNotEmpty
-    //     ? _imgList.map(
-    //         (e) => base64Encode(File(e).readAsBytesSync()),
-    //       )
-    //     : [];
+    List<Future<String>> base64ImageFutures = _imgList.isNotEmpty
+        ? _imgList.map((e) async {
+            final bytes = await e.readAsBytes();
+            return base64Encode(bytes);
+          }).toList()
+        : [];
+
+    Iterable<String> base64Images = await Future.wait(base64ImageFutures);
     final userData = context.read<UserProvider>().userData;
+    if (userData == null) return;
 
-    if (widget.editType == PostEditType.mainInsert) {
-      // 메인 게시물 등록
-      final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
-      final headers = {'Content-Type': 'application/json'};
-      final data = {
-        "postBoardId": "11",
-        "postUserId": "1",
-        "postTitle": _titleController.text,
-        "postContent": _contentController.text,
-      };
+    final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
+    final headers = {'Content-Type': 'application/json'};
+    final data = {
+      "postBoardId": "11",
+      "postUserId": userData.userId,
+      "postTitle": _titleController.text,
+      "postContent": _contentController.text,
+    };
 
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(data));
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(data));
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print('생성 성공!');
-        if (!mounted) return;
-        context.read<MainPostProvider>().mainPostGetDispatch(
-              userId: userData!.userId,
-            );
-        context.pop();
-      } else {
-        if (!mounted) return;
-        HttpIp.errorPrint(
-          context: context,
-          title: "게시물 생성 실패!",
-          message: "${response.statusCode.toString()} : ${response.body}",
-        );
-      }
-    } else if (widget.editType == PostEditType.clubInsert) {
-      // 동아리 게시물 등록
-      final url =
-          Uri.parse("${HttpIp.communityUrl}/together/post/createPostByClubId");
-      final headers = {'Content-Type': 'application/json'};
-      final data = {
-        "clubId": widget.clubId,
-        "postUserId": userData!.userId,
-        "postTitle": _titleController.text,
-        "postContent": _contentController.text,
-      };
-
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(data));
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print('생성 성공!');
-        if (!mounted) return;
-        context.read<ClubPostProvider>().clubPostGetDispatch(
-              userId: userData.userId,
-              clubId: widget.clubId,
-            );
-        context.pop();
-      } else {
-        if (!mounted) return;
-        HttpIp.errorPrint(
-          context: context,
-          title: "게시물 생성 실패!",
-          message: "${response.statusCode.toString()} : ${response.body}",
-        );
-      }
-    } else if (widget.editType == PostEditType.mainUpdate) {
-      // 메인 게시물 수정
-      print("메인 게시물 수정");
-      final url =
-          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
-      final headers = {'Content-Type': 'application/json'};
-      final data = {
-        "postId": widget.postData!.postId,
-        "postUserId": userData!.userId,
-        "postTitle": _titleController.text,
-        "postContent": _contentController.text,
-      };
-
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(data));
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print("메인 게시물 수정 : 성공");
-        if (!mounted) return;
-        context
-            .read<MainPostProvider>()
-            .refreshMainPostDispatch(userId: userData.userId);
-
-        context.pop();
-        context.pop();
-        setState(() {});
-      } else {
-        if (!mounted) return;
-        HttpIp.errorPrint(
-          context: context,
-          title: "게시물 수정 실패!",
-          message: "${response.statusCode.toString()} : ${response.body}",
-        );
-      }
-    } else if (widget.editType == PostEditType.clubUpdate) {
-      // 동아리 게시물 수정
-      print("동아리 게시물 수정");
-      final url =
-          Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
-      final headers = {'Content-Type': 'application/json'};
-      final data = {
-        "postId": widget.postData!.postId,
-        "postUserId": userData!.userId,
-        "postTitle": _titleController.text,
-        "postContent": _contentController.text,
-      };
-
-      final response =
-          await http.post(url, headers: headers, body: jsonEncode(data));
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print("동아리 게시물 수정 : 성공");
-
-        if (!mounted) return;
-        context.read<ClubPostProvider>().refreshClubPostDispatch(
-              userId: userData.userId,
-              clubId: widget.clubId,
-            );
-
-        context.pop();
-        context.pop();
-      } else {
-        if (!mounted) return;
-        HttpIp.errorPrint(
-          context: context,
-          title: "게시물 수정 실패!",
-          message: "${response.statusCode.toString()} : ${response.body}",
-        );
-      }
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      final jsonResponse = jsonDecode(response.body);
+      print(jsonResponse);
     } else {
-      // 오류
-      print("오류!");
+      if (!mounted) return;
+      HttpIp.errorPrint(
+        context: context,
+        title: "이미지 보내기 실패!",
+        message: "${response.statusCode.toString()} : ${response.body}",
+      );
     }
+
+    // if (widget.editType == PostEditType.mainInsert) {
+    //   // 메인 게시물 등록
+    //   final url = Uri.parse("${HttpIp.communityUrl}/together/post/createPost");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {
+    //     "postBoardId": "11",
+    //     "postUserId": userData.userId,
+    //     "postTitle": _titleController.text,
+    //     "postContent": _contentController.text,
+    //   };
+
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
+
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     print('생성 성공!');
+    //     if (!mounted) return;
+    //     context.read<MainPostProvider>().mainPostGetDispatch(
+    //           userId: userData.userId,
+    //         );
+    //     context.pop();
+    //   } else {
+    //     if (!mounted) return;
+    //     HttpIp.errorPrint(
+    //       context: context,
+    //       title: "게시물 생성 실패!",
+    //       message: "${response.statusCode.toString()} : ${response.body}",
+    //     );
+    //   }
+    // } else if (widget.editType == PostEditType.clubInsert) {
+    //   // 동아리 게시물 등록
+    //   final url =
+    //       Uri.parse("${HttpIp.communityUrl}/together/post/createPostByClubId");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {
+    //     "clubId": widget.clubId,
+    //     "postUserId": userData.userId,
+    //     "postTitle": _titleController.text,
+    //     "postContent": _contentController.text,
+    //   };
+
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
+
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     print('생성 성공!');
+    //     if (!mounted) return;
+    //     context.read<ClubPostProvider>().clubPostGetDispatch(
+    //           userId: userData.userId,
+    //           clubId: widget.clubId,
+    //         );
+    //     context.pop();
+    //   } else {
+    //     if (!mounted) return;
+    //     HttpIp.errorPrint(
+    //       context: context,
+    //       title: "게시물 생성 실패!",
+    //       message: "${response.statusCode.toString()} : ${response.body}",
+    //     );
+    //   }
+    // } else if (widget.editType == PostEditType.mainUpdate) {
+    //   // 메인 게시물 수정
+    //   print("메인 게시물 수정");
+    //   final url =
+    //       Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {
+    //     "postId": widget.postData!.postId,
+    //     "postUserId": userData.userId,
+    //     "postTitle": _titleController.text,
+    //     "postContent": _contentController.text,
+    //   };
+
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
+
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     print("메인 게시물 수정 : 성공");
+    //     if (!mounted) return;
+    //     context
+    //         .read<MainPostProvider>()
+    //         .refreshMainPostDispatch(userId: userData.userId);
+
+    //     context.pop();
+    //     context.pop();
+    //     setState(() {});
+    //   } else {
+    //     if (!mounted) return;
+    //     HttpIp.errorPrint(
+    //       context: context,
+    //       title: "게시물 수정 실패!",
+    //       message: "${response.statusCode.toString()} : ${response.body}",
+    //     );
+    //   }
+    // } else if (widget.editType == PostEditType.clubUpdate) {
+    //   // 동아리 게시물 수정
+    //   print("동아리 게시물 수정");
+    //   final url =
+    //       Uri.parse("${HttpIp.communityUrl}/together/post/updatePostByPostId");
+    //   final headers = {'Content-Type': 'application/json'};
+    //   final data = {
+    //     "postId": widget.postData!.postId,
+    //     "postUserId": userData.userId,
+    //     "postTitle": _titleController.text,
+    //     "postContent": _contentController.text,
+    //   };
+
+    //   final response =
+    //       await http.post(url, headers: headers, body: jsonEncode(data));
+
+    //   if (response.statusCode == 200 || response.statusCode == 201) {
+    //     print("동아리 게시물 수정 : 성공");
+
+    //     if (!mounted) return;
+    //     context.read<ClubPostProvider>().refreshClubPostDispatch(
+    //           userId: userData.userId,
+    //           clubId: widget.clubId,
+    //         );
+
+    //     context.pop();
+    //     context.pop();
+    //   } else {
+    //     if (!mounted) return;
+    //     HttpIp.errorPrint(
+    //       context: context,
+    //       title: "게시물 수정 실패!",
+    //       message: "${response.statusCode.toString()} : ${response.body}",
+    //     );
+    //   }
+    // } else {
+    //   // 오류
+    //   print("오류!");
+    // }
   }
 
   @override
