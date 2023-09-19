@@ -140,21 +140,39 @@ class _AuthButtonState extends State<AuthButton> {
 
   // 네이버 회원가입
   void _signUpForNaver(BuildContext context) async {
-    if (!mounted) return;
-    final UserModel updateData = UserModel(
-      userId: 1,
-      userEmail: "dlwogus1027@naver.com",
-      userPhoneNumber: "01049049193",
-      userName: "이재현",
-      userNickname: "푸른함대앤디",
-      userGender: 0,
-      userBirthdate: DateTime.parse("1999-10-27"),
-      userDef: "안녕하세요!",
-      userType: "user",
-    );
+    if (widget.text == "테스트 로그인1") {
+      if (!mounted) return;
+      final UserModel updateData = UserModel(
+        userId: 1,
+        userEmail: "dlwogus1027@naver.com",
+        userPhoneNumber: "01049049193",
+        userName: "이재현",
+        userNickname: "푸른함대앤디",
+        userGender: 0,
+        userBirthdate: DateTime.parse("1999-10-27"),
+        userDef: "안녕하세요!",
+        userType: "user",
+      );
 
-    context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
-    context.read<UserProvider>().login(context, updateData);
+      context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
+      context.read<UserProvider>().login(context, updateData);
+    } else {
+      if (!mounted) return;
+      final UserModel updateData = UserModel(
+        userId: 2,
+        userEmail: "dlwogus1027@naver.com",
+        userPhoneNumber: "01049049193",
+        userName: "이재현",
+        userNickname: "푸른함대앤디",
+        userGender: 0,
+        userBirthdate: DateTime.parse("1999-10-27"),
+        userDef: "안녕하세요!",
+        userType: "user",
+      );
+
+      context.read<MainPostProvider>().refreshMainPostDispatch(userId: 1);
+      context.read<UserProvider>().login(context, updateData);
+    }
   }
 
   // 카카오 로그인

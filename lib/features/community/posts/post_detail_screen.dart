@@ -87,15 +87,16 @@ class _PostDetailScreenState extends State<PostDetailScreen> {
       print("게시물 삭제 : 성공");
       if (!mounted) return;
       if (!widget.isClub) {
-        context
+        await context
             .read<MainPostProvider>()
             .refreshMainPostDispatch(userId: userData.userId);
+        context.pop();
+        context.pop();
       } else {
-        context.read<ClubPostProvider>().refreshClubPostDispatch(
+        await context.read<ClubPostProvider>().refreshClubPostDispatch(
             clubId: widget.clubId!, userId: userData.userId);
+        context.pop();
       }
-      context.pop();
-      context.pop();
     } else {
       if (!mounted) return;
       HttpIp.errorPrint(

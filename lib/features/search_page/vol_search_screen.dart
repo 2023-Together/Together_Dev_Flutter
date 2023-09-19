@@ -312,6 +312,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               if (volData.listApiType == "1365") {
                 final url_1365 = Uri.parse(
                     'https://www.1365.go.kr/vols/1572247904127/partcptn/timeCptn.do?type=show&progrmRegistNo=${volData.seq}');
+                context.pop();
                 await launchUrl(
                   url_1365,
                   mode: LaunchMode.externalApplication,
@@ -319,6 +320,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
               } else if (volData.listApiType == "vms") {
                 final urlVms = Uri.parse(
                     'https://www.vms.or.kr/partspace/recruitView.do?seq=${volData.seq}');
+                context.pop();
                 await launchUrl(
                   urlVms,
                   mode: LaunchMode.externalApplication,

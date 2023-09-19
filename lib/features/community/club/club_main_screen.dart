@@ -32,13 +32,21 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
     setState(() {
       _isFirstLoadRunning = true;
     });
-    final userData = context.read<UserProvider>().userData;
-    await context
-        .read<ClubListProvider>()
-        .myClubGetDispatch(userId: userData!.userId);
-    setState(() {
-      _isFirstLoadRunning = false;
-    });
+    try {
+      final userData = context.read<UserProvider>().userData;
+      await context
+          .read<ClubListProvider>()
+          .myClubGetDispatch(userId: userData!.userId);
+    } catch (e) {
+      print(e);
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
+    } finally {
+      setState(() {
+        _isFirstLoadRunning = false;
+      });
+    }
   }
 
   void _onMoveClubSearchScreen(BuildContext context) {

@@ -192,7 +192,16 @@ class _SignInScreenState extends State<SignInScreen> {
                 flex: 1,
                 child: AuthButton(
                   path: "naver",
-                  text: "테스트 로그인",
+                  text: "테스트 로그인1",
+                  signType: SNSType.naver,
+                  authType: SignType.signUp,
+                ),
+              ),
+              const Expanded(
+                flex: 1,
+                child: AuthButton(
+                  path: "naver",
+                  text: "테스트 로그인2",
                   signType: SNSType.naver,
                   authType: SignType.signUp,
                 ),

@@ -217,7 +217,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('생성 성공!');
         if (!mounted) return;
-        context.read<MainPostProvider>().mainPostGetDispatch(
+        await context.read<MainPostProvider>().mainPostGetDispatch(
               userId: userData.userId,
             );
         context.pop();
@@ -247,7 +247,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
       if (response.statusCode == 200 || response.statusCode == 201) {
         print('생성 성공!');
         if (!mounted) return;
-        context.read<ClubPostProvider>().clubPostGetDispatch(
+        await context.read<ClubPostProvider>().clubPostGetDispatch(
               userId: userData.userId,
               clubId: widget.clubId,
             );
@@ -314,7 +314,7 @@ class _PostEditScreenState extends State<PostEditScreen> {
         print("동아리 게시물 수정 : 성공");
 
         if (!mounted) return;
-        context.read<ClubPostProvider>().refreshClubPostDispatch(
+        await context.read<ClubPostProvider>().refreshClubPostDispatch(
               userId: userData.userId,
               clubId: widget.clubId,
             );
