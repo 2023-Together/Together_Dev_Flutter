@@ -33,7 +33,7 @@ class _ClubMainScreenState extends State<ClubMainScreen> {
       _isFirstLoadRunning = true;
     });
     final userData = context.read<UserProvider>().userData;
-    context
+    await context
         .read<ClubListProvider>()
         .myClubGetDispatch(userId: userData!.userId);
     setState(() {

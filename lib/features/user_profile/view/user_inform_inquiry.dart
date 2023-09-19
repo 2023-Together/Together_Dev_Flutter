@@ -33,11 +33,12 @@ class UserInformInquiry extends StatelessWidget {
             horizontal: Sizes.size24, vertical: Sizes.size8),
         child: Column(
           children: [
-            QrImageView(
-              data: context.watch<UserProvider>().userData!.toQr().toString(),
-              version: QrVersions.auto,
-              size: 200,
-            ),
+            if (false)
+              QrImageView(
+                data: context.watch<UserProvider>().userData!.toQr().toString(),
+                version: QrVersions.auto,
+                size: 200,
+              ),
             Gaps.v10,
             UserDataBox(
               data: userData!.userEmail,

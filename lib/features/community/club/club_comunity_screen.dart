@@ -74,7 +74,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
 
   bool _isFocused = false;
   bool _isSearched = false;
-  bool _isFirstLoadRunning = false;
+  bool _isFirstLoadRunning = true;
   final bool _isLoadMoreRunning = false;
 
   String? _searchText;
@@ -140,7 +140,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       _isFirstLoadRunning = true;
     });
     final userData = context.read<UserProvider>().userData;
-    context.read<ClubPostProvider>().clubPostGetDispatch(
+    await context.read<ClubPostProvider>().clubPostGetDispatch(
         userId: userData!.userId, clubId: widget.clubData.clubId);
     setState(() {
       _isFirstLoadRunning = false;
@@ -153,7 +153,7 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
       _isFirstLoadRunning = true;
     });
     final userData = context.read<UserProvider>().userData;
-    context.read<ClubPostProvider>().clubPostSearchDispatch(
+    await context.read<ClubPostProvider>().clubPostSearchDispatch(
           userId: userData!.userId,
           clubId: widget.clubData.clubId,
           keyword: _searchController.text,
@@ -251,83 +251,94 @@ class _ClubCommunityScreenState extends State<ClubCommunityScreen>
           ),
         ],
       ),
-      body: Stack(
-        children: [
-          _isFirstLoadRunning
-              ? const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                )
-              : clubPostList!.isEmpty
-                  ? const Center(
-                      child: Text('게시물이 존재하지 않거나 통신에 실패했습니다!'),
-                    )
-                  : RefreshIndicator.adaptive(
-                      onRefresh: _refreshPostList,
-                      child: ListView.builder(
-                        itemCount: clubPostList.length,
-                        itemBuilder: (context, index) {
-                          final item = clubPostList[index];
-                          if (!item.isAd) {
-                            return PostCard(
-                              postData: item,
-                              index: index,
-                              isClub: true,
-                              clubId: widget.clubData.clubId,
-                            );
-                          } else {
-                            return StatefulBuilder(
-                              builder: (context, setState) => Container(
-                                height: 50,
-                                alignment: Alignment.center,
-                                child: AdWidget(
-                                  ad: BannerAd(
-                                    listener: BannerAdListener(
-                                      onAdFailedToLoad: failedAdsLoading,
-                                      onAdLoaded: (_) {},
-                                      onAdClosed: (ad) => ad.dispose(),
-                                    ),
-                                    size: AdSize.fullBanner,
-                                    adUnitId: AdHelper.bannerAdUnitIdTest,
-                                    request: const AdRequest(),
-                                  )..load(),
+      body: _isFirstLoadRunning
+          ? const Center(
+              child: CircularProgressIndicator.adaptive(),
+            )
+          : Stack(
+              children: [
+                clubPostList!.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            IconButton.filled(
+                              color: Colors.grey.shade300,
+                              iconSize: MediaQuery.of(context).size.width / 2,
+                              onPressed: _refreshPostList,
+                              icon: const Icon(Icons.refresh),
+                            ),
+                            const Text('게시물 정보를 불러오는데 실패하였습니다.'),
+                          ],
+                        ),
+                      )
+                    : RefreshIndicator.adaptive(
+                        onRefresh: _refreshPostList,
+                        child: ListView.builder(
+                          itemCount: clubPostList.length,
+                          itemBuilder: (context, index) {
+                            final item = clubPostList[index];
+                            if (!item.isAd) {
+                              return PostCard(
+                                postData: item,
+                                index: index,
+                                isClub: true,
+                                clubId: widget.clubData.clubId,
+                              );
+                            } else {
+                              return StatefulBuilder(
+                                builder: (context, setState) => Container(
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: AdWidget(
+                                    ad: BannerAd(
+                                      listener: BannerAdListener(
+                                        onAdFailedToLoad: failedAdsLoading,
+                                        onAdLoaded: (_) {},
+                                        onAdClosed: (ad) => ad.dispose(),
+                                      ),
+                                      size: AdSize.fullBanner,
+                                      adUnitId: AdHelper.bannerAdUnitIdTest,
+                                      request: const AdRequest(),
+                                    )..load(),
+                                  ),
                                 ),
-                              ),
-                            );
-                          }
-                        },
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                if (_isFocused)
+                  // 슬라이드 화면 뒤쪽의 검은 화면 구현
+                  ModalBarrier(
+                    // color: _barrierAnimation,
+                    color: Colors.transparent,
+                    // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
+                    dismissible: true,
+                    // 자신을 클릭하면 실행되는 함수
+                    onDismiss: () => _focusNode.unfocus(),
+                  ),
+                // 검색 화면
+                FadeTransition(
+                  opacity: _panelOpacityAnimation,
+                  child: SlideTransition(
+                    position: _panelSlideAnimation,
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.all(6),
+                      child: SWAGTextField(
+                        hintText: "검색어를 입력하세요.",
+                        maxLine: 1,
+                        controller: _searchController,
+                        onSubmitted: _searchPostList,
+                        buttonText: "검색",
+                        focusNode: _focusNode,
                       ),
                     ),
-          if (_isFocused)
-            // 슬라이드 화면 뒤쪽의 검은 화면 구현
-            ModalBarrier(
-              // color: _barrierAnimation,
-              color: Colors.transparent,
-              // 자신을 클릭하면 onDismiss를 실행하는지에 대한 여부
-              dismissible: true,
-              // 자신을 클릭하면 실행되는 함수
-              onDismiss: () => _focusNode.unfocus(),
-            ),
-          // 검색 화면
-          FadeTransition(
-            opacity: _panelOpacityAnimation,
-            child: SlideTransition(
-              position: _panelSlideAnimation,
-              child: Container(
-                color: Colors.white,
-                padding: const EdgeInsets.all(6),
-                child: SWAGTextField(
-                  hintText: "검색어를 입력하세요.",
-                  maxLine: 1,
-                  controller: _searchController,
-                  onSubmitted: _searchPostList,
-                  buttonText: "검색",
-                  focusNode: _focusNode,
+                  ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

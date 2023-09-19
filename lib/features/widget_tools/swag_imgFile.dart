@@ -38,7 +38,7 @@ class _SWAGImgFileState extends State<SWAGImgFile> {
           children: [
             Image.file(
               File(widget.img.path),
-              fit: BoxFit.cover,
+              fit: BoxFit.contain,
             ),
             Positioned(
               right: 5,
