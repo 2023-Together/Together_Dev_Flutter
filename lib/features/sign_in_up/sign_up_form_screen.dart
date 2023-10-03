@@ -153,7 +153,7 @@ class _SignUpFormScreenState extends State<SignUpFormScreen> {
       if (!mounted) return;
       HttpIp.errorPrint(
         context: context,
-        title: "전화번호 인증 실패!",
+        title: "닉네임 인증 실패!",
         message: "${response.statusCode.toString()} : ${response.body}",
       );
       setState(() {});

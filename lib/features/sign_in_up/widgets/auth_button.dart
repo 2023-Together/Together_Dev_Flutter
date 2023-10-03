@@ -87,10 +87,8 @@ class _AuthButtonState extends State<AuthButton> {
       final response = await http.post(url, body: data);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        final jsonResponse = jsonDecode(response.body);
-        print(jsonResponse);
-        if (jsonResponse.isEmpty) {
-          print("로그인 실패");
+        if (response.body.isEmpty) {
+          print("계정이 존재하지 않음");
           if (!mounted) return;
           swagPlatformDialog(
             context: context,
@@ -104,6 +102,9 @@ class _AuthButtonState extends State<AuthButton> {
             ],
           );
         } else {
+          final jsonResponse = jsonDecode(response.body);
+          print(jsonResponse);
+
           if (!mounted) return;
           context
               .read<UserProvider>()
