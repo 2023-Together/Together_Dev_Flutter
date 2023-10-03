@@ -160,12 +160,12 @@ class _AuthButtonState extends State<AuthButton> {
       if (!mounted) return;
       final UserModel updateData = UserModel(
         userId: 2,
-        userEmail: "dlwogus1027@naver.com",
-        userPhoneNumber: "01049049193",
-        userName: "이재현",
-        userNickname: "푸른함대앤디",
+        userEmail: "example@naver.com",
+        userPhoneNumber: "01012345678",
+        userName: "관리자",
+        userNickname: "테스트용 계정",
         userGender: 0,
-        userBirthdate: DateTime.parse("1999-10-27"),
+        userBirthdate: DateTime.parse("0000-00-00"),
         userDef: "안녕하세요!",
         userType: "user",
       );
