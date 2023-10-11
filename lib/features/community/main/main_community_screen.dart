@@ -278,7 +278,7 @@ class _MainCommunityScreenState extends State<MainCommunityScreen>
                           children: [
                             IconButton.filled(
                               color: Colors.grey.shade300,
-                              iconSize: MediaQuery.of(context).size.width / 2,
+                              iconSize: MediaQuery.of(context).size.width / 4,
                               onPressed: _refreshPostList,
                               icon: const Icon(Icons.refresh),
                             ),

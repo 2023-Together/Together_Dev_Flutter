@@ -407,7 +407,7 @@ class _VolSearchScreenState extends State<VolSearchScreen> {
                                   IconButton.filled(
                                     color: Colors.grey.shade300,
                                     iconSize:
-                                        MediaQuery.of(context).size.width / 2,
+                                        MediaQuery.of(context).size.width / 4,
                                     onPressed: _refreshVolList,
                                     icon: const Icon(Icons.refresh),
                                   ),
