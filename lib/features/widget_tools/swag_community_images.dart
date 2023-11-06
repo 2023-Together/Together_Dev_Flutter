@@ -81,7 +81,7 @@ class SWAGCommunityImages extends StatelessWidget {
                                 ), // 원하는 둥글기 정도를 설정
                                 child: Image.asset(
                                   _filterImages[i][j],
-                                  fit: BoxFit.cover,
+                                  fit: BoxFit.fitWidth,
                                 ), // 둥글게 처리할 이미지
                               ),
                               Container(
@@ -109,7 +109,7 @@ class SWAGCommunityImages extends StatelessWidget {
                             ), // 원하는 둥글기 정도를 설정
                             child: Image.asset(
                               _filterImages[i][j],
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitWidth,
                             ), // 둥글게 처리할 이미지
                           )
                     : ClipRRect(
@@ -118,7 +118,7 @@ class SWAGCommunityImages extends StatelessWidget {
                         ), // 원하는 둥글기 정도를 설정
                         child: Image.asset(
                           _filterImages[i][j],
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fitWidth,
                         ), // 둥글게 처리할 이미지
                       ),
               ),

@@ -44,31 +44,35 @@ class _PostCard extends State<PostCard> {
   void initState() {
     super.initState();
 
+    _initImage();
+  }
+
+  Future<void> _initImage() async {
     if (widget.index % 5 == 0) {
       imageAssets = [
-        "assets/images/봉사1",
-        "assets/images/봉사3",
-        "assets/images/봉사5"
+        "assets/images/봉사1.png",
+        "assets/images/봉사3.png",
+        "assets/images/봉사5.png"
       ];
     } else if (widget.index % 4 == 0) {
       imageAssets = [
-        "assets/images/봉사2",
-        "assets/images/봉사4",
+        "assets/images/봉사2.png",
+        "assets/images/봉사4.png",
       ];
     } else if (widget.index % 3 == 0) {
       imageAssets = [
-        "assets/images/봉사3",
+        "assets/images/봉사3.png",
       ];
     } else if (widget.index % 2 == 0) {
       imageAssets = [
-        "assets/images/봉사4",
-        "assets/images/봉사3",
+        "assets/images/봉사4.png",
+        "assets/images/봉사3.png",
       ];
     } else if (widget.index % 2 == 1) {
       imageAssets = [
-        "assets/images/봉사5",
-        "assets/images/봉사1",
-        "assets/images/봉사3"
+        "assets/images/봉사5.png",
+        "assets/images/봉사1.png",
+        "assets/images/봉사3.png"
       ];
     }
   }
@@ -129,10 +133,16 @@ class _PostCard extends State<PostCard> {
           padding: const EdgeInsets.only(top: 6),
           clipBehavior: Clip.hardEdge,
           width: constraints.maxWidth,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
-              bottom: BorderSide(
+              top: widget.index == 0
+                  ? const BorderSide(
+                      width: 1,
+                      color: Colors.black38,
+                    )
+                  : BorderSide.none,
+              bottom: const BorderSide(
                 width: 1,
                 color: Colors.black38,
               ),
@@ -141,39 +151,6 @@ class _PostCard extends State<PostCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (widget.postData.postTitle.isNotEmpty)
-                          Text(
-                            widget.postData.postTitle,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        Gaps.v4,
-                        if (widget.postData.postContent.isNotEmpty)
-                          Text(
-                            widget.postData.postContent,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                      ],
-                    ),
-                  ),
-                  Gaps.v20,
-                  // if (widget.images != null)
-                  //   if (widget.images!.isNotEmpty)
-                  //     SWAGCommunityImages(images: widget.images!),
-                ],
-              ),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: Sizes.size14,
@@ -228,6 +205,53 @@ class _PostCard extends State<PostCard> {
                   ],
                 ),
               ),
+              Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: Sizes.size12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (widget.postData.postTitle.isNotEmpty)
+                          Text(
+                            widget.postData.postTitle,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                        Gaps.v4,
+                        if (widget.postData.postContent.isNotEmpty)
+                          Text(
+                            widget.postData.postContent,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                      ],
+                    ),
+                  ),
+                  Gaps.v20,
+                  // if (widget.images != null)
+                  //   if (widget.images!.isNotEmpty)
+                  //     SWAGCommunityImages(images: widget.images!),
+                ],
+              ),
+              // GridView.builder(
+              //   shrinkWrap: true,
+              //   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              //     crossAxisCount: imageAssets.length == 1
+              //         ? 1
+              //         : imageAssets.length == 2
+              //             ? 2
+              //             : 3,
+              //   ),
+              //   itemCount: imageAssets.length,
+              //   itemBuilder: (BuildContext context, int index) {
+              //     return Image.asset(imageAssets[index]);
+              //   },
+              // ),
               SWAGCommunityImages(images: imageAssets),
             ],
           ),
