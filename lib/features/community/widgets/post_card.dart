@@ -11,6 +11,7 @@ import 'package:swag_cross_app/constants/gaps.dart';
 import 'package:swag_cross_app/constants/http_ip.dart';
 import 'package:swag_cross_app/constants/sizes.dart';
 import 'package:swag_cross_app/features/community/posts/post_detail_screen.dart';
+import 'package:swag_cross_app/features/widget_tools/swag_community_images.dart';
 import 'package:swag_cross_app/models/post_card_model.dart';
 import 'package:swag_cross_app/providers/club_post_provider.dart';
 import 'package:swag_cross_app/providers/main_post_provider.dart';
@@ -37,10 +38,39 @@ class PostCard extends StatefulWidget {
 
 class _PostCard extends State<PostCard> {
   final int imgHeight = 100;
+  late final List<String> imageAssets;
 
   @override
   void initState() {
     super.initState();
+
+    if (widget.index % 5 == 0) {
+      imageAssets = [
+        "assets/images/봉사1",
+        "assets/images/봉사3",
+        "assets/images/봉사5"
+      ];
+    } else if (widget.index % 4 == 0) {
+      imageAssets = [
+        "assets/images/봉사2",
+        "assets/images/봉사4",
+      ];
+    } else if (widget.index % 3 == 0) {
+      imageAssets = [
+        "assets/images/봉사3",
+      ];
+    } else if (widget.index % 2 == 0) {
+      imageAssets = [
+        "assets/images/봉사4",
+        "assets/images/봉사3",
+      ];
+    } else if (widget.index % 2 == 1) {
+      imageAssets = [
+        "assets/images/봉사5",
+        "assets/images/봉사1",
+        "assets/images/봉사3"
+      ];
+    }
   }
 
   Future<void> _onTapLikeDispatch() async {
@@ -198,42 +228,7 @@ class _PostCard extends State<PostCard> {
                   ],
                 ),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.only(
-              //     left: Sizes.size20,
-              //     right: Sizes.size20,
-              //     bottom: Sizes.size10,
-              //   ),
-              //   child: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: [
-              //       IconButton(
-              //         onPressed: _onGoodTap,
-              //         icon: FaIcon(
-              //           isLogined
-              //               ? _checkGood
-              //                   ? FontAwesomeIcons.solidThumbsUp
-              //                   : FontAwesomeIcons.thumbsUp
-              //               : FontAwesomeIcons.thumbsUp,
-              //           color: isLogined
-              //               ? _checkGood
-              //                   ? Colors.blue.shade600
-              //                   : Colors.black
-              //               : Colors.black,
-              //         ),
-              //       ),
-              //       Gaps.h6,
-              //       IconButton(
-              //         onPressed: () => _goDetailScreen(1),
-              //         icon: const FaIcon(
-              //           FontAwesomeIcons.comment,
-              //           color: Colors.black,
-              //           size: 30,
-              //         ),
-              //       ),
-              //     ],
-              //   ),
-              // ),
+              SWAGCommunityImages(images: imageAssets),
             ],
           ),
         ),
