@@ -4,10 +4,10 @@
 <img src="https://img.shields.io/badge/-Provider-FBA834?style=flat-plastic&logo=Provider&logoColor=white"/>
 <img src="https://img.shields.io/badge/-Github-black?style=flat-plastic&logo=Github&logoColor=white"/></a>
 
-개발자 : 이재현
+개발자 : 이재현, 강소연
 
 
-프로젝트 한줄소개 : 학교에서 키오스크에서 구매하는 학식권을 모바일에서 구매하고 이를 인증할 수 있는 프로그램
+프로젝트 한줄소개 : 봉사에 관한 정보를 쉽게 공유 및 검색하기 위한 SNS 플랫폼
 
 
 프로젝트 화면 구조
