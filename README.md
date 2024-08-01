@@ -46,3 +46,6 @@
 - google_maps_flutter: ^2.3.1 (구글 맵)
 - geolocator: ^9.0.2 (위도, 경도)
 - flutter_localization: ^0.1.13 (한국어 적용)
+
+# 영상
+[![Video Label](http://img.youtube.com/vi/0rqEo_ArAkY/0.jpg)](https://youtu.be/0rqEo_ArAkY)
